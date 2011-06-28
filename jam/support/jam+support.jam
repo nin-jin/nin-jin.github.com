@@ -1,0 +1,11 @@
+with( $jam )
+$define
+(   '$support'
+,   new function(){
+        var node= document.createElement( 'html:div' )
+        this.Node_textContent= $Value( 'textContent' in node )
+        this.Node_innerText= $Value( 'innerText' in node )
+        this.eventModel= $Value( 'addEventListener' in node ? 'w3c' : 'old-ie' )
+        this.xhtml= $Value( node.namespaceURI !== void 0 )
+    }
+)

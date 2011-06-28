@@ -1,0 +1,11 @@
+label {
+    display: block;
+    margin: 1em 0;
+    clear: both;
+}
+
+label.reset\=true {
+    display: inline;
+    margin: 0;
+    clear: none;
+}

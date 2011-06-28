@@ -1,0 +1,19 @@
+with( $jam )
+$jam.$Class=
+function( init ){
+    var klass=
+    function( ){
+        if( this instanceof klass ) return this
+        var obj= klass.create.apply( klass, arguments )
+        return obj
+    }
+    
+    klass.create=
+    function( ){
+        return new klass
+    }
+
+    init( klass, klass.prototype )
+    
+    return klass
+}

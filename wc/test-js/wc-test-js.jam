@@ -1,0 +1,82 @@
+with( $wc )
+$Component( 'wc:test-js', function( root ){
+    root= $Node( root )
+    
+    var exec= $Thread( function( source ){
+        passed( 'wait' )
+        var proc= new Function( '_done', $String( source ).$ )
+        proc( _done )
+        return true
+    })
+
+    var source= $String( root.text() )
+    source.tab2space().minimizeIndent().trim( /[\n\r]/ )
+    
+    var nodeSource= $Node( 'wc:test-js_source' )
+    nodeSource.text( source )
+    root.clear().tail( nodeSource )
+    
+    nodeSource
+    .editable( true )
+    
+    var _done=
+    $Poly
+    (   function( ){
+            if( passed() === 'wait' ) passed( true )
+        }
+    ,   function( val ){
+            if( passed() === 'wait' ) passed( Boolean( val ) )
+            printValue( val )
+        }
+    ,   function( a, b ){
+            if( passed() === 'wait' ) passed( a === b )
+            printValue( a )
+            if( a !== b ) printValue( b )
+        }
+    )
+
+    var passed=
+    $Poly
+    (   function( ){
+            return root.state( 'passed' )
+        }
+    ,   function( val ){
+            root.state( 'passed', val )
+        }
+    )
+    
+    var timeout=
+    function( ){
+        return Number( root.state( 'timeout' ) )
+    }
+
+    var print=
+    function( val ){
+        var node= $Node( 'wc:test-js_result' )
+        node.text( val )
+        root.tail( node )
+    }
+    
+    var printValue=
+    function( val ){
+        if( typeof val === 'function' ){
+            if( !val.hasOwnProperty( 'toString' ) ){
+                print( 'Function: [object Function]' )
+                return
+            }
+        }
+        print( $classOf( val ) + ': ' + val )
+    }
+    
+    if( !exec( source ) ) passed( false )
+    if( timeout() ){
+        $schedule( timeout(), function( ){
+            if( passed() !== 'wait' ) return
+            passed( false )
+            print( 'Timeout! (' + timeout() + ')' )
+        })
+    } else {
+        if( passed() === 'wait' ) passed( false )
+    }
+    
+})

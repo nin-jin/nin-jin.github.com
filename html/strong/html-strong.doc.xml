@@ -1,0 +1,16 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>html:strong</h1>
+    <p>
+        <strong>Сильное выделение текста.</strong>
+    </p>
+    <p>
+        <strong class=" reset=true ">Замаскированное сильное выделение текста.</strong>
+    </p>
+
+</doc:root>

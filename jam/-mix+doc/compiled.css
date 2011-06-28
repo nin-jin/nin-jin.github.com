@@ -1,0 +1,335 @@
+/* @import url( '../../html/html/html.css' ); */
+html {
+    width: 100%;
+    height: 100%;
+    background: white;
+    color: black;
+    font: 18px/30px 'Times New Roman', serif;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    overflow-y: scroll;
+}
+
+/* @import url( '../../html/a/html-a.css' ); */
+a {
+    text-decoration: none; text-decoration: inherit;
+    color: #66f;
+    cursor: pointer;
+}
+
+a:visited {
+    color: #669;
+}
+
+a:hover {
+    color: #66f;
+    text-decoration: underline;
+}
+
+a.reset\=true,
+a.reset\=true:visited,
+a.reset\=true:hover {
+    text-decoration: none; text-decoration: inherit;
+    color: none; color: inherit; $color: black;
+}
+
+/* @import url( '../../html/body/html-body.css' ); */
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* @import url( '../../html/code/html-code.css' ); */
+code {
+    display: inline-block; zoom: 1;
+    font-family: monospace;
+    font-size: 12pt;
+    line-height: 1;
+    white-space: pre-wrap;
+    position: relative;
+
+    -wc-background: ' type=solid color=black opacity=.05 ';
+    background: rgba( 0, 0, 0, .05 );
+}
+
+code.reset\=true {
+    display: inline;
+    font: inherit;
+    white-space: inherit;
+    position: static;
+
+    background: none;
+}
+
+/* @import url( '../../html/em/html-em.css' ); */
+em {
+    font-style: italic;
+}
+em.reset\=true {
+    font-style: normal; font-style: inherit;
+}
+
+/* @import url( '../../html/h/html-h1.css' ); */
+h1 {
+    font: 48px/1 'Times New Roman', serif;
+    margin: 40px 0 20px;
+    text-align: center;
+}
+
+h1.reset\=true {
+    font: inherit;
+    margin: 0;
+    text-align: inherit;
+}
+
+/* @import url( '../../html/h/html-h2.css' ); */
+h2 {
+    font: 40px/1 'Times New Roman', serif;
+    margin: 40px 0 20px;
+    text-align: center;
+}
+
+h2.reset\=true {
+    font: inherit;
+    margin: 0;
+    text-align: inherit;
+}
+
+/* @import url( '../../html/h/html-h3.css' ); */
+h3 {
+    font: 32px/1 'Times New Roman', serif;
+    margin: 40px 0 20px;
+    text-align: center;
+}
+
+h3.reset\=true {
+    font: inherit;
+    margin: 0;
+    text-align: inherit;
+}
+
+/* @import url( '../../html/h/html-h4.css' ); */
+h4 {
+    font: 26px/1 'Times New Roman', serif;
+    margin: 40px 0 20px;
+}
+
+h4.reset\=true {
+    font: inherit;
+    margin: 0;
+}
+
+/* @import url( '../../html/h/html-h5.css' ); */
+h5 {
+    font: bold 20px/1 'Times New Roman', serif;
+    margin: 40px 0 20px;
+}
+
+h5.reset\=true {
+    font: inherit;
+    margin: 0;
+}
+
+/* @import url( '../../html/h/html-h6.css' ); */
+h6 {
+    font: bold 16px/1 'Times New Roman', serif;
+    margin: 40px 0 20px;
+}
+
+h6.reset\=true {
+    font: inherit;
+    margin: 0;
+}
+
+/* @import url( '../../html/label/html-label.css' ); */
+label {
+    display: block;
+    margin: 1em 0;
+    clear: both;
+}
+
+label.reset\=true {
+    display: inline;
+    margin: 0;
+    clear: none;
+}
+
+/* @import url( '../../html/p/html-p.css' ); */
+p {
+    margin: 20px 0;
+}
+
+p.reset\=true {
+    margin: 0;
+}
+
+/* @import url( '../../html/strong/html-strong.css' ); */
+strong {
+    font-weight: bold;
+}
+strong.reset\=true {
+    font-weight: normal; font-weight: inherit;
+}
+
+/* @import url( '../../wc/demo/wc-demo.css' ); */
+wc\:demo {
+    display: block;
+    border: 1px solid #ccc;
+    max-width: 100%;
+    margin: 2pt 0;
+}
+
+wc\:demo-result {
+    display: block;
+    border-bottom: 1px dotted #aaa;
+    overflow: auto;
+}
+
+wc\:demo-source {
+    display: block;
+    white-space: pre;
+    overflow: auto;
+    font-size: 11pt;
+    line-height: 1.5;
+    background: #eef;
+    padding: 2pt 4pt;
+}
+
+/* @import url( '../../wc/desktop/wc-desktop.css' ); */
+wc\:desktop {
+    display: block; zoom: 1;
+    min-width: 100%;
+    min-height: 100%;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+    background: url( 'wc-desktop_light.png' ) left top no-repeat #ddd;
+}
+
+/* @import url( '../../wc/footer/wc-footer.css' ); */
+wc\:footer {
+    width: 100%;
+    display: block;
+    overflow: hidden;
+    border-top: 1px solid #999;
+    padding: .1em 0;
+    font-size: 10pt;
+    text-align: center;
+    clear: both;
+}
+
+/* @import url( '../../wc/paper/wc-paper.css' ); */
+wc\:paper {
+    display: block; zoom: 1;
+    position: relative;
+    font-color: black;
+    text-align: left;
+    overflow: auto;
+    
+    margin: 0 auto;
+
+    -wc-border-radius: 2px;
+    border-radius: 2px;
+
+    -wc-border: ' weight=1px dashstyle=solid color=#aaa ';
+    border: 1px solid #aaa;
+
+    -wc-background: ' type=solid color=white ';
+    background: white;
+
+    -webkit-box-shadow: 3px 3px 3px #333;
+    -moz-box-shadow: 3px 3px 3px #333;
+    -wc-box-shadow: ' type=double opacity=.75 color=#000 color2=#333 offset=3px,3px offset2=4px,4px ';
+    box-shadow: 3px 3px 3px #333;
+}
+
+/* @import url( '../../wc/sidebar/wc-sidebar.css' ); */
+wc\:sidebar {
+    position: relative;
+    z-index: 1;
+    padding: 2%;
+}
+
+wc\:sidebar.align\=left {
+    float: left;
+}
+
+wc\:sidebar.align\=right {
+    float: right;
+}
+
+/* @import url( '../../wc/spacer/wc-spacer.css' ); */
+wc\:spacer {
+    display: block;
+    margin: 9% 10%;
+    padding: 10px;
+    zoom: 1;
+    position: relative;
+    width: auto;
+}
+
+/* @import url( '../../wc/test-js/wc-test-js.css' ); */
+wc\:test-js {
+    display: inline-block; zoom: 1;
+    font-size: 9pt;
+    font-family: 'Lucida Console', monospace;
+    border: 1px solid #ddd;
+    line-height: 1.5;
+    white-space: pre;
+    overflow: auto;
+    max-width: 100%;
+    vertical-align: top;
+    background: #eee;
+    margin: 2pt 0;
+}
+
+wc\:test-js.passed\=true {
+    background: #cfc;
+    border: 1px solid #ada;
+}
+
+wc\:test-js.passed\=false {
+    background: #fcc;
+    border: 1px solid #c99;
+}
+
+wc\:test-js_source {
+    display: block;
+    padding: 2pt 4pt;
+}
+
+wc\:test-js_result {
+    border-top: 1px solid #dda;
+    background: #ffc;
+    padding: 2pt 4pt;
+    display: block;
+}
+
+/* @import url( '../../wc/vmenu/wc-vmenu.css' ); */
+wc\:vmenu-root {
+    font-size: 12pt;
+}
+
+wc\:vmenu-branch {
+    display: block;
+    margin: .5em 0;
+}
+
+wc\:vmenu-leaf {
+    display: block;
+    padding: 0 .5em;
+    white-space: nowrap;
+    text-align: left;
+}
+
+a:hover wc\:vmenu-leaf {
+    background: white;
+}
+
+a.reset\=true.target\=true wc\:vmenu-leaf {
+    color: red;
+}
+

@@ -1,0 +1,278 @@
+with( $jam )
+$define
+(   '$Node'
+,   $Class( function( klass, proto ){
+        
+        klass.create=
+        $Poly
+        (   null
+        ,   function( val ){
+                var obj= new klass
+                if( $classOf( val ) === 'String' ){
+                    switch( val ){
+                        case '#text':
+                            val= $doc().createTextNode( '' )
+                            break
+                        case '#comment':
+                            val= $doc().createComment( '' )
+                            break
+                        case '#fragment':
+                            val= $doc().createDocumentFragment()
+                            break
+                        default:
+                            val= $doc().createElement( val )
+                            break
+                    }
+                    if( val.parentNode ) val.parentNode.removeChild( val )
+                }
+                if( typeof val !== 'object' ){
+                    throw new Error( 'Wrong node: ' + val )
+                }
+                if( val.toNode ) val= val.toNode()
+                obj.$= val
+                return obj
+            }
+        )
+        
+        proto.toNode=
+        $Poly
+        (   function( ){
+                return this.$
+            }
+        )
+        
+        proto.text=
+        $support.Node_textContent()
+        ?   $Poly
+            (   function( ){
+                    return this.$.textContent
+                }
+            ,   function( val ){
+                    this.$.textContent= $String( val ).$
+                    return this
+                }
+            )
+        :   $support.Node_innerText()
+            ?   $Poly
+                (   function( ){
+                        return this.$.innerText
+                    }
+                ,   function( val ){
+                        this.$.innerText= $String( val ).$
+                        return this
+                    }
+                )
+            :   null
+        
+        proto.html=
+        $Poly
+        (   function( ){
+                var val= this.$.innerHTML.replace( /<\/?[A-Z]+/g, function( str ){
+                    return str.toLowerCase()
+                })
+                return val
+            }
+        ,   function( val ){
+                this.$.innerHTML= $String( val ).$
+                return this
+            }
+        )
+        
+        proto.clear=
+        $Poly
+        (   function( ){
+                this.html( '' )
+                return this
+            }
+        )
+        
+        proto.name=
+        $Poly
+        (   function( ){
+                return this.$.nodeName.toLowerCase()
+            }
+        )
+        
+        proto.attr=
+        $Poly
+        (   null
+        ,   function( name ){
+                return this.$.getAttribute( name )
+            }
+        ,   function( name, val ){
+                this.$.setAttribute( $String( name ).$, $String( val ).$ )
+                return this
+            }    
+        )
+        
+        proto.state=
+        $Poly
+        (   function( ){
+                return this.param( [] )
+            }
+        ,   function( key ){
+                return $Hiqus({ splitterChunks: ' ' }).merge( this.$.className ).get( key )
+            }
+        ,   function( key, value ){
+                this.$.className= $Hiqus({ splitterChunks: ' ' }).merge( this.$.className ).put( key, value )
+                return this
+            }
+        )
+        
+        proto.editable=
+        $Poly
+        (   function( ){
+                return this.$.contentEditable
+            }
+        ,   function( val ){
+                this.$.contentEditable= val
+            }
+        )
+        
+        proto.listen=
+        $Poly
+        (   null
+        ,   null
+        ,   {   'w3c': function( eventName, proc ){
+                    this.$.addEventListener( eventName, proc, false )
+                    
+                    var self= this
+                    return function(){
+                        self.$.removeEventListener( eventName, proc, false )
+                    }
+                }
+            ,   'old-ie': function( eventName, proc ){
+                    var proc2= proc
+                    var eventName2= eventName
+                    if( !/^\w+$/.test( eventName ) ){
+                        eventName2= 'beforeeditfocus'
+                        proc2= function( ev ){
+                            if( ev.originalType !== eventName ) return
+                            ev.type= ev.originalType
+                            proc( ev )
+                        }
+                    }
+                    var proc3= function(){
+                        var ev= $glob().event
+                        //ev= $doc().createEventObject( ev )
+                        proc2( ev )
+                    }
+                    this.$.attachEvent( 'on' + eventName2, proc3, false )
+
+                    var self= this
+                    return function(){
+                        self.$.detachEvent( 'on' + eventName2, proc3, false )
+                    }
+                }
+            }[ $support.eventModel() ]
+        )
+        
+        proto.scream=
+        $Poly
+        (   null
+        ,   {   'w3c': function( ev ){
+                    ev= $Event( ev ).$
+                    this.$.dispatchEvent( ev )
+                }
+            ,   'old-ie': function( ev ){
+                    ev= $Event( ev ).$
+                    var eventName= ev.type
+                    if( !/^\w+$/.test( eventName ) ){
+                        eventName= 'beforeeditfocus'
+                    }
+                    ev.originalType= ev.type
+                    this.$.fireEvent( 'on' + eventName, ev )
+                }
+            }[ $support.eventModel() ]
+        )
+        
+        proto.parent= 
+        $Poly
+        (   function( ){
+                this.$= this.$.parentNode
+                return this
+            }
+        ,   function( node ){
+                var parent= this.$.parentNode
+                if( node ){
+                    node= $Node( node ).$
+                    if( parent ) parent.insertBefore( node, this.$ )
+                    node.appendChild( this.$ )
+                } else {
+                    if( !parent ) return this
+                    parent.removeChild( this.$ )
+                }
+                return this
+            }
+        )
+        
+        proto.childList=
+        function( name ){
+            var list= this.$.childNodes
+            var filtered= []
+            
+            for( var i= $Node( this ).head(); i.$; i.next() ){
+                if( name && ( i.name() !== name ) ) continue
+                filtered.push( i.$ )
+            }
+            
+            return filtered
+        }
+        
+        proto.head=
+        $Poly
+        (   function(){
+                this.$= this.$.firstChild
+                return this
+            }
+        ,   function( node ){
+                node= $Node( node ).$
+                this.$.insertBefore( node, this.$.firstChild )
+                return this
+            }
+        )
+        
+        proto.tail=
+        $Poly
+        (   function(){
+                this.$= this.$.lastChild
+                return this
+            }
+        ,   function( node ){
+                node= $Node( node ).$
+                this.$.appendChild( node )
+                return this
+            }
+        )
+        
+        proto.next=
+        $Poly
+        (   function(){
+                this.$= this.$.nextSibling
+                return this
+            }
+        ,   function( node ){
+                node= $Node( node ).$
+                var parent= this.$.parentNode
+                var next= this.$.nextSibling
+                parent.insertBefore( node, next ) 
+                return this
+            }   
+        )
+
+        proto.prev=
+        $Poly
+        (   function(){
+                this.$= this.$.previousSibling
+                return this
+            }
+        ,   function( node ){
+                node= $Node( node ).$
+                var parent= this.$.parentNode
+                parent.insertBefore( node, this.$ ) 
+                return this
+            }   
+        )
+            
+    })
+)

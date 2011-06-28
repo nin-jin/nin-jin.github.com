@@ -1,0 +1,22 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>html:h1</h1>
+    <h2>html:h2</h2>
+    <h3>html:h3</h3>
+    <h4>html:h4</h4>
+    <h5>html:h5</h5>
+    <h6>html:h6</h6>
+
+    <h1 class=" reset=true ">Замаскированный html:h1</h1>
+    <h2 class=" reset=true ">Замаскированный html:h2</h2>
+    <h3 class=" reset=true ">Замаскированный html:h3</h3>
+    <h4 class=" reset=true ">Замаскированный html:h4</h4>
+    <h5 class=" reset=true ">Замаскированный html:h5</h5>
+    <h6 class=" reset=true ">Замаскированный html:h6</h6>
+
+</doc:root>

@@ -1,0 +1,36 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>$jam.$createNameSpace</h1>
+    <p>Создаёт новое глобальное пространство имён, наследующее поля от текущего.</p>
+    
+    <wc:test-js> if( !this.$jam2 ) _done() </wc:test-js>
+    <wc:test-js> _done( $jam.$createNameSpace( '$jam2' ) ) </wc:test-js>
+    <wc:test-js> _done( $jam2.$createNameSpace ) </wc:test-js>
+    <wc:test-js> _done( $jam2.$createNameSpace( '$jam3' ) ) </wc:test-js>
+    <wc:test-js> _done( $jam2 ) </wc:test-js>
+    <wc:test-js> if( $jam !== $jam2 ) _done() </wc:test-js>
+    <wc:test-js>
+        $jam2.someField= 'some value'
+        _done()
+    </wc:test-js>
+    <wc:test-js> if( !$jam.someField ) _done() </wc:test-js>
+    <wc:test-js> _done( $jam2.someField ) </wc:test-js>
+    <wc:test-js> _done( $jam3.someField ) </wc:test-js>
+    <wc:test-js> _done( $jam3.$jam, $jam ) </wc:test-js>
+    <wc:test-js> _done( $jam3.$jam2, $jam2 ) </wc:test-js>
+    <wc:test-js> _done( $jam3.$jam3, $jam3 ) </wc:test-js>
+    <wc:test-js>
+        delete this.$jam2
+        _done()
+    </wc:test-js>
+    <wc:test-js>
+        delete window.$jam3
+        _done()
+    </wc:test-js>
+
+</doc:root>

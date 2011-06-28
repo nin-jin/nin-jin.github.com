@@ -1,0 +1,29 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>$jam.$Lazy</h1>
+    <p>Создаёт ленивую функцию. Принимает на вход фабрику, которую использует для создания актуальной функции при первом вызове.</p>
+
+    <wc:test-js> _done( $jam.$Lazy ) </wc:test-js>
+    <wc:test-js>
+        var lazy= $jam.$Lazy( function(){
+            return function( a, b ){
+                return b
+            }
+        })
+        _done( lazy( 1, 2 ), 2 )
+    </wc:test-js>
+    <wc:test-js>
+        with( $jam )
+        var lazy= $Lazy( function(){
+            var a= Math.random()
+            return $Value( a )
+        })
+        _done( lazy(), lazy() )
+    </wc:test-js>
+
+</doc:root>

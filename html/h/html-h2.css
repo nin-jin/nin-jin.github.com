@@ -1,0 +1,11 @@
+h2 {
+    font: 40px/1 'Times New Roman', serif;
+    margin: 40px 0 20px;
+    text-align: center;
+}
+
+h2.reset\=true {
+    font: inherit;
+    margin: 0;
+    text-align: inherit;
+}

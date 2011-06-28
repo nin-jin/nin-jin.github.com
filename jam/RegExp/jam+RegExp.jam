@@ -1,0 +1,42 @@
+with( $jam )
+$define
+(   '$RegExp'
+,   $Class( function( klass, proto ){
+    
+        klass.create=
+        function( regexp ){
+            if( $classOf( regexp ) === 'Object' ){
+                regexp= RegExp( regexp.source, regexp.mods )
+            }
+            var obj= new klass
+            obj.$= new RegExp( regexp )
+            return obj
+        }
+        
+        klass.encode=
+        new function( ){
+            var specChars = '^({[\\.?+*]})$'
+            var specRE= RegExp( specChars.replace(/./g, '\\$' + '1'), 'g' )
+            var encodeChar= function( symb ){
+                return '\\' + symb
+            }
+            return function( str ){
+                return $String( str ).replace( specRE, encodeChar ).$
+            }
+        }
+
+        proto.source=
+        function(){
+            return this.$.source
+        }
+
+        proto.count=
+        new function( ){
+            var offset= /^$/.exec( '' ).length
+            return function( ){
+                return RegExp( '^$|' + this.$.source ).exec( '' ).length - offset
+            }
+        }
+
+    })
+)

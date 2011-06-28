@@ -1,0 +1,14 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>wc:desktop</h1>
+
+    <wc:desktop>
+        Виджет предназначен для рисования серой подложки, растянутой на всю доступную область.
+    </wc:desktop>
+
+</doc:root>

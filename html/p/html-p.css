@@ -1,0 +1,7 @@
+p {
+    margin: 20px 0;
+}
+
+p.reset\=true {
+    margin: 0;
+}

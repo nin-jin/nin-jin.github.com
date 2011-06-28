@@ -1,0 +1,107 @@
+with( $jam )
+$define( '$Component', function( tagName, factory ){
+	if(!( this instanceof $Component )) return new $Component( tagName, factory )
+	var fieldName= 'componnet|' + tagName + '|' + (new Date).getTime()
+
+	var isBroken= !$support.xhtml()
+	var chunks= /(?:(\w+):)?([-\w]+)/.exec( tagName )
+	var scopeName= isBroken && chunks && chunks[1] || ''
+	var localName= isBroken && chunks && chunks[2] || tagName
+	var nodes= $doc().getElementsByTagName( localName )
+
+	var elements= []
+
+	var checkName=
+	( tagName === '*' )
+	?	$Value( true )
+	:	new function(){
+			var nameChecker= RegExp( '^' + localName + '$', 'i' )
+			if( isBroken ){
+				var scopeChecker= RegExp( '^' + scopeName + '$', 'i' )
+				return function( el ){
+					return scopeChecker.test( el.scopeName ) && nameChecker.test( el.nodeName )
+				}
+			}
+			return function( el ){
+				if( el.namespaceURI && el.namespaceURI !== 'http://www.w3.org/1999/xhtml' ) return false
+				return nameChecker.test( el.nodeName )
+			}
+		}
+	
+	var isAttached= function( el ){
+		return typeof el[ fieldName ] === 'object'
+	}
+	
+	var attach= function( el ){
+		el[ fieldName ]= null
+		var widget= new factory( el )
+		el[ fieldName ]= widget
+		elements.push( el )
+	}
+	
+	var attachIfLoaded= function( el ){
+		var cur= el
+		do {
+			if( !cur.nextSibling ) continue
+			attach( el )
+			break
+		} while( cur= cur.parentNode )
+	}
+	
+	var check4attach= function( nodes ){
+		filtered= []
+		filter: for( var i= 0, len= nodes.length; i < len; ++i ){
+			var el= nodes[ i ]
+			if( isAttached( el ) ) continue
+			if( !checkName( el ) ) continue
+			filtered.push( el )
+		}
+		attach: for( var i= 0; i < filtered.length; ++i ){
+			//$log('f',fieldName+'',attachIfLoaded ==attach, filtered[i])
+			attachIfLoaded( filtered[ i ] )
+		}
+	}
+
+	var tracking= function(){
+		check4attach( nodes )
+	}
+
+	var detach= function( el ){
+		var widget= el[ fieldName ]
+		if( widget && widget.onDetach ) widget.onDetach()
+		el[ fieldName ]= void 0
+	}
+	
+	var check4detach= function( nodes ){
+		filtered= []
+		filter: for( var i= 0, len= nodes.length; i < len; ++i ){
+			var el= nodes[ i ]
+			if( !isAttached( el ) ) continue
+			filtered.push( el )
+		}
+		attach: for( var i= 0, len= filtered.length; i < len; ++i ){
+			detach( filtered[ i ] )
+		}
+	}
+	
+	var interval= $glob().top.setInterval( tracking, 50 )
+
+	$domReady.then(function(){
+		$glob().top.clearInterval( interval )
+		attachIfLoaded= attach
+		tracking()
+	})
+
+	/*$doc().documentElement.addEventListener( 'DOMNodeInserted', function( ev ){
+		check4attach([ ev.target ])
+	}, false )
+	$doc().documentElement.addEventListener( 'DOMNodeRemoved', function( ev ){
+		check4detach([ ev.target ])
+	}, false )*/
+	
+	this.tagName= $Value( tagName )
+	this.factory= $Value( factory )
+	this.elements= function( ){
+		return elements.slice( 0 )
+	}
+})
