@@ -969,30 +969,10 @@ $Component
 $jam.$createNameSpace( '$wc' )
 with( $wc ) $htmlize( 'https://github.com/nin-jin/wc' )
 
-// jam/log/jam+log.jam
-with( $jam )
-$define( '$log', new function(){
-    var console= $glob().console
-    if( !console || !console.log ){
-        return function(){
-            alert( [].slice.call( arguments ) )
-        }
-    }
-    if( !console.log.apply ){
-        return function(){
-            console.log( [].slice.call( arguments ) )
-        }
-    }
-    return function(){
-        console.log.apply( console, arguments )
-    }
-})
-
 // wc/demo/wc-demo.jam
 with( $wc )
 $define( 'demo', $Component( 'wc:demo', function( el ){
     var source= $String( $Node( el ).html() ).tab2space().minimizeIndent().trim( /[\n\r]/ ).$
-    $log( 'wc:demo', source )
     
     var elSource= $doc().createElement( 'wc:demo-source' )
     if( 'textContent' in el ) elSource.textContent= source
@@ -1055,6 +1035,25 @@ $define( '$Thread', $Lazy( function(){
     }
 
 }))
+
+// jam/log/jam+log.jam
+with( $jam )
+$define( '$log', new function(){
+    var console= $glob().console
+    if( !console || !console.log ){
+        return function(){
+            alert( [].slice.call( arguments ) )
+        }
+    }
+    if( !console.log.apply ){
+        return function(){
+            console.log( [].slice.call( arguments ) )
+        }
+    }
+    return function(){
+        console.log.apply( console, arguments )
+    }
+})
 
 // jam/commit/jam+commit.jam
 with( $jam )
