@@ -145,8 +145,8 @@ $define
 (   '$support'
 ,   new function(){
         var node= document.createElement( 'html:div' )
-        this.htmlModel= $Value( node.namespaceURI !== void 0 ? 'w3c' : 'old-ie' )
-        this.eventModel= $Value( 'addEventListener' in node ? 'w3c' : 'old-ie' )
+        this.htmlModel= $Value( node.namespaceURI !== void 0 ? 'w3c' : 'ms' )
+        this.eventModel= $Value( 'addEventListener' in node ? 'w3c' : 'ms' )
     }
 )
 
@@ -284,6 +284,15 @@ $define
             }
         )
         
+        proto.process=
+        $Poly
+        (   null
+        ,   function( proc ){
+                this.$= proc( this.$ )
+                return this
+            }
+        )
+        
         proto.replace=
         $Poly
         (   null
@@ -311,6 +320,60 @@ $define
         )
 
     })
+)
+
+// jam/html/jam+html.jam
+with( $jam )
+$define
+(   '$html'
+,   new function(){
+    
+        this.encode=
+        function( str ){
+            return $String( str )
+            .replace( /&/g, '&amp;' )
+            .replace( /</g, '&lt;' )
+            .replace( />/g, '&gt;' )
+            .replace( /"/g, '&quot;' )
+            .replace( /'/g, '&apos;' )
+            .$
+        }
+
+        this.decode=
+        new function(){
+            var fromCharCode= $glob().String.fromCharCode
+            var parseInt= $glob().parseInt
+            var replacer= function( str, isHex, numb, name ){
+                if( name ) return $html.entitiy[ name ] || str
+                if( isHex ) numb= parseInt( numb, 16 )
+                return fromCharCode( numb )
+            }
+            return function( str ){
+                return $String( str ).replace( /&(?:#(x)?(\d+)|(\w+));/g, replacer ).$
+            }
+        }
+        
+        this.entitiy=
+        {	'nbsp': ' '
+        ,	'amp':  '&'
+        ,	'lt':   '<'
+        ,	'gt':   '>'
+        ,	'quot': '"'
+        ,	'apos': "'"
+        }
+        
+        this.text=
+        function( html ){
+            return $String( html )
+            .replace( /<div><br[^>]*>/gi, '\n' )
+            .replace( /<br[^>]*>/gi, '\n' )
+            .replace( /<div>/gi, '\n' )
+            .replace( /<[^<>]+>/g, '' )
+            .process( $html.decode )
+            .$
+        }
+    
+    }
 )
 
 // jam/Hiqus/jam+Hiqus.jam
@@ -485,7 +548,7 @@ $define
                     return obj
                 }
             )
-        ,   'old-ie': $Poly
+        ,   'ms': $Poly
             (   function( ){
                     var obj= new klass
                     obj.$= $doc().createEventObject()
@@ -557,25 +620,18 @@ $define
         )
         
         proto.text=
-        {   'w3c': $Poly
-            (   function( ){
-                    return this.$.textContent
-                }
-            ,   function( val ){
-                    this.$.textContent= $String( val ).$
+        $Poly
+        (   function( ){
+                return $html.text( this.$.innerHTML )
+            }
+        ,   new function(){
+                var fieldName= { w3c: 'textContent', ms: 'innerText' }[ $support.htmlModel() ]
+                return function( val ){
+                    this.$[ fieldName ]= $String( val ).$
                     return this
                 }
-            )
-        ,   'old-ie': $Poly
-            (   function( ){
-                    return this.$.innerText
-                }
-            ,   function( val ){
-                    this.$.innerText= $String( val ).$
-                    return this
-                }
-            )
-        }[ $support.htmlModel() ]
+            }
+        )
         
         proto.html=
         $Poly
@@ -601,9 +657,15 @@ $define
         
         proto.name=
         $Poly
-        (   function( ){
-                return this.$.nodeName.toLowerCase()
-            }
+        (   {   'w3c': function( ){
+                    return this.$.nodeName.toLowerCase()
+                }
+            ,   'ms': function( ){
+                    var scope= this.$.scopeName
+                    var name= this.$.nodeName.toLowerCase()
+                    return scope ? scope + ':' + name : name
+                }
+            }[ $support.htmlModel() ]
         )
         
         proto.attr=
@@ -654,7 +716,7 @@ $define
                         self.$.removeEventListener( eventName, proc, false )
                     }
                 }
-            ,   'old-ie': function( eventName, proc ){
+            ,   'ms': function( eventName, proc ){
                     var proc2= proc
                     var eventName2= eventName
                     if( !/^\w+$/.test( eventName ) ){
@@ -668,6 +730,7 @@ $define
                     var proc3= function(){
                         var ev= $glob().event
                         //ev= $doc().createEventObject( ev )
+                        if( !ev.target ) ev.target= ev.srcElement 
                         proc2( ev )
                     }
                     this.$.attachEvent( 'on' + eventName2, proc3, false )
@@ -687,7 +750,7 @@ $define
                     ev= $Event( ev ).$
                     this.$.dispatchEvent( ev )
                 }
-            ,   'old-ie': function( ev ){
+            ,   'ms': function( ev ){
                     ev= $Event( ev ).$
                     var eventName= ev.type
                     if( !/^\w+$/.test( eventName ) ){
@@ -796,7 +859,7 @@ $define( '$Component', function( tagName, factory ){
 	if(!( this instanceof $Component )) return new $Component( tagName, factory )
 	var fieldName= 'componnet|' + tagName + '|' + (new Date).getTime()
 
-	var isBroken= ( $support.htmlModel() === 'old-ie' )
+	var isBroken= ( $support.htmlModel() === 'ms' )
 	var chunks= /(?:(\w+):)?([-\w]+)/.exec( tagName )
 	var scopeName= isBroken && chunks && chunks[1] || ''
 	var localName= isBroken && chunks && chunks[2] || tagName
@@ -842,7 +905,7 @@ $define( '$Component', function( tagName, factory ){
 	}
 	
 	var check4attach= function( nodes ){
-		filtered= []
+		var filtered= []
 		filter: for( var i= 0, len= nodes.length; i < len; ++i ){
 			var el= nodes[ i ]
 			if( isAttached( el ) ) continue
@@ -1116,6 +1179,39 @@ $define
 	}
 )
 
+// jam/log/jam+log.jam
+with( $jam )
+$define( '$log', new function(){
+    var console= $glob().console
+    if( !console || !console.log ){
+        return function(){
+            alert( [].slice.call( arguments ) )
+        }
+    }
+    if( !console.log.apply ){
+        return function(){
+            console.log( [].slice.call( arguments ) )
+        }
+    }
+    return function(){
+        console.log.apply( console, arguments )
+    }
+})
+
+// jam/commit/jam+commit.jam
+with( $jam )
+$define
+(   '$commit'
+,   new function(){
+        $Node( $doc().documentElement )
+        .listen( 'keyup', function( ev ){
+            if( !ev.ctrlKey || ev.keyCode != 13 ) return
+            //$log(ev.charCode,ev.keyCode,ev.ctrlKey,ev.target,ev.srcElement,ev)
+            $Node( ev.target ).scream({ type: '$jam.$commit' })
+        })
+    }
+)
+
 // jam/createNameSpace/wc+createNameSpace.jam
 with( $jam )
 $define( '$createNameSpace', function( name ){
@@ -1148,23 +1244,4 @@ $define
         })
     }
 )
-
-// jam/log/jam+log.jam
-with( $jam )
-$define( '$log', new function(){
-    var console= $glob().console
-    if( !console || !console.log ){
-        return function(){
-            alert( [].slice.call( arguments ) )
-        }
-    }
-    if( !console.log.apply ){
-        return function(){
-            console.log( [].slice.call( arguments ) )
-        }
-    }
-    return function(){
-        console.log.apply( console, arguments )
-    }
-})
 
