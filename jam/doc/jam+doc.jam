@@ -1,6 +1,0 @@
-with( $jam )
-$define( '$doc', $Value( $glob().document ) )
-
-with( $jam )
-$define.call( $doc, 'onLoad', function( handler ){
-})

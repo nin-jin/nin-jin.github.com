@@ -1,9 +1,0 @@
-with( $jam )
-$define( '$createNameSpace', function( name ){
-    var proxy= function(){}
-    proxy.prototype= this
-    var ns= new proxy
-    $define.call( $glob(), name, ns )
-    ns.$define( name, ns )
-    return ns
-})

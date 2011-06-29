@@ -1,2 +1,0 @@
-$jam.$createNameSpace( '$doc' )
-with( $doc ) $htmlize( 'https://github.com/nin-jin/doc' )

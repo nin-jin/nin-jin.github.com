@@ -1,6 +1,0 @@
-with( $jam )
-$jam.$define=
-function( key, value ){
-    $Obj( this ).define( key, value )
-    return this
-}
