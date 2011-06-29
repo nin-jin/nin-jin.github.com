@@ -1,0 +1,65 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>$jam.$String</h1>
+    <p>Создаёт обёртку для строк.</p>
+
+    <wc:test-js> _done( $jam.$String ) </wc:test-js>
+    <wc:test-js>
+        _done( $jam.$String( 'foo' ) )
+    </wc:test-js>
+    <wc:test-js>
+        var str= $jam.$String( 'foo' )
+        _done( $jam.$String( str ) !== str )
+    </wc:test-js>
+    <wc:test-js>
+        var str= $jam.$String( 'foo' )
+        _done( str.$, 'foo' )
+    </wc:test-js>
+    <wc:test-js>
+        var str= $jam.$String( 'foo' )
+        _done( str + 'bar', 'foobar' )
+    </wc:test-js>
+    <wc:test-js>
+        var str= $jam.$String()
+        _done( str.$, '' )
+    </wc:test-js>
+    <wc:test-js>
+        _done( $jam.$String( 'foo' ).length(), 3 )
+    </wc:test-js>
+    <wc:test-js>
+        var str= $jam.$String( '    foo\n    bar' )
+        str.incIndent()
+        _done( str.$, '        foo\n        bar' )
+    </wc:test-js>
+    <wc:test-js>
+        var str= $jam.$String( '        foo\n        bar' )
+        str.decIndent()
+        _done( str.$, '    foo\n    bar' )
+    </wc:test-js>
+    <wc:test-js>
+        var str= $jam.$String( '        foo\n            bar' )
+        str.minimizeIndent()
+        _done( str.$, 'foo\n    bar' )
+    </wc:test-js>
+    <wc:test-js>
+        var str= $jam.$String( '\t\t' )
+        str.tab2space()
+        _done( str.$, '        ' )
+    </wc:test-js>
+    <wc:test-js>
+        var str= $jam.$String( '\t abc\n' )
+        str.trim()
+        _done( str.$, 'abc' )
+    </wc:test-js>
+    <wc:test-js>
+        var str= $jam.$String( 'abacabcba' )
+        str.trim( /ab?/ )
+        _done( str.$, 'cabcb' )
+    </wc:test-js>
+
+</doc:root>

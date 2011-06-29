@@ -1,0 +1,42 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>$jam.$define</h1>
+    <p>Регистрирует новый модуль. Громко ругается, если такой модуль уже есть.</p>
+
+    <p>
+        <wc:test-js> _done( $jam.$define ) </wc:test-js>
+        <wc:test-js>
+            
+            _done( $jam.$define( '_test_define_123_', 123 ), $jam )
+        </wc:test-js>
+        <wc:test-js>
+            $jam.$define( '_test_define_123_', 123 )
+            _done( $jam._test_define_123_, 123 )
+        </wc:test-js>
+        <wc:test-js>
+            try {
+                $jam.$define( '_test_define_123_', 321 )
+            } catch( e ){
+                return _done( e )
+            }
+            throw 'попытка изменения значения должна вызывать ошибку'
+        </wc:test-js>
+    </p>
+
+    <p>
+        <wc:test-js>
+            delete $jam._test_define_123_
+            _done()
+        </wc:test-js>
+        <wc:test-js>
+            delete $jam._test_define_321_
+            _done()
+        </wc:test-js>
+    </p>
+
+</doc:root>

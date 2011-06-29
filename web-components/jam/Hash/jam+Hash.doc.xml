@@ -1,0 +1,36 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>$jam.$Hash</h1>
+
+    <p>Создаёт хэш-таблицу. Если в параметрах передать объект и префикс - будет использовать его для хранения данных.</p>
+
+    <p>
+        <wc:test-js> _done( $jam.$Hash ) </wc:test-js>
+        <wc:test-js> if( !$jam.$Hash().has( 'foo' ) ) _done() </wc:test-js>
+        <wc:test-js> if( !$jam.$Hash().has( 'hasOwnProperty' ) ) _done() </wc:test-js>
+        <wc:test-js>
+            var hash= $jam.$Hash()
+            hash.put( 'foo', 'bar' )
+            _done( hash.has( 'foo' ) )
+        </wc:test-js>
+        <wc:test-js>
+            var hash= $jam.$Hash()
+            hash.put( 'foo', 'bar' )
+            _done( hash.get( 'foo' ), 'bar' )
+        </wc:test-js>
+        <wc:test-js>
+            var hash= $jam.$Hash({ ns: 'foo', data: { 'foo:bar': 123 } })
+            _done( hash.has( 'bar' ) )
+        </wc:test-js>
+        <wc:test-js>
+            var hash= $jam.$Hash({ prefix: '', data: $jam })
+            _done( hash.has( '$Hash' ) )
+        </wc:test-js>
+    </p>
+
+</doc:root>

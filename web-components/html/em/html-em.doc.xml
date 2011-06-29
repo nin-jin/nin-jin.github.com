@@ -1,0 +1,16 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>html:em</h1>
+    <p>
+        <em>Интонационное выделение текста.</em>
+    </p>
+    <p>
+        <em class=" reset=true ">Замаскированное интонационное выделение текста.</em>
+    </p>
+
+</doc:root>

@@ -1,0 +1,183 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>$jam.$Node</h1>
+    <p>Создаёт обёртку для дом-узла.</p>
+
+    <wc:test-js> _done( $jam.$Node ) </wc:test-js>
+    <wc:test-js>
+        var node= $jam.$Node( 'xxx' )
+        _done( node.name(), 'xxx' )
+    </wc:test-js>
+    <wc:test-js>
+        var node= $jam.$Node( 'xxx' )
+        _done( node.parent().$, null )
+    </wc:test-js>
+    <wc:test-js>
+        var node1= $jam.$Node( 'xxx' )
+        var node2= $jam.$Node( 'yyy' )
+        node2.parent( node1 )
+        _done( node2.parent().$, node1.$ )
+    </wc:test-js>
+    <wc:test-js>
+        var node1= $jam.$Node( 'xxx' )
+        var node2= $jam.$Node( 'yyy' )
+        var node3= $jam.$Node( 'zzz' )
+        node2.parent( node1 )
+        node2.next( node3 )
+        _done( node3.prev().$, node2.$ )
+    </wc:test-js>
+    <wc:test-js>
+        var node1= $jam.$Node( 'xxx' )
+        var node2= $jam.$Node( 'yyy' )
+        var node3= $jam.$Node( 'zzz' )
+        node2.parent( node1 )
+        node2.next( node3 )
+        _done( node2.parent().$, node1.$ )
+    </wc:test-js>
+    <wc:test-js>
+        var node1= $jam.$Node( 'xxx' )
+        var node2= $jam.$Node( 'yyy' )
+        var node3= $jam.$Node( 'zzz' )
+        node2.parent( node1 )
+        node2.prev( node3 )
+        _done( node3.next().$, node2.$ )
+    </wc:test-js>
+    <wc:test-js>
+        var node1= $jam.$Node( 'xxx' )
+        var node2= $jam.$Node( 'yyy' )
+        var node3= $jam.$Node( 'zzz' )
+        node2.parent( node1 )
+        node2.prev( node3 )
+        _done( node2.parent().$, node1.$ )
+    </wc:test-js>
+    <wc:test-js>
+        var node1= $jam.$Node( 'xxx' )
+        var node2= $jam.$Node( 'yyy' )
+        var node3= $jam.$Node( 'zzz' )
+        node2.parent( node1 )
+        node3.parent( node1 )
+        _done( node2.next().$, node3.$ )
+    </wc:test-js>
+    <wc:test-js>
+        var node1= $jam.$Node( 'xxx' )
+        var node2= $jam.$Node( 'yyy' )
+        var node3= $jam.$Node( 'zzz' )
+        node2.parent( node1 )
+        node3.parent( node1 )
+        _done( node1.childList().length, 2 )
+    </wc:test-js>
+    <wc:test-js>
+        var node1= $jam.$Node( 'xxx' )
+        var node2= $jam.$Node( 'yyy' )
+        var node3= $jam.$Node( 'zzz' )
+        node2.parent( node1 )
+        node3.parent( node1 )
+        _done( node1.childList( 'zzz' ).length, 1 )
+    </wc:test-js>
+    <wc:test-js>
+        var node1= $jam.$Node( 'xxx' )
+        var node2= $jam.$Node( 'yyy' )
+        var node3= $jam.$Node( 'zzz' )
+        node2.parent( node1 )
+        node3.parent( node1 )
+        _done( node1.childList( 'zzz' )[0], node3.$ )
+    </wc:test-js>
+    <wc:test-js>
+        var node1= $jam.$Node( 'xxx' )
+        var node2= $jam.$Node( 'yyy' )
+        var node3= $jam.$Node( 'zzz' )
+        node2.parent( node1 )
+        node3.parent( node1 )
+        node1.clear()
+        _done( node1.childList().length, 0 )
+    </wc:test-js>
+    <wc:test-js>
+        var node= $jam.$Node( 'xxx' )
+        var source= '&lt;a&gt;1&lt;/a&gt;&lt;b&gt;2&lt;/b&gt;'
+        node.html( source )
+        _done( node.html(), source )
+    </wc:test-js>
+    <wc:test-js>
+        var node= $jam.$Node( 'xxx' )
+        var source= '&lt;a&gt;1&lt;/a&gt;&lt;b&gt;2&lt;/b&gt;'
+        node.text( source )
+        _done( node.text(), source )
+    </wc:test-js>
+    <wc:test-js>
+        var node= $jam.$Node( 'xxx' )
+        var source= '&lt;a&gt;1&lt;/a&gt;&lt;b&gt;2&lt;/b&gt;'
+        node.html( source )
+        _done( node.text(), '12' )
+    </wc:test-js>
+    <wc:test-js>
+        var node1= $jam.$Node( 'xxx' )
+        var node2= $jam.$Node( 'yyy' )
+        var node3= $jam.$Node( 'zzz' )
+        node2.parent( node1 )
+        node3.parent( node1 )
+        _done( node1.head().$, node2.$ )
+    </wc:test-js>
+    <wc:test-js>
+        var node1= $jam.$Node( 'xxx' )
+        var node2= $jam.$Node( 'yyy' )
+        var node3= $jam.$Node( 'zzz' )
+        node2.parent( node1 )
+        node3.parent( node1 )
+        _done( node1.tail().$, node3.$ )
+    </wc:test-js>
+    <wc:test-js>
+        var node= $jam.$Node( 'xxx' )
+        node.attr( 'foo', 'bar' )
+        _done( node.attr( 'foo' ), 'bar' )
+    </wc:test-js>
+
+    <h2>События</h2>
+    <wc:test-js>
+        var node1= $jam.$Node( $jam.$doc() )
+        var node2= $jam.$Node( $jam.$doc().body )
+        var forget= node1.listen( 'click', function( ev ){
+            _done( ev.type, 'click' )
+        })
+        var ev= $jam.$Event({ type: 'click' })
+        node2.scream( ev )
+        forget()
+    </wc:test-js>
+    <wc:test-js>
+        var node= $jam.$Node( $jam.$doc().body )
+        var catched= false
+        var forget= node.listen( 'click', function( ev ){
+            catched= true
+        })
+        var ev= $jam.$Event({ type: 'click' })
+        forget()
+        node.scream( ev )
+        _done( catched, false )
+    </wc:test-js>
+    <wc:test-js>
+        var node1= $jam.$Node( $jam.$doc() )
+        var node2= $jam.$Node( $jam.$doc().body )
+        var forget= node1.listen( 'jam:_test_Node_', function( ev ){
+            _done( ev.type, 'jam:_test_Node_' )
+        })
+        var ev= $jam.$Event({ type: 'jam:_test_Node_' })
+        node2.scream( ev )
+        forget()
+    </wc:test-js>
+    <wc:test-js>
+        var node= $jam.$Node( $jam.$doc().body )
+        var catched= false
+        var forget= node.listen( 'jam:_test_Node_', function( ev ){
+            catched= true
+        })
+        var ev= $jam.$Event({ type: 'jam:_test_Node_' })
+        forget()
+        node.scream( ev )
+        _done( catched, false )
+    </wc:test-js>
+
+</doc:root>

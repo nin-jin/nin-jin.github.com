@@ -1,0 +1,19 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>wc:footer</h1>
+
+    <wc:paper>
+        <wc:spacer>
+            Рисует некоторую область, отрезанную от контента до неё.
+        </wc:spacer>
+        <wc:footer>
+            Содержимое области считается не особо важным.
+        </wc:footer>
+    </wc:paper>
+
+</doc:root>

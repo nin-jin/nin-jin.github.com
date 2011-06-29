@@ -1,0 +1,18 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>html:label</h1>
+    <p>
+        <label>Название поля ввода.</label>
+        <label>Название поля ввода: <input/></label>
+    </p>
+    <p>
+        <label class=" reset=true ">Замаскированное название поля ввода.</label>
+        <label class=" reset=true ">Замаскированное название поля ввода: <input/></label>
+    </p>
+
+</doc:root>

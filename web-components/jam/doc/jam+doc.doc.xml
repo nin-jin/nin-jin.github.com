@@ -1,0 +1,17 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>$jam.$doc</h1>
+
+    <p>Возвращает документ для текущего окна.</p>
+
+    <p>
+        <wc:test-js> _done( $jam.$doc ) </wc:test-js>
+        <wc:test-js> _done( $jam.$doc(), this.document ) </wc:test-js>
+    </p>
+
+</doc:root>

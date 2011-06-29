@@ -1,0 +1,16 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>html:code</h1>
+    <p><code>Однострочный нормальный код.</code></p>
+    <p><code>Многострочный
+нормальный код.</code></p>
+    <p><code class=" reset=true ">Однострочный замаскированный код.</code></p>
+    <p><code class=" reset=true ">Многострочный
+замаскированный код.</code></p>
+    
+</doc:root>

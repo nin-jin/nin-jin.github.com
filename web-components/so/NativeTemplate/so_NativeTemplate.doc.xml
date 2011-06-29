@@ -1,0 +1,11 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>so_NativeTemplate</h1>
+    <p>Простейшая обёртка, позволяющая использовать нативные php-шаблоны.</p>
+
+</doc:root>
