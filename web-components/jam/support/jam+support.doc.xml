@@ -10,19 +10,10 @@
 
     <wc:test-js> _done( $jam.$support ) </wc:test-js>
     <wc:test-js>
-        _done( $jam.$support.Node_textContent() )
+        _done( $jam.$support.htmlModel() )
     </wc:test-js>
     <wc:test-js>
-        _done( $jam.$support.Node_innerText() )
-    </wc:test-js>
-    <wc:test-js>
-        _done( $jam.$support.Node_addEventListener() )
-    </wc:test-js>
-    <wc:test-js>
-        _done( $jam.$support.Node_attachEvent() )
-    </wc:test-js>
-    <wc:test-js>
-        _done( $jam.$support.xhtml() )
+        _done( $jam.$support.eventModel() )
     </wc:test-js>
 
 </doc:root>

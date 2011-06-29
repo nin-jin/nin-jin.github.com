@@ -145,10 +145,8 @@ $define
 (   '$support'
 ,   new function(){
         var node= document.createElement( 'html:div' )
-        this.Node_textContent= $Value( 'textContent' in node )
-        this.Node_innerText= $Value( 'innerText' in node )
+        this.htmlModel= $Value( node.namespaceURI !== void 0 ? 'w3c' : 'old-ie' )
         this.eventModel= $Value( 'addEventListener' in node ? 'w3c' : 'old-ie' )
-        this.xhtml= $Value( node.namespaceURI !== void 0 )
     }
 )
 
@@ -162,25 +160,6 @@ $define( '$doc', $Value( $glob().document ) )
 
 with( $jam )
 $define.call( $doc, 'onLoad', function( handler ){
-})
-
-// jam/log/jam+log.jam
-with( $jam )
-$define( '$log', new function(){
-    var console= $glob().console
-    if( !console || !console.log ){
-        return function(){
-            alert( [].slice.call( arguments ) )
-        }
-    }
-    if( !console.log.apply ){
-        return function(){
-            console.log( [].slice.call( arguments ) )
-        }
-    }
-    return function(){
-        console.log.apply( console, arguments )
-    }
 })
 
 // jam/schedule/jam+schedule.js
@@ -214,115 +193,6 @@ function( proc ){
     checker()
 }
 
-// jam/Component/jam+Component.jam
-with( $jam )
-$define( '$Component', function( tagName, factory ){
-	if(!( this instanceof $Component )) return new $Component( tagName, factory )
-	var fieldName= 'componnet|' + tagName + '|' + (new Date).getTime()
-
-	var isBroken= !$support.xhtml()
-	var chunks= /(?:(\w+):)?([-\w]+)/.exec( tagName )
-	var scopeName= isBroken && chunks && chunks[1] || ''
-	var localName= isBroken && chunks && chunks[2] || tagName
-	var nodes= $doc().getElementsByTagName( localName )
-
-	var elements= []
-
-	var checkName=
-	( tagName === '*' )
-	?	$Value( true )
-	:	new function(){
-			var nameChecker= RegExp( '^' + localName + '$', 'i' )
-			if( isBroken ){
-				var scopeChecker= RegExp( '^' + scopeName + '$', 'i' )
-				return function( el ){
-					return scopeChecker.test( el.scopeName ) && nameChecker.test( el.nodeName )
-				}
-			}
-			return function( el ){
-				if( el.namespaceURI && el.namespaceURI !== 'http://www.w3.org/1999/xhtml' ) return false
-				return nameChecker.test( el.nodeName )
-			}
-		}
-	
-	var isAttached= function( el ){
-		return typeof el[ fieldName ] === 'object'
-	}
-	
-	var attach= function( el ){
-		el[ fieldName ]= null
-		var widget= new factory( el )
-		el[ fieldName ]= widget
-		elements.push( el )
-	}
-	
-	var attachIfLoaded= function( el ){
-		var cur= el
-		do {
-			if( !cur.nextSibling ) continue
-			attach( el )
-			break
-		} while( cur= cur.parentNode )
-	}
-	
-	var check4attach= function( nodes ){
-		filtered= []
-		filter: for( var i= 0, len= nodes.length; i < len; ++i ){
-			var el= nodes[ i ]
-			if( isAttached( el ) ) continue
-			if( !checkName( el ) ) continue
-			filtered.push( el )
-		}
-		attach: for( var i= 0; i < filtered.length; ++i ){
-			//$log('f',fieldName+'',attachIfLoaded ==attach, filtered[i])
-			attachIfLoaded( filtered[ i ] )
-		}
-	}
-
-	var tracking= function(){
-		check4attach( nodes )
-	}
-
-	var detach= function( el ){
-		var widget= el[ fieldName ]
-		if( widget && widget.onDetach ) widget.onDetach()
-		el[ fieldName ]= void 0
-	}
-	
-	var check4detach= function( nodes ){
-		filtered= []
-		filter: for( var i= 0, len= nodes.length; i < len; ++i ){
-			var el= nodes[ i ]
-			if( !isAttached( el ) ) continue
-			filtered.push( el )
-		}
-		attach: for( var i= 0, len= filtered.length; i < len; ++i ){
-			detach( filtered[ i ] )
-		}
-	}
-	
-	var interval= $glob().top.setInterval( tracking, 50 )
-
-	$domReady.then(function(){
-		$glob().top.clearInterval( interval )
-		attachIfLoaded= attach
-		tracking()
-	})
-
-	/*$doc().documentElement.addEventListener( 'DOMNodeInserted', function( ev ){
-		check4attach([ ev.target ])
-	}, false )
-	$doc().documentElement.addEventListener( 'DOMNodeRemoved', function( ev ){
-		check4detach([ ev.target ])
-	}, false )*/
-	
-	this.tagName= $Value( tagName )
-	this.factory= $Value( factory )
-	this.elements= function( ){
-		return elements.slice( 0 )
-	}
-})
-
 // jam/Poly/jam+Poly.js
 with( $jam )
 $define
@@ -347,55 +217,95 @@ $define( '$classOf', function(){
     }
 }())
 
-// jam/Event/jam+Event.jam
+// jam/String/jam+String.jam
 with( $jam )
 $define
-(   '$Event'
+(   '$String'
 ,   $Class( function( klass, proto ){
     
         klass.create=
-        {   'w3c': $Poly
-            (   function( ){
-                    var obj= new klass
-                    obj.$= $doc().createEvent( 'Event' )
-                    return obj
-                }
-            ,   function( ev ){
-                    if( $classOf( ev ) === 'Object' ){
-                        if( ev.toEvent ){
-                            var obj= new klass
-                            obj.$= ev.toEvent()
-                        } else {
-                            var obj= klass.create()
-                            obj.$.initEvent( ev.type, ev.bubble || true, ev.cancelable || false )
-                        }
-                    } else {
-                        var obj= new klass
-                        obj.$= ev
-                    }
-                    return obj
-                }
-            )
-        ,   'old-ie': $Poly
-            (   function( ){
-                    var obj= new klass
-                    obj.$= $doc().createEventObject()
-                    return obj
-                }
-            ,   function( ev ){
-                    if( ev.toEvent ) ev= ev.toEvent()
-                    var obj= klass.create()
-                    for( var key in ev ) try {
-                        obj.$[ key ]= ev[ key ]
-                    } catch( e ){ }
-                    return obj
-                }
-            )
-        }[ $support.eventModel() ]
-        
-        proto.toEvent=
         $Poly
-        (   function(){
+        (   function( ){
+                return klass.create( '' )
+            }
+        ,   function( data ){
+                var obj= new klass
+                obj.$= String( data )
+                return obj
+            }
+        )
+        
+        proto.incIndent=
+        $Poly
+        (   function( ){
+                this.$= this.$.replace( /^/mg, '    ' )
+                return this
+            }
+        )
+
+        proto.decIndent=
+        $Poly
+        (   function( ){
+                this.$= this.$.replace( /^    |^\t/mg, '' )
+                return this
+            }
+        )
+
+        proto.minimizeIndent=
+        $Poly
+        (   function( ){
+                var minIndent= 1/0
+                this.$.replace( /^( +)[^ ]/mg, function( str, indent ){
+                    if( indent.length < minIndent ) minIndent= indent.length
+                })
+                if( minIndent === 1/0 ) return this
+                this.$= this.$.replace( RegExp( '^[ ]{1,' + minIndent + '}', 'mg' ), '' )
+                return this
+            }
+        )
+
+        proto.tab2space=
+        $Poly
+        (   function( ){
+                this.$= this.$.replace( /\t/g, '    ' )
+                return this
+            }
+        )
+        
+        proto.trim=
+        $Poly
+        (   function( ){
+                return this.trim( /\s/ )
+            }
+        ,   function( what ){
+                this.$= this.$.replace( RegExp( '^(' + what.source + ')+' ), '' )
+                this.$= this.$.replace( RegExp( '(' + what.source + ')+$' ), '' )
+                return this
+            }
+        )
+        
+        proto.replace=
+        $Poly
+        (   null
+        ,   function( from ){
+                return this.replace( from, '' )
+            }
+        ,   function( from, to ){
+                this.$= this.$.replace( from, to )
+                return this
+            }
+        )
+        
+        proto.length=
+        $Poly
+        (   function( ){
+                return this.$.length
+            }
+        )
+        
+        proto.toString=
+        $Poly
+        (   function( ){
                 return this.$
             }
         )
@@ -546,224 +456,60 @@ $define
     })
 )
 
-// jam/Lazy/jam+Lazy.jam
-with( $jam )
-$define( '$Lazy', function( gen ){
-    var proc= function(){
-        proc= gen.call( this )
-        return proc.apply( this, arguments )
-    }
-    var lazy= function(){
-        return proc.apply( this, arguments )
-    }
-    lazy.gen= $Value( gen )
-    return lazy
-})
-
-// jam/String/jam+String.jam
+// jam/Event/jam+Event.jam
 with( $jam )
 $define
-(   '$String'
+(   '$Event'
 ,   $Class( function( klass, proto ){
     
         klass.create=
-        $Poly
-        (   function( ){
-                return klass.create( '' )
-            }
-        ,   function( data ){
-                var obj= new klass
-                obj.$= String( data )
-                return obj
-            }
-        )
+        {   'w3c': $Poly
+            (   function( ){
+                    var obj= new klass
+                    obj.$= $doc().createEvent( 'Event' )
+                    return obj
+                }
+            ,   function( ev ){
+                    if( $classOf( ev ) === 'Object' ){
+                        if( ev.toEvent ){
+                            var obj= new klass
+                            obj.$= ev.toEvent()
+                        } else {
+                            var obj= klass.create()
+                            obj.$.initEvent( ev.type, ev.bubble || true, ev.cancelable || false )
+                        }
+                    } else {
+                        var obj= new klass
+                        obj.$= ev
+                    }
+                    return obj
+                }
+            )
+        ,   'old-ie': $Poly
+            (   function( ){
+                    var obj= new klass
+                    obj.$= $doc().createEventObject()
+                    return obj
+                }
+            ,   function( ev ){
+                    if( ev.toEvent ) ev= ev.toEvent()
+                    var obj= klass.create()
+                    for( var key in ev ) try {
+                        obj.$[ key ]= ev[ key ]
+                    } catch( e ){ }
+                    return obj
+                }
+            )
+        }[ $support.eventModel() ]
         
-        proto.incIndent=
+        proto.toEvent=
         $Poly
-        (   function( ){
-                this.$= this.$.replace( /^/mg, '    ' )
-                return this
-            }
-        )
-
-        proto.decIndent=
-        $Poly
-        (   function( ){
-                this.$= this.$.replace( /^    |^\t/mg, '' )
-                return this
-            }
-        )
-
-        proto.minimizeIndent=
-        $Poly
-        (   function( ){
-                var minIndent= 1/0
-                this.$.replace( /^( +)[^ ]/mg, function( str, indent ){
-                    if( indent.length < minIndent ) minIndent= indent.length
-                })
-                if( minIndent === 1/0 ) return this
-                this.$= this.$.replace( RegExp( '^[ ]{1,' + minIndent + '}', 'mg' ), '' )
-                return this
-            }
-        )
-
-        proto.tab2space=
-        $Poly
-        (   function( ){
-                this.$= this.$.replace( /\t/g, '    ' )
-                return this
-            }
-        )
-        
-        proto.trim=
-        $Poly
-        (   function( ){
-                return this.trim( /\s/ )
-            }
-        ,   function( what ){
-                this.$= this.$.replace( RegExp( '^(' + what.source + ')+' ), '' )
-                this.$= this.$.replace( RegExp( '(' + what.source + ')+$' ), '' )
-                return this
-            }
-        )
-        
-        proto.replace=
-        $Poly
-        (   null
-        ,   function( from ){
-                return this.replace( from, '' )
-            }
-        ,   function( from, to ){
-                this.$= this.$.replace( from, to )
-                return this
-            }
-        )
-        
-        proto.length=
-        $Poly
-        (   function( ){
-                return this.$.length
-            }
-        )
-        
-        proto.toString=
-        $Poly
-        (   function( ){
+        (   function(){
                 return this.$
             }
         )
 
     })
-)
-
-// jam/RegExp/jam+RegExp.jam
-with( $jam )
-$define
-(   '$RegExp'
-,   $Class( function( klass, proto ){
-    
-        klass.create=
-        function( regexp ){
-            if( $classOf( regexp ) === 'Object' ){
-                regexp= RegExp( regexp.source, regexp.mods )
-            }
-            var obj= new klass
-            obj.$= new RegExp( regexp )
-            return obj
-        }
-        
-        klass.encode=
-        new function( ){
-            var specChars = '^({[\\.?+*]})$'
-            var specRE= RegExp( specChars.replace(/./g, '\\$' + '1'), 'g' )
-            var encodeChar= function( symb ){
-                return '\\' + symb
-            }
-            return function( str ){
-                return $String( str ).replace( specRE, encodeChar ).$
-            }
-        }
-
-        proto.source=
-        function(){
-            return this.$.source
-        }
-
-        proto.count=
-        new function( ){
-            var offset= /^$/.exec( '' ).length
-            return function( ){
-                return RegExp( '^$|' + this.$.source ).exec( '' ).length - offset
-            }
-        }
-
-    })
-)
-
-// jam/Lexer/jam+Lexer.jam
-with( $jam )
-$define
-(   '$Lexer'
-,   function( lexems ){
-        if( !lexems ) throw new Error( 'lexems is required' )
-    
-        var nameList= []
-        var regexpList= []
-        var sizeList= []
-    
-        for( var name in lexems ){
-            var regexp= $RegExp( lexems[ name ] )
-            nameList.push( name )
-            regexpList.push( regexp.source() )
-            sizeList.push( regexp.count() )
-        }
-        
-        var regexp= RegExp( '([\\s\\S]*?)((' + regexpList.join( ')|(' ) + ')|$)', 'g' )
-    
-        return $Class( function( klass, proto ){
-            
-            klass.create= function( str ){
-                var obj= new klass
-                obj.string= String( str )
-                obj.position= 0
-                return obj
-            }
-            
-            proto.next=
-            function(){
-                regexp.lastIndex= this.position
-                var found= regexp.exec( this.string )
-                var prefix= found[1]
-                if( prefix ){
-                    this.position+= prefix.length
-                    this.name= ''
-                    this.found= prefix
-                    this.chunks= [ prefix ]
-                    return this
-                } else if( found[ 2 ] ){
-                    this.position+= found[ 2 ].length
-                    var offset= 4
-                    for( var i= 0; i < sizeList.length; ++i ){
-                        var size= sizeList[ i ]
-                        if( found[ offset - 1 ] ){
-                            this.name= nameList[ i ]
-                            this.found= found[2]
-                            this.chunks= found.slice( offset, offset + size )
-                            return this
-                        }
-                        offset+= size + 1
-                    }
-                    throw new Error( 'something wrong' )
-                } else {
-                    delete this.name
-                    delete this.found
-                    delete this.chunks
-                    return this
-                }
-            }
-            
-        })
-    }
 )
 
 // jam/Node/jam+Node.jam
@@ -811,8 +557,7 @@ $define
         )
         
         proto.text=
-        $support.Node_textContent()
-        ?   $Poly
+        {   'w3c': $Poly
             (   function( ){
                     return this.$.textContent
                 }
@@ -821,17 +566,16 @@ $define
                     return this
                 }
             )
-        :   $support.Node_innerText()
-            ?   $Poly
-                (   function( ){
-                        return this.$.innerText
-                    }
-                ,   function( val ){
-                        this.$.innerText= $String( val ).$
-                        return this
-                    }
-                )
-            :   null
+        ,   'old-ie': $Poly
+            (   function( ){
+                    return this.$.innerText
+                }
+            ,   function( val ){
+                    this.$.innerText= $String( val ).$
+                    return this
+                }
+            )
+        }[ $support.htmlModel() ]
         
         proto.html=
         $Poly
@@ -1046,6 +790,243 @@ $define
     })
 )
 
+// jam/Component/jam+Component.jam
+with( $jam )
+$define( '$Component', function( tagName, factory ){
+	if(!( this instanceof $Component )) return new $Component( tagName, factory )
+	var fieldName= 'componnet|' + tagName + '|' + (new Date).getTime()
+
+	var isBroken= ( $support.htmlModel() === 'old-ie' )
+	var chunks= /(?:(\w+):)?([-\w]+)/.exec( tagName )
+	var scopeName= isBroken && chunks && chunks[1] || ''
+	var localName= isBroken && chunks && chunks[2] || tagName
+	var nodes= $doc().getElementsByTagName( localName )
+
+	var elements= []
+
+	var checkName=
+	( tagName === '*' )
+	?	$Value( true )
+	:	new function(){
+			var nameChecker= RegExp( '^' + localName + '$', 'i' )
+			if( isBroken ){
+				var scopeChecker= RegExp( '^' + scopeName + '$', 'i' )
+				return function( el ){
+					return scopeChecker.test( el.scopeName ) && nameChecker.test( el.nodeName )
+				}
+			}
+			return function( el ){
+				if( el.namespaceURI && el.namespaceURI !== 'http://www.w3.org/1999/xhtml' ) return false
+				return nameChecker.test( el.nodeName )
+			}
+		}
+	
+	var isAttached= function( el ){
+		return typeof el[ fieldName ] === 'object'
+	}
+	
+	var attach= function( el ){
+		el[ fieldName ]= null
+		var widget= new factory( el )
+		el[ fieldName ]= widget
+		elements.push( el )
+	}
+	
+	var attachIfLoaded= function( el ){
+		var cur= el
+		do {
+			if( !cur.nextSibling ) continue
+			attach( el )
+			break
+		} while( cur= cur.parentNode )
+	}
+	
+	var check4attach= function( nodes ){
+		filtered= []
+		filter: for( var i= 0, len= nodes.length; i < len; ++i ){
+			var el= nodes[ i ]
+			if( isAttached( el ) ) continue
+			if( !checkName( el ) ) continue
+			filtered.push( el )
+		}
+		attach: for( var i= 0; i < filtered.length; ++i ){
+			attachIfLoaded( filtered[ i ] )
+		}
+	}
+
+	var tracking= function(){
+		check4attach( nodes )
+	}
+
+	var detach= function( el ){
+		var widget= el[ fieldName ]
+		if( widget && widget.onDetach ) widget.onDetach()
+		el[ fieldName ]= void 0
+	}
+	
+	var check4detach= function( nodes ){
+		filtered= []
+		filter: for( var i= 0, len= nodes.length; i < len; ++i ){
+			var el= nodes[ i ]
+			if( !isAttached( el ) ) continue
+			filtered.push( el )
+		}
+		attach: for( var i= 0, len= filtered.length; i < len; ++i ){
+			detach( filtered[ i ] )
+		}
+	}
+	
+	var interval= $glob().top.setInterval( tracking, 50 )
+
+	$domReady.then(function(){
+		if( $support.eventModel() === 'w3c' ){
+			$glob().top.clearInterval( interval )
+		}
+		attachIfLoaded= attach
+		tracking()
+	})
+
+	if( $support.eventModel() === 'w3c' ){
+		var docEl= $Node( $doc().documentElement )
+		docEl.listen( 'DOMNodeInserted', function( ev ){
+			check4attach([ ev.target ])
+		})
+		docEl.listen( 'DOMNodeRemoved', function( ev ){
+			check4detach([ ev.target ])
+		})
+	}
+	
+	this.tagName= $Value( tagName )
+	this.factory= $Value( factory )
+	this.elements= function( ){
+		return elements.slice( 0 )
+	}
+})
+
+// jam/Lazy/jam+Lazy.jam
+with( $jam )
+$define( '$Lazy', function( gen ){
+    var proc= function(){
+        proc= gen.call( this )
+        return proc.apply( this, arguments )
+    }
+    var lazy= function(){
+        return proc.apply( this, arguments )
+    }
+    lazy.gen= $Value( gen )
+    return lazy
+})
+
+// jam/RegExp/jam+RegExp.jam
+with( $jam )
+$define
+(   '$RegExp'
+,   $Class( function( klass, proto ){
+    
+        klass.create=
+        function( regexp ){
+            if( $classOf( regexp ) === 'Object' ){
+                regexp= RegExp( regexp.source, regexp.mods )
+            }
+            var obj= new klass
+            obj.$= new RegExp( regexp )
+            return obj
+        }
+        
+        klass.encode=
+        new function( ){
+            var specChars = '^({[\\.?+*]})$'
+            var specRE= RegExp( specChars.replace(/./g, '\\$' + '1'), 'g' )
+            var encodeChar= function( symb ){
+                return '\\' + symb
+            }
+            return function( str ){
+                return $String( str ).replace( specRE, encodeChar ).$
+            }
+        }
+
+        proto.source=
+        function(){
+            return this.$.source
+        }
+
+        proto.count=
+        new function( ){
+            var offset= /^$/.exec( '' ).length
+            return function( ){
+                return RegExp( '^$|' + this.$.source ).exec( '' ).length - offset
+            }
+        }
+
+    })
+)
+
+// jam/Lexer/jam+Lexer.jam
+with( $jam )
+$define
+(   '$Lexer'
+,   function( lexems ){
+        if( !lexems ) throw new Error( 'lexems is required' )
+    
+        var nameList= []
+        var regexpList= []
+        var sizeList= []
+    
+        for( var name in lexems ){
+            var regexp= $RegExp( lexems[ name ] )
+            nameList.push( name )
+            regexpList.push( regexp.source() )
+            sizeList.push( regexp.count() )
+        }
+        
+        var regexp= RegExp( '([\\s\\S]*?)((' + regexpList.join( ')|(' ) + ')|$)', 'g' )
+    
+        return $Class( function( klass, proto ){
+            
+            klass.create= function( str ){
+                var obj= new klass
+                obj.string= String( str )
+                obj.position= 0
+                return obj
+            }
+            
+            proto.next=
+            function(){
+                regexp.lastIndex= this.position
+                var found= regexp.exec( this.string )
+                var prefix= found[1]
+                if( prefix ){
+                    this.position+= prefix.length
+                    this.name= ''
+                    this.found= prefix
+                    this.chunks= [ prefix ]
+                    return this
+                } else if( found[ 2 ] ){
+                    this.position+= found[ 2 ].length
+                    var offset= 4
+                    for( var i= 0; i < sizeList.length; ++i ){
+                        var size= sizeList[ i ]
+                        if( found[ offset - 1 ] ){
+                            this.name= nameList[ i ]
+                            this.found= found[2]
+                            this.chunks= found.slice( offset, offset + size )
+                            return this
+                        }
+                        offset+= size + 1
+                    }
+                    throw new Error( 'something wrong' )
+                } else {
+                    delete this.name
+                    delete this.found
+                    delete this.chunks
+                    return this
+                }
+            }
+            
+        })
+    }
+)
+
 // jam/Number/jam+Number.jam
 with( $jam )
 $define
@@ -1167,4 +1148,23 @@ $define
         })
     }
 )
+
+// jam/log/jam+log.jam
+with( $jam )
+$define( '$log', new function(){
+    var console= $glob().console
+    if( !console || !console.log ){
+        return function(){
+            alert( [].slice.call( arguments ) )
+        }
+    }
+    if( !console.log.apply ){
+        return function(){
+            console.log( [].slice.call( arguments ) )
+        }
+    }
+    return function(){
+        console.log.apply( console, arguments )
+    }
+})
 

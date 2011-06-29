@@ -22,7 +22,7 @@ class so_Compile_XML {
             else:
                 $fileList= array(
                     'file' => array(
-                        'link' => "../../{$mainFile->id}?{$file->version}",
+                        'link' => "../../{$mainFile->id}?{$mainFile->version}",
                         'title' => DOMDocument::load( $mainFile->path )->getElementsByTagName( 'h1' )->item(0)->nodeValue,
                     ),
                 );

@@ -116,10 +116,8 @@ $define
 (   '$support'
 ,   new function(){
         var node= document.createElement( 'html:div' )
-        this.Node_textContent= $Value( 'textContent' in node )
-        this.Node_innerText= $Value( 'innerText' in node )
+        this.htmlModel= $Value( node.namespaceURI !== void 0 ? 'w3c' : 'old-ie' )
         this.eventModel= $Value( 'addEventListener' in node ? 'w3c' : 'old-ie' )
-        this.xhtml= $Value( node.namespaceURI !== void 0 )
     }
 )
 
@@ -129,25 +127,6 @@ $define( '$doc', $Value( $glob().document ) )
 
 with( $jam )
 $define.call( $doc, 'onLoad', function( handler ){
-})
-
-// jam/log/jam+log.jam
-with( $jam )
-$define( '$log', new function(){
-    var console= $glob().console
-    if( !console || !console.log ){
-        return function(){
-            alert( [].slice.call( arguments ) )
-        }
-    }
-    if( !console.log.apply ){
-        return function(){
-            console.log( [].slice.call( arguments ) )
-        }
-    }
-    return function(){
-        console.log.apply( console, arguments )
-    }
 })
 
 // jam/schedule/jam+schedule.js
@@ -180,115 +159,6 @@ function( proc ){
     }
     checker()
 }
-
-// jam/Component/jam+Component.jam
-with( $jam )
-$define( '$Component', function( tagName, factory ){
-	if(!( this instanceof $Component )) return new $Component( tagName, factory )
-	var fieldName= 'componnet|' + tagName + '|' + (new Date).getTime()
-
-	var isBroken= !$support.xhtml()
-	var chunks= /(?:(\w+):)?([-\w]+)/.exec( tagName )
-	var scopeName= isBroken && chunks && chunks[1] || ''
-	var localName= isBroken && chunks && chunks[2] || tagName
-	var nodes= $doc().getElementsByTagName( localName )
-
-	var elements= []
-
-	var checkName=
-	( tagName === '*' )
-	?	$Value( true )
-	:	new function(){
-			var nameChecker= RegExp( '^' + localName + '$', 'i' )
-			if( isBroken ){
-				var scopeChecker= RegExp( '^' + scopeName + '$', 'i' )
-				return function( el ){
-					return scopeChecker.test( el.scopeName ) && nameChecker.test( el.nodeName )
-				}
-			}
-			return function( el ){
-				if( el.namespaceURI && el.namespaceURI !== 'http://www.w3.org/1999/xhtml' ) return false
-				return nameChecker.test( el.nodeName )
-			}
-		}
-	
-	var isAttached= function( el ){
-		return typeof el[ fieldName ] === 'object'
-	}
-	
-	var attach= function( el ){
-		el[ fieldName ]= null
-		var widget= new factory( el )
-		el[ fieldName ]= widget
-		elements.push( el )
-	}
-	
-	var attachIfLoaded= function( el ){
-		var cur= el
-		do {
-			if( !cur.nextSibling ) continue
-			attach( el )
-			break
-		} while( cur= cur.parentNode )
-	}
-	
-	var check4attach= function( nodes ){
-		filtered= []
-		filter: for( var i= 0, len= nodes.length; i < len; ++i ){
-			var el= nodes[ i ]
-			if( isAttached( el ) ) continue
-			if( !checkName( el ) ) continue
-			filtered.push( el )
-		}
-		attach: for( var i= 0; i < filtered.length; ++i ){
-			//$log('f',fieldName+'',attachIfLoaded ==attach, filtered[i])
-			attachIfLoaded( filtered[ i ] )
-		}
-	}
-
-	var tracking= function(){
-		check4attach( nodes )
-	}
-
-	var detach= function( el ){
-		var widget= el[ fieldName ]
-		if( widget && widget.onDetach ) widget.onDetach()
-		el[ fieldName ]= void 0
-	}
-	
-	var check4detach= function( nodes ){
-		filtered= []
-		filter: for( var i= 0, len= nodes.length; i < len; ++i ){
-			var el= nodes[ i ]
-			if( !isAttached( el ) ) continue
-			filtered.push( el )
-		}
-		attach: for( var i= 0, len= filtered.length; i < len; ++i ){
-			detach( filtered[ i ] )
-		}
-	}
-	
-	var interval= $glob().top.setInterval( tracking, 50 )
-
-	$domReady.then(function(){
-		$glob().top.clearInterval( interval )
-		attachIfLoaded= attach
-		tracking()
-	})
-
-	/*$doc().documentElement.addEventListener( 'DOMNodeInserted', function( ev ){
-		check4attach([ ev.target ])
-	}, false )
-	$doc().documentElement.addEventListener( 'DOMNodeRemoved', function( ev ){
-		check4detach([ ev.target ])
-	}, false )*/
-	
-	this.tagName= $Value( tagName )
-	this.factory= $Value( factory )
-	this.elements= function( ){
-		return elements.slice( 0 )
-	}
-})
 
 // jam/Poly/jam+Poly.js
 with( $jam )
@@ -654,8 +524,7 @@ $define
         )
         
         proto.text=
-        $support.Node_textContent()
-        ?   $Poly
+        {   'w3c': $Poly
             (   function( ){
                     return this.$.textContent
                 }
@@ -664,17 +533,16 @@ $define
                     return this
                 }
             )
-        :   $support.Node_innerText()
-            ?   $Poly
-                (   function( ){
-                        return this.$.innerText
-                    }
-                ,   function( val ){
-                        this.$.innerText= $String( val ).$
-                        return this
-                    }
-                )
-            :   null
+        ,   'old-ie': $Poly
+            (   function( ){
+                    return this.$.innerText
+                }
+            ,   function( val ){
+                    this.$.innerText= $String( val ).$
+                    return this
+                }
+            )
+        }[ $support.htmlModel() ]
         
         proto.html=
         $Poly
@@ -888,6 +756,119 @@ $define
             
     })
 )
+
+// jam/Component/jam+Component.jam
+with( $jam )
+$define( '$Component', function( tagName, factory ){
+	if(!( this instanceof $Component )) return new $Component( tagName, factory )
+	var fieldName= 'componnet|' + tagName + '|' + (new Date).getTime()
+
+	var isBroken= ( $support.htmlModel() === 'old-ie' )
+	var chunks= /(?:(\w+):)?([-\w]+)/.exec( tagName )
+	var scopeName= isBroken && chunks && chunks[1] || ''
+	var localName= isBroken && chunks && chunks[2] || tagName
+	var nodes= $doc().getElementsByTagName( localName )
+
+	var elements= []
+
+	var checkName=
+	( tagName === '*' )
+	?	$Value( true )
+	:	new function(){
+			var nameChecker= RegExp( '^' + localName + '$', 'i' )
+			if( isBroken ){
+				var scopeChecker= RegExp( '^' + scopeName + '$', 'i' )
+				return function( el ){
+					return scopeChecker.test( el.scopeName ) && nameChecker.test( el.nodeName )
+				}
+			}
+			return function( el ){
+				if( el.namespaceURI && el.namespaceURI !== 'http://www.w3.org/1999/xhtml' ) return false
+				return nameChecker.test( el.nodeName )
+			}
+		}
+	
+	var isAttached= function( el ){
+		return typeof el[ fieldName ] === 'object'
+	}
+	
+	var attach= function( el ){
+		el[ fieldName ]= null
+		var widget= new factory( el )
+		el[ fieldName ]= widget
+		elements.push( el )
+	}
+	
+	var attachIfLoaded= function( el ){
+		var cur= el
+		do {
+			if( !cur.nextSibling ) continue
+			attach( el )
+			break
+		} while( cur= cur.parentNode )
+	}
+	
+	var check4attach= function( nodes ){
+		filtered= []
+		filter: for( var i= 0, len= nodes.length; i < len; ++i ){
+			var el= nodes[ i ]
+			if( isAttached( el ) ) continue
+			if( !checkName( el ) ) continue
+			filtered.push( el )
+		}
+		attach: for( var i= 0; i < filtered.length; ++i ){
+			attachIfLoaded( filtered[ i ] )
+		}
+	}
+
+	var tracking= function(){
+		check4attach( nodes )
+	}
+
+	var detach= function( el ){
+		var widget= el[ fieldName ]
+		if( widget && widget.onDetach ) widget.onDetach()
+		el[ fieldName ]= void 0
+	}
+	
+	var check4detach= function( nodes ){
+		filtered= []
+		filter: for( var i= 0, len= nodes.length; i < len; ++i ){
+			var el= nodes[ i ]
+			if( !isAttached( el ) ) continue
+			filtered.push( el )
+		}
+		attach: for( var i= 0, len= filtered.length; i < len; ++i ){
+			detach( filtered[ i ] )
+		}
+	}
+	
+	var interval= $glob().top.setInterval( tracking, 50 )
+
+	$domReady.then(function(){
+		if( $support.eventModel() === 'w3c' ){
+			$glob().top.clearInterval( interval )
+		}
+		attachIfLoaded= attach
+		tracking()
+	})
+
+	if( $support.eventModel() === 'w3c' ){
+		var docEl= $Node( $doc().documentElement )
+		docEl.listen( 'DOMNodeInserted', function( ev ){
+			check4attach([ ev.target ])
+		})
+		docEl.listen( 'DOMNodeRemoved', function( ev ){
+			check4detach([ ev.target ])
+		})
+	}
+	
+	this.tagName= $Value( tagName )
+	this.factory= $Value( factory )
+	this.elements= function( ){
+		return elements.slice( 0 )
+	}
+})
 
 // html/a/html-a.jam
 with( $html )
