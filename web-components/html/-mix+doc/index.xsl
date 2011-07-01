@@ -3,7 +3,7 @@
 
 <!-- so/XStyle/so_XStyle_Base.xsl -->
 
-<xsl:output xmlns:xsl="http://www.w3.org/1999/XSL/Transform" method="html"/>
+<xsl:output xmlns:xsl="http://www.w3.org/1999/XSL/Transform" method="html" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"/>
 
 <xsl:template xmlns:xsl="http://www.w3.org/1999/XSL/Transform" match=" @* | node() ">
     <xsl:copy>
