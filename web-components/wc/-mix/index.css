@@ -1,10 +1,256 @@
-@import url( '../../wc/button/wc-button.css?1309537138' );
-@import url( '../../wc/vml/vml.css?1309537139' );
-@import url( '../../wc/demo/wc-demo.css?1309537138' );
-@import url( '../../wc/desktop/wc-desktop.css?1309537138' );
-@import url( '../../wc/footer/wc-footer.css?1309537138' );
-@import url( '../../wc/paper/wc-paper.css?1309537139' );
-@import url( '../../wc/sidebar/wc-sidebar.css?1309537139' );
-@import url( '../../wc/spacer/wc-spacer.css?1309537139' );
-@import url( '../../wc/test-js/wc-test-js.css?1309537139' );
-@import url( '../../wc/vmenu/wc-vmenu.css?1309537139' );
+/* @import url( '../../wc/button/wc-button.css' ); */
+wc\:button {
+    display: inline-block; zoom: 1;
+    position: relative;
+	$padding: .1em;
+}
+
+wc\:button button {
+	white-space: normal;
+    cursor: pointer;
+    $width: 1%;
+    overflow: visible;
+    z-index: 0;
+    text-align: center;
+	display: block;
+
+	position: relative;
+	top: -1px;
+
+    padding: .2em .4em;
+    $padding: .1em .2em;
+
+	font-size: 14px;
+    line-height: 1.2;
+
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+
+	-wc-css3_border: ' weight=1px dashstyle=solid color=#aaa ';
+    border: 1px solid #aaa;
+
+	-moz-border-radius: 4px;
+	-wc-css3_border-radius: 3px;
+	border-radius: 3px;
+
+    -wc-css3_background: ' type=gradient angle=180 color=#eee color2=#ccc ';
+	background: -o-linear-gradient( -90deg, #eee, #ccc );
+	background: -moz-linear-gradient( -90deg, #eee, #ccc );
+	background: -webkit-gradient( linear, left top, left bottom, from( #eee ), to( #ccc ) );
+    
+    -webkit-background-clip: padding-box;
+
+	-webkit-box-shadow: 1px 1px 1px #000;
+	-moz-box-shadow: 1px 1px 1px #000;
+	-wc-css3_box-shadow: ' type=single color=#000 offset=1px,1px ';
+	box-shadow: 1px 1px 1px #000;
+}
+
+wc\:button button:hover {
+    -wc-css3_background: ' type=gradient angle=180 color=#fff color2=#bbb ';
+	background: -o-linear-gradient( -90deg, #fff, #bbb );
+	background: -moz-linear-gradient( -90deg, #fff, #bbb );
+	background: -webkit-gradient( linear, left top, left bottom, from( #fff ), to( #bbb ) );
+
+	-webkit-box-shadow: 2px 2px 2px #000;
+	-moz-box-shadow: 2px 2px 1px #000;
+	-wc-css3_box-shadow: ' type=single color=#000 offset=2px,2px ';
+	box-shadow: 2px 2px 2px #000;
+}
+
+wc\:button button:active {
+	-webkit-box-shadow: 1px 1px 1px #000;
+	-moz-box-shadow: 1px 1px 1px #000;
+	-wc-css3_box-shadow: ' type=single color=#000 offset=1px,1px ';
+	box-shadow: 1px 1px 1px #000;
+}
+
+/* @import url( '../../wc/vml/vml.css' ); */
+vml\:shape,
+vml\:shapetype,
+vml\:group,
+vml\:vmlframe,
+vml\:background,
+vml\:line,
+vml\:polyline,
+vml\:curve,
+vml\:rect,
+vml\:roundrect,
+vml\:oval,
+vml\:arc,
+vml\:image,
+vml\:path,
+vml\:formulas,
+vml\:handles,
+vml\:f,
+vml\:fill,
+vml\:stroke,
+vml\:shadow,
+vml\:skew,
+vml\:imagedata,
+vml\:textbox,
+vml\:textpath,
+vml\:extrusion {
+	behavior: url(#default#VML);
+}
+
+/* @import url( '../../wc/demo/wc-demo.css' ); */
+wc\:demo {
+    display: block;
+    border: 1px solid #ccc;
+    max-width: 100%;
+    margin: 2pt 0;
+}
+
+wc\:demo-result {
+    display: block;
+    border-bottom: 1px dotted #aaa;
+    overflow: auto;
+}
+
+wc\:demo-source {
+    display: block;
+    white-space: pre;
+    overflow: auto;
+    font-size: 11pt;
+    line-height: 1.5;
+    background: #eef;
+    padding: 2pt 4pt;
+}
+
+/* @import url( '../../wc/desktop/wc-desktop.css' ); */
+wc\:desktop {
+    display: block; zoom: 1;
+    min-width: 100%;
+    min-height: 100%;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+    background: url( '../../wc/desktop/wc-desktop_light.png' ) left top no-repeat #ddd;
+}
+
+/* @import url( '../../wc/footer/wc-footer.css' ); */
+wc\:footer {
+    width: 100%;
+    display: block;
+    overflow: hidden;
+    border-top: 1px solid #999;
+    padding: .1em 0;
+    font-size: 10pt;
+    text-align: center;
+    clear: both;
+}
+
+/* @import url( '../../wc/paper/wc-paper.css' ); */
+wc\:paper {
+    display: block; zoom: 1;
+    position: relative;
+    font-color: black;
+    text-align: left;
+    overflow: auto;
+    
+    margin: 0 auto;
+
+    -wc-css3_border-radius: 2px;
+    border-radius: 2px;
+
+    -wc-css3_border: ' weight=1px dashstyle=solid color=#aaa ';
+    border: 1px solid #aaa;
+
+    -wc-css3_background: ' type=solid color=white ';
+    background: white;
+
+    -webkit-box-shadow: 3px 3px 3px #333;
+    -moz-box-shadow: 3px 3px 3px #333;
+    -wc-css3_box-shadow: ' type=double opacity=.75 color=#000 color2=#333 offset=3px,3px offset2=4px,4px ';
+    box-shadow: 3px 3px 3px #333;
+}
+
+/* @import url( '../../wc/sidebar/wc-sidebar.css' ); */
+wc\:sidebar {
+    position: relative;
+    z-index: 1;
+    padding: 2%;
+}
+
+wc\:sidebar.align\=left {
+    float: left;
+}
+
+wc\:sidebar.align\=right {
+    float: right;
+}
+
+/* @import url( '../../wc/spacer/wc-spacer.css' ); */
+wc\:spacer {
+    display: block;
+    margin: 9% 10%;
+    padding: 10px;
+    zoom: 1;
+    position: relative;
+    width: auto;
+}
+
+/* @import url( '../../wc/test-js/wc-test-js.css' ); */
+wc\:test-js {
+    display: inline-block; zoom: 1;
+    font-size: 9pt;
+    font-family: 'Lucida Console', monospace;
+    border: 1px solid #ddd;
+    line-height: 1.5;
+    white-space: pre;
+    overflow: auto;
+    max-width: 100%;
+    vertical-align: top;
+    background: #eee;
+    margin: 2pt 0;
+}
+
+wc\:test-js.passed\=true {
+    background: #cfc;
+    border: 1px solid #ada;
+}
+
+wc\:test-js.passed\=false {
+    background: #fcc;
+    border: 1px solid #c99;
+}
+
+wc\:test-js_source {
+    display: block;
+    padding: 2pt 4pt;
+}
+
+wc\:test-js_result {
+    border-top: 1px solid #dda;
+    background: #ffc;
+    padding: 2pt 4pt;
+    display: block;
+}
+
+/* @import url( '../../wc/vmenu/wc-vmenu.css' ); */
+wc\:vmenu-root {
+    font-size: 12pt;
+}
+
+wc\:vmenu-branch {
+    display: block;
+    margin: .5em 0;
+}
+
+wc\:vmenu-leaf {
+    display: block;
+    padding: 0 .5em;
+    white-space: nowrap;
+    text-align: left;
+}
+
+a:hover wc\:vmenu-leaf {
+    background: white;
+}
+
+a.reset\=true.target\=true wc\:vmenu-leaf {
+    color: red;
+}
+
