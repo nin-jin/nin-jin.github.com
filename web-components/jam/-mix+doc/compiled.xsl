@@ -52,8 +52,8 @@
             <meta http-equiv="content-type" content="text/html;charset=utf-8"/>
             <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"/>
             <link href="{$wc:root-uri}/-mix+doc/index.css" rel="stylesheet"/>
-            <!-- $wc:root-uri не подставляется <xsl:comment><![CDATA[[if IE ]><script src="{$wc:root-uri}/-mix+doc/compiled.vml.js">//</script><![endif]]]></xsl:comment>-->
             <script src="{$wc:root-uri}/-mix+doc/index.js?">//</script>
+            <script src="{$wc:root-uri}/-mix+doc/compiled.vml.js?">//</script>
 
         </head>
         <body>

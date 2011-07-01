@@ -1,0 +1,26 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>$jam.$html</h1>
+    <p>Содержит функции для работы с хтмл-строками.</p>
+
+    <wc:test-js> _done( $jam.$html ) </wc:test-js>
+    <wc:test-js>
+        _done( $jam.$html.encode( '&gt;' ), '&amp;gt;' )
+    </wc:test-js>
+    <wc:test-js>
+        _done( $jam.$html.decode( '&amp;gt;' ), '&gt;' )
+    </wc:test-js>
+    <wc:test-js>
+        _done( $jam.$html.text( '&lt;a&gt;a&lt;br&gt;b\nc' ), 'a\nb\nc' )
+    </wc:test-js>
+    <wc:test-js>
+        var template= $jam.$html.Template( 'a{0}b' ).fill([ '&gt;' ])
+        _done( String( template ), 'a&amp;gt;b' )
+    </wc:test-js>
+
+</doc:root>

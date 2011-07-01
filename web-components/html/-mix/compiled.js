@@ -118,6 +118,7 @@ $define
         var node= document.createElement( 'html:div' )
         this.htmlModel= $Value( node.namespaceURI !== void 0 ? 'w3c' : 'ms' )
         this.eventModel= $Value( 'addEventListener' in node ? 'w3c' : 'ms' )
+        this.vml= $Value( /*@cc_on!@*/ false )
     }
 )
 
@@ -272,6 +273,15 @@ $define
             }
         )
         
+        proto.mult=
+        $Poly
+        (   null
+        ,   function( count ){
+                this.$= Array( count + 1 ).join( this.$ )
+                return this
+            }
+        )
+        
         proto.length=
         $Poly
         (   function( ){
@@ -283,6 +293,264 @@ $define
         $Poly
         (   function( ){
                 return this.$
+            }
+        )
+
+    })
+)
+
+// jam/RegExp/jam+RegExp.jam
+with( $jam )
+$define
+(   '$RegExp'
+,   $Class( function( klass, proto ){
+    
+        klass.create=
+        function( regexp ){
+            if( $classOf( regexp ) === 'Object' ){
+                regexp= RegExp( regexp.source, regexp.mods )
+            }
+            var obj= new klass
+            obj.$= new RegExp( regexp )
+            return obj
+        }
+        
+        klass.encode=
+        new function( ){
+            var encodeChar= function( symb ){
+                return '\\' + symb
+            }
+            var specChars = '^({[\\.?+*]})$'
+            var specRE= RegExp( '[' + specChars.replace( /./g, encodeChar ) + ']', 'g' )
+            return function( str ){
+                return $String( str ).replace( specRE, encodeChar ).$
+            }
+        }
+
+        proto.source=
+        function(){
+            return this.$.source
+        }
+
+        proto.count=
+        new function( ){
+            var offset= /^$/.exec( '' ).length
+            return function( ){
+                return RegExp( '^$|' + this.$.source ).exec( '' ).length - offset
+            }
+        }
+
+    })
+)
+
+// jam/Lexer/jam+Lexer.jam
+with( $jam )
+$define
+(   '$Lexer'
+,   function( lexems ){
+        if( !lexems ) throw new Error( 'lexems is required' )
+    
+        var nameList= []
+        var regexpList= []
+        var sizeList= []
+    
+        for( var name in lexems ){
+            var regexp= $RegExp( lexems[ name ] )
+            nameList.push( name )
+            regexpList.push( regexp.source() )
+            sizeList.push( regexp.count() )
+        }
+        
+        var regexp= RegExp( '([\\s\\S]*?)((' + regexpList.join( ')|(' ) + ')|$)', 'g' )
+    
+        return $Class( function( klass, proto ){
+            
+            klass.create= function( str ){
+                var obj= new klass
+                obj.string= String( str )
+                obj.position= 0
+                return obj
+            }
+            
+            proto.next=
+            function(){
+                regexp.lastIndex= this.position
+                var found= regexp.exec( this.string )
+                var prefix= found[1]
+                if( prefix ){
+                    this.position+= prefix.length
+                    this.name= ''
+                    this.found= prefix
+                    this.chunks= [ prefix ]
+                    return this
+                } else if( found[ 2 ] ){
+                    this.position+= found[ 2 ].length
+                    var offset= 4
+                    for( var i= 0; i < sizeList.length; ++i ){
+                        var size= sizeList[ i ]
+                        if( found[ offset - 1 ] ){
+                            this.name= nameList[ i ]
+                            this.found= found[2]
+                            this.chunks= found.slice( offset, offset + size )
+                            return this
+                        }
+                        offset+= size + 1
+                    }
+                    throw new Error( 'something wrong' )
+                } else {
+                    delete this.name
+                    delete this.found
+                    delete this.chunks
+                    return this
+                }
+            }
+            
+        })
+    }
+)
+
+// jam/Pipe/jam+Pipe.jam
+with( $jam )
+$define( '$Pipe', new function(){
+	var simple= function( data ){
+		return data
+	}
+	return function( ){
+		var list= arguments
+		var len= list.length
+		if( len === 1 ) return list[0]
+		if( len === 0 ) return simple
+		return function(){
+			if( !arguments.length ) arguments.length= 1
+			for( var i= 0; i < len; ++i ) arguments[0]= list[ i ].apply( this, arguments )
+			return arguments[0]
+		}
+	}
+})
+
+// jam/Parser/jam+Parser.jam
+with( $jam )
+$define
+(	'$Parser'
+,	function( syntaxes ){
+		var lexems= {}
+		for( var name in syntaxes ){
+			var regexp= syntaxes[ name ].regexp
+			if( !regexp ) continue
+			lexems[ name ]= $RegExp( regexp ).$
+		}
+		var lexer= $Lexer( lexems )
+		
+		var handlers= { '': $Pipe() }
+		for( var name in syntaxes ) handlers[ name ]= syntaxes[ name ].handler
+		
+		return function( str ){
+			var res= []
+			for( var i= lexer( str ); i.next().found; ){
+				var val= handlers[ i.name ].apply( this, i.chunks )
+				if( val !== void 0 ) res.push( val )
+			}
+			return res
+		}
+	}
+)
+
+// jam/Lazy/jam+Lazy.jam
+with( $jam )
+$define( '$Lazy', function( gen ){
+    var proc= function(){
+        proc= gen.call( this )
+        return proc.apply( this, arguments )
+    }
+    var lazy= function(){
+        return proc.apply( this, arguments )
+    }
+    lazy.gen= $Value( gen )
+    return lazy
+})
+
+// jam/TemplateFactory/jam+TemplateFactory.jam
+with( $jam )
+$define
+(   '$TemplateFactory'
+,   $Class( function( klass, proto ){
+
+        klass.create= function( arg ){
+            if( !arg ) arg= {}
+            
+            var open= arg.tokens && arg.tokens[0] || '{'
+            var close= arg.tokens && arg.tokens[1] || '}'
+            
+            var openEncoded= $RegExp.encode( open )
+            var closeEncoded= $RegExp.encode( close )
+            
+            var Selector= arg.Selector || arg.encoder && klass.Selector( arg.encoder ) || klass.Selector()
+    
+            var parse= $Parser( new function(){
+                this.open= new function(){
+                    this.regexp= RegExp( $String( openEncoded ).mult( 2 ).$ )
+                    this.handler= $Value( open )
+                }
+                this.close= new function(){
+                    this.regexp= RegExp( $String( closeEncoded ).mult( 2 ).$ )
+                    this.handler= $Value( close )
+                }
+                this.selector= new function(){
+                    this.regexp= RegExp( '(' + openEncoded + '([^' + openEncoded + closeEncoded + ']*)' + closeEncoded + ')' )
+                    this.handler= Selector
+                }
+            })
+    
+            return $Class( function( klass, proto ){
+                
+                klass.create=
+                function( str ){
+                    var obj= new klass
+                    if( typeof str === 'string' ) obj.struct= parse( str )
+                    else obj.struct= str
+                    obj.fill( {} )
+                    return obj
+                }
+                
+                proto.clone=
+                function( ){
+                    return klass( this.struct.slice( 0 ) )
+                }
+                
+                proto.fill=
+                function( data ){
+                    for( var i= 0; i < this.struct.length; ++i ){
+                        if( typeof this.struct[ i ] !== 'function' ) continue
+                        this.struct[ i ]= this.struct[ i ]( data )
+                    }
+                    return this
+                }
+    
+                proto.toString=
+                function( ){
+                    return this.struct.join( '' )
+                }
+    
+            })
+        }
+        
+        klass.Selector=
+        $Poly
+        (   $Lazy( function( ){
+                return $Value( klass.Selector( $Pipe() ) )
+            })
+        ,   function( proc ){
+                return function( str, key ){
+                    var selector= function( data ){
+                        if( key in data ){
+                            return proc( data[ key ] )
+                        } else {
+                            return selector
+                        }
+                    }
+                    selector.toString= $Value( str )
+                    return selector
+                }
             }
         )
 
@@ -339,6 +607,9 @@ $define
             .process( $html.decode )
             .$
         }
+        
+        this.Template=
+        $TemplateFactory({ encoder: this.encode })
     
     }
 )
@@ -629,6 +900,7 @@ $define
                 }
             ,   'ms': function( ){
                     var scope= this.$.scopeName
+                    if( scope === 'HTML' ) scope= ''
                     var name= this.$.nodeName.toLowerCase()
                     return scope ? scope + ':' + name : name
                 }
@@ -906,7 +1178,7 @@ $define( '$Component', function( tagName, factory ){
 		}
 	}
 	
-	var interval= $glob().top.setInterval( tracking, 50 )
+	var interval= $glob().top.setInterval( tracking, 100 )
 
 	$domReady.then(function(){
 		if( $support.eventModel() === 'w3c' ){

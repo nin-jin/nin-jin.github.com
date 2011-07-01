@@ -1,0 +1,25 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>wc:button</h1>
+
+    <p>
+        <wc:button><button>
+            Вам нравятся эти Гламурные Кнопочки с закруглёнными краями и градиентным фоном?
+        </button></wc:button>
+        <wc:button><button onclick=" alert( 'Ваше мнение очень ценно для нас!' ) ">
+            Да
+        </button></wc:button>
+        <wc:button><button onclick=" alert( 'Данная кнопка временно не работает. Попробуйте нажать её позже..' ) ">
+            Нет
+        </button></wc:button>
+        <wc:button><button onclick=" alert( 'Воздержание вредно для здоровья!' ) ">
+            Воздерживаюсь
+        </button></wc:button>
+    </p>
+
+</doc:root>

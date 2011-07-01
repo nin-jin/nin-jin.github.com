@@ -21,6 +21,9 @@ class so_Compile_All {
             new so_Compile_XML( $srcPack, $pack->mixModule );
             new so_Compile_XML( $docPack, $pack->mixDocModule );
 
+            new so_Compile_VML( $srcPack, $pack->mixModule );
+            new so_Compile_VML( $docPack, $pack->mixDocModule );
+
             # new so_Compile_Other( $srcPack, $pack->mixModule );
             # new so_Compile_Other( $docPack, $pack->mixDocModule );
         endforeach;

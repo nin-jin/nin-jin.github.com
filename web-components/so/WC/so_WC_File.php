@@ -105,9 +105,18 @@ class so_WC_File extends so_Meta {
         
         if( $this->ext === 'tree' ):
             $meta= parse_ini_file( $this->path ); // FIXME: прикрутить полноценный tree-парсер
-            $pack= $this->root->createPack( $meta[ 'include pack' ] );
-            if( !$pack->exists ) throw new Exception( "Pack [{$pack->id}] not found" );
-            $depends+= $pack->modules;
+            if( $meta[ 'include pack' ] ):
+                $pack= $this->root->createPack( $meta[ 'include pack' ] );
+                if( !$pack->exists ) throw new Exception( "Pack [{$pack->id}] not found" );
+                $depends+= $pack->modules;
+            endif;
+            if( $meta[ 'include module' ] ):
+                $names= explode( '/', $meta[ 'include module' ] );
+                $pack= $this->root->createPack( $names[0] );
+                $module= $pack->createModule( $names[1] );
+                if( !$module->exists ) throw new Exception( "Module [{$module->id}] not found" );
+                $depends[ $module->id ]= $module;
+            endif;
         endif;
 
         return $depends;

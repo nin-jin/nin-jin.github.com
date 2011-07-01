@@ -1,0 +1,23 @@
+wc\:vmenu-root {
+    font-size: 12pt;
+}
+
+wc\:vmenu-branch {
+    display: block;
+    margin: .5em 0;
+}
+
+wc\:vmenu-leaf {
+    display: block;
+    padding: 0 .5em;
+    white-space: nowrap;
+    text-align: left;
+}
+
+a:hover wc\:vmenu-leaf {
+    background: white;
+}
+
+a.reset\=true.target\=true wc\:vmenu-leaf {
+    color: red;
+}

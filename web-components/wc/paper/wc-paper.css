@@ -1,0 +1,23 @@
+wc\:paper {
+    display: block; zoom: 1;
+    position: relative;
+    font-color: black;
+    text-align: left;
+    overflow: auto;
+    
+    margin: 0 auto;
+
+    -wc-css3_border-radius: 2px;
+    border-radius: 2px;
+
+    -wc-css3_border: ' weight=1px dashstyle=solid color=#aaa ';
+    border: 1px solid #aaa;
+
+    -wc-css3_background: ' type=solid color=white ';
+    background: white;
+
+    -webkit-box-shadow: 3px 3px 3px #333;
+    -moz-box-shadow: 3px 3px 3px #333;
+    -wc-css3_box-shadow: ' type=double opacity=.75 color=#000 color2=#333 offset=3px,3px offset2=4px,4px ';
+    box-shadow: 3px 3px 3px #333;
+}

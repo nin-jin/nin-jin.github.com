@@ -1,0 +1,2 @@
+$jam.$createNameSpace( '$wc' )
+with( $wc ) $htmlize( 'https://github.com/nin-jin/wc' )

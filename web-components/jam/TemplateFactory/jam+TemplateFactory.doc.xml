@@ -1,0 +1,62 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>$jam.$TemplateFactory</h1>
+    <p>Фабрика по производству шаблонизаторов.</p>
+
+    <wc:test-js> _done( $jam.$TemplateFactory ) </wc:test-js>
+    <wc:test-js>
+        var Template= $jam.$TemplateFactory()
+        var template= Template( 'a{0}b' )
+        _done( String( template ), 'a{0}b' )
+    </wc:test-js>
+    <wc:test-js>
+        var Template= $jam.$TemplateFactory()
+        var template= Template( 'a{0}b' ).fill([1])
+        _done( String( template ), 'a1b' )
+    </wc:test-js>
+    <wc:test-js>
+        var Template= $jam.$TemplateFactory()
+        var template= Template( 'a{0}{1}b' ).fill([1, 2])
+        _done( String( template ), 'a12b' )
+    </wc:test-js>
+    <wc:test-js>
+        var Template= $jam.$TemplateFactory()
+        var template= Template( 'a{{0}}{1}b' ).fill( [1, 2] )
+        _done( String( template ), 'a{0}2b' )
+    </wc:test-js>
+    <wc:test-js>
+        var Template= $jam.$TemplateFactory({ tokens: '[]' })
+        var template= Template( 'a[0]b' ).fill( [1] )
+        _done( String( template ), 'a1b' )
+    </wc:test-js>
+    <wc:test-js>
+        var Selector= $jam.$TemplateFactory.Selector( function( str ){
+            return '(' + str + ')'
+        })
+        var Template= $jam.$TemplateFactory({ Selector: Selector })
+        var template= Template( 'a{0}b' ).fill( [1] )
+        _done( String( template ), 'a(1)b' )
+    </wc:test-js>
+    <wc:test-js>
+        var encoder= function( str ){
+            return '(' + str + ')'
+        }
+        var Template= $jam.$TemplateFactory({ encoder: encoder })
+        var template= Template( 'a{0}b' ).fill( [1] )
+        _done( String( template ), 'a(1)b' )
+    </wc:test-js>
+    <wc:test-js>
+        var Selector= function( str, key ){
+            return key.toUpperCase()
+        }
+        var Template= $jam.$TemplateFactory({ Selector: Selector })
+        var template= Template( 'a{b}c' )
+        _done( String( template ), 'aBc' )
+    </wc:test-js>
+
+</doc:root>

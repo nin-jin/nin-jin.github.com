@@ -1,0 +1,57 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>$jam.$Parser</h1>
+
+    <wc:test-js> _done( $jam.$Parser ) </wc:test-js>
+    <wc:test-js> _done( $jam.$Parser({ }) ) </wc:test-js>
+    <wc:test-js> _done( $jam.$Parser({ })( '123' ) ) </wc:test-js>
+    <wc:test-js>
+        var parse= $jam.$Parser( new function(){
+            this.digit= new function(){
+                this.regexp= /\d/
+                this.handler= function( ){
+                    return '#'
+                }
+            }
+        })
+        _done( parse( 'a12bc' ).join(''), 'a##bc' )
+    </wc:test-js>
+    <wc:test-js>
+        var parse= $jam.$Parser( new function(){
+            this.letter= new function(){
+                this.regexp= /([a-zA-Z])/
+                this.handler= function( letter ){
+                    return letter
+                }
+            }
+            this['']= new function(){
+                this.handler= $jam.$Value()
+            }
+        })
+        _done( parse( 'a12bc' ).join(''), 'abc' )
+    </wc:test-js> 
+    <wc:test-js>
+        var parse= $jam.$Parser( new function(){
+            this.underword= new function(){
+                this.regexp= /(_(\w+))/
+                this.handler= function( underword, word ){
+                    return word
+                }
+            }
+            this.word= new function(){
+                this.regexp= /(\w)(\w*)/
+                this.handler= function( first, tail ){
+                    return first.toUpperCase() + tail
+                }
+            }
+        })
+        _done( parse( '[_ab,c_d]' ).join(''), '[ab,C_d]' )
+    </wc:test-js>
+
+</doc:root>
+
