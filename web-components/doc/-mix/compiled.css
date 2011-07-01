@@ -1,71 +1,3 @@
-/* @import url( '../../wc/button/wc-button.css' ); */
-wc\:button {
-    display: inline-block; zoom: 1;
-    position: relative;
-	$padding: .1em;
-}
-
-wc\:button button {
-	white-space: normal;
-    cursor: pointer;
-    $width: 1%;
-    overflow: visible;
-    z-index: 0;
-    text-align: center;
-	display: block;
-
-	position: relative;
-	top: -1px;
-
-    padding: .2em .4em;
-    $padding: .1em .2em;
-
-	font-size: 14px;
-    line-height: 1.2;
-
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-
-	-wc-css3_border: ' weight=1px dashstyle=solid color=#aaa ';
-    border: 1px solid #aaa;
-
-	-moz-border-radius: 4px;
-	-wc-css3_border-radius: 3px;
-	border-radius: 3px;
-
-    -wc-css3_background: ' type=gradient angle=180 color=#eee color2=#ccc ';
-	background: -o-linear-gradient( -90deg, #eee, #ccc );
-	background: -moz-linear-gradient( -90deg, #eee, #ccc );
-	background: -webkit-gradient( linear, left top, left bottom, from( #eee ), to( #ccc ) );
-    
-    -webkit-background-clip: padding-box;
-
-	-webkit-box-shadow: 1px 1px 1px #000;
-	-moz-box-shadow: 1px 1px 1px #000;
-	-wc-css3_box-shadow: ' type=single color=#000 offset=1px,1px ';
-	box-shadow: 1px 1px 1px #000;
-}
-
-wc\:button button:hover {
-    -wc-css3_background: ' type=gradient angle=180 color=#fff color2=#bbb ';
-	background: -o-linear-gradient( -90deg, #fff, #bbb );
-	background: -moz-linear-gradient( -90deg, #fff, #bbb );
-	background: -webkit-gradient( linear, left top, left bottom, from( #fff ), to( #bbb ) );
-
-	-webkit-box-shadow: 2px 2px 2px #000;
-	-moz-box-shadow: 2px 2px 1px #000;
-	-wc-css3_box-shadow: ' type=single color=#000 offset=2px,2px ';
-	box-shadow: 2px 2px 2px #000;
-}
-
-wc\:button button:active {
-	-webkit-box-shadow: 1px 1px 1px #000;
-	-moz-box-shadow: 1px 1px 1px #000;
-	-wc-css3_box-shadow: ' type=single color=#000 offset=1px,1px ';
-	box-shadow: 1px 1px 1px #000;
-}
-
 /* @import url( '../../html/html/html.css' ); */
 html {
     width: 100%;
@@ -240,6 +172,74 @@ strong {
 }
 strong.reset\=true {
     font-weight: normal; font-weight: inherit;
+}
+
+/* @import url( '../../wc/button/wc-button.css' ); */
+wc\:button {
+    display: inline-block; zoom: 1;
+    position: relative;
+	$padding: .1em;
+}
+
+wc\:button button {
+	white-space: normal;
+    cursor: pointer;
+    $width: 1%;
+    overflow: visible;
+    z-index: 0;
+    text-align: center;
+	display: block;
+
+	position: relative;
+	top: -1px;
+
+    padding: .2em .4em;
+    $padding: .1em .2em;
+
+	font-size: 14px;
+    line-height: 1.2;
+
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+
+	-wc-css3_border: ' weight=1px dashstyle=solid color=#aaa ';
+    border: 1px solid #aaa;
+
+	-moz-border-radius: 4px;
+	-wc-css3_border-radius: 3px;
+	border-radius: 3px;
+
+    -wc-css3_background: ' type=gradient angle=180 color=#eee color2=#ccc ';
+	background: -o-linear-gradient( -90deg, #eee, #ccc );
+	background: -moz-linear-gradient( -90deg, #eee, #ccc );
+	background: -webkit-gradient( linear, left top, left bottom, from( #eee ), to( #ccc ) );
+    
+    -webkit-background-clip: padding-box;
+
+	-webkit-box-shadow: 1px 1px 1px #000;
+	-moz-box-shadow: 1px 1px 1px #000;
+	-wc-css3_box-shadow: ' type=single color=#000 offset=1px,1px ';
+	box-shadow: 1px 1px 1px #000;
+}
+
+wc\:button button:hover {
+    -wc-css3_background: ' type=gradient angle=180 color=#fff color2=#bbb ';
+	background: -o-linear-gradient( -90deg, #fff, #bbb );
+	background: -moz-linear-gradient( -90deg, #fff, #bbb );
+	background: -webkit-gradient( linear, left top, left bottom, from( #fff ), to( #bbb ) );
+
+	-webkit-box-shadow: 2px 2px 2px #000;
+	-moz-box-shadow: 2px 2px 1px #000;
+	-wc-css3_box-shadow: ' type=single color=#000 offset=2px,2px ';
+	box-shadow: 2px 2px 2px #000;
+}
+
+wc\:button button:active {
+	-webkit-box-shadow: 1px 1px 1px #000;
+	-moz-box-shadow: 1px 1px 1px #000;
+	-wc-css3_box-shadow: ' type=single color=#000 offset=1px,1px ';
+	box-shadow: 1px 1px 1px #000;
 }
 
 /* @import url( '../../wc/vml/vml.css' ); */

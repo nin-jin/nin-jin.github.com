@@ -82,13 +82,15 @@ class so_Tree extends so_Meta {
 
     function get( $keyList ){
         $this->aPath( &$keyList );
-        $list= array( $this->struct );
-        foreach( $keyList as $key ):
-            $listNew= array();
-            foreach( $list as $value ):
-                if( in_array( $key, $value ) )
+        $filtered= array();
+        foreach( $this->struct as $chunk ):
+            if( count( $chunk ) !== count( $keyList ) + 1 ) continue;
+            foreach( $keyList as $index => $key ):
+                if( $key !== $chunk[ $index ] ) continue 2;
             endforeach;
+            $filtered[]= end( $chunk );
         endforeach;
+        return $filtered;
     }
 
 } 

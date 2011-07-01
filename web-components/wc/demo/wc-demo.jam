@@ -1,0 +1,28 @@
+with( $wc )
+$define( 'demo', $Component( 'wc:demo', function( nodeRoot ){
+    nodeRoot= $Node( nodeRoot )
+    var source= $String( nodeRoot.html() ).tab2space().minimizeIndent().trim( /[\n\r]/ ).$
+    
+    var nodeSource0= $Node( 'wc:demo-source' )
+    var nodeSource= $Node( 'div' ).text( source ).editable( true )
+    nodeSource0.tail( nodeSource )
+    
+    var nodeResult= $Node( 'wc:demo-result' )
+    
+    nodeRoot.clear().tail( nodeResult ).tail( nodeSource0 )
+
+    var exec= $Thread( function( source ){
+        nodeResult.html( source )
+        return true
+    })
+    
+    exec( source )
+
+    nodeRoot.listen
+    (   '$jam.$commit'
+    ,   function( ev ){
+            exec( nodeSource.text() )
+        }
+    )
+
+}))

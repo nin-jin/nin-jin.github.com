@@ -104,21 +104,22 @@ class so_WC_File extends so_Meta {
         endif;
         
         if( $this->ext === 'tree' ):
-            $meta= parse_ini_file( $this->path ); // FIXME: прикрутить полноценный tree-парсер
-            if( $meta[ 'include pack' ] ):
-                $pack= $this->root->createPack( $meta[ 'include pack' ] );
+            $meta= new so_Tree;
+            $meta->string= $this->content;
+            foreach( $meta->get( 'include pack' ) as $packId ):
+                $pack= $this->root->createPack( trim( $packId ) );
                 if( !$pack->exists ) throw new Exception( "Pack [{$pack->id}] not found" );
                 $depends+= $pack->modules;
-            endif;
-            if( $meta[ 'include module' ] ):
-                $names= explode( '/', $meta[ 'include module' ] );
+            endforeach;
+            foreach( $meta->get( 'include module' ) as $moduleId ):
+                $names= explode( '/', trim( $moduleId ) );
+                if( !$names[ 1 ] ) array_push( $names, $this->pack->name );
                 $pack= $this->root->createPack( $names[0] );
                 $module= $pack->createModule( $names[1] );
                 if( !$module->exists ) throw new Exception( "Module [{$module->id}] not found" );
                 $depends[ $module->id ]= $module;
-            endif;
+            endforeach;
         endif;
-
         return $depends;
     }
     

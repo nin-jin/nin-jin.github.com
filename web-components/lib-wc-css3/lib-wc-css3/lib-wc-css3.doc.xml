@@ -1,0 +1,62 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>lib-wc-css3</h1>
+
+	<p>Вам нравятся скруглённые уголки, за которые нельзя зацепиться и пораниться? Вы любите многоплановость, где одни блоки отбрасывают тени на другие? Вы в экстазе от плавных цветовых градиентов и дивергенций? Но вы плачите кровавыми слезами, когда смотрите на свёрстанный вами с использованием css3 макет в ie? Тогда возрадуйтесь, ибо участь ваша не столь плачевна!</p>
+
+	<p>Достаточно подключить к странице указанные справа файлы (кроме xsl-ки, разумеется), прописать дополнительные стили для элементов, и волшебным образом даже ie6 научится отбрасывать тень от блока с закруглёнными углами у фонового градиента. </p>
+
+	<p
+		style="
+			text-align: center;
+		"
+		>
+		<span
+			contenteditable="true"
+			style="
+				display: inline-block; zoom: 1;
+				position: relative;
+				padding: 5%;
+				text-align: left;
+				font-size: 24pt;
+				color: #dd0;
+				font-weight: bold;
+			
+				-wc-css3_border-radius: 11px;
+				border-radius: 11px;
+
+				-wc-css3_border: ' weight=10px dashstyle=solid color=maroon ';
+				border: 10px solid maroon;
+				
+				-wc-css3_background: ' type=gradient angle=180 color=black colors=.5+#800 color2=red ';
+				background: -o-linear-gradient( -90deg, black, red );
+				background: -moz-linear-gradient( -90deg, black, #800 50%, red );
+				background: -webkit-gradient( linear, left top, left bottom, from( black ), color-stop( .5, #800 ), to( red ) );
+			
+				-wc-css3_box-shadow: ' type=double offset=8px,8px color=black offset2=9px,9px color2=black opacity=.7 ';
+				box-shadow: 10px 10px 5px black;
+			">
+			В чём же секрет? :о
+		</span>
+	</p>
+	
+	<p>Принцип действия прост. <a href="../../jam/Component/jam+Component.doc.xml">$jam.$Component</a> отслеживает появление в доме элементов и их исчезновение. Если элемент из пространства имён html или же какого-нибудь кастомного, то для него создаётся виджет <a href="../../wc/css3/wc-css3.doc.xml">wc-css3</a>, который отслеживает изменение стилей элемента и если встречает среди них начинающиеся на -mc-css3, то создаёт vml-подложку, заполняя аттрибуты vml-элементов указанными значениями.</p>
+
+	<p>Свойство <code>-wc-css3_border-radius</code> позволяет регулировать радиус скругления уголков. Принимаемые значения - одно, два или четыре числа. Можно указывать единицы измерения, но они не учитываются и числа рассматриваются как количество пикселей. Возможно в будущем появится поддержка различных единиц измерения, а также эллиптических радиусов, как в <a href="http://www.w3.org/TR/css3-background/#border-radius">оригинальном border-radius</a>. Например, <code>-wc-css3_border-radius: 5px;</code> означает пятипиксельное скругление всех уголков, а <code>-wc-css3_border-radius: 1 2 3 4;</code> - увеличивающийся по часовой стрелке радиус, начиная с левого верхнего угла.</p>
+
+	<p>Свойство <code>-wc-css3_border</code> обладает функционалом, схожим с обычным border. Если используются css3-фичи, и как следсткие рисуется vml-подложка, то параметры бордюра нужно продублировать через это свойство. Оригинального недостаточно, ибо он будет убран и нельзя будет отследить его изменение. Например: <code>-wc-css3_border: ' weight=1px dashstyle=solid color=red ';</code> нарисует красную линию толщиной в 1 пиксель. Подробности об аттрибутах в документации по <a href="http://www.w3.org/TR/NOTE-VML#_Toc416858395">элементу stroke</a>.</p>
+
+	<p>Свойство <code>-wc-css3_background</code> позволяет управлять фоном. В вашем распоряжении есть цвет, прозрачность, различные градиенты и фоновые изображения. Например: <code>-wc-css3_background: ' color=#00ff00 opacity=.5 ';</code> нарисует зелёную полупрозрачную подложку, а <code>-wc-css3_background: ' type=gradient angle=180 color=black color2=white ';</code> - градиент от чёрного к белому. Подробности об аттрибутах в документации по <a href="http://www.w3.org/TR/NOTE-VML#_Toc416858394">элементу fill</a>.</p>
+
+	<p>Свойство <code>-wc-css3_box-shadow</code> добавляет блоку тенюшку. Визуально она выглядит довольно паршиво, но для некоторых случаев сойдёт. Например: <code>-wc-css3_box-shadow: ' type=double offset=2px,2px color=black offset2=3px,3px color2=black opacity=.7 ';</code> рисует более-менее приличную маленькую чёрную тень. Подробности об аттрибутах в документации по <a href="http://www.w3.org/TR/NOTE-VML#_Toc416858394">элементу fill</a>.</p>
+	
+	<p>Как видите библиотека не ставит своей целью сделать эмуляцию css3-свойств. Вместо этого она предоставляет доступ к параметрам vml-подложки, через css. В чём-то vml мощнее, чем css3, в чём-то наоборот. В каждой конкретной ситуации у вас есть выбор между ними, и использовать их вы можете на полную мощь, а не только лишь общее подмножество возможностей.</p>
+	
+	<p>Если у вас возникли идеи как можно было бы улучшить данную библиотеку или же заметили какой глюк - <a href="https://github.com/nin-jin/wc/issues">пришите баги</a> ;-)</p>
+
+</doc:root>

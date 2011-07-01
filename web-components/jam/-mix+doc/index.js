@@ -3,80 +3,14 @@ if( this.$jam ) throw new Error( 'Redeclaration of [$jam]' )
 var $jam= {}
 $jam.$jam= $jam
 
-// jam/Class/jam+Class.jam
-with( $jam )
-$jam.$Class=
-function( init ){
-    var klass=
-    function( ){
-        if( this instanceof klass ) return this
-        var obj= klass.create.apply( klass, arguments )
-        return obj
-    }
-    
-    klass.create=
-    function( ){
-        return new klass
-    }
-
-    init( klass, klass.prototype )
-    
-    return klass
-}
-
-// jam/Obj/jam+Obj.jam
-with( $jam )
-$jam.$Obj=
-$Class( function( klass, proto ){
-    
-    klass.create=
-    function( val ){
-        if(( val === void 0 )||( val === null )){
-            throw new Error( 'Wrong object: ' + val )
-        }
-        var obj= new klass
-        obj.$= val
-        return obj
-    }
-    
-    proto.has=
-    function( key ){
-        return ( 'hasOwnProperty' in this.$ )
-        ?   this.$.hasOwnProperty( key )
-        :   ( key in this.$ )
-    }
-    
-    proto.get=
-    function( key ){
-        return this.$[ key ]
-    }
-    
-    proto.put=
-    function( key, value ){
-        this.$[ key ]= value
-        return this
-    }
-    
-    proto.define=
-    function( key, value ){
-        if( this.has( key ) && this.get( key ) !== value ){
-            throw new Error( 'Redeclaration of [' + key + ']' )
-        }
-        this.put( key, value )
-    }
-    
-    proto.init=
-    function( init ){
-        init( this.$ )
-        return this
-    }
-})
-
 // jam/define/jam+define.jam
 with( $jam )
 $jam.$define=
 function( key, value ){
-    $Obj( this ).define( key, value )
+    if( this[ key ] && ( this[ key ] !== value ) ){
+        throw new Error( 'Redeclaration of [' + key + ']' )
+    }
+    this[ key ]= value
     return this
 }
 
@@ -103,7 +37,7 @@ $define( '$createNameSpace', function( name ){
     proxy.prototype= this
     var ns= new proxy
     $define.call( $glob(), name, ns )
-    ns.$define( name, ns )
+    //ns.$define( name, ns )
     return ns
 })
 
@@ -122,10 +56,6 @@ $define
 // jam/doc/jam+doc.jam
 with( $jam )
 $define( '$doc', $Value( $glob().document ) )
-
-with( $jam )
-$define.call( $doc, 'onLoad', function( handler ){
-})
 
 // jam/schedule/jam+schedule.js
 with( $jam )
@@ -156,6 +86,165 @@ function( proc ){
         else $schedule( 100, checker )
     }
     checker()
+}
+
+// jam/Component/jam+Component.jam
+with( $jam )
+$define( '$Component', function( tagName, factory ){
+	if(!( this instanceof $Component )) return new $Component( tagName, factory )
+	var fieldName= 'componnet|' + tagName + '|' + (new Date).getTime()
+
+	var isBroken= ( $support.htmlModel() === 'ms' )
+	var chunks= /(?:(\w+):)?([-\w]+)/.exec( tagName )
+	var scopeName= isBroken && chunks && chunks[1] || ''
+	var localName= isBroken && chunks && chunks[2] || tagName
+	var nodes= $doc().getElementsByTagName( localName )
+
+	var elements= []
+
+	var checkName=
+	( tagName === '*' )
+	?	$Value( true )
+	:	new function(){
+			var nameChecker= RegExp( '^' + localName + '$', 'i' )
+			if( isBroken ){
+				var scopeChecker= RegExp( '^' + scopeName + '$', 'i' )
+				return function( el ){
+					return scopeChecker.test( el.scopeName ) && nameChecker.test( el.nodeName )
+				}
+			}
+			return function( el ){
+				if( el.namespaceURI && el.namespaceURI !== 'http://www.w3.org/1999/xhtml' ) return false
+				return nameChecker.test( el.nodeName )
+			}
+		}
+	
+	var isAttached= function( el ){
+		return typeof el[ fieldName ] === 'object'
+	}
+	
+	var attach= function( el ){
+		el[ fieldName ]= null
+		var widget= new factory( el )
+		el[ fieldName ]= widget
+		elements.push( el )
+	}
+	
+	var attachIfLoaded= function( el ){
+		var cur= el
+		do {
+			if( !cur.nextSibling ) continue
+			attach( el )
+			break
+		} while( cur= cur.parentNode )
+	}
+	
+	var check4attach= function( nodes ){
+		var filtered= []
+		filter: for( var i= 0, len= nodes.length; i < len; ++i ){
+			var el= nodes[ i ]
+			if( isAttached( el ) ) continue
+			if( !checkName( el ) ) continue
+			filtered.push( el )
+		}
+		attach: for( var i= 0; i < filtered.length; ++i ){
+			attachIfLoaded( filtered[ i ] )
+		}
+	}
+
+	var tracking= function(){
+		check4attach( nodes )
+	}
+
+	var detach= function( el ){
+		var widget= el[ fieldName ]
+		if( widget && widget.onDetach ) widget.onDetach()
+		el[ fieldName ]= void 0
+	}
+	
+	var check4detach= function( nodes ){
+		filtered= []
+		filter: for( var i= 0, len= nodes.length; i < len; ++i ){
+			var el= nodes[ i ]
+			if( !isAttached( el ) ) continue
+			filtered.push( el )
+		}
+		attach: for( var i= 0, len= filtered.length; i < len; ++i ){
+			detach( filtered[ i ] )
+		}
+	}
+	
+	var interval= $glob().top.setInterval( tracking, 100 )
+
+	$domReady.then(function(){
+		if( $support.eventModel() === 'w3c' ){
+			$glob().top.clearInterval( interval )
+		}
+		attachIfLoaded= attach
+		tracking()
+	})
+
+	if( $support.eventModel() === 'w3c' ){
+		var docEl= $doc().documentElement
+		docEl.addEventListener( 'DOMNodeInserted', function( ev ){
+			check4attach([ ev.target ])
+		}, false )
+		docEl.addEventListener( 'DOMNodeRemoved', function( ev ){
+			check4detach([ ev.target ])
+		}, false )
+	}
+	
+	this.tagName= $Value( tagName )
+	this.factory= $Value( factory )
+	this.elements= function( ){
+		return elements.slice( 0 )
+	}
+})
+
+// jam/htmlize/jam+htmlize.jam
+with( $jam )
+$define
+(   '$htmlize'
+,   function( ns ){
+        if( !/firefox/i.test( navigator.userAgent ) ) return
+        $Component( '*', function( node ){
+            if( node.namespaceURI !== ns ) return
+            var parent= node.parentNode
+            var newNode= $doc().createElement( node.nodeName )
+            var attrList= node.attributes
+            for( var i= 0; i < attrList.length; ++i ){
+                var attr= attrList[ i ]
+                newNode.setAttribute( attr.nodeName, attr.nodeValue ) 
+            }
+            var child; while( child= node.firstChild ) newNode.appendChild( child )
+            parent.insertBefore( newNode, node )
+            parent.removeChild( node )
+        })
+    }
+)
+
+// html/html/html.jam
+$jam.$createNameSpace( '$html' )
+
+// jam/Class/jam+Class.jam
+with( $jam )
+$jam.$Class=
+function( init ){
+    var klass=
+    function( ){
+        if( this instanceof klass ) return this
+        var obj= klass.create.apply( klass, arguments )
+        return obj
+    }
+    
+    klass.create=
+    function( ){
+        return new klass
+    }
+
+    init( klass, klass.prototype )
+    
+    return klass
 }
 
 // jam/Poly/jam+Poly.js
@@ -1090,144 +1179,6 @@ $define
     })
 )
 
-// jam/Component/jam+Component.jam
-with( $jam )
-$define( '$Component', function( tagName, factory ){
-	if(!( this instanceof $Component )) return new $Component( tagName, factory )
-	var fieldName= 'componnet|' + tagName + '|' + (new Date).getTime()
-
-	var isBroken= ( $support.htmlModel() === 'ms' )
-	var chunks= /(?:(\w+):)?([-\w]+)/.exec( tagName )
-	var scopeName= isBroken && chunks && chunks[1] || ''
-	var localName= isBroken && chunks && chunks[2] || tagName
-	var nodes= $doc().getElementsByTagName( localName )
-
-	var elements= []
-
-	var checkName=
-	( tagName === '*' )
-	?	$Value( true )
-	:	new function(){
-			var nameChecker= RegExp( '^' + localName + '$', 'i' )
-			if( isBroken ){
-				var scopeChecker= RegExp( '^' + scopeName + '$', 'i' )
-				return function( el ){
-					return scopeChecker.test( el.scopeName ) && nameChecker.test( el.nodeName )
-				}
-			}
-			return function( el ){
-				if( el.namespaceURI && el.namespaceURI !== 'http://www.w3.org/1999/xhtml' ) return false
-				return nameChecker.test( el.nodeName )
-			}
-		}
-	
-	var isAttached= function( el ){
-		return typeof el[ fieldName ] === 'object'
-	}
-	
-	var attach= function( el ){
-		el[ fieldName ]= null
-		var widget= new factory( el )
-		el[ fieldName ]= widget
-		elements.push( el )
-	}
-	
-	var attachIfLoaded= function( el ){
-		var cur= el
-		do {
-			if( !cur.nextSibling ) continue
-			attach( el )
-			break
-		} while( cur= cur.parentNode )
-	}
-	
-	var check4attach= function( nodes ){
-		var filtered= []
-		filter: for( var i= 0, len= nodes.length; i < len; ++i ){
-			var el= nodes[ i ]
-			if( isAttached( el ) ) continue
-			if( !checkName( el ) ) continue
-			filtered.push( el )
-		}
-		attach: for( var i= 0; i < filtered.length; ++i ){
-			attachIfLoaded( filtered[ i ] )
-		}
-	}
-
-	var tracking= function(){
-		check4attach( nodes )
-	}
-
-	var detach= function( el ){
-		var widget= el[ fieldName ]
-		if( widget && widget.onDetach ) widget.onDetach()
-		el[ fieldName ]= void 0
-	}
-	
-	var check4detach= function( nodes ){
-		filtered= []
-		filter: for( var i= 0, len= nodes.length; i < len; ++i ){
-			var el= nodes[ i ]
-			if( !isAttached( el ) ) continue
-			filtered.push( el )
-		}
-		attach: for( var i= 0, len= filtered.length; i < len; ++i ){
-			detach( filtered[ i ] )
-		}
-	}
-	
-	var interval= $glob().top.setInterval( tracking, 100 )
-
-	$domReady.then(function(){
-		if( $support.eventModel() === 'w3c' ){
-			$glob().top.clearInterval( interval )
-		}
-		attachIfLoaded= attach
-		tracking()
-	})
-
-	if( $support.eventModel() === 'w3c' ){
-		var docEl= $Node( $doc().documentElement )
-		docEl.listen( 'DOMNodeInserted', function( ev ){
-			check4attach([ ev.target ])
-		})
-		docEl.listen( 'DOMNodeRemoved', function( ev ){
-			check4detach([ ev.target ])
-		})
-	}
-	
-	this.tagName= $Value( tagName )
-	this.factory= $Value( factory )
-	this.elements= function( ){
-		return elements.slice( 0 )
-	}
-})
-
-// jam/htmlize/jam+htmlize.jam
-with( $jam )
-$define
-(   '$htmlize'
-,   function( ns ){
-        if( !/firefox/i.test( navigator.userAgent ) ) return
-        $Component( '*', function( node ){
-            if( node.namespaceURI !== ns ) return
-            var parent= node.parentNode
-            var newNode= $doc().createElement( node.nodeName )
-            var attrList= node.attributes
-            for( var i= 0; i < attrList.length; ++i ){
-                var attr= attrList[ i ]
-                newNode.setAttribute( attr.nodeName, attr.nodeValue ) 
-            }
-            var child; while( child= node.firstChild ) newNode.appendChild( child )
-            parent.insertBefore( newNode, node )
-            parent.removeChild( node )
-        })
-    }
-)
-
-// html/html/html.jam
-$jam.$createNameSpace( '$html' )
-
 // html/a/html-a.jam
 with( $html )
 $Component
@@ -1240,7 +1191,6 @@ $Component
 
 // wc/wc/wc.jam
 $jam.$createNameSpace( '$wc' )
-with( $wc ) $htmlize( 'https://github.com/nin-jin/wc' )
 
 // jam/dom/jam+dom.jam
 with( $jam )
@@ -1354,20 +1304,37 @@ $Component( '*', new function(){
             else node.setAttribute( 'adj', data )
             return val
 		})
+		
+		var parseHiqus=
+		function( str ){
+			var res= {}
+            str= String( str || '' ).replace( /["']/g, '' )
+			var chunks= str.split( ' ' )
+			for( var i= 0; i < chunks.length; ++i ){
+				var pair= chunks[ i ].split( '=' )
+				if( pair.length !== 2 ) continue
+				res[ pair[0] ]= pair[1].replace( /\+/g, '' )
+			}
+			return res
+		}
 
-		var PropEl= function( getNode, back ){
+		var PropEl=
+		function( getNode, back ){
 			return Prop( function( val ){
 				var data= val
 				if( data ){
-                    data= String( val || '' ).replace( /["']/g, '' )
-					data= $Hiqus({ splitterChunks: ' ' }).merge( data ).get()
+					data= parseHiqus( 'on=false ' + data )
 					data.on= 'true'
 				} else {
 					data= { on: 'false' }
 				}
 				var node= getNode()
 				for( var key in data ){
-					node.setAttribute( key, node[ key ]= data[ key ] )
+					if( typeof node[ key ] === 'object' ){
+						node[ key ].value= data[ key ]
+					} else {
+						node.setAttribute( key, node[ key ]= data[ key ] )
+					}
 				}
 				back( !val )
                 return val
@@ -1448,42 +1415,6 @@ $Component( '*', new function(){
         nodeRoot.attachEvent( 'onpropertychange', lazyRefresh )
 
 	}
-	
-	
-	/*
-    return function( node ){
-
-        var refresh= $Throttler( 10, function(){
-            borderRadius( String( node.currentStyle[ '-wc-css3_border-radius' ] || '' ).replace( /[^\s\d]/g, '' ) )
-			stroke( String( node.currentStyle[ '-wc-css3_border' ] || '' ).replace( /["']/g, '' ) )
-			fill( String( node.currentStyle[ '-wc-css3_background' ] || '' ).replace( /["']/g, '' ) )
-			shadow( String( node.currentStyle[ '-wc-css3_box-shadow' ] || '' ).replace( /["']/g, '' ) )
-            
-			var active= borderRadius() || stroke() || fill() || shadow()
-			
-            if( active ){
-                left( node.offsetLeft )
-                top( node.offsetTop )
-                width( node.offsetWidth )
-                height( node.offsetHeight )
-			}
-			
-			checker.active( active )
-        })
-		
-		var checker= $ Clock()
-		.latency( 50 )
-		checker.onTick.listen( refresh )
-
-        node.attachEvent( 'onresize', refresh )
-        node.attachEvent( 'onmove', refresh )
-        node.attachEvent( 'onmouseenter', refresh )
-        node.attachEvent( 'onmouseleave', refresh )
-        node.attachEvent( 'onpropertychange', refresh )
-
-        refresh()
-    }
-    */
 	
 })
 
@@ -1585,6 +1516,9 @@ $define( 'demo', $Component( 'wc:demo', function( nodeRoot ){
     )
 
 }))
+
+// wc/ns/wc-ns.jam
+$jam.$htmlize( 'https://github.com/nin-jin/wc' )
 
 // wc/test-js/wc-test-js.jam
 with( $wc )
@@ -1692,6 +1626,54 @@ $Component( 'wc:test-js', function( root ){
 // doc/doc/doc.jam
 $jam.$createNameSpace( '$doc' )
 with( $doc ) $htmlize( 'https://github.com/nin-jin/doc' )
+
+// jam/Obj/jam+Obj.jam
+with( $jam )
+$jam.$Obj=
+$Class( function( klass, proto ){
+    
+    klass.create=
+    function( val ){
+        if(( val === void 0 )||( val === null )){
+            throw new Error( 'Wrong object: ' + val )
+        }
+        var obj= new klass
+        obj.$= val
+        return obj
+    }
+    
+    proto.has=
+    function( key ){
+        return ( 'hasOwnProperty' in this.$ )
+        ?   this.$.hasOwnProperty( key )
+        :   ( key in this.$ )
+    }
+    
+    proto.get=
+    function( key ){
+        return this.$[ key ]
+    }
+    
+    proto.put=
+    function( key, value ){
+        this.$[ key ]= value
+        return this
+    }
+    
+    proto.define=
+    function( key, value ){
+        if( this.has( key ) && this.get( key ) !== value ){
+            throw new Error( 'Redeclaration of [' + key + ']' )
+        }
+        this.put( key, value )
+    }
+    
+    proto.init=
+    function( init ){
+        init( this.$ )
+        return this
+    }
+})
 
 // jam/Hash/jam+Hash.jam
 with( $jam )
