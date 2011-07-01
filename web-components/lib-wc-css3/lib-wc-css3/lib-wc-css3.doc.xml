@@ -38,7 +38,7 @@
 				background: -moz-linear-gradient( -90deg, black, #800 50%, red );
 				background: -webkit-gradient( linear, left top, left bottom, from( black ), color-stop( .5, #800 ), to( red ) );
 			
-				-wc-css3_box-shadow: ' type=double offset=8px,8px color=black offset2=9px,9px color2=black opacity=.7 ';
+				-wc-css3_box-shadow: ' type=single offset=7px,7px color=black ';
 				box-shadow: 10px 10px 5px black;
 			">
 			В чём же секрет? :о
