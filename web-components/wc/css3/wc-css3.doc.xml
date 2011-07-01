@@ -82,8 +82,8 @@
 					padding: 1em;
 					margin: .5em;
 				
-					-wc-css3_border: ' weight=10px dashstyle=dash color=gray ';
-					border: 10px dashed gray;
+					-wc-css3_border: ' weight=10px dashstyle=dot color=gray ';
+					border: 10px dotted gray;
 					
 					-moz-border-radius: 10px;
 					-wc-css3_border-radius: 10px;

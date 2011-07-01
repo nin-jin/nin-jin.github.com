@@ -937,6 +937,7 @@ $define
             }
         ,   function( val ){
                 this.$.contentEditable= val
+                return this
             }
         )
         
@@ -1486,23 +1487,6 @@ $Component( '*', new function(){
 	
 })
 
-// wc/demo/wc-demo.jam
-with( $wc )
-$define( 'demo', $Component( 'wc:demo', function( el ){
-    var source= $String( $Node( el ).html() ).tab2space().minimizeIndent().trim( /[\n\r]/ ).$
-    
-    var elSource= $doc().createElement( 'wc:demo-source' )
-    if( 'textContent' in el ) elSource.textContent= source
-    else elSource.innerText= source
-    
-    var elResult= $doc().createElement( 'wc:demo-result' )
-    elResult.innerHTML= source
-    
-    el.innerHTML= ''
-    el.appendChild( elResult )
-    el.appendChild( elSource )
-}))
-
 // jam/Thread/jam+Thread.jam
 with( $jam )
 $define( '$Thread', $Lazy( function(){
@@ -1571,6 +1555,36 @@ $define
         })
     }
 )
+
+// wc/demo/wc-demo.jam
+with( $wc )
+$define( 'demo', $Component( 'wc:demo', function( nodeRoot ){
+    nodeRoot= $Node( nodeRoot )
+    var source= $String( nodeRoot.html() ).tab2space().minimizeIndent().trim( /[\n\r]/ ).$
+    
+    var nodeSource0= $Node( 'wc:demo-source' )
+    var nodeSource= $Node( 'div' ).text( source ).editable( true )
+    nodeSource0.tail( nodeSource )
+    
+    var nodeResult= $Node( 'wc:demo-result' )
+    
+    nodeRoot.clear().tail( nodeResult ).tail( nodeSource0 )
+
+    var exec= $Thread( function( source ){
+        nodeResult.html( source )
+        return true
+    })
+    
+    exec( source )
+
+    nodeRoot.listen
+    (   '$jam.$commit'
+    ,   function( ev ){
+            exec( nodeSource.text() )
+        }
+    )
+
+}))
 
 // wc/test-js/wc-test-js.jam
 with( $wc )

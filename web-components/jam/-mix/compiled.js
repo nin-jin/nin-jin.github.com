@@ -973,6 +973,7 @@ $define
             }
         ,   function( val ){
                 this.$.contentEditable= val
+                return this
             }
         )
         
