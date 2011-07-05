@@ -174,6 +174,39 @@ strong.reset\=true {
     font-weight: normal; font-weight: inherit;
 }
 
+/* @import url( '../../wc/binom/wc-binom-center.css' ); */
+wc\:binom-center {
+	text-align: center;
+	display: block;
+	float: left;
+	width: 100%;
+}
+
+/* @import url( '../../wc/binom/wc-binom-left.css' ); */
+wc\:binom-left {
+	display: table-cell;
+	padding-right: 5%;
+	border-right: 1px solid gray;
+	margin-right: -1px;
+	text-align: left;
+}
+
+/* @import url( '../../wc/binom/wc-binom-right.css' ); */
+wc\:binom-right {
+	display: table-cell;
+	padding-left: 5%;
+	border-left: 1px solid gray;
+	text-align: left;
+}
+
+/* @import url( '../../wc/binom/wc-binom.css' ); */
+wc\:binom {
+	display: table;
+	border-collapse: collapse;
+	border-top: 1px solid gray;
+	border-bottom: 1px solid gray;
+}
+
 /* @import url( '../../wc/button/wc-button.css' ); */
 wc\:button {
     display: inline-block; zoom: 1;

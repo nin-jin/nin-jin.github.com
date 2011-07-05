@@ -1,5 +1,5 @@
 /* include( '../../wc/css3/wc-css3.vml' ); */
-document.write("\
+try{ document.write("\
 <?import namespace=\"vml\" implementation=\"#default#VML\" ?>\
 <vml:shapetype\
     xmlns:vml='urn:schemas-microsoft-com:vml'\
@@ -35,4 +35,4 @@ document.write("\
 	<vml:path v='m @2,0 l @10,0 qx @0,@7 l @0,@12 qy @11,@1 l @5,@1 qx 0,@13 l 0,@6 qy @2,0 xe'></vml:path>\
 \
 </vml:shapetype>\
-")
+") } catch( e ){ }

@@ -48,7 +48,7 @@
     </wc:test-js>
     <wc:test-js>
         var str= $jam.$String( '\t\t' )
-        str.tab2space()
+        str.normilizeSpaces()
         _done( str.$, '        ' )
     </wc:test-js>
     <wc:test-js>

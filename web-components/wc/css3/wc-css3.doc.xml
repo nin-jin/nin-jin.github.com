@@ -7,292 +7,557 @@
 
     <h1>wc-css3</h1>
 
-	<p>Кроссбраузерная поддержка фич css3. В ie используется vml для отрисовки посредством яваскрипта тех фич, которые не поддерживает браузер.</p>
-	
-	<h2>Бордюры</h2>
-	<p>
-		<wc:demo>
-			<span contenteditable="true" style="
-					display: inline-block; zoom: 1;
-					position: relative;
-					padding: 1em;
-					margin: .5em;
-					line-height: 1;
-				
-					border: 1px solid gray;
-				">
-				bord1
-			</span>
-		</wc:demo>
-		<wc:demo>
-			<span contenteditable="true" style="
-					display: inline-block; zoom: 1;
-					position: relative;
-					padding: 1em;
-					margin: .5em;
-				
-					-wc-css3_border: ' weight=1px dashstyle=solid color=blue ';
-					border: 1px solid blue;
-					
-					-moz-border-radius: 10px;
-					-wc-css3_border-radius: 10px;
-					border-radius: 10px;
-				">
-				bord2
-			</span>
-		</wc:demo>
-		<wc:demo>
-			<span contenteditable="true" style="
-					display: inline-block; zoom: 1;
-					position: relative;
-					padding: 1em;
-					margin: .5em;
-				
-					-wc-css3_border: ' weight=1px dashstyle=solid color=red ';
-					border: 1px solid red;
-					
-					-moz-border-radius: 10px 0;
-					-wc-css3_border-radius: 10px 0;
-					border-radius: 10px 0;
-				">
-				bord3
-			</span>
-		</wc:demo>
-		<wc:demo>
-			<span contenteditable="true" style="
-					display: inline-block; zoom: 1;
-					position: relative;
-					padding: 1em;
-					margin: .5em;
-				
-					-wc-css3_border: ' weight=1px dashstyle=solid color=green ';
-					border: 1px solid green;
-					
-					-moz-border-radius: 0px 5px 10px 20px;
-					-wc-css3_border-radius: 0px 5px 10px 20px;
-					border-radius: 0px 5px 10px 20px;
-				">
-				bord4
-			</span>
-		</wc:demo>
-		<wc:demo>
-			<span contenteditable="true" style="
-					display: inline-block; zoom: 1;
-					position: relative;
-					padding: 1em;
-					margin: .5em;
-				
-					-wc-css3_border: ' weight=10px dashstyle=dot color=gray ';
-					border: 10px dotted gray;
-					
-					-moz-border-radius: 10px;
-					-wc-css3_border-radius: 10px;
-					border-radius: 10px;
-				">
-				bord5
-			</span>
-		</wc:demo>
-	</p>
-	
-	<h2>Градиенты</h2>	
-	<p>
-		<wc:demo>
-			<span
-				style="
-					display: inline-block; zoom: 1;
-					background: fixed url( '../../wc/css3/wc-css3_board.png' );
-					margin: .5em;
-					padding: 1em;
-				"
-				>
-				<span contenteditable="true" style="
-						display: inline-block; zoom: 1;
-						position: relative;
-						padding: 1em;
-						vertical-align: middle;
-					
-						background: rgba( 0, 255, 0, .9 );
-						-wc-css3_background: ' color=#00ff00 opacity=.9 ';
-					
-						border: 1px solid gray;
-						-wc-css3_border: ' weight=1px dashstyle=solid color=gray ';
-						
-						-moz-border-radius: 10px;
-						border-radius: 10px;
-						-wc-css3_border-radius: 10px;
-					">
-					grad1
-				</span>
-			</span>
-		</wc:demo>
-		<wc:demo>
-			<span contenteditable="true" style="
-					display: inline-block; zoom: 1;
-					position: relative;
-					padding: 1em;
-					margin: .5em;
-				
-					-wc-css3_background: ' type=gradient angle=270 color=lime color2=yellow ';
-					background: -o-linear-gradient( 0deg, lime, yellow );
-					background: -moz-linear-gradient( 0deg, lime, yellow );
-					background: -webkit-gradient( linear, left top, right top, from( lime ), to( yellow ) );
-				
-					-wc-css3_border: ' weight=1px dashstyle=solid color=gray ';
-					border: 1px solid gray;
-					
-					-moz-border-radius: 10px;
-					-wc-css3_border-radius: 10px;
-					border-radius: 10px;
-				">
-				grad2
-			</span>
-		</wc:demo>
-		<wc:demo>
-			<span contenteditable="true" style="
-					display: inline-block; zoom: 1;
-					position: relative;
-					padding: 1em;
-					margin: .5em;
-				
-					-wc-css3_background: ' type=gradient angle=180 color=lime color2=yellow ';
-					background: -o-linear-gradient( -90deg, lime, yellow );
-					background: -moz-linear-gradient( -90deg, lime, yellow );
-					background: -webkit-gradient( linear, left top, left bottom, from( lime ), to( yellow ) );
-				
-					-wc-css3_border: ' weight=1px dashstyle=solid color=gray ';
-					border: 1px solid gray;
-					
-					-moz-border-radius: 10px;
-					-wc-css3_border-radius: 10px;
-					border-radius: 10px;
-				">
-				grad3
-			</span>
-		</wc:demo>
-	</p>	
+            <span
+                style="
+                    display: inline-block; zoom: 1;
+                    margin: .5em 0;
+                    padding: .5em;
 
-	<h2>Тени</h2>	
-	<p>
-		<wc:demo>
-			<span contenteditable="true" style="
-					display: inline-block; zoom: 1;
-					position: relative;
-					padding: 1em;
-					margin: .5em;
-				
-					background: lime;
-					-wc-css3_background: ' color=lime ';
-					
-					-moz-border-radius: 10px;
-					-wc-css3_border-radius: 10px;
-					border-radius: 10px;
-					
-					-webkit-box-shadow: 5px 5px 5px blue;
-					-moz-box-shadow: 5px 5px 5px blue;
-					-wc-css3_box-shadow: ' type=double offset=5px,5px color=blue offset2=3px,3px color2=blue opacity=.5 ';
-					box-shadow: 5px 5px 5px blue;
-				">
-				shad1
-			</span>
-		</wc:demo>
-		<wc:demo>
-			<span contenteditable="true" style="
-					display: inline-block; zoom: 1;
-					position: relative;
-					padding: 1em;
-					margin: .5em;
-				
-					background: lime;
-					-wc-css3_background: ' color=lime ';
-					
-					-moz-border-radius: 10px;
-					border-radius: 10px;
-					-wc-css3_border-radius: 10px;
-					
-					-webkit-box-shadow: 0 0 4px blue;
-					-moz-box-shadow: 0 0 4px blue;
-					box-shadow: 0 0 4px blue;
-					-wc-css3_box-shadow: ' type=double offset=2px,2px color=blue offset2=-2px,-2px color2=blue opacity=.5 ';
-				">
-				shad2
-			</span>
-		</wc:demo>
-	</p>	
-	
-	<h2>Ещё примеры</h2>	
-	<p>
-		<span style="
-				display: inline-block; zoom: 1;
-				position: relative;
-				padding: 20px;
-				margin: .5em;
-				line-height: 0;
-			
-				background: white;
-				-wc-css3_background: ' color=white ';
-				
-				-wc-css3_border: ' weight=1px dashstyle=solid color=gray ';
-				border: 1px solid gray;
-				
-				-moz-border-radius: 50px;
-				-wc-css3_border-radius: 50px;
-				border-radius: 50px;
-				
-			">
-			<span contenteditable="true" style="
-					display: inline-block; zoom: 1;
-					position: relative;
-					padding: 20px;
-					margin: .5em;
-					line-height: 0;
-					color: yellow;
-				
-					background: navy;
-					-wc-css3_background: ' color=navy ';
-					
-					-moz-border-radius: 20px;
-					-wc-css3_border-radius: 20px;
-					border-radius: 20px;
-					
-				">
-			</span>
-		</span>
-		<span style="
-				display: inline-block; zoom: 1;
-				position: relative;
-				padding: 20px;
-				margin: .5em;
-				line-height: 0;
-			
-				background: white;
-				-wc-css3_background: ' color=white ';
-				
-				-wc-css3_border: ' weight=1px dashstyle=solid color=gray ';
-				border: 1px solid gray;
-				
-				-moz-border-radius: 50px;
-				-wc-css3_border-radius: 50px;
-				border-radius: 50px;
-				
-			">
-			<span contenteditable="true" style="
-					display: inline-block; zoom: 1;
-					position: relative;
-					padding: 20px;
-					margin: .5em;
-					line-height: 0;
-					color: yellow;
-				
-					background: maroon;
-					-wc-css3_background: ' color=maroon ';
-					
-					-moz-border-radius: 20px;
-					-wc-css3_border-radius: 20px;
-					border-radius: 20px;
-					
-				">
-			</span>
-		</span>
-	</p>
+                    background: url( '../../wc/css3/wc-css3_board.png' );
+                    -wc-css3_background: ' type=tile src=../../wc/css3/wc-css3_board.png ';
+
+                    border: 1px solid gray;
+                    -wc-css3_border: ' weight=1px dashstyle=solid color=gray ';
+                    
+                    -moz-border-radius: 10px;
+                    border-radius: 10px;
+                    -wc-css3_border-radius: 10px;
+                "
+                >
+                <span contenteditable="true" style="
+                        display: inline-block; zoom: 1;
+                        position: relative;
+                        padding: 1em;
+                        margin: .5em;
+                        vertical-align: middle;
+                        visibility: hidden;
+                    
+                        background: rgba( 255, 128, 0, .9 );
+                        -wc-css3_background: ' color=#ff8800 opacity=.9 ';
+                    
+                        border: 1px solid gray;
+                        -wc-css3_border: ' weight=1px dashstyle=solid color=gray ';
+                        
+                        -moz-border-radius: 10px;
+                        border-radius: 10px;
+                        -wc-css3_border-radius: 10px;
+                    ">
+                    hidden
+                </span>
+                <span contenteditable="true" style="
+                        display: inline-block; zoom: 1;
+                        position: relative;
+                        padding: 1em;
+                        margin: .5em;
+                        vertical-align: middle;
+                    
+                        background: rgba( 255, 0, 0, .9 );
+                        -wc-css3_background: ' color=#ff0000 opacity=.9 ';
+                    
+                        border: 1px solid gray;
+                        -wc-css3_border: ' weight=1px dashstyle=solid color=gray ';
+                        
+                        -moz-border-radius: 10px;
+                        border-radius: 10px;
+                        -wc-css3_border-radius: 10px;
+                    ">
+                    red
+                </span>
+                <span contenteditable="true" style="
+                        display: inline-block; zoom: 1;
+                        position: relative;
+                        padding: 1em;
+                        margin: .5em;
+                        vertical-align: middle;
+                    
+                        background: rgba( 0, 255, 0, .9 );
+                        -wc-css3_background: ' color=#00ff00 opacity=.9 ';
+                    
+                        border: 1px solid gray;
+                        -wc-css3_border: ' weight=1px dashstyle=solid color=gray ';
+                        
+                        -moz-border-radius: 10px;
+                        border-radius: 10px;
+                        -wc-css3_border-radius: 10px;
+                    ">
+                    green
+                </span>
+                <span contenteditable="true" style="
+                        display: inline-block; zoom: 1;
+                        position: relative;
+                        padding: 1em;
+                        margin: .5em;
+                        vertical-align: middle;
+                    
+                        background: rgba( 0, 0, 255, .9 );
+                        -wc-css3_background: ' color=#0000ff opacity=.9 ';
+                    
+                        border: 1px solid gray;
+                        -wc-css3_border: ' weight=1px dashstyle=solid color=gray ';
+                        
+                        -moz-border-radius: 10px;
+                        border-radius: 10px;
+                        -wc-css3_border-radius: 10px;
+                    ">
+                    blue
+                </span>
+                <span contenteditable="true" style="
+                        display: inline-block; zoom: 1;
+                        position: relative;
+                        padding: 1em;
+                        margin: .5em;
+                        vertical-align: middle;
+                    
+                        background: rgba( 0, 255, 255, .9 );
+                        -wc-css3_background: ' color=#00ffff opacity=.9 ';
+                    
+                        border: 1px solid gray;
+                        -wc-css3_border: ' weight=1px dashstyle=solid color=gray ';
+                        
+                        -moz-border-radius: 10px;
+                        border-radius: 10px;
+                        -wc-css3_border-radius: 10px;
+                    ">
+                    cyan
+                </span>
+                <span contenteditable="true" style="
+                        display: inline-block; zoom: 1;
+                        position: relative;
+                        padding: 1em;
+                        margin: .5em;
+                        vertical-align: middle;
+                    
+                        background: rgba( 255, 0, 255, .9 );
+                        -wc-css3_background: ' color=#ff00ff opacity=.9 ';
+                    
+                        border: 1px solid gray;
+                        -wc-css3_border: ' weight=1px dashstyle=solid color=gray ';
+                        
+                        -moz-border-radius: 10px;
+                        border-radius: 10px;
+                        -wc-css3_border-radius: 10px;
+                    ">
+                    magenta
+                </span>
+                <span contenteditable="true" style="
+                        display: inline-block; zoom: 1;
+                        position: relative;
+                        padding: 1em;
+                        margin: .5em;
+                        vertical-align: middle;
+                    
+                        background: rgba( 255, 255, 0, .9 );
+                        -wc-css3_background: ' color=#ffff00 opacity=.9 ';
+                    
+                        border: 1px solid gray;
+                        -wc-css3_border: ' weight=1px dashstyle=solid color=gray ';
+                        
+                        -moz-border-radius: 10px;
+                        border-radius: 10px;
+                        -wc-css3_border-radius: 10px;
+                    ">
+                    yellow
+                </span>
+                <span contenteditable="true" style="
+                        display: inline-block; zoom: 1;
+                        position: relative;
+                        padding: 1em;
+                        margin: .5em;
+                        vertical-align: middle;
+                        color: white;
+                    
+                        background: rgba( 0, 0, 0, .9 );
+                        -wc-css3_background: ' color=#000000 opacity=.9 ';
+                    
+                        border: 1px solid white;
+                        -wc-css3_border: ' weight=1px dashstyle=solid color=white ';
+                        
+                        -moz-border-radius: 10px;
+                        border-radius: 10px;
+                        -wc-css3_border-radius: 10px;
+                    ">
+                    black
+                </span>
+                <span contenteditable="true" style="
+                        display: inline-block; zoom: 1;
+                        position: relative;
+                        padding: 1em;
+                        margin: .5em;
+                        vertical-align: middle;
+                        color: white;
+                    
+                        background: rgba( 128, 128, 128, .9 );
+                        -wc-css3_background: ' color=#888888 opacity=.9 ';
+                    
+                        border: 1px solid #666;
+                        -wc-css3_border: ' weight=1px dashstyle=solid color=#666 ';
+                        
+                        -moz-border-radius: 10px;
+                        border-radius: 10px;
+                        -wc-css3_border-radius: 10px;
+                    ">
+                    gray
+                </span>
+                <span contenteditable="true" style="
+                        display: inline-block; zoom: 1;
+                        position: relative;
+                        padding: 1em;
+                        margin: .5em;
+                        vertical-align: middle;
+                    
+                        background: rgba( 256, 256, 256, .9 );
+                        -wc-css3_background: ' color=#ffffff opacity=.9 ';
+                    
+                        border: 1px solid #666;
+                        -wc-css3_border: ' weight=1px dashstyle=solid color=#666 ';
+                        
+                        -moz-border-radius: 10px;
+                        border-radius: 10px;
+                        -wc-css3_border-radius: 10px;
+                    ">
+                    white
+                </span>
+            </span>
+    <p>Кроссбраузерная поддержка фич css3. В ie используется vml для отрисовки посредством яваскрипта тех фич, которые не поддерживает браузер.</p>
+    
+        <wc:demo>
+        <![CDATA[
+            <span
+                contenteditable="true"
+                style="
+                    display: inline-block; zoom: 1;
+                    position: relative;
+                    padding: 1em;
+                    margin: .5em;
+                
+                    -wc-css3_border: ' weight=1px dashstyle=solid color=blue ';
+                    border: 1px solid blue;
+                    
+                    -moz-border-radius: 10px;
+                    -wc-css3_border-radius: 10px;
+                    border-radius: 10px;
+                "
+                >
+                bord2
+            </span>
+        ]]>
+        </wc:demo>
+
+
+    <h2>Бордюры</h2>
+    <p>
+        <wc:demo>
+        <![CDATA[
+            <span contenteditable="true" style="
+                    display: inline-block; zoom: 1;
+                    position: relative;
+                    padding: 1em;
+                    margin: .5em;
+                    line-height: 1;
+                
+                    border: 1px solid gray;
+                "
+                >
+                bord1
+            </span>
+        ]]>
+        </wc:demo>
+        <wc:demo>
+        <![CDATA[
+            <span contenteditable="true" style="
+                    display: inline-block; zoom: 1;
+                    position: relative;
+                    padding: 1em;
+                    margin: .5em;
+                
+                    -wc-css3_border: ' weight=1px dashstyle=solid color=blue ';
+                    border: 1px solid blue;
+                    
+                    -moz-border-radius: 10px;
+                    -wc-css3_border-radius: 10px;
+                    border-radius: 10px;
+                ">
+                bord2
+            </span>
+        ]]>
+        </wc:demo>
+
+        <wc:demo>
+        <![CDATA[
+            <span contenteditable="true" style="
+                    display: inline-block; zoom: 1;
+                    position: relative;
+                    padding: 1em;
+                    margin: .5em;
+                
+                    -wc-css3_border: ' weight=1px dashstyle=solid color=red ';
+                    border: 1px solid red;
+                    
+                    -moz-border-radius: 10px 0;
+                    -wc-css3_border-radius: 10px 0;
+                    border-radius: 10px 0;
+                ">
+                bord3
+            </span>
+        ]]>
+        </wc:demo>
+
+        <wc:demo>
+        <![CDATA[
+            <span contenteditable="true" style="
+                    display: inline-block; zoom: 1;
+                    position: relative;
+                    padding: 1em;
+                    margin: .5em;
+                
+                    -wc-css3_border: ' weight=1px dashstyle=solid color=green ';
+                    border: 1px solid green;
+                    
+                    -moz-border-radius: 0px 5px 10px 20px;
+                    -wc-css3_border-radius: 0px 5px 10px 20px;
+                    border-radius: 0px 5px 10px 20px;
+                ">
+                bord4
+            </span>
+        ]]>
+        </wc:demo>
+
+        <wc:demo>
+        <![CDATA[
+            <span contenteditable="true" style="
+                    display: inline-block; zoom: 1;
+                    position: relative;
+                    padding: 1em;
+                    margin: .5em;
+                
+                    -wc-css3_border: ' weight=10px dashstyle=dot color=gray ';
+                    border: 10px dotted gray;
+                    
+                    -moz-border-radius: 10px;
+                    -wc-css3_border-radius: 10px;
+                    border-radius: 10px;
+                ">
+                bord5
+            </span>
+        ]]>
+        </wc:demo>
+
+    </p>
+    
+    <h2>Градиенты</h2>    
+    <p>
+        <wc:demo>
+        <![CDATA[
+            <span
+                style="
+                    display: inline-block; zoom: 1;
+                    background: fixed url( '../../wc/css3/wc-css3_board.png' );
+                    margin: .5em;
+                    padding: 1em;
+                "
+                >
+                <span contenteditable="true" style="
+                        display: inline-block; zoom: 1;
+                        position: relative;
+                        padding: 1em;
+                        vertical-align: middle;
+                    
+                        background: rgba( 0, 255, 0, .9 );
+                        -wc-css3_background: ' color=#00ff00 opacity=.9 ';
+                    
+                        border: 1px solid gray;
+                        -wc-css3_border: ' weight=1px dashstyle=solid color=gray ';
+                        
+                        -moz-border-radius: 10px;
+                        border-radius: 10px;
+                        -wc-css3_border-radius: 10px;
+                    ">
+                    grad1
+                </span>
+            </span>
+        ]]>
+        </wc:demo>
+
+        <wc:demo>
+        <![CDATA[
+            <span contenteditable="true" style="
+                    display: inline-block; zoom: 1;
+                    position: relative;
+                    padding: 1em;
+                    margin: .5em;
+                
+                    -wc-css3_background: ' type=gradient angle=270 color=lime color2=yellow ';
+                    background: -o-linear-gradient( 0deg, lime, yellow );
+                    background: -moz-linear-gradient( 0deg, lime, yellow );
+                    background: -webkit-gradient( linear, left top, right top, from( lime ), to( yellow ) );
+                
+                    -wc-css3_border: ' weight=1px dashstyle=solid color=gray ';
+                    border: 1px solid gray;
+                    
+                    -moz-border-radius: 10px;
+                    -wc-css3_border-radius: 10px;
+                    border-radius: 10px;
+                ">
+                grad2
+            </span>
+        ]]>
+        </wc:demo>
+
+        <wc:demo>
+        <![CDATA[
+            <span contenteditable="true" style="
+                    display: inline-block; zoom: 1;
+                    position: relative;
+                    padding: 1em;
+                    margin: .5em;
+                
+                    -wc-css3_background: ' type=gradient angle=180 color=lime color2=yellow ';
+                    background: -o-linear-gradient( -90deg, lime, yellow );
+                    background: -moz-linear-gradient( -90deg, lime, yellow );
+                    background: -webkit-gradient( linear, left top, left bottom, from( lime ), to( yellow ) );
+                
+                    -wc-css3_border: ' weight=1px dashstyle=solid color=gray ';
+                    border: 1px solid gray;
+                    
+                    -moz-border-radius: 10px;
+                    -wc-css3_border-radius: 10px;
+                    border-radius: 10px;
+                ">
+                grad3
+            </span>
+        ]]>
+        </wc:demo>
+
+    </p>    
+
+    <h2>Тени</h2>    
+    <p>
+        <wc:demo>
+        <![CDATA[
+            <span contenteditable="true" style="
+                    display: inline-block; zoom: 1;
+                    position: relative;
+                    padding: 1em;
+                    margin: .5em;
+                
+                    background: lime;
+                    -wc-css3_background: ' color=lime ';
+                    
+                    -moz-border-radius: 10px;
+                    -wc-css3_border-radius: 10px;
+                    border-radius: 10px;
+                    
+                    -webkit-box-shadow: 5px 5px 5px blue;
+                    -moz-box-shadow: 5px 5px 5px blue;
+                    -wc-css3_box-shadow: ' type=double offset=5px,5px color=blue offset2=3px,3px color2=blue opacity=.5 ';
+                    box-shadow: 5px 5px 5px blue;
+                ">
+                shad1
+            </span>
+        ]]>
+        </wc:demo>
+
+        <wc:demo>
+        <![CDATA[
+            <span contenteditable="true" style="
+                    display: inline-block; zoom: 1;
+                    position: relative;
+                    padding: 1em;
+                    margin: .5em;
+                
+                    background: lime;
+                    -wc-css3_background: ' color=lime ';
+                    
+                    -moz-border-radius: 10px;
+                    border-radius: 10px;
+                    -wc-css3_border-radius: 10px;
+                    
+                    -webkit-box-shadow: 0 0 4px blue;
+                    -moz-box-shadow: 0 0 4px blue;
+                    box-shadow: 0 0 4px blue;
+                    -wc-css3_box-shadow: ' type=double offset=2px,2px color=blue offset2=-2px,-2px color2=blue opacity=.5 ';
+                ">
+                shad2
+            </span>
+        ]]>
+        </wc:demo>
+
+    </p>    
+    
+    <h2>Ещё примеры</h2>    
+    <p>
+        <span style="
+                display: inline-block; zoom: 1;
+                position: relative;
+                padding: 20px;
+                margin: .5em;
+                line-height: 0;
+            
+                background: white;
+                -wc-css3_background: ' color=white ';
+                
+                -wc-css3_border: ' weight=1px dashstyle=solid color=gray ';
+                border: 1px solid gray;
+                
+                -moz-border-radius: 50px;
+                -wc-css3_border-radius: 50px;
+                border-radius: 50px;
+                
+            ">
+            <span contenteditable="true" style="
+                    display: inline-block; zoom: 1;
+                    position: relative;
+                    padding: 20px;
+                    margin: .5em;
+                    line-height: 0;
+                    color: yellow;
+                
+                    background: navy;
+                    -wc-css3_background: ' color=navy ';
+                    
+                    -moz-border-radius: 20px;
+                    -wc-css3_border-radius: 20px;
+                    border-radius: 20px;
+                    
+                ">
+            </span>
+        </span>
+        <span style="
+                display: inline-block; zoom: 1;
+                position: relative;
+                padding: 20px;
+                margin: .5em;
+                line-height: 0;
+            
+                background: white;
+                -wc-css3_background: ' color=white ';
+                
+                -wc-css3_border: ' weight=1px dashstyle=solid color=gray ';
+                border: 1px solid gray;
+                
+                -moz-border-radius: 50px;
+                -wc-css3_border-radius: 50px;
+                border-radius: 50px;
+                
+            ">
+            <span contenteditable="true" style="
+                    display: inline-block; zoom: 1;
+                    position: relative;
+                    padding: 20px;
+                    margin: .5em;
+                    line-height: 0;
+                    color: yellow;
+                
+                    background: maroon;
+                    -wc-css3_background: ' color=maroon ';
+                    
+                    -moz-border-radius: 20px;
+                    -wc-css3_border-radius: 20px;
+                    border-radius: 20px;
+                    
+                ">
+            </span>
+        </span>
+    </p>
 
 </doc:root>

@@ -29,7 +29,9 @@
     </wc:test-js>
     
     <wc:demo>
+    <![CDATA[
         <wc:component-test> test </wc:component-test>
+    ]]>
     </wc:demo>
     
 </doc:root>

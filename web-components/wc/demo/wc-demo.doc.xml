@@ -10,9 +10,14 @@
     <p>Демонстрирует html-код и позволяет тут же посмотреть его результат.</p>
     
     <wc:demo>
-        <button onclick=" alert( 'Спасибо!' ) " >
-            Нажми меня!
+    <![CDATA[
+        <button id="_wc-demon_test_1_" onclick=" alert( 'Спасибо!' ) " >
+            Нажми меня
         </button>
+        <script>
+            document.getElementById( '_wc-demon_test_1_' ).innerHTML+= '!'
+        </script>
+    ]]>
     </wc:demo>
 
 </doc:root>

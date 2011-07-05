@@ -37,7 +37,7 @@ $define( '$createNameSpace', function( name ){
     proxy.prototype= this
     var ns= new proxy
     $define.call( $glob(), name, ns )
-    //ns.$define( name, ns )
+    ns.$define( name, ns )
     return ns
 })
 
@@ -86,7 +86,7 @@ $domReady.then=
 function( proc ){
     var checker= function( ){
         if( $domReady() ) proc()
-        else $schedule( 100, checker )
+        else $schedule( 10, checker )
     }
     checker()
 }
@@ -122,18 +122,22 @@ $define( '$Component', function( tagName, factory ){
 			}
 		}
 	
-	var isAttached= function( el ){
+	var isAttached=
+	function( el ){
 		return typeof el[ fieldName ] === 'object'
 	}
 	
-	var attach= function( el ){
+	var attach=
+	function( el ){
+
 		el[ fieldName ]= null
-		var widget= new factory( el )
-		el[ fieldName ]= widget
-		elements.push( el )
+		var widget= factory( el )
+		el[ fieldName ]= widget || null
+		if( widget ) elements.push( el )
 	}
 	
-	var attachIfLoaded= function( el ){
+	var attachIfLoaded=
+	function( el ){
 		var cur= el
 		do {
 			if( !cur.nextSibling ) continue
@@ -142,42 +146,84 @@ $define( '$Component', function( tagName, factory ){
 		} while( cur= cur.parentNode )
 	}
 	
-	var check4attach= function( nodes ){
-		var filtered= []
-		filter: for( var i= 0, len= nodes.length; i < len; ++i ){
-			var el= nodes[ i ]
-			if( isAttached( el ) ) continue
-			if( !checkName( el ) ) continue
-			filtered.push( el )
+	var dropElement=
+	function( el ){
+		for( var i= 0; i < elements.length; ++i ){
+			if( elements[ i ] !== el ) continue
+			elements.splice( i, 1 )
+			return
 		}
-		attach: for( var i= 0; i < filtered.length; ++i ){
+	}
+	
+	var detach=
+	function( nodeList ){
+		for( var i= 0, len= nodeList.length; i < len; ++i ){
+			var node= nodeList[ i ]
+			var widget= node[ fieldName ]
+			if( widget.destroy ) widget.destroy()
+			node[ fieldName ]= void 0
+			dropElement( node )
+		}
+	}
+	
+	var check4attach=
+	function( nodeList ){
+		var filtered= []
+		filtering:
+		for( var i= 0, len= nodeList.length; i < len; ++i ){
+			var node= nodeList[ i ]
+			if( isAttached( node ) ) continue
+			if( !checkName( node ) ) continue
+			filtered.push( node )
+		}
+		for( var i= 0, len= filtered.length; i < len; ++i ){
 			attachIfLoaded( filtered[ i ] )
 		}
 	}
 
-	var tracking= function(){
-		check4attach( nodes )
+	var check4detach=
+	function( nodeList ){
+		var filtered= []
+		filtering:
+		for( var i= 0, len= nodeList.length; i < len; ++i ){
+			var node= nodeList[ i ]
+
+			if( !node[ fieldName ] ) continue
+
+			var current= node
+			var doc= current.ownerDocument
+			while( current= current.parentNode ){
+				if( current === doc ) continue filtering
+			}
+
+			filtered.push( node )
+		}
+		detach( filtered )
 	}
 
-	var detach= function( el ){
-		var widget= el[ fieldName ]
-		if( widget && widget.onDetach ) widget.onDetach()
-		el[ fieldName ]= void 0
-	}
-	
-	var check4detach= function( nodes ){
-		filtered= []
-		filter: for( var i= 0, len= nodes.length; i < len; ++i ){
-			var el= nodes[ i ]
-			if( !isAttached( el ) ) continue
-			filtered.push( el )
+	var checkLost4detach=
+	function( nodeList ){
+		var filtered= []
+		filtering:
+		for( var i= 0, len= nodeList.length; i < len; ++i ){
+			var node= nodeList[ i ]
+
+			if( !node[ fieldName ] ) continue
+
+			filtered.push( node )
 		}
-		attach: for( var i= 0, len= filtered.length; i < len; ++i ){
-			detach( filtered[ i ] )
-		}
+		
+		detach( filtered )
 	}
-	
-	var interval= $glob().top.setInterval( tracking, 100 )
+
+	var tracking=
+	function( ){
+		check4attach( nodes )
+		check4detach( elements )
+	}
+
+	var interval=
+	$glob().top.setInterval( tracking, 100 )
 
 	$domReady.then(function(){
 		if( $support.eventModel() === 'w3c' ){
@@ -190,16 +236,21 @@ $define( '$Component', function( tagName, factory ){
 	if( $support.eventModel() === 'w3c' ){
 		var docEl= $doc().documentElement
 		docEl.addEventListener( 'DOMNodeInserted', function( ev ){
-			check4attach([ ev.target ])
+			var node= ev.target
+			check4attach([ node ])
+			if( node.getElementsByTagName ) check4attach( node.getElementsByTagName( '*' ) )
 		}, false )
 		docEl.addEventListener( 'DOMNodeRemoved', function( ev ){
-			check4detach([ ev.target ])
+			var node= ev.target
+			checkLost4detach([ node ])
+			if( node.getElementsByTagName ) checkLost4detach( node.getElementsByTagName( '*' ) )
 		}, false )
 	}
 	
 	this.tagName= $Value( tagName )
 	this.factory= $Value( factory )
-	this.elements= function( ){
+	this.elements=
+	function( ){
 		return elements.slice( 0 )
 	}
 })
@@ -286,8 +337,9 @@ $define
         proto.minimizeIndent=
         $Poly
         (   function( ){
+                this.normilizeSpaces()
                 var minIndent= 1/0
-                this.$.replace( /^( +)[^ ]/mg, function( str, indent ){
+                this.$.replace( /^( +)[^ \r\n]/mg, function( str, indent ){
                     if( indent.length < minIndent ) minIndent= indent.length
                 })
                 if( minIndent === 1/0 ) return this
@@ -296,10 +348,10 @@ $define
             }
         )
 
-        proto.tab2space=
+        proto.normilizeSpaces=
         $Poly
         (   function( ){
-                this.$= this.$.replace( /\t/g, '    ' )
+                this.$= this.$.replace( /\t/g, '    ' ).replace( /\u00A0/, ' ' )
                 return this
             }
         )
@@ -929,6 +981,7 @@ $define
         ,   new function(){
                 var fieldName= { w3c: 'textContent', ms: 'innerText' }[ $support.htmlModel() ]
                 return function( val ){
+                    if( this.text() === val ) return this
                     this.$[ fieldName ]= $String( val ).$
                     return this
                 }
@@ -944,6 +997,7 @@ $define
                 return val
             }
         ,   function( val ){
+                if( this.html() === val ) return this
                 this.$.innerHTML= $String( val ).$
                 return this
             }
@@ -1066,26 +1120,6 @@ $define
             }[ $support.eventModel() ]
         )
         
-        proto.parent= 
-        $Poly
-        (   function( ){
-                this.$= this.$.parentNode
-                return this
-            }
-        ,   function( node ){
-                var parent= this.$.parentNode
-                if( node ){
-                    node= $Node( node ).$
-                    if( parent ) parent.insertBefore( node, this.$ )
-                    node.appendChild( this.$ )
-                } else {
-                    if( !parent ) return this
-                    parent.removeChild( this.$ )
-                }
-                return this
-            }
-        )
-        
         proto.childList=
         function( name ){
             var list= this.$.childNodes
@@ -1098,6 +1132,51 @@ $define
             
             return filtered
         }
+        
+        proto.ensureChild=
+        function( name ){
+            this.$= this.childList( name )[ 0 ] || $Node( name ).parent( this ).$
+            return this
+        }
+        
+        proto.descList=
+        function( name ){
+            var list= this.$.getElementsByTagName( name )
+            var filtered= []
+            
+            for( var i= 0; i < list.length; ++i ){
+                filtered.push( list[ i ] )
+            }
+            
+            return filtered
+        }
+
+        proto.findByTag=
+        function( name ){
+            var found= this.$.getElementsByTagName( name )
+            
+        }
+        
+        proto.parent= 
+        $Poly
+        (   function( ){
+                this.$= this.$.parentNode
+                return this
+            }
+        ,   function( node ){
+                var parent= this.$.parentNode
+                if( node ){
+                    node= $Node( node ).$
+                    if( parent ) parent.insertBefore( node, this.$ )
+                    if( parent === node ) return this
+                    node.appendChild( this.$ )
+                } else {
+                    if( !parent ) return this
+                    parent.removeChild( this.$ )
+                }
+                return this
+            }
+        )
         
         proto.head=
         $Poly
@@ -1153,7 +1232,19 @@ $define
                 return this
             }   
         )
-            
+        
+        proto.inDom=
+        $Poly
+        (   function( ){
+                var node= $Node( this.$ )
+                var doc= node.$.ownerDocument
+                while( node.parent().$ ){
+                    if( node.$ === doc ) return true
+                }
+                return false
+            }
+        )
+        
     })
 )
 
@@ -1161,9 +1252,13 @@ $define
 with( $html )
 $Component
 (   'a'
-,   function( el ){
-        var isTarget= ( el.href == $doc().location.href )
-        $Node( el ).state( 'target', isTarget )
-    }
+,   $Class( function( klass ){
+        klass.create=
+        function( el ){
+            var isTarget= ( el.href == $doc().location.href )
+            $Node( el ).state( 'target', isTarget )
+            return null
+        }
+    })
 )
 

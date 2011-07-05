@@ -13,6 +13,14 @@
 </xsl:template>
 <xsl:template xmlns:xsl="http://www.w3.org/1999/XSL/Transform" match=" processing-instruction() "/>
 
+<!-- wc/demo/wc-test-js.xsl -->
+
+<xsl:template xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" match=" wc:demo/text() ">
+    <textarea>
+        <xsl:copy/>
+    </textarea>
+</xsl:template>
+
 <!-- wc/test-js/wc-test-js.xsl -->
 
 <xsl:template xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" match=" wc:test-js/text() ">
