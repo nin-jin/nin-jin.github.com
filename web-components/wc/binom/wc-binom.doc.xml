@@ -1,0 +1,29 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>wc:binom</h1>
+
+    <p>
+        <wc:demo>
+        <![CDATA[
+            <wc:spacer>
+                <p>Иногда ширина страницы бывает слишком большой для узкого контента. </p>
+                <wc:binom>
+                    <wc:binom-left>
+                        <p>В таких случаях не лишним будет разбить страницу на несколько колонок.</p>
+                    </wc:binom-left>
+                    <wc:binom-right>
+                        <p>Колонки занимают всю доступную ширину, и между ними вставляется вертикальная линия.</p>
+                    </wc:binom-right>
+                </wc:binom>
+                <p>Последующий текст</p>
+            </wc:spacer>
+        ]]>
+        </wc:demo>
+    </p>
+
+</doc:root>

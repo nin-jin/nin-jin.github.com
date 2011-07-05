@@ -1,0 +1,38 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>js-tricks</h1>
+
+    <p> Проверки вперемешку с вычислениями без нагромождения if-ов: <br/>
+        <wc:test-js>
+            var result
+            job: {
+                if( result ) break job
+                result= 0
+                if( result ) break job
+                ++result
+                if( result ) break job
+                ++result
+            }
+            _done( result, 1 )
+        </wc:test-js>
+        <wc:test-js>
+            var result
+            if( !result ){
+                result= 0
+                if( !result ){
+                    ++result
+                    if( !result ){
+                        ++result
+                    }
+                }
+            }
+            _done( result, 1 )
+        </wc:test-js>
+    </p>
+
+</doc:root>

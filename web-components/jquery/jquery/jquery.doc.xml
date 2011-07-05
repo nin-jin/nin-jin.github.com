@@ -1,0 +1,18 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>jQuery</h1>
+
+    <p>Популярная библиотека для работы с dom. Весит слишком много, чтобы тащить её всюду.</p>
+
+    <wc:test-js> _done( jQuery ) </wc:test-js>
+    <wc:test-js> _done( $ ) </wc:test-js>
+    <wc:test-js> _done( $, jQuery ) </wc:test-js>
+    <wc:test-js> _done( $(document).get(0), document ) </wc:test-js>
+    <wc:test-js> _done( $('body').get(0), document.body ) </wc:test-js>
+
+</doc:root>
