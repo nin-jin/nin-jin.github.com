@@ -7,13 +7,14 @@
 
     <h1>wc:footer</h1>
 
-    <wc:paper>
+    <wc:demo>
+    <![CDATA[
         <wc:spacer>
             Рисует некоторую область, отрезанную от контента до неё.
         </wc:spacer>
         <wc:footer>
             Содержимое области считается не особо важным.
         </wc:footer>
-    </wc:paper>
+    ]]></wc:demo>
 
 </doc:root>

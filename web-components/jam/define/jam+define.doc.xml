@@ -11,7 +11,6 @@
     <p>
         <wc:test-js> _done( $jam.$define ) </wc:test-js>
         <wc:test-js>
-            
             _done( $jam.$define( '_test_define_123_', 123 ), $jam )
         </wc:test-js>
         <wc:test-js>
@@ -24,7 +23,6 @@
             } catch( e ){
                 return _done( e )
             }
-            throw 'попытка изменения значения должна вызывать ошибку'
         </wc:test-js>
     </p>
 

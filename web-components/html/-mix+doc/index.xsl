@@ -24,7 +24,7 @@
 <!-- wc/test-js/wc-test-js.xsl -->
 
 <xsl:template xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" match=" wc:test-js/text() ">
-    <textarea>
+    <textarea class=" wc_test-js_textarea">
         <xsl:copy/>
     </textarea>
 </xsl:template>

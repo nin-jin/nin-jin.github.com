@@ -7,10 +7,16 @@
 
     <h1>wc:paper</h1>
 
-    <wc:paper>
+    <wc:demo>
+    <![CDATA[
         <wc:spacer>
-            Рисует лист бумаги в качестве подложки.
+            <wc:paper>
+                <wc:spacer>
+                    Рисует лист бумаги в качестве подложки.
+                </wc:spacer>
+            </wc:paper>
         </wc:spacer>
-    </wc:paper>
+    ]]>
+    </wc:demo>
 
 </doc:root>

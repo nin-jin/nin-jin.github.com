@@ -1,0 +1,15 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+    
+    <h1>$jam.$selection</h1>
+
+    <p>Возврачает объект выделения.</p>
+
+    <wc:test-js> _done( $jam.$selection ) </wc:test-js>
+    <wc:test-js> _done( $jam.$selection() ) </wc:test-js>
+
+</doc:root>

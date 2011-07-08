@@ -11,12 +11,19 @@
     
     <wc:demo>
     <![CDATA[
-        <button id="_wc-demon_test_1_" onclick=" alert( 'Спасибо!' ) " >
-            Нажми меня
-        </button>
-        <script>
-            document.getElementById( '_wc-demon_test_1_' ).innerHTML+= '!'
-        </script>
+        <wc:demo>
+            &lt;a
+                id="_wc-demo_test_1_"
+                href="http://ya.ru/"
+                onclick=" alert( 'Спасибо!' ) "
+                style=" color: red "
+                >
+                Нажми меня
+            &lt;/a&gt;
+            &lt;script&gt;
+                document.getElementById( '_wc-demo_test_1_' ).innerHTML+= '!'
+            &lt;/script&gt;
+        </wc:demo>
     ]]>
     </wc:demo>
 

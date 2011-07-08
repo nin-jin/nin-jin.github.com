@@ -16,6 +16,9 @@
         _done( $jam.$support.eventModel() )
     </wc:test-js>
     <wc:test-js>
+        _done( $jam.$support.selectionModel() )
+    </wc:test-js>
+    <wc:test-js>
         _done( String( $jam.$support.vml() ) )
     </wc:test-js>
 

@@ -6,7 +6,7 @@
     >
 
     <h1>$jam.$Throttler</h1>
-    <p>Обёртка для функции, для отложенного её выполнения. Если повторный вызов происходит до истечения задержки - отсчёт начинается сначала.</p>
+    <p>Обёртка для функции, для выполнения её не чаще заданного числа миллисекунд. Вызов произойдёт через заданное время после первого вызова, но с параметрами от последнего на текущий момент вызова.</p>
 
     <wc:test-js> _done( $jam.$Throttler ) </wc:test-js>
     <wc:test-js class=" timeout=200 ">
@@ -21,6 +21,16 @@
         })
         $jam.$schedule( 100, function( ){
             _done( count, 1 )
+        })
+    </wc:test-js>
+    <wc:test-js class=" timeout=200 ">
+        var func= $jam.$Throttler( 50, function( arg ){
+            _done( arg, 3 )
+        })
+        func( 1 )
+        func( 2 )
+        $jam.$schedule( 10, function( ){
+            func( 3 )
         })
     </wc:test-js>
 

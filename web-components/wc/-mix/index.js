@@ -44,21 +44,22 @@ $define( '$createNameSpace', function( name ){
 // wc/wc/wc.jam
 $jam.$createNameSpace( '$wc' )
 
+// jam/doc/jam+doc.jam
+with( $jam )
+$define( '$doc', $Value( $glob().document ) )
+
 // jam/support/jam+support.jam
 with( $jam )
 $define
 (   '$support'
 ,   new function(){
-        var node= document.createElement( 'html:div' )
+        var node= $doc().createElement( 'html:div' )
         this.htmlModel= $Value( node.namespaceURI !== void 0 ? 'w3c' : 'ms' )
         this.eventModel= $Value( 'addEventListener' in node ? 'w3c' : 'ms' )
+        this.selectionModel= $Value( 'createRange' in $doc() ? 'w3c' : 'ms' )
         this.vml= $Value( /*@cc_on!@*/ false )
     }
 )
-
-// jam/doc/jam+doc.jam
-with( $jam )
-$define( '$doc', $Value( $glob().document ) )
 
 // jam/schedule/jam+schedule.js
 with( $jam )
@@ -237,13 +238,17 @@ $define( '$Component', function( tagName, factory ){
 		var docEl= $doc().documentElement
 		docEl.addEventListener( 'DOMNodeInserted', function( ev ){
 			var node= ev.target
-			check4attach([ node ])
-			if( node.getElementsByTagName ) check4attach( node.getElementsByTagName( '*' ) )
+			$schedule( 0, function( ){
+				check4attach([ node ])
+				if( node.getElementsByTagName ) check4attach( node.getElementsByTagName( '*' ) )
+			})
 		}, false )
 		docEl.addEventListener( 'DOMNodeRemoved', function( ev ){
 			var node= ev.target
-			checkLost4detach([ node ])
-			if( node.getElementsByTagName ) checkLost4detach( node.getElementsByTagName( '*' ) )
+			$schedule( 0, function( ){
+				checkLost4detach([ node ])
+				if( node.getElementsByTagName ) check4detach( node.getElementsByTagName( '*' ) )
+			})
 		}, false )
 	}
 	
@@ -622,11 +627,11 @@ $define
         (   function( ){
                 this.normilizeSpaces()
                 var minIndent= 1/0
-                this.$.replace( /^( +)[^ \r\n]/mg, function( str, indent ){
+                this.$.replace( /^( *)[^ \r\n]/mg, function( str, indent ){
                     if( indent.length < minIndent ) minIndent= indent.length
                 })
                 if( minIndent === 1/0 ) return this
-                this.$= this.$.replace( RegExp( '^[ ]{1,' + minIndent + '}', 'mg' ), '' )
+                this.$= this.$.replace( RegExp( '^[ ]{0,' + minIndent + '}', 'mg' ), '' )
                 return this
             }
         )
@@ -742,6 +747,25 @@ $define
     })
 )
 
+// jam/Pipe/jam+Pipe.jam
+with( $jam )
+$define( '$Pipe', new function(){
+	var simple= function( data ){
+		return data
+	}
+	return function( ){
+		var list= arguments
+		var len= list.length
+		if( len === 1 ) return list[0]
+		if( len === 0 ) return simple
+		return function(){
+			if( !arguments.length ) arguments.length= 1
+			for( var i= 0; i < len; ++i ) arguments[0]= list[ i ].apply( this, arguments )
+			return arguments[0]
+		}
+	}
+})
+
 // jam/Lexer/jam+Lexer.jam
 with( $jam )
 $define
@@ -808,40 +832,22 @@ $define
     }
 )
 
-// jam/Pipe/jam+Pipe.jam
-with( $jam )
-$define( '$Pipe', new function(){
-	var simple= function( data ){
-		return data
-	}
-	return function( ){
-		var list= arguments
-		var len= list.length
-		if( len === 1 ) return list[0]
-		if( len === 0 ) return simple
-		return function(){
-			if( !arguments.length ) arguments.length= 1
-			for( var i= 0; i < len; ++i ) arguments[0]= list[ i ].apply( this, arguments )
-			return arguments[0]
-		}
-	}
-})
-
 // jam/Parser/jam+Parser.jam
 with( $jam )
 $define
 (	'$Parser'
 ,	function( syntaxes ){
-		var lexems= {}
-		for( var name in syntaxes ){
-			var regexp= syntaxes[ name ].regexp
+		var lexems= []
+        var handlers= []
+		handlers[ '' ]= syntaxes[ '' ] || $Pipe()
+
+		for( var regexp in syntaxes ){
+            if( !syntaxes.hasOwnProperty( regexp ) ) continue
 			if( !regexp ) continue
-			lexems[ name ]= $RegExp( regexp ).$
+			lexems.push( RegExp( regexp ) )
+            handlers.push( syntaxes[ regexp ] )
 		}
 		var lexer= $Lexer( lexems )
-		
-		var handlers= { '': $Pipe() }
-		for( var name in syntaxes ) handlers[ name ]= syntaxes[ name ].handler
 		
 		return function( str ){
 			var res= []
@@ -872,18 +878,14 @@ $define
             var Selector= arg.Selector || arg.encoder && klass.Selector( arg.encoder ) || klass.Selector()
     
             var parse= $Parser( new function(){
-                this.open= new function(){
-                    this.regexp= RegExp( $String( openEncoded ).mult( 2 ).$ )
-                    this.handler= $Value( open )
-                }
-                this.close= new function(){
-                    this.regexp= RegExp( $String( closeEncoded ).mult( 2 ).$ )
-                    this.handler= $Value( close )
-                }
-                this.selector= new function(){
-                    this.regexp= RegExp( '(' + openEncoded + '([^' + openEncoded + closeEncoded + ']*)' + closeEncoded + ')' )
-                    this.handler= Selector
-                }
+                this[ $String( openEncoded ).mult( 2 ).$ ]=
+                $Value( open )
+                
+                this[ $String( closeEncoded ).mult( 2 ).$ ]=
+                $Value( close )
+                
+                this[ '(' + openEncoded + '([^' + openEncoded + closeEncoded + ']*)' + closeEncoded + ')' ]=
+                Selector
             })
     
             return $Class( function( klass, proto ){
@@ -996,6 +998,18 @@ $define
         this.Template=
         $TemplateFactory({ encoder: this.encode })
     
+    }
+)
+
+// jam/switch/jam+switch.jam
+with( $jam )
+$define
+(   '$switch'
+,   function( key, map ){
+        if( !map.hasOwnProperty( key ) ) {
+            throw new Error( 'Key [' + key + '] not found in map' )
+        }
+        return map[ key ]
     }
 )
 
@@ -1149,44 +1163,46 @@ $define
 ,   $Class( function( klass, proto ){
     
         klass.create=
-        {   'w3c': $Poly
-            (   function( ){
-                    var obj= new klass
-                    obj.$= $doc().createEvent( 'Event' )
-                    return obj
-                }
-            ,   function( ev ){
-                    if( $classOf( ev ) === 'Object' ){
-                        if( ev.toEvent ){
-                            var obj= new klass
-                            obj.$= ev.toEvent()
-                        } else {
-                            var obj= klass.create()
-                            obj.$.initEvent( ev.type, ev.bubble || true, ev.cancelable || false )
-                        }
-                    } else {
+        $switch
+        (   $support.eventModel()
+        ,   {   'w3c': $Poly
+                (   function( ){
                         var obj= new klass
-                        obj.$= ev
+                        obj.$= $doc().createEvent( 'Event' )
+                        obj.$.initEvent( '', true, true )
+                        return obj
                     }
-                    return obj
-                }
-            )
-        ,   'ms': $Poly
-            (   function( ){
-                    var obj= new klass
-                    obj.$= $doc().createEventObject()
-                    return obj
-                }
-            ,   function( ev ){
-                    if( ev.toEvent ) ev= ev.toEvent()
-                    var obj= klass.create()
-                    for( var key in ev ) try {
-                        obj.$[ key ]= ev[ key ]
-                    } catch( e ){ }
-                    return obj
-                }
-            )
-        }[ $support.eventModel() ]
+                ,   function( ev ){
+                        var obj= new klass
+                        obj.$= ev.toEvent ? ev.toEvent() : ev
+                        //obj.$.initEvent( ev.type, ev.bubble || true, ev.cancelable || false )
+                        return obj
+                    }
+                )
+            ,   'ms': $Poly
+                (   function( ){
+                        var obj= new klass
+                        obj.$= $doc().createEventObject()
+                        return obj
+                    }
+                ,   function( ev ){
+                        var obj= new klass.create()
+                        obj.$= ev.toEvent ? ev.toEvent() : ev
+                        //for( var key in ev ) try {
+                        //    obj.$[ key ]= ev[ key ]
+                        //} catch( e ){ }
+                        if( !obj.$.preventDefault ){
+                            obj.$.preventDefault=
+                            function( ){
+                                this.returnValue= false
+                                this.defaultPrevented= true
+                            }
+                        }
+                        return obj
+                    }
+                )
+            }
+        )
         
         proto.toEvent=
         $Poly
@@ -1195,8 +1211,372 @@ $define
             }
         )
 
+        proto.type=
+        $Poly
+        (   function( ){
+                return this.$.type
+            }
+        ,   $switch
+            (   $support.eventModel()
+            ,   {   'w3c': function( type ){
+                        this.$.initEvent( type, this.$.bubbles, this.$.cancelable )
+                        return this
+                    }
+                ,   'ms': function( type ){
+                        this.$.type= type
+                        return this
+                    }
+                }
+            )
+        )
+            
+        proto.keyMeta=
+        $Poly
+        (   function( ){
+                return Boolean( this.$.metaKey || this.$.ctrlKey )
+            }
+        )
+        
+        proto.keyShift=
+        $Poly
+        (   function( ){
+                return Boolean( this.$.shiftKey )
+            }
+        )
+        
+        proto.keyAlt=
+        $Poly
+        (   function( ){
+                return Boolean( this.$.altKey )
+            }
+        )
+        
+        proto.keyAccel=
+        $Poly
+        (   function( ){
+                return this.keyMeta() || this.keyShift() || this.keyAlt()
+            }
+        )
+        
+        proto.keyCode=
+        $Poly
+        (   function( ){
+                return Number( this.$.keyCode )
+            }
+        )
+        
+        proto.target=
+        $switch
+        (   $support.eventModel()
+        ,   {   'w3c': function( ){
+                    return this.$.target
+                }
+            ,   'ms': function( ){
+                    return this.$.srcElement
+                }
+            }
+        )
+        
+        proto.defaultBehavior=
+        $Poly
+        (   function( ){
+                return Boolean( this.$.defaultPrevented )
+            }
+        ,   $switch
+            (   $support.eventModel()
+            ,   {   'w3c': function( val ){
+                        if( val ) this.$.returnValue= !!val
+                        else this.$.preventDefault()
+                        return this
+                    }
+                ,   'ms': function( val ){
+                        this.$.returnValue= !!val
+                        this.$.defaultPrevented= !val
+                        return this
+                    }
+                }
+            )
+        )
+
     })
 )
+
+// jam/selection/jam+selection.jam
+with( $jam )
+$define
+(  '$selection'
+,   $switch
+    (   $support.selectionModel()
+    ,   {   'w3c': function( ){
+                return $glob().getSelection()
+            }
+        ,   'ms': function( ){
+                return $doc().selection
+            }
+        }
+    )
+)
+
+// jam/DomRange/jam+DomRange.jam
+with( $jam )
+$define
+(   '$DomRange'
+,   $Class( function( klass, proto ){
+    
+        klass.create=
+        $Poly
+        (   $switch
+            (   $support.selectionModel()
+            ,   {   'w3c': function( ){
+                        var sel= $selection()
+                        if( sel.rangeCount ) return klass.create( sel.getRangeAt( 0 ).cloneRange() )
+                        else return klass.create( $doc().createRange() )
+                    }
+                ,   'ms': function( ){
+                        return klass.create( $selection().createRange() )
+                    }
+                }
+            )
+        ,   function( range ){
+                if( !range ) throw new Error( 'Wrong TextRange object' )
+                if( 'toTextRange' in range ) range= range.toTextRange()
+                var obj= new klass
+                obj.$= range
+                return obj
+            }
+        )
+        
+        proto.toTextRange=
+        function( ){
+            return this.$
+        }
+        
+        proto.select=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( ){
+                    var sel= $selection()
+                    sel.removeAllRanges()
+                    sel.addRange( this.$ )
+                    return this
+                }
+            ,   'ms': function( ){
+                    this.$.select()
+                    return this
+                }
+            }
+        )
+        
+            
+        proto.collapse2end=
+        function( ){
+            this.$.collapse( false )
+            return this
+        }
+        
+        proto.collapse2start=
+        function( ){
+            this.$.collapse( true )
+            return this
+        }
+        
+        proto.dropContents=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( ){
+                    this.$.deleteContents()
+                    return this
+                }
+            ,   'ms': function( ){
+                    this.text( '' )
+                }
+            }
+        )
+
+        proto.text=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': $Poly
+                (   function( ){
+                        return this.$.toString()
+                    }
+                ,   function( text ){
+                        this.html( $html.encode( text ) )
+                        return this
+                    }
+                )
+            ,   'ms': $Poly
+                (   function( ){
+                        return $html.text( this.html() )
+                        return this.$.text
+                    }
+                ,   function( text ){
+                        this.$.text= text
+                        return this
+                    }
+                )
+            }
+        )
+
+        proto.html=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': $Poly
+                (   function( ){
+                        return $dom.serialize( this.$.cloneContents() )
+                    }
+                ,   function( html ){
+                        this.dropContents()
+                        var node= $dom.parse( html )
+                        this.$.insertNode( node )
+                        this.$.selectNode( node )
+                        return this
+                    }
+                )
+            ,   'ms': $Poly
+                (   function( ){
+                        return this.$.htmlText
+                    }
+                ,   function( html ){
+                        this.$.pasteHTML( html )
+                        return this
+                    }
+                )
+            }
+        )
+    
+        proto.ancestorNode=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( ){
+                    return this.$.commonAncestorContainer
+                }
+            ,   'ms': function( ){
+                    return this.$.parentNode
+                }
+            }
+        )
+        
+        proto.compare=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( how, range ){
+                    range= $DomRange( range ).$
+                    how= Range[ how.replace( '2', '_to_' ).toUpperCase() ]
+                    return range.compareBoundaryPoints( how, this.$ )
+                }
+            ,   'ms':  function( how, range ){
+                    range= $DomRange( range ).$
+                    how= how.replace( /(\w)(\w+)/g, function( str, first, tail ){
+                        return first.toUpperCase() + tail
+                    }).replace( '2', 'To' )
+                    return range.compareEndPoints( how, this.$ )
+                }
+            }
+        )
+        
+        proto.hasRange=
+        function( range ){
+            range= $DomRange( range )
+            var isAfterStart= ( this.compare( 'start2start', range ) >= 0 )
+            var isBeforeEnd= ( this.compare( 'end2end', range ) <= 0 )
+            return isAfterStart && isBeforeEnd
+        }
+    
+        proto.equalize=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( how, range ){
+                    how= how.split( 2 )
+                    var method= { start: 'setStart', end: 'setEnd' }[ how[ 0 ] ]
+                    range= $DomRange( range ).$
+                    this.$[ method ]( range[ how[1] + 'Container' ], range[ how[1] + 'Offset' ] )
+                    return this
+                }
+            ,   'ms':  function( how, range ){
+                    range= $DomRange( range ).$
+                    how= how.replace( /(\w)(\w+)/g, function( str, first, tail ){
+                        return first.toUpperCase() + tail
+                    }).replace( '2', 'To' )
+                    this.$.setEndPoint( how, range )
+                    return this
+                }
+            }
+        )
+        
+        proto.move=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( offset ){
+                    this.collapse2start()
+                    var current= $Node( this.$.startContainer )
+                    if( this.$.startOffset ){
+                        var temp= current.$.childNodes[ this.$.startOffset - 1 ]
+                        if( temp ){
+                            current= $Node( temp ).follow()
+                        } else {
+                            offset+= this.$.startOffset
+                        }
+                    }
+                    while( current.$ ){
+                        if( current.name() === '#text' ){
+                            var range= current.outerRange()
+                            var length= current.$.nodeValue.length
+                            
+                            if( !offset ){
+                                this.equalize( 'start2start', range )
+                                return this
+                            } else if( offset >= length ){
+                                offset-= length
+                            } else {
+                                this.$.setStart( current.$, offset )
+                                return this
+                            }
+                        }
+                        current.delve()
+                    }
+                    return this
+                }
+            ,   'ms': function( offset ){
+                    this.$.move( 'character', offset )
+                    return this
+                }
+            }
+        )
+
+        proto.clone=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( ){
+                    return $DomRange( this.$.cloneRange() )
+                }
+            ,   'ms': function( ){
+                    return $DomRange( this.$.duplicate() )
+                }
+            }
+        )
+        
+    })
+)
+
+// jam/log/jam+log.jam
+with( $jam )
+$define( '$log', new function(){
+    var console= $glob().console
+    if( !console || !console.log ){
+        return function(){
+            alert( [].slice.call( arguments ) )
+        }
+    }
+    if( !console.log.apply ){
+        return function(){
+            console.log( [].slice.call( arguments ) )
+        }
+    }
+    return function(){
+        console.log.apply( console, arguments )
+    }
+})
 
 // jam/Node/jam+Node.jam
 with( $jam )
@@ -1217,7 +1597,7 @@ $define
                         case '#comment':
                             val= $doc().createComment( '' )
                             break
-                        case '#fragment':
+                        case '#document-fragment':
                             val= $doc().createDocumentFragment()
                             break
                         default:
@@ -1248,7 +1628,7 @@ $define
                 return $html.text( this.$.innerHTML )
             }
         ,   new function(){
-                var fieldName= { w3c: 'textContent', ms: 'innerText' }[ $support.htmlModel() ]
+                var fieldName= $switch( $support.htmlModel(), { w3c: 'textContent', ms: 'innerText' } )
                 return function( val ){
                     if( this.text() === val ) return this
                     this.$[ fieldName ]= $String( val ).$
@@ -1267,7 +1647,8 @@ $define
             }
         ,   function( val ){
                 if( this.html() === val ) return this
-                this.$.innerHTML= $String( val ).$
+                this.$.innerHTML= ''
+                this.tail( $dom.parse( val ) )
                 return this
             }
         )
@@ -1282,16 +1663,19 @@ $define
         
         proto.name=
         $Poly
-        (   {   'w3c': function( ){
-                    return this.$.nodeName.toLowerCase()
+        (   $switch
+            (   $support.htmlModel()
+            ,   {   'w3c': function( ){
+                        return this.$.nodeName.toLowerCase()
+                    }
+                ,   'ms': function( ){
+                        var scope= this.$.scopeName
+                        if( scope === 'HTML' ) scope= ''
+                        var name= this.$.nodeName.toLowerCase()
+                        return scope ? scope + ':' + name : name
+                    }
                 }
-            ,   'ms': function( ){
-                    var scope= this.$.scopeName
-                    if( scope === 'HTML' ) scope= ''
-                    var name= this.$.nodeName.toLowerCase()
-                    return scope ? scope + ':' + name : name
-                }
-            }[ $support.htmlModel() ]
+            )
         )
         
         proto.attr=
@@ -1335,58 +1719,97 @@ $define
         $Poly
         (   null
         ,   null
-        ,   {   'w3c': function( eventName, proc ){
-                    this.$.addEventListener( eventName, proc, false )
-                    
-                    var self= this
-                    return function(){
-                        self.$.removeEventListener( eventName, proc, false )
-                    }
-                }
-            ,   'ms': function( eventName, proc ){
-                    var proc2= proc
-                    var eventName2= eventName
-                    if( !/^\w+$/.test( eventName ) ){
-                        eventName2= 'beforeeditfocus'
-                        proc2= function( ev ){
-                            if( ev.originalType !== eventName ) return
-                            ev.type= ev.originalType
-                            proc( ev )
+        ,   $switch
+            (   $support.eventModel()
+            ,   {   'w3c': function( eventName, proc ){
+                        this.$.addEventListener( eventName, proc, false )
+                        
+                        var self= this
+                        return function(){
+                            self.$.removeEventListener( eventName, proc, false )
                         }
                     }
-                    var proc3= function(){
-                        var ev= $glob().event
-                        //ev= $doc().createEventObject( ev )
-                        if( !ev.target ) ev.target= ev.srcElement 
-                        proc2( ev )
-                    }
-                    this.$.attachEvent( 'on' + eventName2, proc3, false )
-
-                    var self= this
-                    return function(){
-                        self.$.detachEvent( 'on' + eventName2, proc3, false )
+                ,   'ms': function( eventName, proc ){
+                        var proc2= proc
+                        var eventName2= eventName
+                        if( !/^\w+$/.test( eventName ) ){
+                            eventName2= 'beforeeditfocus'
+                            proc2= function( ev ){
+                                if( ev.originalType !== eventName ) return
+                                ev.type= ev.originalType
+                                proc( ev )
+                            }
+                        }
+                        var proc3= function(){
+                            var ev= $glob().event
+                            //ev= $doc().createEventObject( ev )
+                            if( !ev.target ) ev.target= ev.srcElement 
+                            proc2( ev )
+                        }
+                        this.$.attachEvent( 'on' + eventName2, proc3, false )
+    
+                        var self= this
+                        return function(){
+                            self.$.detachEvent( 'on' + eventName2, proc3, false )
+                        }
                     }
                 }
-            }[ $support.eventModel() ]
+            )
         )
         
         proto.scream=
         $Poly
         (   null
-        ,   {   'w3c': function( ev ){
-                    ev= $Event( ev ).$
-                    this.$.dispatchEvent( ev )
-                }
-            ,   'ms': function( ev ){
-                    ev= $Event( ev ).$
-                    var eventName= ev.type
-                    if( !/^\w+$/.test( eventName ) ){
-                        eventName= 'beforeeditfocus'
+        ,   $switch
+            (   $support.eventModel()
+            ,   {   'w3c': function( ev ){
+                        ev= $Event( ev ).$
+                        this.$.dispatchEvent( ev )
                     }
-                    ev.originalType= ev.type
-                    this.$.fireEvent( 'on' + eventName, ev )
+                ,   'ms': function( ev ){
+                        ev= $Event( ev ).$
+                        var eventName= ev.type
+                        if( !/^\w+$/.test( eventName ) ){
+                            eventName= 'beforeeditfocus'
+                        }
+                        ev.originalType= ev.type
+                        this.$.fireEvent( 'on' + eventName, ev )
+                    }
                 }
-            }[ $support.eventModel() ]
+            )
+        )
+        
+        proto.innerRange=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( ){
+                    var range= $DomRange()
+                    range.$.selectNodeContents( this.$ )
+                    return range.$
+                }
+            ,   'ms': function( node ){
+                    var range= $DomRange()
+                    range.$.moveToElementText( this.$ )
+                    return range.$
+                }
+            }
+        )
+        
+        proto.outerRange=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( node ){
+                    var range= $DomRange()
+                    range.$.selectNode( this.$ )
+                    return range.$
+                }
+            ,   'ms': function( node ){
+                    var range= this.innerRange()
+                    $log('check this')
+                    range.$.expand( 'textedit' )
+                    return range.$
+                }
+            }
         )
         
         proto.childList=
@@ -1420,12 +1843,6 @@ $define
             return filtered
         }
 
-        proto.findByTag=
-        function( name ){
-            var found= this.$.getElementsByTagName( name )
-            
-        }
-        
         proto.parent= 
         $Poly
         (   function( ){
@@ -1486,6 +1903,29 @@ $define
                 parent.insertBefore( node, next ) 
                 return this
             }   
+        )
+        
+        proto.delve=
+        $Poly
+        (   function( ){
+                var child= this.$.firstChild
+                if( child ) this.$= child
+                else this.follow()
+                return this
+            }
+        )
+
+        proto.follow=
+        $Poly
+        (   function( ){
+                var node= this.$
+                while( true ){
+                    this.$= node.nextSibling
+                    if( this.$ ) return this
+                    node= node.parentNode
+                    if( !node ) return this
+                }
+            }
         )
 
         proto.prev=
@@ -1565,35 +2005,19 @@ $define
     })
 )
 
-// jam/log/jam+log.jam
-with( $jam )
-$define( '$log', new function(){
-    var console= $glob().console
-    if( !console || !console.log ){
-        return function(){
-            alert( [].slice.call( arguments ) )
-        }
-    }
-    if( !console.log.apply ){
-        return function(){
-            console.log( [].slice.call( arguments ) )
-        }
-    }
-    return function(){
-        console.log.apply( console, arguments )
-    }
-})
-
-// jam/commit/jam+commit.jam
+// jam/eventCommit/jam+eventCommit.jam
 with( $jam )
 $define
-(   '$commit'
+(   '$eventCommit'
 ,   new function(){
         $Node( $doc().documentElement )
-        .listen( 'keyup', function( ev ){
-            if( !ev.ctrlKey || ev.keyCode != 13 ) return
-            //$log(ev.charCode,ev.keyCode,ev.ctrlKey,ev.target,ev.srcElement,ev)
-            $Node( ev.target ).scream({ type: '$jam.$commit' })
+        .listen( 'keyup', function( event ){
+            event= $Event( event )
+            if( !event.keyMeta() ) return
+            if( event.keyShift() ) return
+            if( event.keyAlt() ) return
+            if( event.keyCode() != 13 ) return
+            $Node( event.target() ).scream( $Event().type( '$jam.$eventCommit' ) )
         })
     }
 )
@@ -1609,18 +2033,25 @@ $Component
             var nodeResult= $Node( nodeRoot.$ ).ensureChild( 'wc:demo-result' )
 
             var nodeSource0= $Node( nodeRoot.$ ).ensureChild( 'wc:demo-source' )
-            var nodeSource= $Node( nodeSource0.$ ).ensureChild( 'div' ).editable( true )
+            //var nodeSource= $Node( nodeSource0.$ ).ensureChild( 'div' ).editable( true )
+            var nodeSource=
+            $Node( nodeSource0.$ )
+            .ensureChild( 'wc:hlight' )
+            .state( 'editable', 'true' )
+            .state( 'lang', 'sgml' )
             
             var childList= nodeRoot.childList()
             for( var i= 0; i < childList.length; ++i ){
                 var nodeChild= $Node( childList[ i ] )
                 if( /^wc:demo-/.test( nodeChild.name() ) ) continue
-                nodeSource.tail( nodeChild)
+                nodeSource.tail( nodeChild )
             }
+            
+            nodeSource.text( $String( nodeSource.text() ).minimizeIndent().trim( /[\n\r]/ ) )
             
             var exec= $Thread( function( ){
                 var source= $String( nodeSource.text() ).minimizeIndent().trim( /[\n\r]/ )
-                nodeSource.text( source )
+                //nodeSource.text( source )
                 nodeResult.html( source )
                 var scripts= nodeResult.descList( 'script' )
                 for( var i= 0; i < scripts.length; ++i ){
@@ -1634,7 +2065,7 @@ $Component
         
             var forgetCommits=
             nodeSource.listen
-            (   '$jam.$commit'
+            (   '$jam.$eventCommit'
             ,   function( ev ){
                     exec()
                 }
@@ -1648,11 +2079,446 @@ $Component
     }
 )
 
+// wc/lang_text/wc+lang_text.jam
+with( $wc )
+$define
+(   '$lang_text'
+,   $html.encode
+)
+
+// jam/Concater/jam+Concater.jam
+with( $jam )
+$define
+(   '$Concater'
+,   function( delim ){
+        delim= delim || ''
+        return function( list ){
+            return list.join( delim )
+        }
+    }
+)
+
+// wc/lang/wc+lang.jam
+with( $wc )
+$define
+(   '$lang'
+,   new function( ){
+        var lang=
+        function( name ){
+            return this[ '$lang' + '_' + name ] || $lang_text
+        }
+        
+        lang.Wrapper=
+        function( name ){
+            var prefix= '<' + name + '>'
+            var postfix= '</' + name + '>'
+            return function( content ){
+            	return prefix + content + postfix
+            }
+        }
+        
+        lang.Parser=
+        function( map ){
+            if( !map[ '' ] ) map[ '' ]= $lang_text
+            return $Pipe
+            (   $Parser( map )
+            ,   $Concater()
+            )
+        }
+        
+        return lang
+    }
+)
+
+// jam/eventEdit/jam+eventEdit.jam
+with( $jam )
+$define
+(   '$eventEdit'
+,   new function(){
+        
+        var handler= $Throttler
+        (   50
+        ,   function( event ){
+                event= $Event( event )
+                $Node( event.target() ).scream( $Event().type( '$jam.$eventEdit' ) )
+            }
+        )
+        
+        var root= $Node( $doc().documentElement )
+        
+        root.listen( 'keyup', handler )
+        root.listen( 'cut', handler )
+        root.listen( 'paste', handler )
+
+    }
+)
+
+// wc/hlight/wc-hlight.jam
+with( $wc )
+$Component
+(   'wc:hlight'
+,   function( nodeRoot ){
+        return new function( ){
+            nodeRoot= $Node( nodeRoot )
+            var nodeSource= $Node( nodeRoot.$ ).ensureChild( 'div' )
+            nodeSource.state( 'wc_hlight_source', 'wc_hlight_source' )
+    
+            var childList= nodeRoot.childList()
+            for( var i= 0; i < childList.length; ++i ){
+                var nodeChild= $Node( childList[ i ] )
+                if( nodeChild.$ === nodeSource.$ ) continue
+                nodeSource.tail( nodeChild )
+            }
+    
+            var hlight= $lang( nodeRoot.state( 'lang' ) )
+            var editable= nodeRoot.state( 'editable' )
+            
+            nodeSource.editable( editable === 'true' )
+    
+            var update= function( ){
+                var source=
+                $String( nodeSource.text() )
+                .minimizeIndent()
+                //.trim( /[\r\n]/ )
+                .process( hlight )
+                .replace( /  /g, '\u00A0 ' )
+                .replace( /  /g, ' \u00A0' )
+                .$
+                
+                var nodeRange= $DomRange( nodeSource.innerRange() )
+                var startPoint= $DomRange().collapse2start()
+                var endPoint= $DomRange().collapse2end()
+                var hasStart= nodeRange.hasRange( startPoint )
+                var hasEnd= nodeRange.hasRange( endPoint )
+                if( hasStart ){
+                    var metRange= $DomRange()
+                    .equalize( 'end2start', startPoint )
+                    .equalize( 'start2start', nodeRange )
+                    var offsetStart= metRange.text().replace( /\r/g, '' ).length
+                }
+                if( hasEnd ){
+                    var metRange= $DomRange()
+                    .equalize( 'end2start', endPoint )
+                    .equalize( 'start2start', nodeRange )
+                    var offsetEnd= metRange.text().replace( /\r/g, '' ).length
+                }
+                nodeSource.html( source )
+                var selRange= $DomRange()
+                if( hasStart ){
+                    selRange.equalize( 'start2start', nodeRange.clone().move( offsetStart ) )
+                }
+                if( hasEnd ){
+                    selRange.equalize( 'end2start', nodeRange.clone().move( offsetEnd ) )
+                }
+                selRange.select()
+            }
+            
+            var forgetEdit= nodeRoot.listen
+            (   '$jam.$eventEdit'
+            ,   update
+            )
+            
+            var forgetEnterKey= nodeRoot.listen
+            (   'keypress'
+            ,   function( event ){
+                    event= $Event( event )
+                    if( event.keyCode() != 13 ) return
+                    if( event.keyAccel() ) return
+                    event.defaultBehavior( false )
+                    var range= $DomRange().text( '\n' )
+                    range.collapse2end().select()
+                }
+            )
+            
+            var forgetTabKey= nodeRoot.listen
+            (   'keydown'
+            ,   function( event ){
+                    event= $Event( event )
+                    if( event.keyCode() != 9 ) return
+                    if( event.keyAccel() ) return
+                    event.defaultBehavior( false )
+                    $DomRange().text( '    ' ).collapse2end().select()
+                }
+            )
+            
+            this.destroy= function( ){
+                forgetEdit()
+                forgetEnterKey()
+                forgetTabKey()
+            }
+
+            update()
+            
+        }
+    }
+)
+
+// wc/lang_css/wc+lang_css.jam
+with( $wc )
+$define
+(	'$lang_css'
+,	new function(){
+    
+        var css=
+        function( str ){
+            return css.root( css.stylesheet( str ) )
+        }
+
+        css.root= $lang.Wrapper( 'wc:lang_css' )
+        css.remark= $lang.Wrapper( 'wc:lang_css-remark' )
+        css.string= $lang.Wrapper( 'wc:lang_css-string' )
+        css.bracket= $lang.Wrapper( 'wc:lang_css-bracket' )
+        css.selector= $lang.Wrapper( 'wc:lang_css-selector' )
+        css.tag= $lang.Wrapper( 'wc:lang_css-tag' )
+        css.id= $lang.Wrapper( 'wc:lang_css-id' )
+        css.klass= $lang.Wrapper( 'wc:lang_css-class' )
+        css.pseudo= $lang.Wrapper( 'wc:lang_css-pseudo' )
+        css.property= $lang.Wrapper( 'wc:lang_css-property' )
+        css.value= $lang.Wrapper( 'wc:lang_css-value' )
+             
+        css.stylesheet=
+        $lang.Parser( new function( ){
+        
+			this[ /(\/\*[\s\S]*?\*\/)/.source ]=
+			$Pipe( $lang_text, css.remark )
+
+			this[ /(\*|(?:\\[\s\S]|[\w-])+)/.source ]=
+			$Pipe( $lang_text, css.tag )
+
+			this[ /(#(?:\\[\s\S]|[\w-])+)/.source ]=
+            $Pipe( $lang_text, css.id )
+
+			this[ /(\.(?:\\[\s\S]|[\w-])+)/.source ]=
+            $Pipe( $lang_text, css.klass )
+
+			this[ /(::?(?:\\[\s\S]|[\w-])+)/.source ]=
+            $Pipe( $lang_text, css.pseudo )
+
+			this[ /\{([\s\S]+?)\}/.source ]=
+            new function( ){
+				var openBracket= css.bracket( '{' )
+				var closeBracket= css.bracket( '}' )
+				return function( style ){
+					style= css.style( style )
+					return openBracket + style + closeBracket
+				}
+			}             
+        })
+        
+        css.style=
+        $lang.Parser( new function( ){
+                
+			this[ /(\/\*[\s\S]*?\*\/)/.source ]=
+			$Pipe( $lang_text, css.remark )
+
+			this[ /([\w-]+\s*:)/.source  ]=
+			$Pipe( $lang_text, css.property )
+
+			this[ /([^:]+?(?:;|$))/.source ]=
+            $Pipe( $lang_text, css.value )
+            
+        })
+        
+        return css
+    }
+) 
+
+// wc/lang_pcre/wc+lang_pcre.jam
+with( $wc )
+$define
+(	'$lang_pcre'
+,	new function(){
+    
+        var pcre=
+        function( str ){
+            return pcre.root( pcre.content( str ) )
+        }
+
+        pcre.root= $lang.Wrapper( 'wc:lang_pcre' )
+        pcre.backslash= $lang.Wrapper( 'wc:lang_pcre-backslash' )
+        pcre.control= $lang.Wrapper( 'wc:lang_pcre-control' )
+        pcre.spec= $lang.Wrapper( 'wc:lang_pcre-spec' )
+        pcre.text= $lang.Wrapper( 'wc:lang_pcre-text' )
+        
+        pcre.content=
+        $lang.Parser( new function(){
+        
+            this[ /\\([\s\S])/.source ]=
+            new function( ){
+                var backslash= pcre.backslash( '\\' )
+                return function( symbol ){
+                    return backslash + pcre.spec( $lang_text( symbol ) )
+                }
+            }
+    
+            this[ /([(){}\[\]$^])/.source ]=
+            $Pipe( $lang_text, pcre.control )
+            
+        })
+        
+        return pcre
+    }
+) 
+
+// wc/lang_js/wc+lang_js.jam
+with( $wc )
+$define
+(	'$lang_js'
+,	new function(){
+    
+        var js=
+        function( str ){
+            return js.root( js.content( str ) )
+        }
+
+        js.root= $lang.Wrapper( 'wc:lang_js' )
+        js.remark= $lang.Wrapper( 'wc:lang_js-remark' )
+        js.string= $lang.Wrapper( 'wc:lang_js-string' )
+        js.internal= $lang.Wrapper( 'wc:lang_js-internal' )
+        js.external= $lang.Wrapper( 'wc:lang_js-external' )
+        js.keyword= $lang.Wrapper( 'wc:lang_js-keyword' )
+        js.number= $lang.Wrapper( 'wc:lang_js-number' )
+        js.regexp= $lang.Wrapper( 'wc:lang_js-regexp' )
+        js.bracket= $lang.Wrapper( 'wc:lang_js-bracket' )
+        js.operator= $lang.Wrapper( 'wc:lang_js-operator' )
+             
+        js.content=
+        $lang.Parser( new function(){
+        
+            this[ /(\/\*[\s\S]*?\*\/)/.source ]=
+            $Pipe( $lang_text, js.remark )
+            this[ /(\/\/[^\n]*)/.source ]=
+            $Pipe( $lang_text, js.remark )
+            
+            this[ /('(?:[^\n'\\]*(?:\\\\|\\[^\\]))*[^\n'\\]*')/.source ]=
+            $Pipe( $lang_text, js.string )
+            this[ /("(?:[^\n"\\]*(?:\\\\|\\[^\\]))*[^\n"\\]*")/.source ]=
+            $Pipe( $lang_text, js.string )
+            
+            this[ /(\/(?:[^\n\/\\]*(?:\\\\|\\[^\\]))*[^\n\/\\]*\/)/.source ]=
+            $Pipe( $lang_pcre, js.regexp )
+            
+            this[ /\b(_[\w$]*)\b/.source ]=
+            $Pipe( $lang_text, js.internal )
+            
+            this[ /(\$[\w$]*)(?![\w$])/.source ]=
+            $Pipe( $lang_text, js.external )
+
+            this[ /\b(this|function|new|var|if|else|switch|case|default|for|in|while|do|with|boolean|continue|break|throw|true|false|void|try|catch|null|typeof|instanceof|return|delete|window|document)\b/.source ]=
+            $Pipe( $lang_text, js.keyword )
+            
+            this[ /((?:\d*\.)?\d(?:[eE])?)/.source ]=
+            $Pipe( $lang_text, js.number )
+            
+            this[ /([(){}\[\]])/.source ]=
+            $Pipe( $lang_text, js.bracket )
+            
+            this[ /(\+{1,2}|-{1,2}|\*|\/|&{1,2}|\|{1,2}|={1,2}|%|\^|!)/.source ]=
+            $Pipe( $lang_text, js.operator )
+            
+        })
+        
+        return js
+    }
+) 
+
+// wc/lang_sgml/wc+lang_sgml.jam
+with( $wc )
+$define
+(    '$lang_sgml'
+,    new function(){
+    
+        var sgml=
+        function( str ){
+            return sgml.root( sgml.content( str ) )
+        }
+
+        sgml.root= $lang.Wrapper( 'wc:lang_sgml' )
+        sgml.tag= $lang.Wrapper( 'wc:lang_sgml-tag' )
+        sgml.tagBracket= $lang.Wrapper( 'wc:lang_sgml-tag-bracket' )
+        sgml.tagName= $lang.Wrapper( 'wc:lang_sgml-tag-name' )
+        sgml.attrName= $lang.Wrapper( 'wc:lang_sgml-attr-name' )
+        sgml.attrValue= $lang.Wrapper( 'wc:lang_sgml-attr-value' )
+        sgml.comment= $lang.Wrapper( 'wc:lang_sgml-comment' )
+        sgml.decl= $lang.Wrapper( 'wc:lang_sgml-decl' )
+        
+        sgml.tag=
+        $Pipe
+        (   $lang.Parser( new function(){
+            
+                this[ /^(<\/?)([a-zA-Z][\w:-]*)/.source ]=
+                function( bracket, tagName ){
+                    return sgml.tagBracket( $lang_text( bracket ) ) + sgml.tagName( tagName )
+                } 
+                
+                this[ /(\s)([sS][tT][yY][lL][eE])(\s*=\s*)(")([\s\S]*?)(")/.source ]=
+                this[ /(\s)([sS][tT][yY][lL][eE])(\s*=\s*)(')([\s\S]*?)(')/.source ]=
+                function( prefix, name, sep, open, value, close ){
+                    name= sgml.attrName( name )
+                    value= sgml.attrValue( open + $lang_css.style( value ) + close )
+                    return prefix + name + sep + value
+                }
+    
+                this[ /(\s)([oO][nN]\w+)(\s*=\s*)(")([\s\S]*?)(")/.source ]=
+                this[ /(\s)([oO][nN]\w+)(\s*=\s*)(')([\s\S]*?)(')/.source ]=
+                function( prefix, name, sep, open, value, close ){
+                    name= sgml.attrName( name )
+                    value= sgml.attrValue( open + $lang_js( value ) + close )
+                    return prefix + name + sep + value
+                }
+    
+                this[ /(\s)([a-zA-Z][\w:-]+)(\s*=\s*)("[\s\S]*?")/.source ]=
+                this[ /(\s)([a-zA-Z][\w:-]+)(\s*=\s*)('[\s\S]*?')/.source ]=
+                function( prefix, name, sep, value ){
+                    name= sgml.attrName( name )
+                    value= sgml.attrValue( value )
+                    return prefix + name + sep + value
+                }
+            
+            })
+        ,   $lang.Wrapper( 'wc:lang_sgml-tag' )
+        )
+
+        sgml.content=
+        $lang.Parser( new function(){
+        
+            this[ /(<!--[\s\S]*?-->)/.source ]=
+            $Pipe( $lang_text, sgml.comment )
+            
+            this[ /(<![\s\S]*?>)/.source ]=
+            $Pipe( $lang_text, sgml.decl )
+            
+            this[ /(<[sS][tT][yY][lL][eE][^>]*>)([\s\S]+?)(<\/[sS][tT][yY][lL][eE]>)/.source ]=
+            function( prefix, content, postfix ){
+                prefix= $lang_sgml.tag( prefix )
+                postfix= $lang_sgml.tag( postfix )
+                content= $lang_css( content )
+                return prefix + content + postfix
+            }
+            
+            this[ /(<[sS][cC][rR][iI][pP][tT][^>]*>)([\s\S]+?)(<\/[sS][cC][rR][iI][pP][tT]>)/.source ]=
+            function( prefix, content, postfix ){
+                prefix= $lang_sgml.tag( prefix )
+                postfix= $lang_sgml.tag( postfix )
+                content= $lang_js( content )
+                return prefix + content + postfix
+            }
+            
+            this[ /(<[^>]+>)/.source ]=
+            sgml.tag
+		    
+        })
+        
+        return sgml
+    }
+) 
+
 // jam/htmlize/jam+htmlize.jam
 with( $jam )
 $define
 (   '$htmlize'
 ,   function( ns ){
+        if( !$doc().getElementsByTagNameNS ) return
         $domReady.then( function( ){
             var nodeList= $doc().getElementsByTagNameNS( ns, '*' )
             var node
@@ -1679,34 +2545,41 @@ $jam.$htmlize( 'https://github.com/nin-jin/wc' )
 with( $wc )
 $Component
 (   'wc:test-js'
-,   function( root ){
+,   function( nodeRoot ){
         return new function( ){
-            root= $Node( root )
+            nodeRoot= $Node( nodeRoot )
             
             var exec= $Thread( function( ){
-                var proc= new Function( '_done', nodeSource.text() )
+                var source= $String( nodeSource.text() ).minimizeIndent().trim( /[\n\r]/ ).$
+                //nodeSource.html( $lang_js( source ) )
+                var proc= new Function( '_done', source )
                 proc( _done )
                 return true
             })
         
-            var source= $String( root.text() ).normilizeSpaces().minimizeIndent().trim( /[\n\r]/ )
+            var timeout=
+            function( ){
+                return Number( nodeRoot.state( 'timeout' ) )
+            }
+        
+            if( timeout() )
+            var nodeTimeout=
+            $Node( nodeRoot.$ ).ensureChild( 'wc:test-js_timeout' )
+
+            var nodeSource0= $Node( nodeRoot.$ ).ensureChild( 'wc:test-js_source' )
+            var nodeSource=
+            $Node( nodeSource0.$ )
+            .ensureChild( 'wc:hlight' )
+            .state( 'editable', 'true' )
+            .state( 'lang', 'js' )
             
-            var nodeSource0= $Node( 'wc:test-js_source' )
-            var nodeSource= $Node( 'div' )
-            nodeSource.text( source )
-            nodeSource0.tail( nodeSource )
-            root.clear().tail( nodeSource0 )
-            
-            nodeSource
-            .editable( true )
-            
-            root.listen
-            (   '$jam.$commit'
-            ,   function( ev ){
-                    run()
-                }
-            )
-            
+            var childList= nodeRoot.childList()
+            for( var i= 0; i < childList.length; ++i ){
+                var nodeChild= $Node( childList[ i ] )
+                if( /^wc:test-js_/.test( nodeChild.name() ) ) continue
+                nodeSource.tail( nodeChild )
+            }
+
             var _done=
             $Poly
             (   function( ){
@@ -1726,23 +2599,18 @@ $Component
             var passed=
             $Poly
             (   function( ){
-                    return root.state( 'passed' )
+                    return nodeRoot.state( 'passed' )
                 }
             ,   function( val ){
-                    root.state( 'passed', val )
+                    nodeRoot.state( 'passed', val )
                 }
             )
             
-            var timeout=
-            function( ){
-                return Number( root.state( 'timeout' ) )
-            }
-        
             var print=
             function( val ){
                 var node= $Node( 'wc:test-js_result' )
                 node.text( val )
-                root.tail( node )
+                nodeRoot.tail( node )
             }
             
             var printValue=
@@ -1756,19 +2624,23 @@ $Component
                 print( $classOf( val ) + ': ' + val )
             }
             
+            var stop
+            
             var run=
             function( ){
-                var results= root.childList( 'wc:test-js_result' )
+                var results= nodeRoot.childList( 'wc:test-js_result' )
                 for( var i= 0; i < results.length; ++i ){
                     $Node( results[i] ).parent( null )
                 }
                 passed( 'wait' )
                 if( !exec() ) passed( false )
                 if( timeout() ){
-                    $schedule( timeout(), function( ){
+                    nodeTimeout.text( 'timeout: ' + timeout() )
+                    stop= $schedule( timeout(), function( ){
                         if( passed() !== 'wait' ) return
                         passed( false )
-                        print( 'Timeout! (' + timeout() + ')' )
+                        print( 'Timeout!' )
+                        stop= null
                     })
                 } else {
                     if( passed() === 'wait' ) passed( false )
@@ -1776,6 +2648,22 @@ $Component
             }
             
             run()
+
+            var forgetCommit=
+            nodeRoot.listen
+            (   '$jam.$eventCommit'
+            ,   function( ev ){
+                    run()
+                }
+            )
+            
+            this.destroy=
+            function( ){
+                forgetCommit()
+                if( stop ) stop()
+                _done= $Pipe()
+            }
+            
         }
     }
 )

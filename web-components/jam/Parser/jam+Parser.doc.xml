@@ -7,47 +7,39 @@
 
     <h1>$jam.$Parser</h1>
 
+    <p>Создаёт функцию-парсер. На вход принимает карту соответствия лексем фабрикам. В качестве параметров фабрикам передаются захваченные круглыми скобками подстроки. "" - дефолтная лексема, которая матчится на всё, на что не сматчились остальные. Парсер принимает на вход строку и возвращает массив полученных от фабрик значений.</p>
+
     <wc:test-js> _done( $jam.$Parser ) </wc:test-js>
     <wc:test-js> _done( $jam.$Parser({ }) ) </wc:test-js>
     <wc:test-js> _done( $jam.$Parser({ })( '123' ) ) </wc:test-js>
     <wc:test-js>
         var parse= $jam.$Parser( new function(){
-            this.digit= new function(){
-                this.regexp= /\d/
-                this.handler= function( ){
-                    return '#'
-                }
+            this[ /\d/.source ]=
+            function( ){
+                return '#'
             }
         })
         _done( parse( 'a12bc' ).join(''), 'a##bc' )
     </wc:test-js>
     <wc:test-js>
         var parse= $jam.$Parser( new function(){
-            this.letter= new function(){
-                this.regexp= /([a-zA-Z])/
-                this.handler= function( letter ){
-                    return letter
-                }
+            this[ /([a-zA-Z])/.source ]=
+            function( letter ){
+                return letter
             }
-            this['']= new function(){
-                this.handler= $jam.$Value()
-            }
+            this[ '' ]= $jam.$Value( '' )
         })
         _done( parse( 'a12bc' ).join(''), 'abc' )
     </wc:test-js> 
     <wc:test-js>
         var parse= $jam.$Parser( new function(){
-            this.underword= new function(){
-                this.regexp= /(_(\w+))/
-                this.handler= function( underword, word ){
-                    return word
-                }
+            this[ /(_(\w+))/.source ]=
+            function( underword, word ){
+                return word
             }
-            this.word= new function(){
-                this.regexp= /(\w)(\w*)/
-                this.handler= function( first, tail ){
-                    return first.toUpperCase() + tail
-                }
+            this[ /(\w)(\w*)/.source ]=
+            function( first, tail ){
+                return first.toUpperCase() + tail
             }
         })
         _done( parse( '[_ab,c_d]' ).join(''), '[ab,C_d]' )

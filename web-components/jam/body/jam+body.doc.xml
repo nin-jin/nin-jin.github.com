@@ -1,0 +1,17 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>$jam.$body</h1>
+
+    <p>Возвращает элемент body.</p>
+
+    <p>
+        <wc:test-js> _done( $jam.$body ) </wc:test-js>
+        <wc:test-js> _done( $jam.$body(), this.document.body ) </wc:test-js>
+    </p>
+
+</doc:root>

@@ -44,21 +44,22 @@ $define( '$createNameSpace', function( name ){
 // wc/wc/wc.jam
 $jam.$createNameSpace( '$wc' )
 
+// jam/doc/jam+doc.jam
+with( $jam )
+$define( '$doc', $Value( $glob().document ) )
+
 // jam/support/jam+support.jam
 with( $jam )
 $define
 (   '$support'
 ,   new function(){
-        var node= document.createElement( 'html:div' )
+        var node= $doc().createElement( 'html:div' )
         this.htmlModel= $Value( node.namespaceURI !== void 0 ? 'w3c' : 'ms' )
         this.eventModel= $Value( 'addEventListener' in node ? 'w3c' : 'ms' )
+        this.selectionModel= $Value( 'createRange' in $doc() ? 'w3c' : 'ms' )
         this.vml= $Value( /*@cc_on!@*/ false )
     }
 )
-
-// jam/doc/jam+doc.jam
-with( $jam )
-$define( '$doc', $Value( $glob().document ) )
 
 // jam/schedule/jam+schedule.js
 with( $jam )
@@ -237,13 +238,17 @@ $define( '$Component', function( tagName, factory ){
 		var docEl= $doc().documentElement
 		docEl.addEventListener( 'DOMNodeInserted', function( ev ){
 			var node= ev.target
-			check4attach([ node ])
-			if( node.getElementsByTagName ) check4attach( node.getElementsByTagName( '*' ) )
+			$schedule( 0, function( ){
+				check4attach([ node ])
+				if( node.getElementsByTagName ) check4attach( node.getElementsByTagName( '*' ) )
+			})
 		}, false )
 		docEl.addEventListener( 'DOMNodeRemoved', function( ev ){
 			var node= ev.target
-			checkLost4detach([ node ])
-			if( node.getElementsByTagName ) checkLost4detach( node.getElementsByTagName( '*' ) )
+			$schedule( 0, function( ){
+				checkLost4detach([ node ])
+				if( node.getElementsByTagName ) check4detach( node.getElementsByTagName( '*' ) )
+			})
 		}, false )
 	}
 	

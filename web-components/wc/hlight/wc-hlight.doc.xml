@@ -1,0 +1,36 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>wc:hlight</h1>
+    
+    <p>Виджет для подсветки синтаксиса в возможностью редактирования</p>
+
+    <wc:demo>
+    <![CDATA[
+        <wc:hlight class=" lang=js " >
+            var Test= function( ){
+                this.foo= "b/a/r"
+                /* var \*/
+            }
+            return new Test
+        </wc:hlight>
+    ]]>
+    </wc:demo>
+
+    <wc:demo>
+    <![CDATA[
+        <wc:hlight class=" lang=css editable=true " >
+            wc\:hlight#wc-hlight.lang\=css:after:hover {
+                color: blue;
+                /* border: none */
+                font-family: 'Arial', sans-serif;
+            }
+        </wc:hlight>
+    ]]>
+    </wc:demo>
+
+</doc:root>

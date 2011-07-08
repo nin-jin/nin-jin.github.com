@@ -1,0 +1,15 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+    
+    <h1>$jam.$switch</h1>
+
+    <p>Выбирает из объекта переданным вторым параметром значение соответствующее ключу переданному первым.</p>
+
+    <wc:test-js> _done( $jam.$switch ) </wc:test-js>
+    <wc:test-js> _done( $jam.$switch( 1, [ 2, 3 ] ), 3 ) </wc:test-js>
+
+</doc:root>

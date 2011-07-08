@@ -7,7 +7,7 @@
 
     <h1>$jam.$dom</h1>
 
-    <p>Модуль для работы с `dom`. `Template` создаёт шаблон через $html.Template с постобработчиком `$dom.parse` (для обратного преобразования - `$dom.serialize`).</p>
+    <p>Модуль для работы с dom - сериализация дом-узла в строку и парсинг дом-узла из строки.</p>
 
     <p>
         <wc:test-js> _done( $jam.$dom.serialize( $jam.$dom.parse( '&lt;b&gt;hi!' ) ).toLowerCase(), '&lt;b&gt;hi!&lt;/b&gt;' ) </wc:test-js>

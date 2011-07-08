@@ -8,18 +8,22 @@
     <h1>wc:button</h1>
 
     <p>
-        <wc:button><button>
-            Вам нравятся эти Гламурные Кнопочки с закруглёнными краями и градиентным фоном?
-        </button></wc:button>
-        <wc:button><button onclick=" alert( 'Ваше мнение очень ценно для нас!' ) ">
-            Да
-        </button></wc:button>
-        <wc:button><button onclick=" alert( 'Данная кнопка временно не работает. Попробуйте нажать её позже..' ) ">
-            Нет
-        </button></wc:button>
-        <wc:button><button onclick=" alert( 'Воздержание вредно для здоровья!' ) ">
-            Воздерживаюсь
-        </button></wc:button>
+        <wc:demo>
+        <![CDATA[
+            <wc:button><button>
+                Вам нравятся эти Гламурные Кнопочки с закруглёнными краями и градиентным фоном?
+            </button></wc:button>
+            <wc:button><button onclick=" alert( 'Ваше мнение очень ценно для нас!' ) ">
+                Да
+            </button></wc:button>
+            <wc:button><button onclick=" alert( 'Данная кнопка временно не работает. Попробуйте нажать её позже..' ) ">
+                Нет
+            </button></wc:button>
+            <wc:button><button onclick=" alert( 'Воздержание вредно для здоровья!' ) ">
+                Воздерживаюсь
+            </button></wc:button>
+        ]]>
+        </wc:demo>
     </p>
 
 </doc:root>

@@ -1,0 +1,12 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>$jam.$eventCommit</h1>
+
+    <p>Событие, которое возникает на элементе, если на ходясь в нём нажать ctrl+enter. Означает, что пользователь закончил редактирование и можно как-то обрабатывать результат.</p>
+
+</doc:root>

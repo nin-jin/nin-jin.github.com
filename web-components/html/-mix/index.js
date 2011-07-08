@@ -44,21 +44,22 @@ $define( '$createNameSpace', function( name ){
 // html/html/html.jam
 $jam.$createNameSpace( '$html' )
 
+// jam/doc/jam+doc.jam
+with( $jam )
+$define( '$doc', $Value( $glob().document ) )
+
 // jam/support/jam+support.jam
 with( $jam )
 $define
 (   '$support'
 ,   new function(){
-        var node= document.createElement( 'html:div' )
+        var node= $doc().createElement( 'html:div' )
         this.htmlModel= $Value( node.namespaceURI !== void 0 ? 'w3c' : 'ms' )
         this.eventModel= $Value( 'addEventListener' in node ? 'w3c' : 'ms' )
+        this.selectionModel= $Value( 'createRange' in $doc() ? 'w3c' : 'ms' )
         this.vml= $Value( /*@cc_on!@*/ false )
     }
 )
-
-// jam/doc/jam+doc.jam
-with( $jam )
-$define( '$doc', $Value( $glob().document ) )
 
 // jam/schedule/jam+schedule.js
 with( $jam )
@@ -237,13 +238,17 @@ $define( '$Component', function( tagName, factory ){
 		var docEl= $doc().documentElement
 		docEl.addEventListener( 'DOMNodeInserted', function( ev ){
 			var node= ev.target
-			check4attach([ node ])
-			if( node.getElementsByTagName ) check4attach( node.getElementsByTagName( '*' ) )
+			$schedule( 0, function( ){
+				check4attach([ node ])
+				if( node.getElementsByTagName ) check4attach( node.getElementsByTagName( '*' ) )
+			})
 		}, false )
 		docEl.addEventListener( 'DOMNodeRemoved', function( ev ){
 			var node= ev.target
-			checkLost4detach([ node ])
-			if( node.getElementsByTagName ) checkLost4detach( node.getElementsByTagName( '*' ) )
+			$schedule( 0, function( ){
+				checkLost4detach([ node ])
+				if( node.getElementsByTagName ) check4detach( node.getElementsByTagName( '*' ) )
+			})
 		}, false )
 	}
 	
@@ -339,11 +344,11 @@ $define
         (   function( ){
                 this.normilizeSpaces()
                 var minIndent= 1/0
-                this.$.replace( /^( +)[^ \r\n]/mg, function( str, indent ){
+                this.$.replace( /^( *)[^ \r\n]/mg, function( str, indent ){
                     if( indent.length < minIndent ) minIndent= indent.length
                 })
                 if( minIndent === 1/0 ) return this
-                this.$= this.$.replace( RegExp( '^[ ]{1,' + minIndent + '}', 'mg' ), '' )
+                this.$= this.$.replace( RegExp( '^[ ]{0,' + minIndent + '}', 'mg' ), '' )
                 return this
             }
         )
@@ -459,6 +464,25 @@ $define
     })
 )
 
+// jam/Pipe/jam+Pipe.jam
+with( $jam )
+$define( '$Pipe', new function(){
+	var simple= function( data ){
+		return data
+	}
+	return function( ){
+		var list= arguments
+		var len= list.length
+		if( len === 1 ) return list[0]
+		if( len === 0 ) return simple
+		return function(){
+			if( !arguments.length ) arguments.length= 1
+			for( var i= 0; i < len; ++i ) arguments[0]= list[ i ].apply( this, arguments )
+			return arguments[0]
+		}
+	}
+})
+
 // jam/Lexer/jam+Lexer.jam
 with( $jam )
 $define
@@ -525,40 +549,22 @@ $define
     }
 )
 
-// jam/Pipe/jam+Pipe.jam
-with( $jam )
-$define( '$Pipe', new function(){
-	var simple= function( data ){
-		return data
-	}
-	return function( ){
-		var list= arguments
-		var len= list.length
-		if( len === 1 ) return list[0]
-		if( len === 0 ) return simple
-		return function(){
-			if( !arguments.length ) arguments.length= 1
-			for( var i= 0; i < len; ++i ) arguments[0]= list[ i ].apply( this, arguments )
-			return arguments[0]
-		}
-	}
-})
-
 // jam/Parser/jam+Parser.jam
 with( $jam )
 $define
 (	'$Parser'
 ,	function( syntaxes ){
-		var lexems= {}
-		for( var name in syntaxes ){
-			var regexp= syntaxes[ name ].regexp
+		var lexems= []
+        var handlers= []
+		handlers[ '' ]= syntaxes[ '' ] || $Pipe()
+
+		for( var regexp in syntaxes ){
+            if( !syntaxes.hasOwnProperty( regexp ) ) continue
 			if( !regexp ) continue
-			lexems[ name ]= $RegExp( regexp ).$
+			lexems.push( RegExp( regexp ) )
+            handlers.push( syntaxes[ regexp ] )
 		}
 		var lexer= $Lexer( lexems )
-		
-		var handlers= { '': $Pipe() }
-		for( var name in syntaxes ) handlers[ name ]= syntaxes[ name ].handler
 		
 		return function( str ){
 			var res= []
@@ -603,18 +609,14 @@ $define
             var Selector= arg.Selector || arg.encoder && klass.Selector( arg.encoder ) || klass.Selector()
     
             var parse= $Parser( new function(){
-                this.open= new function(){
-                    this.regexp= RegExp( $String( openEncoded ).mult( 2 ).$ )
-                    this.handler= $Value( open )
-                }
-                this.close= new function(){
-                    this.regexp= RegExp( $String( closeEncoded ).mult( 2 ).$ )
-                    this.handler= $Value( close )
-                }
-                this.selector= new function(){
-                    this.regexp= RegExp( '(' + openEncoded + '([^' + openEncoded + closeEncoded + ']*)' + closeEncoded + ')' )
-                    this.handler= Selector
-                }
+                this[ $String( openEncoded ).mult( 2 ).$ ]=
+                $Value( open )
+                
+                this[ $String( closeEncoded ).mult( 2 ).$ ]=
+                $Value( close )
+                
+                this[ '(' + openEncoded + '([^' + openEncoded + closeEncoded + ']*)' + closeEncoded + ')' ]=
+                Selector
             })
     
             return $Class( function( klass, proto ){
@@ -727,6 +729,48 @@ $define
         this.Template=
         $TemplateFactory({ encoder: this.encode })
     
+    }
+)
+
+// jam/switch/jam+switch.jam
+with( $jam )
+$define
+(   '$switch'
+,   function( key, map ){
+        if( !map.hasOwnProperty( key ) ) {
+            throw new Error( 'Key [' + key + '] not found in map' )
+        }
+        return map[ key ]
+    }
+)
+
+// jam/dom/jam+dom.jam
+with( $jam )
+$define
+(   '$dom'
+,   new function(){
+
+        this.parse= $Lazy( function(){
+            var parent= $doc().createElement( 'div' )
+            return function( html ){
+                parent.innerHTML= html
+                var childs= parent.childNodes
+                if( childs.length === 1 ) return childs[0]
+                var fragment= $doc().createDocumentFragment()
+                while( childs[0] ) fragment.appendChild( childs[0] )
+                return fragment
+            }
+        })
+
+        this.serialize= $Lazy( function(){
+            var parent= $doc().createElement( 'div' )
+            return function( node ){
+                parent.innerHTML= ''
+                parent.appendChild( node.cloneNode( true ) )
+                return parent.innerHTML
+            }
+        })
+
     }
 )
 
@@ -880,44 +924,46 @@ $define
 ,   $Class( function( klass, proto ){
     
         klass.create=
-        {   'w3c': $Poly
-            (   function( ){
-                    var obj= new klass
-                    obj.$= $doc().createEvent( 'Event' )
-                    return obj
-                }
-            ,   function( ev ){
-                    if( $classOf( ev ) === 'Object' ){
-                        if( ev.toEvent ){
-                            var obj= new klass
-                            obj.$= ev.toEvent()
-                        } else {
-                            var obj= klass.create()
-                            obj.$.initEvent( ev.type, ev.bubble || true, ev.cancelable || false )
-                        }
-                    } else {
+        $switch
+        (   $support.eventModel()
+        ,   {   'w3c': $Poly
+                (   function( ){
                         var obj= new klass
-                        obj.$= ev
+                        obj.$= $doc().createEvent( 'Event' )
+                        obj.$.initEvent( '', true, true )
+                        return obj
                     }
-                    return obj
-                }
-            )
-        ,   'ms': $Poly
-            (   function( ){
-                    var obj= new klass
-                    obj.$= $doc().createEventObject()
-                    return obj
-                }
-            ,   function( ev ){
-                    if( ev.toEvent ) ev= ev.toEvent()
-                    var obj= klass.create()
-                    for( var key in ev ) try {
-                        obj.$[ key ]= ev[ key ]
-                    } catch( e ){ }
-                    return obj
-                }
-            )
-        }[ $support.eventModel() ]
+                ,   function( ev ){
+                        var obj= new klass
+                        obj.$= ev.toEvent ? ev.toEvent() : ev
+                        //obj.$.initEvent( ev.type, ev.bubble || true, ev.cancelable || false )
+                        return obj
+                    }
+                )
+            ,   'ms': $Poly
+                (   function( ){
+                        var obj= new klass
+                        obj.$= $doc().createEventObject()
+                        return obj
+                    }
+                ,   function( ev ){
+                        var obj= new klass.create()
+                        obj.$= ev.toEvent ? ev.toEvent() : ev
+                        //for( var key in ev ) try {
+                        //    obj.$[ key ]= ev[ key ]
+                        //} catch( e ){ }
+                        if( !obj.$.preventDefault ){
+                            obj.$.preventDefault=
+                            function( ){
+                                this.returnValue= false
+                                this.defaultPrevented= true
+                            }
+                        }
+                        return obj
+                    }
+                )
+            }
+        )
         
         proto.toEvent=
         $Poly
@@ -926,8 +972,372 @@ $define
             }
         )
 
+        proto.type=
+        $Poly
+        (   function( ){
+                return this.$.type
+            }
+        ,   $switch
+            (   $support.eventModel()
+            ,   {   'w3c': function( type ){
+                        this.$.initEvent( type, this.$.bubbles, this.$.cancelable )
+                        return this
+                    }
+                ,   'ms': function( type ){
+                        this.$.type= type
+                        return this
+                    }
+                }
+            )
+        )
+            
+        proto.keyMeta=
+        $Poly
+        (   function( ){
+                return Boolean( this.$.metaKey || this.$.ctrlKey )
+            }
+        )
+        
+        proto.keyShift=
+        $Poly
+        (   function( ){
+                return Boolean( this.$.shiftKey )
+            }
+        )
+        
+        proto.keyAlt=
+        $Poly
+        (   function( ){
+                return Boolean( this.$.altKey )
+            }
+        )
+        
+        proto.keyAccel=
+        $Poly
+        (   function( ){
+                return this.keyMeta() || this.keyShift() || this.keyAlt()
+            }
+        )
+        
+        proto.keyCode=
+        $Poly
+        (   function( ){
+                return Number( this.$.keyCode )
+            }
+        )
+        
+        proto.target=
+        $switch
+        (   $support.eventModel()
+        ,   {   'w3c': function( ){
+                    return this.$.target
+                }
+            ,   'ms': function( ){
+                    return this.$.srcElement
+                }
+            }
+        )
+        
+        proto.defaultBehavior=
+        $Poly
+        (   function( ){
+                return Boolean( this.$.defaultPrevented )
+            }
+        ,   $switch
+            (   $support.eventModel()
+            ,   {   'w3c': function( val ){
+                        if( val ) this.$.returnValue= !!val
+                        else this.$.preventDefault()
+                        return this
+                    }
+                ,   'ms': function( val ){
+                        this.$.returnValue= !!val
+                        this.$.defaultPrevented= !val
+                        return this
+                    }
+                }
+            )
+        )
+
     })
 )
+
+// jam/selection/jam+selection.jam
+with( $jam )
+$define
+(  '$selection'
+,   $switch
+    (   $support.selectionModel()
+    ,   {   'w3c': function( ){
+                return $glob().getSelection()
+            }
+        ,   'ms': function( ){
+                return $doc().selection
+            }
+        }
+    )
+)
+
+// jam/DomRange/jam+DomRange.jam
+with( $jam )
+$define
+(   '$DomRange'
+,   $Class( function( klass, proto ){
+    
+        klass.create=
+        $Poly
+        (   $switch
+            (   $support.selectionModel()
+            ,   {   'w3c': function( ){
+                        var sel= $selection()
+                        if( sel.rangeCount ) return klass.create( sel.getRangeAt( 0 ).cloneRange() )
+                        else return klass.create( $doc().createRange() )
+                    }
+                ,   'ms': function( ){
+                        return klass.create( $selection().createRange() )
+                    }
+                }
+            )
+        ,   function( range ){
+                if( !range ) throw new Error( 'Wrong TextRange object' )
+                if( 'toTextRange' in range ) range= range.toTextRange()
+                var obj= new klass
+                obj.$= range
+                return obj
+            }
+        )
+        
+        proto.toTextRange=
+        function( ){
+            return this.$
+        }
+        
+        proto.select=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( ){
+                    var sel= $selection()
+                    sel.removeAllRanges()
+                    sel.addRange( this.$ )
+                    return this
+                }
+            ,   'ms': function( ){
+                    this.$.select()
+                    return this
+                }
+            }
+        )
+        
+            
+        proto.collapse2end=
+        function( ){
+            this.$.collapse( false )
+            return this
+        }
+        
+        proto.collapse2start=
+        function( ){
+            this.$.collapse( true )
+            return this
+        }
+        
+        proto.dropContents=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( ){
+                    this.$.deleteContents()
+                    return this
+                }
+            ,   'ms': function( ){
+                    this.text( '' )
+                }
+            }
+        )
+
+        proto.text=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': $Poly
+                (   function( ){
+                        return this.$.toString()
+                    }
+                ,   function( text ){
+                        this.html( $html.encode( text ) )
+                        return this
+                    }
+                )
+            ,   'ms': $Poly
+                (   function( ){
+                        return $html.text( this.html() )
+                        return this.$.text
+                    }
+                ,   function( text ){
+                        this.$.text= text
+                        return this
+                    }
+                )
+            }
+        )
+
+        proto.html=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': $Poly
+                (   function( ){
+                        return $dom.serialize( this.$.cloneContents() )
+                    }
+                ,   function( html ){
+                        this.dropContents()
+                        var node= $dom.parse( html )
+                        this.$.insertNode( node )
+                        this.$.selectNode( node )
+                        return this
+                    }
+                )
+            ,   'ms': $Poly
+                (   function( ){
+                        return this.$.htmlText
+                    }
+                ,   function( html ){
+                        this.$.pasteHTML( html )
+                        return this
+                    }
+                )
+            }
+        )
+    
+        proto.ancestorNode=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( ){
+                    return this.$.commonAncestorContainer
+                }
+            ,   'ms': function( ){
+                    return this.$.parentNode
+                }
+            }
+        )
+        
+        proto.compare=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( how, range ){
+                    range= $DomRange( range ).$
+                    how= Range[ how.replace( '2', '_to_' ).toUpperCase() ]
+                    return range.compareBoundaryPoints( how, this.$ )
+                }
+            ,   'ms':  function( how, range ){
+                    range= $DomRange( range ).$
+                    how= how.replace( /(\w)(\w+)/g, function( str, first, tail ){
+                        return first.toUpperCase() + tail
+                    }).replace( '2', 'To' )
+                    return range.compareEndPoints( how, this.$ )
+                }
+            }
+        )
+        
+        proto.hasRange=
+        function( range ){
+            range= $DomRange( range )
+            var isAfterStart= ( this.compare( 'start2start', range ) >= 0 )
+            var isBeforeEnd= ( this.compare( 'end2end', range ) <= 0 )
+            return isAfterStart && isBeforeEnd
+        }
+    
+        proto.equalize=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( how, range ){
+                    how= how.split( 2 )
+                    var method= { start: 'setStart', end: 'setEnd' }[ how[ 0 ] ]
+                    range= $DomRange( range ).$
+                    this.$[ method ]( range[ how[1] + 'Container' ], range[ how[1] + 'Offset' ] )
+                    return this
+                }
+            ,   'ms':  function( how, range ){
+                    range= $DomRange( range ).$
+                    how= how.replace( /(\w)(\w+)/g, function( str, first, tail ){
+                        return first.toUpperCase() + tail
+                    }).replace( '2', 'To' )
+                    this.$.setEndPoint( how, range )
+                    return this
+                }
+            }
+        )
+        
+        proto.move=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( offset ){
+                    this.collapse2start()
+                    var current= $Node( this.$.startContainer )
+                    if( this.$.startOffset ){
+                        var temp= current.$.childNodes[ this.$.startOffset - 1 ]
+                        if( temp ){
+                            current= $Node( temp ).follow()
+                        } else {
+                            offset+= this.$.startOffset
+                        }
+                    }
+                    while( current.$ ){
+                        if( current.name() === '#text' ){
+                            var range= current.outerRange()
+                            var length= current.$.nodeValue.length
+                            
+                            if( !offset ){
+                                this.equalize( 'start2start', range )
+                                return this
+                            } else if( offset >= length ){
+                                offset-= length
+                            } else {
+                                this.$.setStart( current.$, offset )
+                                return this
+                            }
+                        }
+                        current.delve()
+                    }
+                    return this
+                }
+            ,   'ms': function( offset ){
+                    this.$.move( 'character', offset )
+                    return this
+                }
+            }
+        )
+
+        proto.clone=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( ){
+                    return $DomRange( this.$.cloneRange() )
+                }
+            ,   'ms': function( ){
+                    return $DomRange( this.$.duplicate() )
+                }
+            }
+        )
+        
+    })
+)
+
+// jam/log/jam+log.jam
+with( $jam )
+$define( '$log', new function(){
+    var console= $glob().console
+    if( !console || !console.log ){
+        return function(){
+            alert( [].slice.call( arguments ) )
+        }
+    }
+    if( !console.log.apply ){
+        return function(){
+            console.log( [].slice.call( arguments ) )
+        }
+    }
+    return function(){
+        console.log.apply( console, arguments )
+    }
+})
 
 // jam/Node/jam+Node.jam
 with( $jam )
@@ -948,7 +1358,7 @@ $define
                         case '#comment':
                             val= $doc().createComment( '' )
                             break
-                        case '#fragment':
+                        case '#document-fragment':
                             val= $doc().createDocumentFragment()
                             break
                         default:
@@ -979,7 +1389,7 @@ $define
                 return $html.text( this.$.innerHTML )
             }
         ,   new function(){
-                var fieldName= { w3c: 'textContent', ms: 'innerText' }[ $support.htmlModel() ]
+                var fieldName= $switch( $support.htmlModel(), { w3c: 'textContent', ms: 'innerText' } )
                 return function( val ){
                     if( this.text() === val ) return this
                     this.$[ fieldName ]= $String( val ).$
@@ -998,7 +1408,8 @@ $define
             }
         ,   function( val ){
                 if( this.html() === val ) return this
-                this.$.innerHTML= $String( val ).$
+                this.$.innerHTML= ''
+                this.tail( $dom.parse( val ) )
                 return this
             }
         )
@@ -1013,16 +1424,19 @@ $define
         
         proto.name=
         $Poly
-        (   {   'w3c': function( ){
-                    return this.$.nodeName.toLowerCase()
+        (   $switch
+            (   $support.htmlModel()
+            ,   {   'w3c': function( ){
+                        return this.$.nodeName.toLowerCase()
+                    }
+                ,   'ms': function( ){
+                        var scope= this.$.scopeName
+                        if( scope === 'HTML' ) scope= ''
+                        var name= this.$.nodeName.toLowerCase()
+                        return scope ? scope + ':' + name : name
+                    }
                 }
-            ,   'ms': function( ){
-                    var scope= this.$.scopeName
-                    if( scope === 'HTML' ) scope= ''
-                    var name= this.$.nodeName.toLowerCase()
-                    return scope ? scope + ':' + name : name
-                }
-            }[ $support.htmlModel() ]
+            )
         )
         
         proto.attr=
@@ -1066,58 +1480,97 @@ $define
         $Poly
         (   null
         ,   null
-        ,   {   'w3c': function( eventName, proc ){
-                    this.$.addEventListener( eventName, proc, false )
-                    
-                    var self= this
-                    return function(){
-                        self.$.removeEventListener( eventName, proc, false )
-                    }
-                }
-            ,   'ms': function( eventName, proc ){
-                    var proc2= proc
-                    var eventName2= eventName
-                    if( !/^\w+$/.test( eventName ) ){
-                        eventName2= 'beforeeditfocus'
-                        proc2= function( ev ){
-                            if( ev.originalType !== eventName ) return
-                            ev.type= ev.originalType
-                            proc( ev )
+        ,   $switch
+            (   $support.eventModel()
+            ,   {   'w3c': function( eventName, proc ){
+                        this.$.addEventListener( eventName, proc, false )
+                        
+                        var self= this
+                        return function(){
+                            self.$.removeEventListener( eventName, proc, false )
                         }
                     }
-                    var proc3= function(){
-                        var ev= $glob().event
-                        //ev= $doc().createEventObject( ev )
-                        if( !ev.target ) ev.target= ev.srcElement 
-                        proc2( ev )
-                    }
-                    this.$.attachEvent( 'on' + eventName2, proc3, false )
-
-                    var self= this
-                    return function(){
-                        self.$.detachEvent( 'on' + eventName2, proc3, false )
+                ,   'ms': function( eventName, proc ){
+                        var proc2= proc
+                        var eventName2= eventName
+                        if( !/^\w+$/.test( eventName ) ){
+                            eventName2= 'beforeeditfocus'
+                            proc2= function( ev ){
+                                if( ev.originalType !== eventName ) return
+                                ev.type= ev.originalType
+                                proc( ev )
+                            }
+                        }
+                        var proc3= function(){
+                            var ev= $glob().event
+                            //ev= $doc().createEventObject( ev )
+                            if( !ev.target ) ev.target= ev.srcElement 
+                            proc2( ev )
+                        }
+                        this.$.attachEvent( 'on' + eventName2, proc3, false )
+    
+                        var self= this
+                        return function(){
+                            self.$.detachEvent( 'on' + eventName2, proc3, false )
+                        }
                     }
                 }
-            }[ $support.eventModel() ]
+            )
         )
         
         proto.scream=
         $Poly
         (   null
-        ,   {   'w3c': function( ev ){
-                    ev= $Event( ev ).$
-                    this.$.dispatchEvent( ev )
-                }
-            ,   'ms': function( ev ){
-                    ev= $Event( ev ).$
-                    var eventName= ev.type
-                    if( !/^\w+$/.test( eventName ) ){
-                        eventName= 'beforeeditfocus'
+        ,   $switch
+            (   $support.eventModel()
+            ,   {   'w3c': function( ev ){
+                        ev= $Event( ev ).$
+                        this.$.dispatchEvent( ev )
                     }
-                    ev.originalType= ev.type
-                    this.$.fireEvent( 'on' + eventName, ev )
+                ,   'ms': function( ev ){
+                        ev= $Event( ev ).$
+                        var eventName= ev.type
+                        if( !/^\w+$/.test( eventName ) ){
+                            eventName= 'beforeeditfocus'
+                        }
+                        ev.originalType= ev.type
+                        this.$.fireEvent( 'on' + eventName, ev )
+                    }
                 }
-            }[ $support.eventModel() ]
+            )
+        )
+        
+        proto.innerRange=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( ){
+                    var range= $DomRange()
+                    range.$.selectNodeContents( this.$ )
+                    return range.$
+                }
+            ,   'ms': function( node ){
+                    var range= $DomRange()
+                    range.$.moveToElementText( this.$ )
+                    return range.$
+                }
+            }
+        )
+        
+        proto.outerRange=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( node ){
+                    var range= $DomRange()
+                    range.$.selectNode( this.$ )
+                    return range.$
+                }
+            ,   'ms': function( node ){
+                    var range= this.innerRange()
+                    $log('check this')
+                    range.$.expand( 'textedit' )
+                    return range.$
+                }
+            }
         )
         
         proto.childList=
@@ -1151,12 +1604,6 @@ $define
             return filtered
         }
 
-        proto.findByTag=
-        function( name ){
-            var found= this.$.getElementsByTagName( name )
-            
-        }
-        
         proto.parent= 
         $Poly
         (   function( ){
@@ -1218,6 +1665,29 @@ $define
                 return this
             }   
         )
+        
+        proto.delve=
+        $Poly
+        (   function( ){
+                var child= this.$.firstChild
+                if( child ) this.$= child
+                else this.follow()
+                return this
+            }
+        )
+
+        proto.follow=
+        $Poly
+        (   function( ){
+                var node= this.$
+                while( true ){
+                    this.$= node.nextSibling
+                    if( this.$ ) return this
+                    node= node.parentNode
+                    if( !node ) return this
+                }
+            }
+        )
 
         proto.prev=
         $Poly
@@ -1252,13 +1722,9 @@ $define
 with( $html )
 $Component
 (   'a'
-,   $Class( function( klass ){
-        klass.create=
-        function( el ){
-            var isTarget= ( el.href == $doc().location.href )
-            $Node( el ).state( 'target', isTarget )
-            return null
-        }
-    })
+,   function( el ){
+        var isTarget= ( el.href == $doc().location.href )
+        $Node( el ).state( 'target', isTarget )
+    }
 )
 
