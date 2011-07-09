@@ -1,0 +1,119 @@
+/* @import url( '../../wc/lang_pcre/wc-lang_pcre.css' ); */
+wc\:lang_pcre {
+	font-family: monospace;
+	white-space: pre-wrap;
+	line-height: 1;
+}
+
+wc\:lang_pcre-backslash {
+	color: #aaa;
+}
+
+wc\:lang_pcre-spec {
+	color: red;
+}
+
+wc\:lang_pcre-control {
+	font-weight: bold;
+}
+
+/* @import url( '../../wc/lang_js/wc+lang_js.css' ); */
+wc\:lang_js {
+	font-family: monospace;
+	line-height: 1;
+	white-space: pre;
+}
+
+wc\:lang_js-remark {
+	color: #bbb;
+	white-space: pre;
+}
+
+wc\:lang_js-string {
+	color: #393;
+	white-space: pre;
+}
+
+wc\:lang_js-internal {
+	color: #333;
+}
+
+wc\:lang_js-external {
+	font-weight: bold;
+}
+
+wc\:lang_js-keyword {
+	color: #339;
+	font-weight: bold;
+}
+
+wc\:lang_js-number {
+	color: #c30;
+	white-space: pre;
+}
+
+wc\:lang_js-regexp {
+	color: #939;
+	white-space: pre;
+}
+
+wc\:lang_js-bracket {
+	font-weight: bold;
+	white-space: pre;
+}
+
+wc\:lang_js-operator {
+	font-weight: bold;
+	color: #066;
+	white-space: pre;
+}
+
+/* @import url( '../../wc/js-test/wc_js-test.css' ); */
+wc\:js-test {
+    display: inline-block; zoom: 1;
+    font-size: 9pt;
+    font-family: 'Lucida Console', monospace;
+    border: 1px solid #ddd;
+    line-height: 1.5;
+    white-space: pre;
+    overflow: auto;
+    max-width: 100%;
+    vertical-align: top;
+    background: #eee;
+    margin: 2pt 0;
+    position: relative;
+}
+
+wc\:js-test.passed\=true {
+    background: #cfc;
+    border: 1px solid #ada;
+}
+
+wc\:js-test.passed\=false {
+    background: #fcc;
+    border: 1px solid #c99;
+}
+
+.wc_js-test_textarea {
+    display: none;
+}
+
+wc\:js-test_timeout {
+    display: block;
+    padding: 2pt 4pt;
+    font-size: 8pt;
+    background: #ffc;
+    border-bottom: 1px solid #dda;
+}
+
+wc\:js-test_source {
+    display: block;
+}
+
+wc\:js-test_result {
+    border-top: 1px solid #dda;
+    background: #ffc;
+    padding: 2pt 4pt;
+    display: block;
+}
+

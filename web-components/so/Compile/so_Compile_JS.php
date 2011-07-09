@@ -3,6 +3,8 @@
 class so_Compile_JS {
     function __construct( $pack, $mixModule ){
         $files= $pack->filesByExt(array( 'js', 'jam' ));
+        $vmlFile= $mixModule->createFile( 'compiled.vml.js' );
+        if( $vmlFile->exists ) $files[]= $vmlFile;
         
         $indexFile= $mixModule->createFile( 'index.js' );
         $indexPath= '/' . $indexFile->id;
@@ -15,8 +17,8 @@ class so_Compile_JS {
         endif;
         
         $content= '';
-        foreach( $files as $id => $file ):
-            $content.= "// {$id}\n" . $file->content . "\n";
+        foreach( $files as $file ):
+            $content.= "// {$file->id}\n" . $file->content . "\n";
         endforeach;
         $mixModule->createFile( 'compiled.js' )->content= $content;
     }

@@ -61,7 +61,6 @@
             <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"/>
             <link href="{$wc:root-uri}/-mix+doc/index.css" rel="stylesheet"/>
             <script src="{$wc:root-uri}/-mix+doc/index.js?">//</script>
-            <script src="{$wc:root-uri}/-mix+doc/index.vml.js?">//</script>
 
         </head>
         <body>
@@ -78,9 +77,6 @@
                         <wc:vmenu-root>
                             <a href="../-mix/index.js" class=" reset=true ">
                                 <wc:vmenu-leaf>index.js</wc:vmenu-leaf>
-                            </a>
-                            <a href="../-mix/index.vml.js" class=" reset=true ">
-                                <wc:vmenu-leaf>index.vml.js</wc:vmenu-leaf>
                             </a>
                             <a href="../-mix/index.css" class=" reset=true ">
                                 <wc:vmenu-leaf>index.css</wc:vmenu-leaf>

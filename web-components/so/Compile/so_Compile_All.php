@@ -9,6 +9,9 @@ class so_Compile_All {
             $docPack= new so_WC_MetaPack;
             $docPack->modules= array_merge( $docModules, $srcPack->modules );
             
+            new so_Compile_VML( $srcPack, $pack->mixModule );
+            new so_Compile_VML( $docPack, $pack->mixDocModule );
+
             new so_Compile_JS( $srcPack, $pack->mixModule );
             new so_Compile_JS( $docPack, $pack->mixDocModule );
             
@@ -20,9 +23,6 @@ class so_Compile_All {
             
             new so_Compile_XML( $srcPack, $pack->mixModule );
             new so_Compile_XML( $docPack, $pack->mixDocModule );
-
-            new so_Compile_VML( $srcPack, $pack->mixModule );
-            new so_Compile_VML( $docPack, $pack->mixDocModule );
 
             # new so_Compile_Other( $srcPack, $pack->mixModule );
             # new so_Compile_Other( $docPack, $pack->mixDocModule );

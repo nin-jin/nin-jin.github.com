@@ -7,7 +7,6 @@ $Component
             
             var exec= $Thread( function( ){
                 var source= $String( nodeSource.text() ).minimizeIndent().trim( /[\n\r]/ ).$
-                //nodeSource.html( $lang_js( source ) )
                 var proc= new Function( '_test', source )
                 proc( _test )
                 return true

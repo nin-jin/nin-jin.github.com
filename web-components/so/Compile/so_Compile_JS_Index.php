@@ -46,8 +46,8 @@ class so_Compile_JS_Index extends so_NativeTemplate {
         next()
     }
 }([
-<? foreach( $files as $id => $file ): ?>
-    "../../<?= $id; ?>?<?= $file->version; ?>",
+<? foreach( $files as $file ): ?>
+    "../../<?= $file->id; ?>?<?= $file->version; ?>",
 <? endforeach; ?>
 null ])
 <?php

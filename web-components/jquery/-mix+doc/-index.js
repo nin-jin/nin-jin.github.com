@@ -89,10 +89,11 @@
     "../../wc/hlight/wc-hlight.jam?LO0RFT",
     "../../wc/lang_pcre/wc+lang_pcre.jam?LNX2I7",
     "../../wc/lang_js/wc+lang_js.jam?LO0SIM",
-    "../../wc/js-test/wc_js-test.jam?LO1WFX",
+    "../../wc/js-test/wc_js-test.jam?LO1ZGR",
     "../../wc/lang_css/wc+lang_css.jam?LNX8IQ",
     "../../wc/lang_sgml/wc+lang_sgml.jam?LNY9TN",
     "../../wc/ns/wc-ns.jam?LNNJ7F",
     "../../doc/doc/doc.jam?LNT3H8",
     "../../jquery/jquery/jquery-162.js?LO10CM",
+    "../../jquery/-mix+doc/compiled.vml.js?LO10XX",
 null ])
