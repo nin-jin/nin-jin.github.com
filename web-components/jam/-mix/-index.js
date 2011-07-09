@@ -63,7 +63,7 @@
     "../../jam/Parser/jam+Parser.jam?LNX1KB",
     "../../jam/Lazy/jam+Lazy.jam?LNNGT0",
     "../../jam/TemplateFactory/jam+TemplateFactory.jam?LNWI7J",
-    "../../jam/html/jam+html.jam?LNNGT1",
+    "../../jam/html/jam+html.jam?LO24LJ",
     "../../jam/dom/jam+dom.jam?LNNGT1",
     "../../jam/Hiqus/jam+Hiqus.jam?LNNGT0",
     "../../jam/Event/jam+Event.jam?LO0VM8",

@@ -2524,7 +2524,7 @@ $Component
             nodeRoot= $Node( nodeRoot )
             
             var exec= $Thread( function( ){
-                var source= $String( nodeSource.text() ).minimizeIndent().trim( /[\n\r]/ ).$
+                var source= nodeSource.text()
                 var proc= new Function( '_test', source )
                 proc( _test )
                 return true
@@ -2543,6 +2543,8 @@ $Component
                 if( /^wc:js-test_/.test( nodeChild.name() ) ) continue
                 nodeSource.tail( nodeChild )
             }
+            
+            nodeSource.text( $String( nodeSource.text() ).minimizeIndent().trim( /[\n\r]/ ).$ )
 
             var _test= {}
             

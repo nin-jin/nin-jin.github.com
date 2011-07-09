@@ -59,7 +59,7 @@
     "../../jam/Parser/jam+Parser.jam?LNX1KB",
     "../../jam/Lazy/jam+Lazy.jam?LNNGT0",
     "../../jam/TemplateFactory/jam+TemplateFactory.jam?LNWI7J",
-    "../../jam/html/jam+html.jam?LNNGT1",
+    "../../jam/html/jam+html.jam?LO24LJ",
     "../../jam/switch/jam+switch.jam?LNYDNN",
     "../../jam/dom/jam+dom.jam?LNNGT1",
     "../../jam/Hiqus/jam+Hiqus.jam?LNNGT0",
@@ -75,5 +75,5 @@
     "../../wc/lang/wc+lang.jam?LNX3R7",
     "../../wc/lang_pcre/wc+lang_pcre.jam?LNX2I7",
     "../../wc/lang_js/wc+lang_js.jam?LO0SIM",
-    "../../wc/js-test/wc_js-test.jam?LO1ZGR",
+    "../../wc/js-test/wc_js-test.jam?LO24QX",
 null ])
