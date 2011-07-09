@@ -21,10 +21,10 @@
     </textarea>
 </xsl:template>
 
-<!-- wc/test-js/wc-test-js.xsl -->
+<!-- wc/js-test/wc_js-test.xsl -->
 
-<xsl:template xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" match=" wc:test-js/text() ">
-    <textarea class=" wc_test-js_textarea">
+<xsl:template xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" match=" wc:js-test/text() ">
+    <textarea class=" wc_js-test_textarea">
         <xsl:copy/>
     </textarea>
 </xsl:template>
@@ -61,7 +61,7 @@
             <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"/>
             <link href="{$wc:root-uri}/-mix+doc/index.css" rel="stylesheet"/>
             <script src="{$wc:root-uri}/-mix+doc/index.js?">//</script>
-            <script src="{$wc:root-uri}/-mix+doc/compiled.vml.js?">//</script>
+            <script src="{$wc:root-uri}/-mix+doc/index.vml.js?">//</script>
 
         </head>
         <body>
@@ -76,17 +76,17 @@
                 
                     <wc:sidebar class=" align=right ">
                         <wc:vmenu-root>
-                            <a href="../-mix/compiled.js" class=" reset=true ">
-                                <wc:vmenu-leaf>compiled.js</wc:vmenu-leaf>
+                            <a href="../-mix/index.js" class=" reset=true ">
+                                <wc:vmenu-leaf>index.js</wc:vmenu-leaf>
                             </a>
-                            <a href="../-mix/compiled.vml.js" class=" reset=true ">
-                                <wc:vmenu-leaf>compiled.vml.js</wc:vmenu-leaf>
+                            <a href="../-mix/index.vml.js" class=" reset=true ">
+                                <wc:vmenu-leaf>index.vml.js</wc:vmenu-leaf>
                             </a>
-                            <a href="../-mix/compiled.css" class=" reset=true ">
-                                <wc:vmenu-leaf>compiled.css</wc:vmenu-leaf>
+                            <a href="../-mix/index.css" class=" reset=true ">
+                                <wc:vmenu-leaf>index.css</wc:vmenu-leaf>
                             </a>
-                            <a href="../-mix/compiled.xsl" class=" reset=true ">
-                                <wc:vmenu-leaf>compiled.xsl</wc:vmenu-leaf>
+                            <a href="../-mix/index.xsl" class=" reset=true ">
+                                <wc:vmenu-leaf>index.xsl</wc:vmenu-leaf>
                             </a>
                         </wc:vmenu-root>
                     </wc:sidebar>

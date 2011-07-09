@@ -8,55 +8,55 @@
     <h1>$jam.$Obj</h1>
     <p>Создаёт обёртку предоставляющую базовый интерфейс работы с объектами.</p>
 
-    <wc:test-js> _done( $jam.$Obj ) </wc:test-js>
-    <wc:test-js>
+    <wc:js-test> _test.ok( $jam.$Obj ) </wc:js-test>
+    <wc:js-test>
         var obj= $jam.$Obj( {} )
-        _done( $jam.$Obj( obj ).$, obj )
-    </wc:test-js>
-    <wc:test-js>
+        _test.ok( $jam.$Obj( obj ).$, obj )
+    </wc:js-test>
+    <wc:js-test>
         var obj= {}
-        _done( $jam.$Obj( obj ).$, obj )
-    </wc:test-js>
-    <wc:test-js>
+        _test.ok( $jam.$Obj( obj ).$, obj )
+    </wc:js-test>
+    <wc:js-test>
         var obj= $jam.$Obj( {} )
-        _done( obj.has( 'foo' ), false )
-    </wc:test-js>
-    <wc:test-js>
+        _test.ok( obj.has( 'foo' ), false )
+    </wc:js-test>
+    <wc:js-test>
         var obj= $jam.$Obj( { foo: 'bar' } )
-        _done( obj.has( 'foo' ), true )
-    </wc:test-js>
-    <wc:test-js>
+        _test.ok( obj.has( 'foo' ), true )
+    </wc:js-test>
+    <wc:js-test>
         var obj= $jam.$Obj( {} )
-        _done( obj.get( 'foo' ), void 0 )
-    </wc:test-js>
-    <wc:test-js>
+        _test.ok( obj.get( 'foo' ), void 0 )
+    </wc:js-test>
+    <wc:js-test>
         var obj= $jam.$Obj( { foo: 'bar' } )
-        _done( obj.get( 'foo' ), 'bar' )
-    </wc:test-js>
-    <wc:test-js>
+        _test.ok( obj.get( 'foo' ), 'bar' )
+    </wc:js-test>
+    <wc:js-test>
         var obj= $jam.$Obj( {} )
         obj.put( 'foo', 'bar' )
-        _done( obj.$.foo, 'bar' )
-    </wc:test-js>
-    <wc:test-js>
+        _test.ok( obj.$.foo, 'bar' )
+    </wc:js-test>
+    <wc:js-test>
         var obj= $jam.$Obj( {} )
         obj.init( function( obj ){
             obj.foo= 'bar'
         })
-        _done( obj.get( 'foo' ), 'bar' )
-    </wc:test-js>
-    <wc:test-js>
+        _test.ok( obj.get( 'foo' ), 'bar' )
+    </wc:js-test>
+    <wc:js-test>
         var obj= $jam.$Obj( {} )
         obj.define( 'foo', 'bar' )
-        _done( obj.get( 'foo' ), 'bar' )
-    </wc:test-js>
-    <wc:test-js>
+        _test.ok( obj.get( 'foo' ), 'bar' )
+    </wc:js-test>
+    <wc:js-test>
         var obj= $jam.$Obj( { foo: void 0 } )
         try {
             obj.define( 'foo', 'bar' )
         } catch( e ){
-            return _done( e )
+            return _test.ok( e )
         }
-    </wc:test-js>
+    </wc:js-test>
 
 </doc:root>

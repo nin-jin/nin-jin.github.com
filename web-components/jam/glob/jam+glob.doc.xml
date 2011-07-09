@@ -10,8 +10,8 @@
     <p>Возвращает глобальный контекст.</p>
 
     <p>
-        <wc:test-js> _done( $jam.$glob ) </wc:test-js>
-        <wc:test-js> _done( $jam.$glob(), this ) </wc:test-js>
+        <wc:js-test> _test.ok( $jam.$glob ) </wc:js-test>
+        <wc:js-test> _test.ok( $jam.$glob(), this ) </wc:js-test>
     </p>
 
 </doc:root>

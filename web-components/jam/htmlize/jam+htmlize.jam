@@ -1,0 +1,23 @@
+with( $jam )
+$define
+(   '$htmlize'
+,   function( ns ){
+        if( !$doc().getElementsByTagNameNS ) return
+        $domReady.then( function( ){
+            var nodeList= $doc().getElementsByTagNameNS( ns, '*' )
+            var node
+            while( node= nodeList[0] ){
+                var parent= node.parentNode
+                var newNode= $doc().createElement( node.nodeName )
+                var attrList= node.attributes
+                for( var i= 0; i < attrList.length; ++i ){
+                    var attr= attrList[ i ]
+                    newNode.setAttribute( attr.nodeName, attr.nodeValue ) 
+                }
+                var child; while( child= node.firstChild ) newNode.appendChild( child )
+                parent.insertBefore( newNode, node )
+                parent.removeChild( node )
+            }
+        })
+    }
+)

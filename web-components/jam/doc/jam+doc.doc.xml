@@ -10,8 +10,8 @@
     <p>Возвращает документ для текущего окна.</p>
 
     <p>
-        <wc:test-js> _done( $jam.$doc ) </wc:test-js>
-        <wc:test-js> _done( $jam.$doc(), this.document ) </wc:test-js>
+        <wc:js-test> _test.ok( $jam.$doc ) </wc:js-test>
+        <wc:js-test> _test.ok( $jam.$doc(), this.document ) </wc:js-test>
     </p>
 
 </doc:root>

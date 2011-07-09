@@ -1,0 +1,56 @@
+wc\:lang_css {
+	font-family: monospace;
+	white-space: pre-wrap;
+}
+
+wc\:lang_css-remark {
+	color: #bbb;
+	white-space: pre-wrap;
+}
+
+wc\:lang_css-selector {
+}
+
+wc\:lang_css-tag {
+	color: #a3a;
+	font-weight: bold;
+	white-space: pre;
+}
+
+wc\:lang_css-id {
+	color: red;
+	white-space: pre;
+}
+
+wc\:lang_css-class {
+	color: #d66;
+	font-weight: bold;
+	white-space: pre;
+}
+
+wc\:lang_css-pseudo {
+	color: #399;
+	white-space: pre;
+}
+
+wc\:lang_css-string {
+	color: #393;
+	white-space: pre-wrap;
+}
+
+wc\:lang_css-bracket {
+	color: #333;
+	font-weight: bold;
+	white-space: pre;
+}
+
+wc\:lang_css-property {
+	color: #339;
+	font-weight: bold;
+	white-space: pre;
+}
+
+wc\:lang_css-value {
+	color: black;
+	white-space: pre-wrap;
+}

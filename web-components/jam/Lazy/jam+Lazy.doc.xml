@@ -8,22 +8,22 @@
     <h1>$jam.$Lazy</h1>
     <p>Создаёт ленивую функцию. Принимает на вход фабрику, которую использует для создания актуальной функции при первом вызове.</p>
 
-    <wc:test-js> _done( $jam.$Lazy ) </wc:test-js>
-    <wc:test-js>
+    <wc:js-test> _test.ok( $jam.$Lazy ) </wc:js-test>
+    <wc:js-test>
         var lazy= $jam.$Lazy( function(){
             return function( a, b ){
                 return b
             }
         })
-        _done( lazy( 1, 2 ), 2 )
-    </wc:test-js>
-    <wc:test-js>
+        _test.ok( lazy( 1, 2 ), 2 )
+    </wc:js-test>
+    <wc:js-test>
         with( $jam )
         var lazy= $Lazy( function(){
             var a= Math.random()
             return $Value( a )
         })
-        _done( lazy(), lazy() )
-    </wc:test-js>
+        _test.ok( lazy(), lazy() )
+    </wc:js-test>
 
 </doc:root>

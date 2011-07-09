@@ -1,0 +1,17 @@
+wc\:lang_pcre {
+	font-family: monospace;
+	white-space: pre-wrap;
+	line-height: 1;
+}
+
+wc\:lang_pcre-backslash {
+	color: #aaa;
+}
+
+wc\:lang_pcre-spec {
+	color: red;
+}
+
+wc\:lang_pcre-control {
+	font-weight: bold;
+}

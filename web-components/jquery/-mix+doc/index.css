@@ -356,64 +356,6 @@ wc\:footer {
     display: block;
 }
 
-/* @import url( '../../wc/lang_css/wc+lang_css.css' ); */
-wc\:lang_css {
-	font-family: monospace;
-	white-space: pre-wrap;
-}
-
-wc\:lang_css-remark {
-	color: #bbb;
-	white-space: pre-wrap;
-}
-
-wc\:lang_css-selector {
-}
-
-wc\:lang_css-tag {
-	color: #a3a;
-	font-weight: bold;
-	white-space: pre;
-}
-
-wc\:lang_css-id {
-	color: red;
-	white-space: pre;
-}
-
-wc\:lang_css-class {
-	color: #d66;
-	font-weight: bold;
-	white-space: pre;
-}
-
-wc\:lang_css-pseudo {
-	color: #399;
-	white-space: pre;
-}
-
-wc\:lang_css-string {
-	color: #393;
-	white-space: pre-wrap;
-}
-
-wc\:lang_css-bracket {
-	color: #333;
-	font-weight: bold;
-	white-space: pre;
-}
-
-wc\:lang_css-property {
-	color: #339;
-	font-weight: bold;
-	white-space: pre;
-}
-
-wc\:lang_css-value {
-	color: black;
-	white-space: pre-wrap;
-}
-
 /* @import url( '../../wc/lang_pcre/wc-lang_pcre.css' ); */
 wc\:lang_pcre {
 	font-family: monospace;
@@ -482,6 +424,113 @@ wc\:lang_js-operator {
 	font-weight: bold;
 	color: #066;
 	white-space: pre;
+}
+
+/* @import url( '../../wc/js-test/wc_js-test.css' ); */
+wc\:js-test {
+    display: inline-block; zoom: 1;
+    font-size: 9pt;
+    font-family: 'Lucida Console', monospace;
+    border: 1px solid #ddd;
+    line-height: 1.5;
+    white-space: pre;
+    overflow: auto;
+    max-width: 100%;
+    vertical-align: top;
+    background: #eee;
+    margin: 2pt 0;
+    position: relative;
+}
+
+wc\:js-test.passed\=true {
+    background: #cfc;
+    border: 1px solid #ada;
+}
+
+wc\:js-test.passed\=false {
+    background: #fcc;
+    border: 1px solid #c99;
+}
+
+.wc_js-test_textarea {
+    display: none;
+}
+
+wc\:js-test_timeout {
+    display: block;
+    padding: 2pt 4pt;
+    font-size: 8pt;
+    background: #ffc;
+    border-bottom: 1px solid #dda;
+}
+
+wc\:js-test_source {
+    display: block;
+}
+
+wc\:js-test_result {
+    border-top: 1px solid #dda;
+    background: #ffc;
+    padding: 2pt 4pt;
+    display: block;
+}
+
+/* @import url( '../../wc/lang_css/wc+lang_css.css' ); */
+wc\:lang_css {
+	font-family: monospace;
+	white-space: pre-wrap;
+}
+
+wc\:lang_css-remark {
+	color: #bbb;
+	white-space: pre-wrap;
+}
+
+wc\:lang_css-selector {
+}
+
+wc\:lang_css-tag {
+	color: #a3a;
+	font-weight: bold;
+	white-space: pre;
+}
+
+wc\:lang_css-id {
+	color: red;
+	white-space: pre;
+}
+
+wc\:lang_css-class {
+	color: #d66;
+	font-weight: bold;
+	white-space: pre;
+}
+
+wc\:lang_css-pseudo {
+	color: #399;
+	white-space: pre;
+}
+
+wc\:lang_css-string {
+	color: #393;
+	white-space: pre-wrap;
+}
+
+wc\:lang_css-bracket {
+	color: #333;
+	font-weight: bold;
+	white-space: pre;
+}
+
+wc\:lang_css-property {
+	color: #339;
+	font-weight: bold;
+	white-space: pre;
+}
+
+wc\:lang_css-value {
+	color: black;
+	white-space: pre-wrap;
 }
 
 /* @import url( '../../wc/lang_sgml/wc+lang_sgml.css' ); */
@@ -567,55 +616,6 @@ wc\:spacer {
     zoom: 1;
     position: relative;
     width: auto;
-}
-
-/* @import url( '../../wc/test-js/wc-test-js.css' ); */
-wc\:test-js {
-    display: inline-block; zoom: 1;
-    font-size: 9pt;
-    font-family: 'Lucida Console', monospace;
-    border: 1px solid #ddd;
-    line-height: 1.5;
-    white-space: pre;
-    overflow: auto;
-    max-width: 100%;
-    vertical-align: top;
-    background: #eee;
-    margin: 2pt 0;
-    position: relative;
-}
-
-wc\:test-js.passed\=true {
-    background: #cfc;
-    border: 1px solid #ada;
-}
-
-wc\:test-js.passed\=false {
-    background: #fcc;
-    border: 1px solid #c99;
-}
-
-.wc_test-js_textarea {
-    display: none;
-}
-
-wc\:test-js_timeout {
-    display: block;
-    padding: 2pt 4pt;
-    font-size: 8pt;
-    background: #ffc;
-    border-bottom: 1px solid #dda;
-}
-
-wc\:test-js_source {
-    display: block;
-}
-
-wc\:test-js_result {
-    border-top: 1px solid #dda;
-    background: #ffc;
-    padding: 2pt 4pt;
-    display: block;
 }
 
 /* @import url( '../../wc/vmenu/wc-vmenu.css' ); */

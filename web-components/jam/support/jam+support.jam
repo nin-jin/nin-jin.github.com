@@ -1,0 +1,11 @@
+with( $jam )
+$define
+(   '$support'
+,   new function(){
+        var node= $doc().createElement( 'html:div' )
+        this.htmlModel= $Value( node.namespaceURI !== void 0 ? 'w3c' : 'ms' )
+        this.eventModel= $Value( 'addEventListener' in node ? 'w3c' : 'ms' )
+        this.selectionModel= $Value( 'createRange' in $doc() ? 'w3c' : 'ms' )
+        this.vml= $Value( /*@cc_on!@*/ false )
+    }
+)

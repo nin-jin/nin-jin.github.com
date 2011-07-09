@@ -1,0 +1,30 @@
+with( $wc )
+$define
+(   '$lang'
+,   new function( ){
+        var lang=
+        function( name ){
+            return this[ '$lang' + '_' + name ] || $lang_text
+        }
+        
+        lang.Wrapper=
+        function( name ){
+            var prefix= '<' + name + '>'
+            var postfix= '</' + name + '>'
+            return function( content ){
+            	return prefix + content + postfix
+            }
+        }
+        
+        lang.Parser=
+        function( map ){
+            if( !map[ '' ] ) map[ '' ]= $lang_text
+            return $Pipe
+            (   $Parser( map )
+            ,   $Concater()
+            )
+        }
+        
+        return lang
+    }
+)

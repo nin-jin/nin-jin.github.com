@@ -1,0 +1,60 @@
+with( $wc )
+$define
+(	'$lang_js'
+,	new function(){
+    
+        var js=
+        function( str ){
+            return js.root( js.content( str ) )
+        }
+
+        js.root= $lang.Wrapper( 'wc:lang_js' )
+        js.remark= $lang.Wrapper( 'wc:lang_js-remark' )
+        js.string= $lang.Wrapper( 'wc:lang_js-string' )
+        js.internal= $lang.Wrapper( 'wc:lang_js-internal' )
+        js.external= $lang.Wrapper( 'wc:lang_js-external' )
+        js.keyword= $lang.Wrapper( 'wc:lang_js-keyword' )
+        js.number= $lang.Wrapper( 'wc:lang_js-number' )
+        js.regexp= $lang.Wrapper( 'wc:lang_js-regexp' )
+        js.bracket= $lang.Wrapper( 'wc:lang_js-bracket' )
+        js.operator= $lang.Wrapper( 'wc:lang_js-operator' )
+             
+        js.content=
+        $lang.Parser( new function(){
+        
+            this[ /(\/\*[\s\S]*?\*\/)/.source ]=
+            $Pipe( $lang_text, js.remark )
+            this[ /(\/\/[^\n]*)/.source ]=
+            $Pipe( $lang_text, js.remark )
+            
+            this[ /('(?:[^\n'\\]*(?:\\\\|\\[^\\]))*[^\n'\\]*')/.source ]=
+            $Pipe( $lang_text, js.string )
+            this[ /("(?:[^\n"\\]*(?:\\\\|\\[^\\]))*[^\n"\\]*")/.source ]=
+            $Pipe( $lang_text, js.string )
+            
+            this[ /(\/(?:[^\n\/\\]*(?:\\\\|\\[^\\]))*[^\n\/\\]*\/)/.source ]=
+            $Pipe( $lang_pcre, js.regexp )
+            
+            this[ /\b(_[\w$]*)\b/.source ]=
+            $Pipe( $lang_text, js.internal )
+            
+            this[ /(\$[\w$]*)(?![\w$])/.source ]=
+            $Pipe( $lang_text, js.external )
+
+            this[ /\b(this|function|new|var|if|else|switch|case|default|for|in|while|do|with|boolean|continue|break|throw|true|false|void|try|catch|null|typeof|instanceof|return|delete|window|document)\b/.source ]=
+            $Pipe( $lang_text, js.keyword )
+            
+            this[ /((?:\d*\.)?\d(?:[eE])?)/.source ]=
+            $Pipe( $lang_text, js.number )
+            
+            this[ /([(){}\[\]])/.source ]=
+            $Pipe( $lang_text, js.bracket )
+            
+            this[ /(\+{1,2}|-{1,2}|\*|\/|&{1,2}|\|{1,2}|={1,2}|%|\^|!)/.source ]=
+            $Pipe( $lang_text, js.operator )
+            
+        })
+        
+        return js
+    }
+) 

@@ -1,0 +1,3 @@
+include pack= html
+include pack= jam
+include pack= wc

@@ -1,0 +1,141 @@
+with( $wc )
+$Component
+(   'wc:js-test'
+,   function( nodeRoot ){
+        return new function( ){
+            nodeRoot= $Node( nodeRoot )
+            
+            var exec= $Thread( function( ){
+                var source= $String( nodeSource.text() ).minimizeIndent().trim( /[\n\r]/ ).$
+                //nodeSource.html( $lang_js( source ) )
+                var proc= new Function( '_test', source )
+                proc( _test )
+                return true
+            })
+        
+            var nodeSource0= $Node( nodeRoot.$ ).ensureChild( 'wc:js-test_source' )
+            var nodeSource=
+            $Node( nodeSource0.$ )
+            .ensureChild( 'wc:hlight' )
+            .state( 'editable', 'true' )
+            .state( 'lang', 'js' )
+            
+            var childList= nodeRoot.childList()
+            for( var i= 0; i < childList.length; ++i ){
+                var nodeChild= $Node( childList[ i ] )
+                if( /^wc:js-test_/.test( nodeChild.name() ) ) continue
+                nodeSource.tail( nodeChild )
+            }
+
+            var _test= {}
+            
+            _test.ok=
+            $Poly
+            (   function( ){
+                    if( passed() === 'wait' ) passed( true )
+                }
+            ,   function( val ){
+                    if( passed() === 'wait' ) passed( Boolean( val ) )
+                    printValue( val )
+                }
+            ,   function( a, b ){
+                    if( passed() === 'wait' ) passed( a === b )
+                    printValue( a )
+                    if( a !== b ) printValue( b )
+                }
+            )
+
+            _test.not=
+            $Poly
+            (   function( ){
+                    if( passed() === 'wait' ) passed( false )
+                }
+            ,   function( val ){
+                    if( passed() === 'wait' ) passed( !Boolean( val ) )
+                    printValue( val )
+                }
+            ,   function( a, b ){
+                    if( passed() === 'wait' ) passed( a !== b )
+                    printValue( a )
+                    printValue( b )
+                }
+            )
+            
+            var stop
+            
+            var noMoreWait= function( ){
+                if( passed() !== 'wait' ) return
+                passed( false )
+                print( 'Timeout!' )
+                stop= null
+            }
+            
+            _test.deadline=
+            $Poly
+            (   null
+            ,   function( ms ){
+                    if( stop ) throw new Error( 'Deadline redeclaration' )
+                    stop= $schedule( ms, noMoreWait )
+                }
+            )
+        
+            var passed=
+            $Poly
+            (   function( ){
+                    return nodeRoot.state( 'passed' )
+                }
+            ,   function( val ){
+                    nodeRoot.state( 'passed', val )
+                }
+            )
+            
+            var print=
+            function( val ){
+                var node= $Node( 'wc:js-test_result' )
+                node.text( val )
+                nodeRoot.tail( node )
+            }
+            
+            var printValue=
+            function( val ){
+                if( typeof val === 'function' ){
+                    if( !val.hasOwnProperty( 'toString' ) ){
+                        print( 'Function: [object Function]' )
+                        return
+                    }
+                }
+                print( $classOf( val ) + ': ' + val )
+            }
+            
+            var run=
+            function( ){
+                var results= nodeRoot.childList( 'wc:js-test_result' )
+                for( var i= 0; i < results.length; ++i ){
+                    $Node( results[i] ).parent( null )
+                }
+                passed( 'wait' )
+                stop= null
+                if( !exec() ) passed( false )
+                if(( !stop )&&( passed() === 'wait' )) passed( false )
+            }
+            
+            run()
+
+            var forgetCommit=
+            nodeRoot.listen
+            (   '$jam.$eventCommit'
+            ,   function( ev ){
+                    run()
+                }
+            )
+            
+            this.destroy=
+            function( ){
+                forgetCommit()
+                if( stop ) stop()
+                passed= printValue= $Value()
+            }
+            
+        }
+    }
+)

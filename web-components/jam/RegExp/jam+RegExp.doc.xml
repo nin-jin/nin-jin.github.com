@@ -8,16 +8,16 @@
     <h1>$jam.$RegExp</h1>
     <p>Создаёт обёртку для регулярных выражений.</p>
 
-    <wc:test-js> _done( $jam.$RegExp ) </wc:test-js>
-    <wc:test-js>
-        _done( $jam.$RegExp( 'foo' ) )
-    </wc:test-js>
-    <wc:test-js>
+    <wc:js-test> _test.ok( $jam.$RegExp ) </wc:js-test>
+    <wc:js-test>
+        _test.ok( $jam.$RegExp( 'foo' ) )
+    </wc:js-test>
+    <wc:js-test>
         var re= $jam.$RegExp( '1((2)3)' )
-        _done( re.count(), 2 )
-    </wc:test-js>
-    <wc:test-js>
-        _done( $jam.$RegExp.encode( '{[(' ), '\\{\\[\\(' )
-    </wc:test-js>
+        _test.ok( re.count(), 2 )
+    </wc:js-test>
+    <wc:js-test>
+        _test.ok( $jam.$RegExp.encode( '{[(' ), '\\{\\[\\(' )
+    </wc:js-test>
 
 </doc:root>

@@ -9,32 +9,32 @@
     <p>Регистрирует новый модуль. Громко ругается, если такой модуль уже есть.</p>
 
     <p>
-        <wc:test-js> _done( $jam.$define ) </wc:test-js>
-        <wc:test-js>
-            _done( $jam.$define( '_test_define_123_', 123 ), $jam )
-        </wc:test-js>
-        <wc:test-js>
+        <wc:js-test> _test.ok( $jam.$define ) </wc:js-test>
+        <wc:js-test>
+            _test.ok( $jam.$define( '_test_define_123_', 123 ), $jam )
+        </wc:js-test>
+        <wc:js-test>
             $jam.$define( '_test_define_123_', 123 )
-            _done( $jam._test_define_123_, 123 )
-        </wc:test-js>
-        <wc:test-js>
+            _test.ok( $jam._test_define_123_, 123 )
+        </wc:js-test>
+        <wc:js-test>
             try {
                 $jam.$define( '_test_define_123_', 321 )
             } catch( e ){
-                return _done( e )
+                return _test.ok( e )
             }
-        </wc:test-js>
+        </wc:js-test>
     </p>
 
     <p>
-        <wc:test-js>
+        <wc:js-test>
             delete $jam._test_define_123_
-            _done()
-        </wc:test-js>
-        <wc:test-js>
+            _test.not( $jam._test_define_123_ )
+        </wc:js-test>
+        <wc:js-test>
             delete $jam._test_define_321_
-            _done()
-        </wc:test-js>
+            _test.not( $jam._test_define_321_ )
+        </wc:js-test>
     </p>
 
 </doc:root>

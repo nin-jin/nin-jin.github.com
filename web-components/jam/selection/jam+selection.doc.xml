@@ -9,7 +9,7 @@
 
     <p>Возврачает объект выделения.</p>
 
-    <wc:test-js> _done( $jam.$selection ) </wc:test-js>
-    <wc:test-js> _done( $jam.$selection() ) </wc:test-js>
+    <wc:js-test> _test.ok( $jam.$selection ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$selection() ) </wc:js-test>
 
 </doc:root>

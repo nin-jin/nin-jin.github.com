@@ -9,26 +9,26 @@
 
     <p>Создаёт конкурентный регулярный лексический анализатор текста. На вход принимает карту лексем, которые соревнуются друг с другом за право первыми совпасть с подстрокой. текст не подошедший ни одной лексеме считается подошедшим лексеме "". Возвращаемый лексер - фактически генератор, который имет метод next() для перехода к следующей подстроке, поле name с именем совпавшей лексемы, поле found содержащее совпавший текст и поле chunks в которое попадает массив захваченных круглыми скобками (в регулярке) подстрок.</p>
 
-    <wc:test-js> _done( $jam.$Lexer ) </wc:test-js>
-    <wc:test-js> _done( $jam.$Lexer({ }) ) </wc:test-js>
-    <wc:test-js> _done( $jam.$Lexer({ })( '123' ) ) </wc:test-js>
-    <wc:test-js>
+    <wc:js-test> _test.ok( $jam.$Lexer ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$Lexer({ }) ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$Lexer({ })( '123' ) ) </wc:js-test>
+    <wc:js-test>
         var lexer= $jam.$Lexer({ digit: /\d/ })
         var res= ''
         for( var i= lexer( 'a12bc' ); i.next().found; ){
             res+= i.name ? '#' : i.found
         }
-        _done( res, 'a##bc' )
-    </wc:test-js>
-    <wc:test-js>
+        _test.ok( res, 'a##bc' )
+    </wc:js-test>
+    <wc:js-test>
         var lexer= $jam.$Lexer({ letter: /([a-zA-Z])/ })
         var res= ''
         for( var i= lexer( 'a12bc' ); i.next().found; ){
             if( i.name ) res+= i.found
         }
-        _done( res, 'abc' )
-    </wc:test-js> 
-    <wc:test-js>
+        _test.ok( res, 'abc' )
+    </wc:js-test> 
+    <wc:js-test>
         var lexer= $jam.$Lexer(new function(){
             this.underword= /(_(\w+))/
             this.word= /(\w)(\w*)/
@@ -41,7 +41,7 @@
                 default: res+= i.found
             }
         }
-        _done( res, '[ab,C_d]' )
-    </wc:test-js>
+        _test.ok( res, '[ab,C_d]' )
+    </wc:js-test>
 
 </doc:root>

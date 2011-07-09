@@ -9,7 +9,7 @@
 
     <p>Выбирает из объекта переданным вторым параметром значение соответствующее ключу переданному первым.</p>
 
-    <wc:test-js> _done( $jam.$switch ) </wc:test-js>
-    <wc:test-js> _done( $jam.$switch( 1, [ 2, 3 ] ), 3 ) </wc:test-js>
+    <wc:js-test> _test.ok( $jam.$switch ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$switch( 1, [ 2, 3 ] ), 3 ) </wc:js-test>
 
 </doc:root>

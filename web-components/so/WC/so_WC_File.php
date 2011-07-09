@@ -125,6 +125,6 @@ class so_WC_File extends so_Meta {
     
     protected $_version;
     function get_version( $version ){
-        return filemtime( $this->path );
+        return strtoupper( base_convert( filemtime( $this->path ), 10, 36 ) );
     }
 }

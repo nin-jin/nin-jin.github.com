@@ -8,25 +8,27 @@
     <h1>$jam.$Component</h1>
     <p>Создаёт компоненту, которая инстанцирует виджеты при появлении в доме элементов с определённым именем, а при удалении элементов - разрушает виджеты. Принимает на вход два параметра - имя тэга (может быть звёздочка) и фабрику виджетов (ей будет передан элемент). </p>
     
-    <wc:test-js wc:timeout="100">
+    <wc:js-test>
+        _test.deadline( 100 )
         with( $wc )
         $Component
         (   'wc:component-test'
         ,   function( nodeRoot ){
-                _done( $Node( nodeRoot ).text() )
+                _test.ok( $Node( nodeRoot ).text() )
             }
         )
-    </wc:test-js>
+    </wc:js-test>
     
-    <wc:test-js wc:timeout="100">
+    <wc:js-test>
+        _test.deadline( 100 )
         with( $wc )
         var comp= $Component
         (   'wc:component-test'
         ,   function( nodeRoot ){
             }
         )
-        _done( comp )
-    </wc:test-js>
+        _test.ok( comp )
+    </wc:js-test>
     
     <wc:demo>
     <![CDATA[

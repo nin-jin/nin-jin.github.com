@@ -1,0 +1,9 @@
+with( $jam )
+$jam.$define=
+function( key, value ){
+    if( this[ key ] && ( this[ key ] !== value ) ){
+        throw new Error( 'Redeclaration of [' + key + ']' )
+    }
+    this[ key ]= value
+    return this
+}

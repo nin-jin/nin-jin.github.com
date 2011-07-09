@@ -2253,76 +2253,6 @@ $Component
     }
 )
 
-// wc/lang_css/wc+lang_css.jam
-with( $wc )
-$define
-(	'$lang_css'
-,	new function(){
-    
-        var css=
-        function( str ){
-            return css.root( css.stylesheet( str ) )
-        }
-
-        css.root= $lang.Wrapper( 'wc:lang_css' )
-        css.remark= $lang.Wrapper( 'wc:lang_css-remark' )
-        css.string= $lang.Wrapper( 'wc:lang_css-string' )
-        css.bracket= $lang.Wrapper( 'wc:lang_css-bracket' )
-        css.selector= $lang.Wrapper( 'wc:lang_css-selector' )
-        css.tag= $lang.Wrapper( 'wc:lang_css-tag' )
-        css.id= $lang.Wrapper( 'wc:lang_css-id' )
-        css.klass= $lang.Wrapper( 'wc:lang_css-class' )
-        css.pseudo= $lang.Wrapper( 'wc:lang_css-pseudo' )
-        css.property= $lang.Wrapper( 'wc:lang_css-property' )
-        css.value= $lang.Wrapper( 'wc:lang_css-value' )
-             
-        css.stylesheet=
-        $lang.Parser( new function( ){
-        
-			this[ /(\/\*[\s\S]*?\*\/)/.source ]=
-			$Pipe( $lang_text, css.remark )
-
-			this[ /(\*|(?:\\[\s\S]|[\w-])+)/.source ]=
-			$Pipe( $lang_text, css.tag )
-
-			this[ /(#(?:\\[\s\S]|[\w-])+)/.source ]=
-            $Pipe( $lang_text, css.id )
-
-			this[ /(\.(?:\\[\s\S]|[\w-])+)/.source ]=
-            $Pipe( $lang_text, css.klass )
-
-			this[ /(::?(?:\\[\s\S]|[\w-])+)/.source ]=
-            $Pipe( $lang_text, css.pseudo )
-
-			this[ /\{([\s\S]+?)\}/.source ]=
-            new function( ){
-				var openBracket= css.bracket( '{' )
-				var closeBracket= css.bracket( '}' )
-				return function( style ){
-					style= css.style( style )
-					return openBracket + style + closeBracket
-				}
-			}             
-        })
-        
-        css.style=
-        $lang.Parser( new function( ){
-                
-			this[ /(\/\*[\s\S]*?\*\/)/.source ]=
-			$Pipe( $lang_text, css.remark )
-
-			this[ /([\w-]+\s*:)/.source  ]=
-			$Pipe( $lang_text, css.property )
-
-			this[ /([^:]+?(?:;|$))/.source ]=
-            $Pipe( $lang_text, css.value )
-            
-        })
-        
-        return css
-    }
-) 
-
 // wc/lang_pcre/wc+lang_pcre.jam
 with( $wc )
 $define
@@ -2419,6 +2349,219 @@ $define
         })
         
         return js
+    }
+) 
+
+// wc/js-test/wc_js-test.jam
+with( $wc )
+$Component
+(   'wc:js-test'
+,   function( nodeRoot ){
+        return new function( ){
+            nodeRoot= $Node( nodeRoot )
+            
+            var exec= $Thread( function( ){
+                var source= $String( nodeSource.text() ).minimizeIndent().trim( /[\n\r]/ ).$
+                //nodeSource.html( $lang_js( source ) )
+                var proc= new Function( '_test', source )
+                proc( _test )
+                return true
+            })
+        
+            var nodeSource0= $Node( nodeRoot.$ ).ensureChild( 'wc:js-test_source' )
+            var nodeSource=
+            $Node( nodeSource0.$ )
+            .ensureChild( 'wc:hlight' )
+            .state( 'editable', 'true' )
+            .state( 'lang', 'js' )
+            
+            var childList= nodeRoot.childList()
+            for( var i= 0; i < childList.length; ++i ){
+                var nodeChild= $Node( childList[ i ] )
+                if( /^wc:js-test_/.test( nodeChild.name() ) ) continue
+                nodeSource.tail( nodeChild )
+            }
+
+            var _test= {}
+            
+            _test.ok=
+            $Poly
+            (   function( ){
+                    if( passed() === 'wait' ) passed( true )
+                }
+            ,   function( val ){
+                    if( passed() === 'wait' ) passed( Boolean( val ) )
+                    printValue( val )
+                }
+            ,   function( a, b ){
+                    if( passed() === 'wait' ) passed( a === b )
+                    printValue( a )
+                    if( a !== b ) printValue( b )
+                }
+            )
+
+            _test.not=
+            $Poly
+            (   function( ){
+                    if( passed() === 'wait' ) passed( false )
+                }
+            ,   function( val ){
+                    if( passed() === 'wait' ) passed( !Boolean( val ) )
+                    printValue( val )
+                }
+            ,   function( a, b ){
+                    if( passed() === 'wait' ) passed( a !== b )
+                    printValue( a )
+                    printValue( b )
+                }
+            )
+            
+            var stop
+            
+            var noMoreWait= function( ){
+                if( passed() !== 'wait' ) return
+                passed( false )
+                print( 'Timeout!' )
+                stop= null
+            }
+            
+            _test.deadline=
+            $Poly
+            (   null
+            ,   function( ms ){
+                    if( stop ) throw new Error( 'Deadline redeclaration' )
+                    stop= $schedule( ms, noMoreWait )
+                }
+            )
+        
+            var passed=
+            $Poly
+            (   function( ){
+                    return nodeRoot.state( 'passed' )
+                }
+            ,   function( val ){
+                    nodeRoot.state( 'passed', val )
+                }
+            )
+            
+            var print=
+            function( val ){
+                var node= $Node( 'wc:js-test_result' )
+                node.text( val )
+                nodeRoot.tail( node )
+            }
+            
+            var printValue=
+            function( val ){
+                if( typeof val === 'function' ){
+                    if( !val.hasOwnProperty( 'toString' ) ){
+                        print( 'Function: [object Function]' )
+                        return
+                    }
+                }
+                print( $classOf( val ) + ': ' + val )
+            }
+            
+            var run=
+            function( ){
+                var results= nodeRoot.childList( 'wc:js-test_result' )
+                for( var i= 0; i < results.length; ++i ){
+                    $Node( results[i] ).parent( null )
+                }
+                passed( 'wait' )
+                stop= null
+                if( !exec() ) passed( false )
+                if(( !stop )&&( passed() === 'wait' )) passed( false )
+            }
+            
+            run()
+
+            var forgetCommit=
+            nodeRoot.listen
+            (   '$jam.$eventCommit'
+            ,   function( ev ){
+                    run()
+                }
+            )
+            
+            this.destroy=
+            function( ){
+                forgetCommit()
+                if( stop ) stop()
+                passed= printValue= $Value()
+            }
+            
+        }
+    }
+)
+
+// wc/lang_css/wc+lang_css.jam
+with( $wc )
+$define
+(	'$lang_css'
+,	new function(){
+    
+        var css=
+        function( str ){
+            return css.root( css.stylesheet( str ) )
+        }
+
+        css.root= $lang.Wrapper( 'wc:lang_css' )
+        css.remark= $lang.Wrapper( 'wc:lang_css-remark' )
+        css.string= $lang.Wrapper( 'wc:lang_css-string' )
+        css.bracket= $lang.Wrapper( 'wc:lang_css-bracket' )
+        css.selector= $lang.Wrapper( 'wc:lang_css-selector' )
+        css.tag= $lang.Wrapper( 'wc:lang_css-tag' )
+        css.id= $lang.Wrapper( 'wc:lang_css-id' )
+        css.klass= $lang.Wrapper( 'wc:lang_css-class' )
+        css.pseudo= $lang.Wrapper( 'wc:lang_css-pseudo' )
+        css.property= $lang.Wrapper( 'wc:lang_css-property' )
+        css.value= $lang.Wrapper( 'wc:lang_css-value' )
+             
+        css.stylesheet=
+        $lang.Parser( new function( ){
+        
+			this[ /(\/\*[\s\S]*?\*\/)/.source ]=
+			$Pipe( $lang_text, css.remark )
+
+			this[ /(\*|(?:\\[\s\S]|[\w-])+)/.source ]=
+			$Pipe( $lang_text, css.tag )
+
+			this[ /(#(?:\\[\s\S]|[\w-])+)/.source ]=
+            $Pipe( $lang_text, css.id )
+
+			this[ /(\.(?:\\[\s\S]|[\w-])+)/.source ]=
+            $Pipe( $lang_text, css.klass )
+
+			this[ /(::?(?:\\[\s\S]|[\w-])+)/.source ]=
+            $Pipe( $lang_text, css.pseudo )
+
+			this[ /\{([\s\S]+?)\}/.source ]=
+            new function( ){
+				var openBracket= css.bracket( '{' )
+				var closeBracket= css.bracket( '}' )
+				return function( style ){
+					style= css.style( style )
+					return openBracket + style + closeBracket
+				}
+			}             
+        })
+        
+        css.style=
+        $lang.Parser( new function( ){
+                
+			this[ /(\/\*[\s\S]*?\*\/)/.source ]=
+			$Pipe( $lang_text, css.remark )
+
+			this[ /([\w-]+\s*:)/.source  ]=
+			$Pipe( $lang_text, css.property )
+
+			this[ /([^:]+?(?:;|$))/.source ]=
+            $Pipe( $lang_text, css.value )
+            
+        })
+        
+        return css
     }
 ) 
 
@@ -2540,131 +2683,4 @@ $define
 
 // wc/ns/wc-ns.jam
 $jam.$htmlize( 'https://github.com/nin-jin/wc' )
-
-// wc/test-js/wc-test-js.jam
-with( $wc )
-$Component
-(   'wc:test-js'
-,   function( nodeRoot ){
-        return new function( ){
-            nodeRoot= $Node( nodeRoot )
-            
-            var exec= $Thread( function( ){
-                var source= $String( nodeSource.text() ).minimizeIndent().trim( /[\n\r]/ ).$
-                //nodeSource.html( $lang_js( source ) )
-                var proc= new Function( '_done', source )
-                proc( _done )
-                return true
-            })
-        
-            var timeout=
-            function( ){
-                return Number( nodeRoot.state( 'timeout' ) )
-            }
-        
-            if( timeout() )
-            var nodeTimeout=
-            $Node( nodeRoot.$ ).ensureChild( 'wc:test-js_timeout' )
-
-            var nodeSource0= $Node( nodeRoot.$ ).ensureChild( 'wc:test-js_source' )
-            var nodeSource=
-            $Node( nodeSource0.$ )
-            .ensureChild( 'wc:hlight' )
-            .state( 'editable', 'true' )
-            .state( 'lang', 'js' )
-            
-            var childList= nodeRoot.childList()
-            for( var i= 0; i < childList.length; ++i ){
-                var nodeChild= $Node( childList[ i ] )
-                if( /^wc:test-js_/.test( nodeChild.name() ) ) continue
-                nodeSource.tail( nodeChild )
-            }
-
-            var _done=
-            $Poly
-            (   function( ){
-                    if( passed() === 'wait' ) passed( true )
-                }
-            ,   function( val ){
-                    if( passed() === 'wait' ) passed( Boolean( val ) )
-                    printValue( val )
-                }
-            ,   function( a, b ){
-                    if( passed() === 'wait' ) passed( a === b )
-                    printValue( a )
-                    if( a !== b ) printValue( b )
-                }
-            )
-        
-            var passed=
-            $Poly
-            (   function( ){
-                    return nodeRoot.state( 'passed' )
-                }
-            ,   function( val ){
-                    nodeRoot.state( 'passed', val )
-                }
-            )
-            
-            var print=
-            function( val ){
-                var node= $Node( 'wc:test-js_result' )
-                node.text( val )
-                nodeRoot.tail( node )
-            }
-            
-            var printValue=
-            function( val ){
-                if( typeof val === 'function' ){
-                    if( !val.hasOwnProperty( 'toString' ) ){
-                        print( 'Function: [object Function]' )
-                        return
-                    }
-                }
-                print( $classOf( val ) + ': ' + val )
-            }
-            
-            var stop
-            
-            var run=
-            function( ){
-                var results= nodeRoot.childList( 'wc:test-js_result' )
-                for( var i= 0; i < results.length; ++i ){
-                    $Node( results[i] ).parent( null )
-                }
-                passed( 'wait' )
-                if( !exec() ) passed( false )
-                if( timeout() ){
-                    nodeTimeout.text( 'timeout: ' + timeout() )
-                    stop= $schedule( timeout(), function( ){
-                        if( passed() !== 'wait' ) return
-                        passed( false )
-                        print( 'Timeout!' )
-                        stop= null
-                    })
-                } else {
-                    if( passed() === 'wait' ) passed( false )
-                }
-            }
-            
-            run()
-
-            var forgetCommit=
-            nodeRoot.listen
-            (   '$jam.$eventCommit'
-            ,   function( ev ){
-                    run()
-                }
-            )
-            
-            this.destroy=
-            function( ){
-                forgetCommit()
-                if( stop ) stop()
-                _done= $Pipe()
-            }
-            
-        }
-    }
-)
 

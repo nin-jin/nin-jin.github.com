@@ -1,0 +1,86 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>wc:js-test</h1>
+
+    <p>Виджет для тестирования яваскрипт кода. Берёт своё текстовое содержимое и исполняет в отдельном потоке. Если результат исполнения ложный или было брошено исключение, то краснеет. Иначе - зеленеет. Попутно, производит подсветку кода. В следующих тестах зелёным подсвечиваются только выражения возвращающие истину.</p>
+
+    <h2>Позитивные тесты</h2>
+    <wc:demo>
+    <![CDATA[
+        <wc:js-test>
+            _test.ok()
+        </wc:js-test>
+        <wc:js-test>
+            _test.ok( true )
+        </wc:js-test>
+        <wc:js-test>
+            _test.ok( false, false )
+        </wc:js-test>
+        <wc:js-test> _test.ok( this, window ) </wc:js-test>
+        <wc:js-test>
+            _test.deadline( 100 )
+            $jam.$schedule
+            (   50
+            ,   function(){
+                    _test.ok( true )
+                }
+            )
+        </wc:js-test>
+    ]]>
+    </wc:demo>
+    
+    <h2>Негативные тесты</h2>
+    <wc:demo>
+    <![CDATA[
+        <wc:js-test> throw new Error( 'sample error' ) </wc:js-test>
+        <wc:js-test> true= false </wc:js-test>
+        <wc:js-test> (!) </wc:js-test>
+        <wc:js-test>
+            _test.ok( void 0 )
+        </wc:js-test>
+        <wc:js-test>
+            _test.ok( true, 'true' )
+        </wc:js-test>
+        <wc:js-test>
+            return
+            _test.ok()
+        </wc:js-test>
+        <wc:js-test>
+            var val
+        </wc:js-test>
+        <wc:js-test>
+            _test.deadline( 100 )
+            var val
+        </wc:js-test>
+        <wc:js-test>
+            _test.deadline( 100 )
+            $jam.$schedule( 50, function(){
+                _test.ok( false )
+            })
+        </wc:js-test>
+        <wc:js-test>
+            _test.deadline( 50 )
+            $jam.$schedule( 100, function(){
+                _test.ok( true )
+            })
+        </wc:js-test>
+        <wc:js-test>
+            _test.deadline( 100 )
+            $jam.$schedule( 50, function(){
+                throw 321
+            })
+        </wc:js-test>
+        <wc:js-test>
+            _test.deadline( 50 )
+            _test.deadline( 100 )
+            _test.ok()
+        </wc:js-test>
+    ]]>
+    </wc:demo>
+
+</doc:root>

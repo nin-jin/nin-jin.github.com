@@ -1,0 +1,98 @@
+with( $wc )
+$Component
+(   'wc:hlight'
+,   function( nodeRoot ){
+        return new function( ){
+            nodeRoot= $Node( nodeRoot )
+            var nodeSource= $Node( nodeRoot.$ ).ensureChild( 'div' )
+            nodeSource.state( 'wc_hlight_source', 'wc_hlight_source' )
+    
+            var childList= nodeRoot.childList()
+            for( var i= 0; i < childList.length; ++i ){
+                var nodeChild= $Node( childList[ i ] )
+                if( nodeChild.$ === nodeSource.$ ) continue
+                nodeSource.tail( nodeChild )
+            }
+    
+            var hlight= $lang( nodeRoot.state( 'lang' ) )
+            var editable= nodeRoot.state( 'editable' )
+            
+            nodeSource.editable( editable === 'true' )
+    
+            var update= function( ){
+                var source=
+                $String( nodeSource.text() )
+                .minimizeIndent()
+                //.trim( /[\r\n]/ )
+                .process( hlight )
+                .replace( /  /g, '\u00A0 ' )
+                .replace( /  /g, ' \u00A0' )
+                .$
+                
+                var nodeRange= $DomRange( nodeSource.innerRange() )
+                var startPoint= $DomRange().collapse2start()
+                var endPoint= $DomRange().collapse2end()
+                var hasStart= nodeRange.hasRange( startPoint )
+                var hasEnd= nodeRange.hasRange( endPoint )
+                if( hasStart ){
+                    var metRange= $DomRange()
+                    .equalize( 'end2start', startPoint )
+                    .equalize( 'start2start', nodeRange )
+                    var offsetStart= metRange.text().replace( /\r/g, '' ).length
+                }
+                if( hasEnd ){
+                    var metRange= $DomRange()
+                    .equalize( 'end2start', endPoint )
+                    .equalize( 'start2start', nodeRange )
+                    var offsetEnd= metRange.text().replace( /\r/g, '' ).length
+                }
+                nodeSource.html( source )
+                var selRange= $DomRange()
+                if( hasStart ){
+                    selRange.equalize( 'start2start', nodeRange.clone().move( offsetStart ) )
+                }
+                if( hasEnd ){
+                    selRange.equalize( 'end2start', nodeRange.clone().move( offsetEnd ) )
+                }
+                selRange.select()
+            }
+            
+            var forgetEdit= nodeRoot.listen
+            (   '$jam.$eventEdit'
+            ,   update
+            )
+            
+            var forgetEnterKey= nodeRoot.listen
+            (   'keypress'
+            ,   function( event ){
+                    event= $Event( event )
+                    if( event.keyCode() != 13 ) return
+                    if( event.keyAccel() ) return
+                    event.defaultBehavior( false )
+                    var range= $DomRange().text( '\n' )
+                    range.collapse2end().select()
+                }
+            )
+            
+            var forgetTabKey= nodeRoot.listen
+            (   'keydown'
+            ,   function( event ){
+                    event= $Event( event )
+                    if( event.keyCode() != 9 ) return
+                    if( event.keyAccel() ) return
+                    event.defaultBehavior( false )
+                    $DomRange().text( '    ' ).collapse2end().select()
+                }
+            )
+            
+            this.destroy= function( ){
+                forgetEdit()
+                forgetEnterKey()
+                forgetTabKey()
+            }
+
+            update()
+            
+        }
+    }
+)

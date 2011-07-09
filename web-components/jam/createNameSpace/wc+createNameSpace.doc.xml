@@ -8,29 +8,29 @@
     <h1>$jam.$createNameSpace</h1>
     <p>Создаёт новое глобальное пространство имён, наследующее поля от текущего.</p>
     
-    <wc:test-js> if( !this.$jam2 ) _done() </wc:test-js>
-    <wc:test-js> _done( $jam.$createNameSpace( '$jam2' ) ) </wc:test-js>
-    <wc:test-js> _done( $jam2.$createNameSpace ) </wc:test-js>
-    <wc:test-js> _done( $jam2.$createNameSpace( '$jam3' ) ) </wc:test-js>
-    <wc:test-js> _done( $jam2 ) </wc:test-js>
-    <wc:test-js> if( $jam !== $jam2 ) _done() </wc:test-js>
-    <wc:test-js>
+    <wc:js-test> _test.not( this.$jam2 ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$createNameSpace( '$jam2' ) ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam2.$createNameSpace ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam2.$createNameSpace( '$jam3' ) ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam2 ) </wc:js-test>
+    <wc:js-test> _test.not( $jam, $jam2 ) </wc:js-test>
+    <wc:js-test>
         $jam2.someField= 'some value'
-        _done()
-    </wc:test-js>
-    <wc:test-js> if( !$jam.someField ) _done() </wc:test-js>
-    <wc:test-js> _done( $jam2.someField ) </wc:test-js>
-    <wc:test-js> _done( $jam3.someField ) </wc:test-js>
-    <wc:test-js> _done( $jam3.$jam, $jam ) </wc:test-js>
-    <wc:test-js> _done( $jam3.$jam2, $jam2 ) </wc:test-js>
-    <wc:test-js> _done( $jam3.$jam3, $jam3 ) </wc:test-js>
-    <wc:test-js>
+        _test.ok()
+    </wc:js-test>
+    <wc:js-test> _test.not( $jam.someField ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam2.someField ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam3.someField ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam3.$jam, $jam ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam3.$jam2, $jam2 ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam3.$jam3, $jam3 ) </wc:js-test>
+    <wc:js-test>
         delete this.$jam2
-        _done()
-    </wc:test-js>
-    <wc:test-js>
+        _test.not( this.$jam2 )
+    </wc:js-test>
+    <wc:js-test>
         delete window.$jam3
-        _done()
-    </wc:test-js>
+        _test.not( this.$jam3 )
+    </wc:js-test>
 
 </doc:root>

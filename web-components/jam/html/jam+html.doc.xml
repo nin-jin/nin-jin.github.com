@@ -8,19 +8,19 @@
     <h1>$jam.$html</h1>
     <p>Содержит функции для работы с хтмл-строками.</p>
 
-    <wc:test-js> _done( $jam.$html ) </wc:test-js>
-    <wc:test-js>
-        _done( $jam.$html.encode( '&gt;' ), '&amp;gt;' )
-    </wc:test-js>
-    <wc:test-js>
-        _done( $jam.$html.decode( '&amp;gt;' ), '&gt;' )
-    </wc:test-js>
-    <wc:test-js>
-        _done( $jam.$html.text( '&lt;a&gt;a&lt;br&gt;b\nc' ), 'a\nb\nc' )
-    </wc:test-js>
-    <wc:test-js>
+    <wc:js-test> _test.ok( $jam.$html ) </wc:js-test>
+    <wc:js-test>
+        _test.ok( $jam.$html.encode( '&gt;' ), '&amp;gt;' )
+    </wc:js-test>
+    <wc:js-test>
+        _test.ok( $jam.$html.decode( '&amp;gt;' ), '&gt;' )
+    </wc:js-test>
+    <wc:js-test>
+        _test.ok( $jam.$html.text( '&lt;a&gt;a&lt;br&gt;b\nc' ), 'a\nb\nc' )
+    </wc:js-test>
+    <wc:js-test>
         var template= $jam.$html.Template( 'a{0}b' ).fill([ '&gt;' ])
-        _done( String( template ), 'a&amp;gt;b' )
-    </wc:test-js>
+        _test.ok( String( template ), 'a&amp;gt;b' )
+    </wc:js-test>
 
 </doc:root>

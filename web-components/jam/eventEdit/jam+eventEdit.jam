@@ -1,0 +1,21 @@
+with( $jam )
+$define
+(   '$eventEdit'
+,   new function(){
+        
+        var handler= $Throttler
+        (   50
+        ,   function( event ){
+                event= $Event( event )
+                $Node( event.target() ).scream( $Event().type( '$jam.$eventEdit' ) )
+            }
+        )
+        
+        var root= $Node( $doc().documentElement )
+        
+        root.listen( 'keyup', handler )
+        root.listen( 'cut', handler )
+        root.listen( 'paste', handler )
+
+    }
+)

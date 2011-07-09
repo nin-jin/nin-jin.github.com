@@ -1,0 +1,35 @@
+with( $wc )
+$define
+(	'$lang_pcre'
+,	new function(){
+    
+        var pcre=
+        function( str ){
+            return pcre.root( pcre.content( str ) )
+        }
+
+        pcre.root= $lang.Wrapper( 'wc:lang_pcre' )
+        pcre.backslash= $lang.Wrapper( 'wc:lang_pcre-backslash' )
+        pcre.control= $lang.Wrapper( 'wc:lang_pcre-control' )
+        pcre.spec= $lang.Wrapper( 'wc:lang_pcre-spec' )
+        pcre.text= $lang.Wrapper( 'wc:lang_pcre-text' )
+        
+        pcre.content=
+        $lang.Parser( new function(){
+        
+            this[ /\\([\s\S])/.source ]=
+            new function( ){
+                var backslash= pcre.backslash( '\\' )
+                return function( symbol ){
+                    return backslash + pcre.spec( $lang_text( symbol ) )
+                }
+            }
+    
+            this[ /([(){}\[\]$^])/.source ]=
+            $Pipe( $lang_text, pcre.control )
+            
+        })
+        
+        return pcre
+    }
+) 

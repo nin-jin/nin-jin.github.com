@@ -8,46 +8,46 @@
     <h1>$jam.$classOf</h1>
     <p>Возвращает встроенное имя класса объекта. Для дом-узлов и прочих не перечисленных ниже типов объектов значения могут отличаться в зависимости от браузера.</p>
 
-    <wc:test-js> _done( $jam.$classOf(), 'Undefined' ) </wc:test-js>
-    <wc:test-js> _done( $jam.$classOf( void 0 ), 'Undefined' ) </wc:test-js>
-    <wc:test-js> _done( $jam.$classOf( null ), 'Null' ) </wc:test-js>
-    <wc:test-js> _done( $jam.$classOf( false ), 'Boolean' ) </wc:test-js>
-    <wc:test-js> _done( $jam.$classOf( new Boolean( true ) ), 'Boolean' ) </wc:test-js>
-    <wc:test-js> _done( $jam.$classOf( 0 ), 'Number' ) </wc:test-js>
-    <wc:test-js> _done( $jam.$classOf( 0/0 ), 'Number' ) </wc:test-js>
-    <wc:test-js> _done( $jam.$classOf( 1/0 ), 'Number' ) </wc:test-js>
-    <wc:test-js> _done( $jam.$classOf( new Number( 0 ) ), 'Number' ) </wc:test-js>
-    <wc:test-js> _done( $jam.$classOf( '' ), 'String' ) </wc:test-js>
-    <wc:test-js> _done( $jam.$classOf( new String( '' ) ), 'String' ) </wc:test-js>
-    <wc:test-js> _done( $jam.$classOf( [] ), 'Array' ) </wc:test-js>
-    <wc:test-js> _done( $jam.$classOf( {} ), 'Object' ) </wc:test-js>
-    <wc:test-js>
+    <wc:js-test> _test.ok( $jam.$classOf(), 'Undefined' ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$classOf( void 0 ), 'Undefined' ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$classOf( null ), 'Null' ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$classOf( false ), 'Boolean' ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$classOf( new Boolean( true ) ), 'Boolean' ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$classOf( 0 ), 'Number' ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$classOf( 0/0 ), 'Number' ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$classOf( 1/0 ), 'Number' ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$classOf( new Number( 0 ) ), 'Number' ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$classOf( '' ), 'String' ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$classOf( new String( '' ) ), 'String' ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$classOf( [] ), 'Array' ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$classOf( {} ), 'Object' ) </wc:js-test>
+    <wc:js-test>
         var val=
         {   toString: function( ){
                 return 'xxx'
             }
         }
-        _done( $jam.$classOf( val ), 'Object' )
-    </wc:test-js>
-    <wc:test-js>
+        _test.ok( $jam.$classOf( val ), 'Object' )
+    </wc:js-test>
+    <wc:js-test>
         var val=
         {   valueOf: function( ){
                 return 777
             }
         }
-        _done( $jam.$classOf( val ), 'Object' )
-    </wc:test-js>
-    <wc:test-js> _done( $jam.$classOf( this ), 'Global' ) </wc:test-js>
-    <wc:test-js> _done( $jam.$classOf( $jam.$classOf ), 'Function' ) </wc:test-js>
-    <wc:test-js> _done( $jam.$classOf( /a/ ), 'RegExp' ) </wc:test-js>
-    <wc:test-js> _done( $jam.$classOf( new Date ), 'Date' ) </wc:test-js>
-    <wc:test-js> _done( $jam.$classOf( new Error ), 'Error' ) </wc:test-js>
-    <wc:test-js>
+        _test.ok( $jam.$classOf( val ), 'Object' )
+    </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$classOf( this ), 'Global' ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$classOf( $jam.$classOf ), 'Function' ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$classOf( /a/ ), 'RegExp' ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$classOf( new Date ), 'Date' ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$classOf( new Error ), 'Error' ) </wc:js-test>
+    <wc:js-test>
         var Obj= function(){
             this.length= 0;
         };
         Obj.prototype= Array.prototype;
-        _done( $jam.$classOf( new Obj ), 'Object' )
-    </wc:test-js>
+        _test.ok( $jam.$classOf( new Obj ), 'Object' )
+    </wc:js-test>
 
 </doc:root>

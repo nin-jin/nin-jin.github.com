@@ -1,0 +1,13 @@
+with( $jam )
+$define
+(	'$Cached'
+,	function( func ){
+		var cache= $Hash()
+		return function( key ){
+			if( cache.has( key ) ) return cache.get( key )
+			var value= func.apply( this, arguments )
+			cache.put( key, value )
+			return value 
+		}
+	}
+)

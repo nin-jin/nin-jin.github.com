@@ -1,0 +1,55 @@
+with( $wc )
+$Component
+(   'wc:demo'
+,   function( nodeRoot ){
+        return new function( ){
+            nodeRoot= $Node( nodeRoot )
+            
+            var nodeResult= $Node( nodeRoot.$ ).ensureChild( 'wc:demo-result' )
+
+            var nodeSource0= $Node( nodeRoot.$ ).ensureChild( 'wc:demo-source' )
+            //var nodeSource= $Node( nodeSource0.$ ).ensureChild( 'div' ).editable( true )
+            var nodeSource=
+            $Node( nodeSource0.$ )
+            .ensureChild( 'wc:hlight' )
+            .state( 'editable', 'true' )
+            .state( 'lang', 'sgml' )
+            
+            var childList= nodeRoot.childList()
+            for( var i= 0; i < childList.length; ++i ){
+                var nodeChild= $Node( childList[ i ] )
+                if( /^wc:demo-/.test( nodeChild.name() ) ) continue
+                nodeSource.tail( nodeChild )
+            }
+            
+            nodeSource.text( $String( nodeSource.text() ).minimizeIndent().trim( /[\n\r]/ ) )
+            
+            var exec= $Thread( function( ){
+                var source= $String( nodeSource.text() ).minimizeIndent().trim( /[\n\r]/ )
+                //nodeSource.text( source )
+                nodeResult.html( source )
+                var scripts= nodeResult.descList( 'script' )
+                for( var i= 0; i < scripts.length; ++i ){
+                    var script= scripts[i]
+                    $eval( $Node( script ).text() )
+                }
+                return true
+            })
+            
+            exec()
+        
+            var forgetCommits=
+            nodeSource.listen
+            (   '$jam.$eventCommit'
+            ,   function( ev ){
+                    exec()
+                }
+            )
+            
+            this.destroy=
+            function( ){
+                forgetCommits()
+            }
+        }
+    }
+)

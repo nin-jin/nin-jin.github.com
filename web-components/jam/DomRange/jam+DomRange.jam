@@ -1,0 +1,240 @@
+with( $jam )
+$define
+(   '$DomRange'
+,   $Class( function( klass, proto ){
+    
+        klass.create=
+        $Poly
+        (   $switch
+            (   $support.selectionModel()
+            ,   {   'w3c': function( ){
+                        var sel= $selection()
+                        if( sel.rangeCount ) return klass.create( sel.getRangeAt( 0 ).cloneRange() )
+                        else return klass.create( $doc().createRange() )
+                    }
+                ,   'ms': function( ){
+                        return klass.create( $selection().createRange() )
+                    }
+                }
+            )
+        ,   function( range ){
+                if( !range ) throw new Error( 'Wrong TextRange object' )
+                if( 'toTextRange' in range ) range= range.toTextRange()
+                var obj= new klass
+                obj.$= range
+                return obj
+            }
+        )
+        
+        proto.toTextRange=
+        function( ){
+            return this.$
+        }
+        
+        proto.select=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( ){
+                    var sel= $selection()
+                    sel.removeAllRanges()
+                    sel.addRange( this.$ )
+                    return this
+                }
+            ,   'ms': function( ){
+                    this.$.select()
+                    return this
+                }
+            }
+        )
+        
+            
+        proto.collapse2end=
+        function( ){
+            this.$.collapse( false )
+            return this
+        }
+        
+        proto.collapse2start=
+        function( ){
+            this.$.collapse( true )
+            return this
+        }
+        
+        proto.dropContents=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( ){
+                    this.$.deleteContents()
+                    return this
+                }
+            ,   'ms': function( ){
+                    this.text( '' )
+                }
+            }
+        )
+
+        proto.text=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': $Poly
+                (   function( ){
+                        return this.$.toString()
+                    }
+                ,   function( text ){
+                        this.html( $html.encode( text ) )
+                        return this
+                    }
+                )
+            ,   'ms': $Poly
+                (   function( ){
+                        return $html.text( this.html() )
+                        return this.$.text
+                    }
+                ,   function( text ){
+                        this.$.text= text
+                        return this
+                    }
+                )
+            }
+        )
+
+        proto.html=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': $Poly
+                (   function( ){
+                        return $dom.serialize( this.$.cloneContents() )
+                    }
+                ,   function( html ){
+                        this.dropContents()
+                        var node= $dom.parse( html )
+                        this.$.insertNode( node )
+                        this.$.selectNode( node )
+                        return this
+                    }
+                )
+            ,   'ms': $Poly
+                (   function( ){
+                        return this.$.htmlText
+                    }
+                ,   function( html ){
+                        this.$.pasteHTML( html )
+                        return this
+                    }
+                )
+            }
+        )
+    
+        proto.ancestorNode=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( ){
+                    return this.$.commonAncestorContainer
+                }
+            ,   'ms': function( ){
+                    return this.$.parentNode
+                }
+            }
+        )
+        
+        proto.compare=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( how, range ){
+                    range= $DomRange( range ).$
+                    how= Range[ how.replace( '2', '_to_' ).toUpperCase() ]
+                    return range.compareBoundaryPoints( how, this.$ )
+                }
+            ,   'ms':  function( how, range ){
+                    range= $DomRange( range ).$
+                    how= how.replace( /(\w)(\w+)/g, function( str, first, tail ){
+                        return first.toUpperCase() + tail
+                    }).replace( '2', 'To' )
+                    return range.compareEndPoints( how, this.$ )
+                }
+            }
+        )
+        
+        proto.hasRange=
+        function( range ){
+            range= $DomRange( range )
+            var isAfterStart= ( this.compare( 'start2start', range ) >= 0 )
+            var isBeforeEnd= ( this.compare( 'end2end', range ) <= 0 )
+            return isAfterStart && isBeforeEnd
+        }
+    
+        proto.equalize=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( how, range ){
+                    how= how.split( 2 )
+                    var method= { start: 'setStart', end: 'setEnd' }[ how[ 0 ] ]
+                    range= $DomRange( range ).$
+                    this.$[ method ]( range[ how[1] + 'Container' ], range[ how[1] + 'Offset' ] )
+                    return this
+                }
+            ,   'ms':  function( how, range ){
+                    range= $DomRange( range ).$
+                    how= how.replace( /(\w)(\w+)/g, function( str, first, tail ){
+                        return first.toUpperCase() + tail
+                    }).replace( '2', 'To' )
+                    this.$.setEndPoint( how, range )
+                    return this
+                }
+            }
+        )
+        
+        proto.move=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( offset ){
+                    this.collapse2start()
+                    var current= $Node( this.$.startContainer )
+                    if( this.$.startOffset ){
+                        var temp= current.$.childNodes[ this.$.startOffset - 1 ]
+                        if( temp ){
+                            current= $Node( temp ).follow()
+                        } else {
+                            offset+= this.$.startOffset
+                        }
+                    }
+                    while( current.$ ){
+                        if( current.name() === '#text' ){
+                            var range= current.outerRange()
+                            var length= current.$.nodeValue.length
+                            
+                            if( !offset ){
+                                this.equalize( 'start2start', range )
+                                return this
+                            } else if( offset >= length ){
+                                offset-= length
+                            } else {
+                                this.$.setStart( current.$, offset )
+                                return this
+                            }
+                        }
+                        current.delve()
+                    }
+                    return this
+                }
+            ,   'ms': function( offset ){
+                    this.$.move( 'character', offset )
+                    return this
+                }
+            }
+        )
+
+        proto.clone=
+        $switch
+        (   $support.selectionModel()
+        ,   {   'w3c': function( ){
+                    return $DomRange( this.$.cloneRange() )
+                }
+            ,   'ms': function( ){
+                    return $DomRange( this.$.duplicate() )
+                }
+            }
+        )
+        
+    })
+)

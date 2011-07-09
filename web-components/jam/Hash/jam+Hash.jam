@@ -1,0 +1,30 @@
+with( $jam )
+$define
+(   '$Hash'
+,   $Class( function( klass ){
+        klass.create= function( arg ){
+            var obj= new klass
+            if( arg && ( 'prefix' in arg ) ) obj.prefix= arg.prefix
+            else obj.prefix= ( arg && arg.ns || '' ) + ':'
+            obj.data= $Obj( arg && arg.data || {} )
+            return obj
+        }
+        !function( proto ){
+            proto.key2field= function( key ){
+                return this.prefix + key
+            }
+            proto.has= function( key ){
+                key= this.key2field( key )
+                return this.data.has( key )
+            }
+            proto.get= function( key ){
+                key= this.key2field( key )
+                return this.data.get( key )
+            }
+            proto.put= function( key, value ){
+                key= this.key2field( key )
+                return this.data.put( key, value )
+            }
+        }( klass.prototype )
+    })
+)

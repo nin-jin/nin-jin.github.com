@@ -8,18 +8,18 @@
     <h1>$jam.$support</h1>
     <p>Позволяет определить какие фичи поддерживает среда исполнения.</p>
 
-    <wc:test-js> _done( $jam.$support ) </wc:test-js>
-    <wc:test-js>
-        _done( $jam.$support.htmlModel() )
-    </wc:test-js>
-    <wc:test-js>
-        _done( $jam.$support.eventModel() )
-    </wc:test-js>
-    <wc:test-js>
-        _done( $jam.$support.selectionModel() )
-    </wc:test-js>
-    <wc:test-js>
-        _done( String( $jam.$support.vml() ) )
-    </wc:test-js>
+    <wc:js-test> _test.ok( $jam.$support ) </wc:js-test>
+    <wc:js-test>
+        _test.ok( $jam.$support.htmlModel() )
+    </wc:js-test>
+    <wc:js-test>
+        _test.ok( $jam.$support.eventModel() )
+    </wc:js-test>
+    <wc:js-test>
+        _test.ok( $jam.$support.selectionModel() )
+    </wc:js-test>
+    <wc:js-test>
+        _test.ok( String( $jam.$support.vml() ) )
+    </wc:js-test>
 
 </doc:root>

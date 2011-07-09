@@ -1,0 +1,49 @@
+wc\:lang_js {
+	font-family: monospace;
+	line-height: 1;
+	white-space: pre;
+}
+
+wc\:lang_js-remark {
+	color: #bbb;
+	white-space: pre;
+}
+
+wc\:lang_js-string {
+	color: #393;
+	white-space: pre;
+}
+
+wc\:lang_js-internal {
+	color: #333;
+}
+
+wc\:lang_js-external {
+	font-weight: bold;
+}
+
+wc\:lang_js-keyword {
+	color: #339;
+	font-weight: bold;
+}
+
+wc\:lang_js-number {
+	color: #c30;
+	white-space: pre;
+}
+
+wc\:lang_js-regexp {
+	color: #939;
+	white-space: pre;
+}
+
+wc\:lang_js-bracket {
+	font-weight: bold;
+	white-space: pre;
+}
+
+wc\:lang_js-operator {
+	font-weight: bold;
+	color: #066;
+	white-space: pre;
+}

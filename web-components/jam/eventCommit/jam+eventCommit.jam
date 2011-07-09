@@ -1,0 +1,15 @@
+with( $jam )
+$define
+(   '$eventCommit'
+,   new function(){
+        $Node( $doc().documentElement )
+        .listen( 'keyup', function( event ){
+            event= $Event( event )
+            if( !event.keyMeta() ) return
+            if( event.keyShift() ) return
+            if( event.keyAlt() ) return
+            if( event.keyCode() != 13 ) return
+            $Node( event.target() ).scream( $Event().type( '$jam.$eventCommit' ) )
+        })
+    }
+)

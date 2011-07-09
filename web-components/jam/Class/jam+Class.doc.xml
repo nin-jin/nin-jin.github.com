@@ -9,28 +9,28 @@
 
     <p>Создаёт класс - функцию, создающую объекты. В качестве параметра принимает функцию-инициализатор, которой передаёт свежесозданный класс и его прототип. У каждого класса есть метод create являющийся фабрикой и вызываемый при инстанцировании класса. Сам класс следовательно тоже является фабрикой. Инстанцирование его через new - создаёт неинициализированный инстанс, что используется для реализации наследования без проксирующих классов.</p>
 
-    <wc:test-js> _done( $jam.$Class ) </wc:test-js>
-    <wc:test-js>
+    <wc:js-test> _test.ok( $jam.$Class ) </wc:js-test>
+    <wc:js-test>
         var ClassInner
         var Class= $jam.$Class(function( klass ){
             ClassInner= klass
         })
-        _done( Class, ClassInner )
-    </wc:test-js>
-    <wc:test-js>
+        _test.ok( Class, ClassInner )
+    </wc:js-test>
+    <wc:js-test>
         var Class= $jam.$Class(function( klass ){ })
-        if( Class() instanceof Class ) _done()
-    </wc:test-js>
-    <wc:test-js>
+        _test.ok( Class() instanceof Class )
+    </wc:js-test>
+    <wc:js-test>
         var obj= {}
         var Class= $jam.$Class(function( klass ){
             klass.create= function(){
                 return obj
             }
         })
-        _done( Class(), obj )
-    </wc:test-js>
-    <wc:test-js>
+        _test.ok( Class(), obj )
+    </wc:js-test>
+    <wc:js-test>
         var obj1= {}
         var Class= $jam.$Class(function( klass ){
             klass.create= function(){
@@ -38,9 +38,9 @@
             }
         })
         var obj2= new Class
-        if( obj2 instanceof Class ) _done()
-    </wc:test-js>
-    <wc:test-js>
+        _test.ok( obj2 instanceof Class )
+    </wc:js-test>
+    <wc:js-test>
         var Class= $jam.$Class(function( klass ){
             klass.prototype.method= function(){
                 return obj1
@@ -48,7 +48,7 @@
         })
         var obj1= new Class
         var obj2= Class()
-        _done( obj1.method, obj2.method )
-    </wc:test-js>
+        _test.ok( obj1.method, obj2.method )
+    </wc:js-test>
 
 </doc:root>

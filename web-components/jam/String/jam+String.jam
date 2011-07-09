@@ -1,0 +1,113 @@
+with( $jam )
+$define
+(   '$String'
+,   $Class( function( klass, proto ){
+    
+        klass.create=
+        $Poly
+        (   function( ){
+                return klass.create( '' )
+            }
+        ,   function( data ){
+                var obj= new klass
+                obj.$= String( data )
+                return obj
+            }
+        )
+        
+        proto.incIndent=
+        $Poly
+        (   function( ){
+                this.$= this.$.replace( /^/mg, '    ' )
+                return this
+            }
+        )
+
+        proto.decIndent=
+        $Poly
+        (   function( ){
+                this.$= this.$.replace( /^    |^\t/mg, '' )
+                return this
+            }
+        )
+
+        proto.minimizeIndent=
+        $Poly
+        (   function( ){
+                this.normilizeSpaces()
+                var minIndent= 1/0
+                this.$.replace( /^( *)[^ \r\n]/mg, function( str, indent ){
+                    if( indent.length < minIndent ) minIndent= indent.length
+                })
+                if( minIndent === 1/0 ) return this
+                this.$= this.$.replace( RegExp( '^[ ]{0,' + minIndent + '}', 'mg' ), '' )
+                return this
+            }
+        )
+
+        proto.normilizeSpaces=
+        $Poly
+        (   function( ){
+                this.$= this.$.replace( /\t/g, '    ' ).replace( /\u00A0/, ' ' )
+                return this
+            }
+        )
+        
+        proto.trim=
+        $Poly
+        (   function( ){
+                return this.trim( /\s/ )
+            }
+        ,   function( what ){
+                this.$= this.$.replace( RegExp( '^(' + what.source + ')+' ), '' )
+                this.$= this.$.replace( RegExp( '(' + what.source + ')+$' ), '' )
+                return this
+            }
+        )
+        
+        proto.process=
+        $Poly
+        (   null
+        ,   function( proc ){
+                this.$= proc( this.$ )
+                return this
+            }
+        )
+        
+        proto.replace=
+        $Poly
+        (   null
+        ,   function( from ){
+                return this.replace( from, '' )
+            }
+        ,   function( from, to ){
+                this.$= this.$.replace( from, to )
+                return this
+            }
+        )
+        
+        proto.mult=
+        $Poly
+        (   null
+        ,   function( count ){
+                this.$= Array( count + 1 ).join( this.$ )
+                return this
+            }
+        )
+        
+        proto.length=
+        $Poly
+        (   function( ){
+                return this.$.length
+            }
+        )
+        
+        proto.toString=
+        $Poly
+        (   function( ){
+                return this.$
+            }
+        )
+
+    })
+)

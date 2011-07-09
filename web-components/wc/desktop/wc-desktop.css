@@ -1,0 +1,9 @@
+wc\:desktop {
+    display: block; zoom: 1;
+    min-width: 100%;
+    min-height: 100%;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+    background: url( '../../wc/desktop/wc-desktop_light.png' ) left top no-repeat #ddd;
+}

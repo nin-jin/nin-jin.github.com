@@ -1,0 +1,37 @@
+with( $jam )
+$define( '$Thread', $Lazy( function(){
+
+    var poolNode= $Lazy( function(){
+        var body= $doc().getElementsByTagName( 'body' )[ 0 ]
+        var pool= $doc().createElement( 'wc:Thread:pool' )
+        pool.style.display= 'none'
+        body.insertBefore( pool, body.firstChild )
+        return $Value( pool )
+    })
+        
+    var free= []
+
+    return function( proc ){
+        return function( ){
+            var res
+            var self= this
+            var args= arguments
+
+            var starter= free.pop()
+            if( !starter ){
+                var starter= $doc().createElement( 'button' )
+                poolNode().appendChild( starter )
+            }
+            
+            starter.onclick= function( ev ){
+                ( ev || $glob().event ).cancelBubble= true
+                res= proc.apply( self, args )
+            }
+            starter.click()
+
+            free.push( starter )
+            return res
+        }
+    }
+
+}))

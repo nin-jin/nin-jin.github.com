@@ -8,25 +8,25 @@
     <h1>$jam.$Thread</h1>
     <p>Создаёт обёртку вокруг функции, которая выполняет её в отдельном, но синхронном потоке.</p>
 
-    <wc:test-js> _done( $jam.$Thread ) </wc:test-js>
-    <wc:test-js>
+    <wc:js-test> _test.ok( $jam.$Thread ) </wc:js-test>
+    <wc:js-test>
         var thread= $wc.$Thread(function(){
             return 123
         })
-        _done( thread(), 123 )
-    </wc:test-js>
-    <wc:test-js>
+        _test.ok( thread(), 123 )
+    </wc:js-test>
+    <wc:js-test>
         var thread= $wc.$Thread(function(){
             throw new Error( 'sample error' )
         })
-        _done( thread(), void 0 )
-    </wc:test-js>
-    <wc:test-js>
+        _test.ok( thread(), void 0 )
+    </wc:js-test>
+    <wc:js-test>
         var fact= $wc.$Thread(function( n ){
             if (!( n > 1 )) return 1;
             return n * fact( n - 1 );
         });
-        _done( fact(5), 120 )
-    </wc:test-js>
+        _test.ok( fact(5), 120 )
+    </wc:js-test>
 
 </doc:root>

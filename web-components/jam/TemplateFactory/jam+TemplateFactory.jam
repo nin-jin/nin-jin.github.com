@@ -1,0 +1,82 @@
+with( $jam )
+$define
+(   '$TemplateFactory'
+,   $Class( function( klass, proto ){
+
+        klass.create= function( arg ){
+            if( !arg ) arg= {}
+            
+            var open= arg.tokens && arg.tokens[0] || '{'
+            var close= arg.tokens && arg.tokens[1] || '}'
+            
+            var openEncoded= $RegExp.encode( open )
+            var closeEncoded= $RegExp.encode( close )
+            
+            var Selector= arg.Selector || arg.encoder && klass.Selector( arg.encoder ) || klass.Selector()
+    
+            var parse= $Parser( new function(){
+                this[ $String( openEncoded ).mult( 2 ).$ ]=
+                $Value( open )
+                
+                this[ $String( closeEncoded ).mult( 2 ).$ ]=
+                $Value( close )
+                
+                this[ '(' + openEncoded + '([^' + openEncoded + closeEncoded + ']*)' + closeEncoded + ')' ]=
+                Selector
+            })
+    
+            return $Class( function( klass, proto ){
+                
+                klass.create=
+                function( str ){
+                    var obj= new klass
+                    if( typeof str === 'string' ) obj.struct= parse( str )
+                    else obj.struct= str
+                    obj.fill( {} )
+                    return obj
+                }
+                
+                proto.clone=
+                function( ){
+                    return klass( this.struct.slice( 0 ) )
+                }
+                
+                proto.fill=
+                function( data ){
+                    for( var i= 0; i < this.struct.length; ++i ){
+                        if( typeof this.struct[ i ] !== 'function' ) continue
+                        this.struct[ i ]= this.struct[ i ]( data )
+                    }
+                    return this
+                }
+    
+                proto.toString=
+                function( ){
+                    return this.struct.join( '' )
+                }
+    
+            })
+        }
+        
+        klass.Selector=
+        $Poly
+        (   $Lazy( function( ){
+                return $Value( klass.Selector( $Pipe() ) )
+            })
+        ,   function( proc ){
+                return function( str, key ){
+                    var selector= function( data ){
+                        if( key in data ){
+                            return proc( data[ key ] )
+                        } else {
+                            return selector
+                        }
+                    }
+                    selector.toString= $Value( str )
+                    return selector
+                }
+            }
+        )
+
+    })
+)

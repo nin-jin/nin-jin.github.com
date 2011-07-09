@@ -8,7 +8,7 @@
     <h1>js-tricks</h1>
 
     <p> Проверки вперемешку с вычислениями без нагромождения if-ов: <br/>
-        <wc:test-js>
+        <wc:js-test>
             var result
             job: {
                 if( result ) break job
@@ -18,9 +18,9 @@
                 if( result ) break job
                 ++result
             }
-            _done( result, 1 )
-        </wc:test-js>
-        <wc:test-js>
+            _test.ok( result, 1 )
+        </wc:js-test>
+        <wc:js-test>
             var result
             if( !result ){
                 result= 0
@@ -31,8 +31,8 @@
                     }
                 }
             }
-            _done( result, 1 )
-        </wc:test-js>
+            _test.ok( result, 1 )
+        </wc:js-test>
     </p>
 
 </doc:root>

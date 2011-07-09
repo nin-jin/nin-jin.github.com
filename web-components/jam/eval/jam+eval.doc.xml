@@ -10,9 +10,9 @@
     <p>Исполняет переданный в качестве строки код в глобальном контексте в отдельном синхронном потоке.</p>
 
     <p>
-        <wc:test-js> _done( $jam.$eval ) </wc:test-js>
-        <wc:test-js> _done( $jam.$eval( '1+2' ), 3 ) </wc:test-js>
-        <wc:test-js> _done( $jam.$eval( '(!)' ), void 0 ) </wc:test-js>
+        <wc:js-test> _test.ok( $jam.$eval ) </wc:js-test>
+        <wc:js-test> _test.ok( $jam.$eval( '1+2' ), 3 ) </wc:js-test>
+        <wc:js-test> _test.ok( $jam.$eval( '(!)' ), void 0 ) </wc:js-test>
     </p>
 
 </doc:root>

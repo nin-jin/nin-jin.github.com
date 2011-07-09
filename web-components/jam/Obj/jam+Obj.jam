@@ -1,0 +1,46 @@
+with( $jam )
+$jam.$Obj=
+$Class( function( klass, proto ){
+    
+    klass.create=
+    function( val ){
+        if(( val === void 0 )||( val === null )){
+            throw new Error( 'Wrong object: ' + val )
+        }
+        var obj= new klass
+        obj.$= val
+        return obj
+    }
+    
+    proto.has=
+    function( key ){
+        return ( 'hasOwnProperty' in this.$ )
+        ?   this.$.hasOwnProperty( key )
+        :   ( key in this.$ )
+    }
+    
+    proto.get=
+    function( key ){
+        return this.$[ key ]
+    }
+    
+    proto.put=
+    function( key, value ){
+        this.$[ key ]= value
+        return this
+    }
+    
+    proto.define=
+    function( key, value ){
+        if( this.has( key ) && this.get( key ) !== value ){
+            throw new Error( 'Redeclaration of [' + key + ']' )
+        }
+        this.put( key, value )
+    }
+    
+    proto.init=
+    function( init ){
+        init( this.$ )
+        return this
+    }
+})

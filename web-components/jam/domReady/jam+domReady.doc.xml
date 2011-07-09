@@ -10,11 +10,12 @@
     <p>Определяет скачан ли документ полностью или ещё нет. Метод then позволяет выполнить переданную ему функцию только когда документ будет полностью загружен (если он уже загружен - она будет вызвана немедленно).</p>
 
     <p>
-        <wc:test-js class=" timeout=1000 ">
+        <wc:js-test>
+            _test.deadline( 1000 )
             $jam.$domReady.then( function(){
-                _done( $jam.$domReady() )
+                _test.ok( $jam.$domReady() )
             })
-        </wc:test-js>
+        </wc:js-test>
     </p>
 
 </doc:root>

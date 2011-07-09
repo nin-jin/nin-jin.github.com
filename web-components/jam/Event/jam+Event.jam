@@ -1,0 +1,143 @@
+with( $jam )
+$define
+(   '$Event'
+,   $Class( function( klass, proto ){
+    
+        klass.create=
+        $switch
+        (   $support.eventModel()
+        ,   {   'w3c': $Poly
+                (   function( ){
+                        var obj= new klass
+                        obj.$= $doc().createEvent( 'Event' )
+                        obj.$.initEvent( '', true, true )
+                        return obj
+                    }
+                ,   function( ev ){
+                        var obj= new klass
+                        obj.$= ev.toEvent ? ev.toEvent() : ev
+                        //obj.$.initEvent( ev.type, ev.bubble || true, ev.cancelable || false )
+                        return obj
+                    }
+                )
+            ,   'ms': $Poly
+                (   function( ){
+                        var obj= new klass
+                        obj.$= $doc().createEventObject()
+                        return obj
+                    }
+                ,   function( ev ){
+                        var obj= new klass.create()
+                        obj.$= ev.toEvent ? ev.toEvent() : ev
+                        //for( var key in ev ) try {
+                        //    obj.$[ key ]= ev[ key ]
+                        //} catch( e ){ }
+                        if( !obj.$.preventDefault ){
+                            obj.$.preventDefault=
+                            function( ){
+                                this.returnValue= false
+                                this.defaultPrevented= true
+                            }
+                        }
+                        return obj
+                    }
+                )
+            }
+        )
+        
+        proto.toEvent=
+        $Poly
+        (   function(){
+                return this.$
+            }
+        )
+
+        proto.type=
+        $Poly
+        (   function( ){
+                return this.$.type
+            }
+        ,   $switch
+            (   $support.eventModel()
+            ,   {   'w3c': function( type ){
+                        this.$.initEvent( type, this.$.bubbles, this.$.cancelable )
+                        return this
+                    }
+                ,   'ms': function( type ){
+                        this.$.type= type
+                        return this
+                    }
+                }
+            )
+        )
+            
+        proto.keyMeta=
+        $Poly
+        (   function( ){
+                return Boolean( this.$.metaKey || this.$.ctrlKey )
+            }
+        )
+        
+        proto.keyShift=
+        $Poly
+        (   function( ){
+                return Boolean( this.$.shiftKey )
+            }
+        )
+        
+        proto.keyAlt=
+        $Poly
+        (   function( ){
+                return Boolean( this.$.altKey )
+            }
+        )
+        
+        proto.keyAccel=
+        $Poly
+        (   function( ){
+                return this.keyMeta() || this.keyShift() || this.keyAlt()
+            }
+        )
+        
+        proto.keyCode=
+        $Poly
+        (   function( ){
+                return Number( this.$.keyCode )
+            }
+        )
+        
+        proto.target=
+        $switch
+        (   $support.eventModel()
+        ,   {   'w3c': function( ){
+                    return this.$.target
+                }
+            ,   'ms': function( ){
+                    return this.$.srcElement
+                }
+            }
+        )
+        
+        proto.defaultBehavior=
+        $Poly
+        (   function( ){
+                return Boolean( this.$.defaultPrevented )
+            }
+        ,   $switch
+            (   $support.eventModel()
+            ,   {   'w3c': function( val ){
+                        if( val ) this.$.returnValue= !!val
+                        else this.$.preventDefault()
+                        return this
+                    }
+                ,   'ms': function( val ){
+                        this.$.returnValue= !!val
+                        this.$.defaultPrevented= !val
+                        return this
+                    }
+                }
+            )
+        )
+
+    })
+)

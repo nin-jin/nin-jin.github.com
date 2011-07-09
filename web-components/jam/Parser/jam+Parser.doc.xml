@@ -9,19 +9,19 @@
 
     <p>Создаёт функцию-парсер. На вход принимает карту соответствия лексем фабрикам. В качестве параметров фабрикам передаются захваченные круглыми скобками подстроки. "" - дефолтная лексема, которая матчится на всё, на что не сматчились остальные. Парсер принимает на вход строку и возвращает массив полученных от фабрик значений.</p>
 
-    <wc:test-js> _done( $jam.$Parser ) </wc:test-js>
-    <wc:test-js> _done( $jam.$Parser({ }) ) </wc:test-js>
-    <wc:test-js> _done( $jam.$Parser({ })( '123' ) ) </wc:test-js>
-    <wc:test-js>
+    <wc:js-test> _test.ok( $jam.$Parser ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$Parser({ }) ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.$Parser({ })( '123' ) ) </wc:js-test>
+    <wc:js-test>
         var parse= $jam.$Parser( new function(){
             this[ /\d/.source ]=
             function( ){
                 return '#'
             }
         })
-        _done( parse( 'a12bc' ).join(''), 'a##bc' )
-    </wc:test-js>
-    <wc:test-js>
+        _test.ok( parse( 'a12bc' ).join(''), 'a##bc' )
+    </wc:js-test>
+    <wc:js-test>
         var parse= $jam.$Parser( new function(){
             this[ /([a-zA-Z])/.source ]=
             function( letter ){
@@ -29,9 +29,9 @@
             }
             this[ '' ]= $jam.$Value( '' )
         })
-        _done( parse( 'a12bc' ).join(''), 'abc' )
-    </wc:test-js> 
-    <wc:test-js>
+        _test.ok( parse( 'a12bc' ).join(''), 'abc' )
+    </wc:js-test> 
+    <wc:js-test>
         var parse= $jam.$Parser( new function(){
             this[ /(_(\w+))/.source ]=
             function( underword, word ){
@@ -42,8 +42,8 @@
                 return first.toUpperCase() + tail
             }
         })
-        _done( parse( '[_ab,c_d]' ).join(''), '[ab,C_d]' )
-    </wc:test-js>
+        _test.ok( parse( '[_ab,c_d]' ).join(''), '[ab,C_d]' )
+    </wc:js-test>
 
 </doc:root>
 

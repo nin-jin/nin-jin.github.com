@@ -1,0 +1,5 @@
+with( $wc )
+$define
+(   '$lang_text'
+,   $html.encode
+)

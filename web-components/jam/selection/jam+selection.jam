@@ -1,0 +1,14 @@
+with( $jam )
+$define
+(  '$selection'
+,   $switch
+    (   $support.selectionModel()
+    ,   {   'w3c': function( ){
+                return $glob().getSelection()
+            }
+        ,   'ms': function( ){
+                return $doc().selection
+            }
+        }
+    )
+)

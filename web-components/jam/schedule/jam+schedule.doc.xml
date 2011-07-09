@@ -9,11 +9,12 @@
 
     <p>Устанавливает выполнение функции через заданное время. Возвращает функцию, которая отменяет это действие.</p>
 
-    <wc:test-js> _done( $jam.$schedule ) </wc:test-js>
-    <wc:test-js class=" timeout=50 ">
+    <wc:js-test> _test.ok( $jam.$schedule ) </wc:js-test>
+    <wc:js-test>
+        _test.deadline( 50 )
         $jam.$schedule( 10, function( ){
-            _done( )
+            _test.ok( )
         })
-    </wc:test-js>
+    </wc:js-test>
 
 </doc:root>

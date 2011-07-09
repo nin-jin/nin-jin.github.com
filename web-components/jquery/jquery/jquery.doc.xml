@@ -9,10 +9,10 @@
 
     <p>Популярная библиотека для работы с dom. Весит слишком много, чтобы тащить её всюду.</p>
 
-    <wc:test-js> _done( jQuery ) </wc:test-js>
-    <wc:test-js> _done( $ ) </wc:test-js>
-    <wc:test-js> _done( $, jQuery ) </wc:test-js>
-    <wc:test-js> _done( $(document).get(0), document ) </wc:test-js>
-    <wc:test-js> _done( $('body').get(0), document.body ) </wc:test-js>
+    <wc:js-test> _test.ok( jQuery ) </wc:js-test>
+    <wc:js-test> _test.ok( $ ) </wc:js-test>
+    <wc:js-test> _test.ok( $, jQuery ) </wc:js-test>
+    <wc:js-test> _test.ok( $(document).get(0), document ) </wc:js-test>
+    <wc:js-test> _test.ok( $('body').get(0), document.body ) </wc:js-test>
 
 </doc:root>
