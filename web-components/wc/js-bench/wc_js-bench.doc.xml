@@ -1,0 +1,53 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>wc:js-bench</h1>
+    
+    <p>Виджет для сравнения скорости работы различных алгоритмов. Автоматически подбирает число итераций, чтобы с одной стороны была достаточная точность, а с другой - измерение не занимало слишком много времени. Возвращает результат в микросекундах. В коде вы можете использовать специальные конструкции <code>_bench.begin()</code> и <code>_bench.end()</code>, чтобы разделить его на два: внутренний и внешний. В этом случае убет отдельно измерена скорость работы внешнего кода и отдельно внутреннего. При наведении на результат показывается время компиляции. Код можно редактировать. Чтобы запустить егё пересчёт достаточно нажать <code>ctrl+enter</code>.</p>
+
+    <p>
+        <wc:demo>
+        <![CDATA[
+            <wc:spacer>
+                <wc:js-bench_list>
+                    <wc:js-bench>
+                        new function( ){ }
+                    </wc:js-bench>
+                    <wc:js-bench>
+                        { }
+                    </wc:js-bench>
+                </wc:js-bench_list>
+            </wc:spacer>
+        ]]>
+        </wc:demo>
+    </p>
+
+    <p>
+        <wc:demo>
+        <![CDATA[
+            <wc:spacer>
+                <wc:js-bench_list>
+                    <wc:js-bench>
+                        with({ a: 1 }){
+                            _bench.begin()
+                                a= 2
+                            _bench.end()
+                        }
+                    </wc:js-bench>
+                    <wc:js-bench>
+                        var obj= { a: 1 }
+                        _bench.begin()
+                            obj.a= 2
+                        _bench.end()
+                    </wc:js-bench>
+                </wc:js-bench_list>
+            </wc:spacer>
+        ]]>
+        </wc:demo>
+    </p>
+
+</doc:root>

@@ -18,7 +18,7 @@ class so_Compile_JS {
         
         $content= '';
         foreach( $files as $file ):
-            $content.= "// {$file->id}\n" . $file->content . "\n";
+            $content.= ";// {$file->id}\n" . $file->content . "\n";
         endforeach;
         $mixModule->createFile( 'compiled.js' )->content= $content;
     }

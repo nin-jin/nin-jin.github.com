@@ -10,7 +10,7 @@
 
     <wc:js-test> _test.ok( $jam.$html ) </wc:js-test>
     <wc:js-test>
-        _test.ok( $jam.$html.encode( '&gt;' ), '&amp;gt;' )
+        _test.ok( $jam.$html.escape( '&gt;' ), '&amp;gt;' )
     </wc:js-test>
     <wc:js-test>
         _test.ok( $jam.$html.decode( '&amp;gt;' ), '&gt;' )

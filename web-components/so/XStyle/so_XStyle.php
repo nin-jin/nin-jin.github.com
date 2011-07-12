@@ -120,7 +120,7 @@ class so_XStyle extends so_Meta {
                                 default:
                                     throw new Exception( "Wrong element name [{$key}]" );
                             endswitch;
-							break;
+                            break;
                             
                         case '@':
                             $name= substr( $key, 1 );

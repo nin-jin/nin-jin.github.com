@@ -3,54 +3,37 @@ $define
 (   '$Node'
 ,   $Class( function( klass, proto ){
         
-        klass.create=
-        $Poly
-        (   null
-        ,   function( val ){
-                var obj= new klass
-                if( $classOf( val ) === 'String' ){
-                    switch( val ){
-                        case '#text':
-                            val= $doc().createTextNode( '' )
-                            break
-                        case '#comment':
-                            val= $doc().createComment( '' )
-                            break
-                        case '#document-fragment':
-                            val= $doc().createDocumentFragment()
-                            break
-                        default:
-                            val= $doc().createElement( val )
-                            break
-                    }
-                    if( val.parentNode ) val.parentNode.removeChild( val )
-                }
-                if( typeof val !== 'object' ){
-                    throw new Error( 'Wrong node: ' + val )
-                }
-                if( val.toNode ) val= val.toNode()
-                obj.$= val
-                return obj
-            }
-        )
+        klass.Element=
+        function( name ){
+            return klass.create( $doc().createElement( name ) )
+        }
         
-        proto.toNode=
-        $Poly
-        (   function( ){
-                return this.$
-            }
-        )
+        klass.Text=
+        function( str ){
+            return klass.create( $doc().createTextNode( str ) )
+        }
+        
+        klass.Comment=
+        function( str ){
+            return klass.create( $doc().createComment( str ) )
+        }
+        
+        klass.Fragment=
+        function( ){
+            return klass.create( $doc().createDocumentFragment() )
+        }
         
         proto.text=
         $Poly
         (   function( ){
-                return $html.text( this.$.innerHTML )
+                return $html2text( this.$.innerHTML )
             }
         ,   new function(){
-                var fieldName= $switch( $support.htmlModel(), { w3c: 'textContent', ms: 'innerText' } )
+                var fieldName= $support.htmlModel.select({ w3c: 'textContent', ms: 'innerText' })
                 return function( val ){
+                    val= String( val )
                     if( this.text() === val ) return this
-                    this.$[ fieldName ]= $String( val ).$
+                    this.$[ fieldName ]= val
                     return this
                 }
             }
@@ -59,42 +42,46 @@ $define
         proto.html=
         $Poly
         (   function( ){
-                var val= this.$.innerHTML.replace( /<\/?[A-Z]+/g, function( str ){
-                    return str.toLowerCase()
-                })
+                var val= this.$.innerHTML
+                .replace
+                (   /<\/?[A-Z]+/g
+                ,   function( str ){
+                        return str.toLowerCase()
+                    }
+                )
                 return val
             }
         ,   function( val ){
+                val= String( val )
                 if( this.html() === val ) return this
-                this.$.innerHTML= ''
-                this.tail( $dom.parse( val ) )
+                this.clear()
+                this.$.innerHTML= String( val )
                 return this
             }
         )
         
         proto.clear=
-        $Poly
-        (   function( ){
-                this.html( '' )
-                return this
+        function( ){
+            while( true ){
+                var child= this.$.firstChild
+                if( !child ) break
+                this.$.removeChild( child )
             }
-        )
+            return this
+        }
         
         proto.name=
-        $Poly
-        (   $switch
-            (   $support.htmlModel()
-            ,   {   'w3c': function( ){
-                        return this.$.nodeName.toLowerCase()
-                    }
-                ,   'ms': function( ){
-                        var scope= this.$.scopeName
-                        if( scope === 'HTML' ) scope= ''
-                        var name= this.$.nodeName.toLowerCase()
-                        return scope ? scope + ':' + name : name
-                    }
+        $support.htmlModel.select
+        (   {   'w3c': function( ){
+                    return this.$.nodeName.toLowerCase()
                 }
-            )
+            ,   'ms': function( ){
+                    var scope= this.$.scopeName
+                    if( scope === 'HTML' ) scope= ''
+                    var name= this.$.nodeName.toLowerCase()
+                    return scope ? scope + ':' + name : name
+                }
+            }
         )
         
         proto.attr=
@@ -104,7 +91,7 @@ $define
                 return this.$.getAttribute( name )
             }
         ,   function( name, val ){
-                this.$.setAttribute( $String( name ).$, $String( val ).$ )
+                this.$.setAttribute( String( name ), String( val ) )
                 return this
             }    
         )
@@ -115,7 +102,7 @@ $define
                 return this.param( [] )
             }
         ,   function( key ){
-                return $Hiqus({ splitterChunks: ' ' }).merge( this.$.className ).get( key )
+                return $Hiqus({ splitterChunks: ' ' }).merge( this.$.className || '' ).get( key )
             }
         ,   function( key, value ){
                 this.$.className= $Hiqus({ splitterChunks: ' ' }).merge( this.$.className ).put( key, value )
@@ -134,120 +121,17 @@ $define
             }
         )
         
-        proto.listen=
-        $Poly
-        (   null
-        ,   null
-        ,   $switch
-            (   $support.eventModel()
-            ,   {   'w3c': function( eventName, proc ){
-                        this.$.addEventListener( eventName, proc, false )
-                        
-                        var self= this
-                        return function(){
-                            self.$.removeEventListener( eventName, proc, false )
-                        }
-                    }
-                ,   'ms': function( eventName, proc ){
-                        var proc2= proc
-                        var eventName2= eventName
-                        if( !/^\w+$/.test( eventName ) ){
-                            eventName2= 'beforeeditfocus'
-                            proc2= function( ev ){
-                                if( ev.originalType !== eventName ) return
-                                ev.type= ev.originalType
-                                proc( ev )
-                            }
-                        }
-                        var proc3= function(){
-                            var ev= $glob().event
-                            //ev= $doc().createEventObject( ev )
-                            if( !ev.target ) ev.target= ev.srcElement 
-                            proc2( ev )
-                        }
-                        this.$.attachEvent( 'on' + eventName2, proc3, false )
-    
-                        var self= this
-                        return function(){
-                            self.$.detachEvent( 'on' + eventName2, proc3, false )
-                        }
-                    }
-                }
-            )
-        )
-        
-        proto.scream=
-        $Poly
-        (   null
-        ,   $switch
-            (   $support.eventModel()
-            ,   {   'w3c': function( ev ){
-                        ev= $Event( ev ).$
-                        this.$.dispatchEvent( ev )
-                    }
-                ,   'ms': function( ev ){
-                        ev= $Event( ev ).$
-                        var eventName= ev.type
-                        if( !/^\w+$/.test( eventName ) ){
-                            eventName= 'beforeeditfocus'
-                        }
-                        ev.originalType= ev.type
-                        this.$.fireEvent( 'on' + eventName, ev )
-                    }
-                }
-            )
-        )
-        
-        proto.innerRange=
-        $switch
-        (   $support.selectionModel()
-        ,   {   'w3c': function( ){
-                    var range= $DomRange()
-                    range.$.selectNodeContents( this.$ )
-                    return range.$
-                }
-            ,   'ms': function( node ){
-                    var range= $DomRange()
-                    range.$.moveToElementText( this.$ )
-                    return range.$
-                }
-            }
-        )
-        
-        proto.outerRange=
-        $switch
-        (   $support.selectionModel()
-        ,   {   'w3c': function( node ){
-                    var range= $DomRange()
-                    range.$.selectNode( this.$ )
-                    return range.$
-                }
-            ,   'ms': function( node ){
-                    var range= this.innerRange()
-                    $log('check this')
-                    range.$.expand( 'textedit' )
-                    return range.$
-                }
-            }
-        )
-        
         proto.childList=
         function( name ){
             var list= this.$.childNodes
             var filtered= []
             
-            for( var i= $Node( this ).head(); i.$; i.next() ){
+            for( var i= this.head(); i; i= i.next() ){
                 if( name && ( i.name() !== name ) ) continue
-                filtered.push( i.$ )
+                filtered.push( i )
             }
             
-            return filtered
-        }
-        
-        proto.ensureChild=
-        function( name ){
-            this.$= this.childList( name )[ 0 ] || $Node( name ).parent( this ).$
-            return this
+            return $NodeList( filtered )
         }
         
         proto.descList=
@@ -259,20 +143,18 @@ $define
                 filtered.push( list[ i ] )
             }
             
-            return filtered
+            return $NodeList( filtered )
         }
 
         proto.parent= 
         $Poly
         (   function( ){
-                this.$= this.$.parentNode
-                return this
+                return $Node( this.$.parentNode )
             }
         ,   function( node ){
+                node= $raw( node )
                 var parent= this.$.parentNode
                 if( node ){
-                    node= $Node( node ).$
-                    if( parent ) parent.insertBefore( node, this.$ )
                     if( parent === node ) return this
                     node.appendChild( this.$ )
                 } else {
@@ -283,15 +165,23 @@ $define
             }
         )
         
+        proto.surround=
+        function( node ){
+            var node= $raw( node )
+            var parent= this.$.parentNode
+            var next= this.$.nextSibling
+            node.appendChild( this.$ )
+            parent.insertBefore( node, next )
+            return this
+        }
+        
         proto.head=
         $Poly
         (   function(){
-                this.$= this.$.firstChild
-                return this
+                return $Node( this.$.firstChild )
             }
         ,   function( node ){
-                node= $Node( node ).$
-                this.$.insertBefore( node, this.$.firstChild )
+                this.$.insertBefore( $raw( node ), this.$.firstChild )
                 return this
             }
         )
@@ -299,12 +189,10 @@ $define
         proto.tail=
         $Poly
         (   function(){
-                this.$= this.$.lastChild
-                return this
+                return $Node( this.$.lastChild )
             }
         ,   function( node ){
-                node= $Node( node ).$
-                this.$.appendChild( node )
+                this.$.appendChild( $raw( node ) )
                 return this
             }
         )
@@ -312,49 +200,39 @@ $define
         proto.next=
         $Poly
         (   function(){
-                this.$= this.$.nextSibling
-                return this
+                return $Node( this.$.nextSibling )
             }
         ,   function( node ){
-                node= $Node( node ).$
                 var parent= this.$.parentNode
                 var next= this.$.nextSibling
-                parent.insertBefore( node, next ) 
+                parent.insertBefore( $raw( node ), next ) 
                 return this
             }   
         )
         
         proto.delve=
-        $Poly
-        (   function( ){
-                var child= this.$.firstChild
-                if( child ) this.$= child
-                else this.follow()
-                return this
-            }
-        )
+        function( ){
+            return this.head() || this.follow()
+        }
 
         proto.follow=
-        $Poly
-        (   function( ){
-                var node= this.$
-                while( true ){
-                    this.$= node.nextSibling
-                    if( this.$ ) return this
-                    node= node.parentNode
-                    if( !node ) return this
-                }
+        function( ){
+            var node= this
+            while( true ){
+                var next= node.next()
+                if( next ) return next
+                node= node.parent()
+                if( !node ) return null
             }
-        )
+        }
 
         proto.prev=
         $Poly
         (   function(){
-                this.$= this.$.previousSibling
-                return this
+                return $Node( this.$.previousSibling )
             }
         ,   function( node ){
-                node= $Node( node ).$
+                node= $raw( node )
                 var parent= this.$.parentNode
                 parent.insertBefore( node, this.$ ) 
                 return this
@@ -364,14 +242,47 @@ $define
         proto.inDom=
         $Poly
         (   function( ){
-                var node= $Node( this.$ )
                 var doc= node.$.ownerDocument
-                while( node.parent().$ ){
+                var node= this
+                while( true ){
                     if( node.$ === doc ) return true
+                    node= node.parent()
+                    if( !node ) return false
                 }
-                return false
             }
         )
         
+        klass.parse=
+        new function( ){
+            var parent= klass.Element( 'div' )
+            return function( html ){
+                parent.html( html )
+                var child= parent.head()
+                if( !child.next() ) return child
+                var fragment= $Node.Fragment()
+                while( child= parent.head() ) fragment.tail( child )
+                return fragment
+            }
+        }
+
+        proto.toString=
+        new function( ){
+            var parent= klass.Element( 'div' )
+            return function( ){
+                parent.clear().tail( this.clone() )
+                return parent.html()
+            }
+        }
+        
+        proto.clone=
+        function( ){
+            return $Node( this.$.cloneNode( false ) )
+        }
+
+        proto.cloneTree=
+        function( ){
+            return $Node( this.$.cloneNode( true ) )
+        }
+
     })
 )

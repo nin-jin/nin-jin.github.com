@@ -23,5 +23,5 @@ vml\:imagedata,
 vml\:textbox,
 vml\:textpath,
 vml\:extrusion {
-	behavior: url(#default#VML);
+    behavior: url(#default#VML);
 }

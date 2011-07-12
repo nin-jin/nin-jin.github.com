@@ -1,7 +1,7 @@
 with( $jam )
 $define( '$schedule', function( timeout, proc ){
-    var timerID= $glob().top.setTimeout( proc, timeout )
+    var timerID= $glob().setTimeout( proc, timeout )
     return function( ){
-        $glob().top.clearTimeout( timerID )
+        $glob().clearTimeout( timerID )
     }
 })

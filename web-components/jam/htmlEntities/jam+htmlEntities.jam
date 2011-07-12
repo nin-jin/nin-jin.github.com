@@ -1,0 +1,11 @@
+with( $jam )
+$define
+(   '$htmlEntities'
+,   {    'nbsp': ' '
+    ,    'amp':  '&'
+    ,    'lt':   '<'
+    ,    'gt':   '>'
+    ,    'quot': '"'
+    ,    'apos': "'"
+    }
+)

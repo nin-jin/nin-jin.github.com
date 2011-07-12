@@ -3,63 +3,33 @@ $define
 (   '$Event'
 ,   $Class( function( klass, proto ){
     
-        klass.create=
-        $switch
-        (   $support.eventModel()
-        ,   {   'w3c': $Poly
-                (   function( ){
-                        var obj= new klass
-                        obj.$= $doc().createEvent( 'Event' )
-                        obj.$.initEvent( '', true, true )
-                        return obj
+        proto.constructor=
+        $Poly
+        (   $support.eventModel.select
+            (   {   'w3c': function( ){
+                        this.$= $doc().createEvent( 'Event' )
+                        this.$.initEvent( '', true, true )
+                        return this
                     }
-                ,   function( ev ){
-                        var obj= new klass
-                        obj.$= ev.toEvent ? ev.toEvent() : ev
-                        //obj.$.initEvent( ev.type, ev.bubble || true, ev.cancelable || false )
-                        return obj
+                ,   'ms': function( ){
+                        this.$= $doc().createEventObject()
+                        return this
                     }
-                )
-            ,   'ms': $Poly
-                (   function( ){
-                        var obj= new klass
-                        obj.$= $doc().createEventObject()
-                        return obj
-                    }
-                ,   function( ev ){
-                        var obj= new klass.create()
-                        obj.$= ev.toEvent ? ev.toEvent() : ev
-                        //for( var key in ev ) try {
-                        //    obj.$[ key ]= ev[ key ]
-                        //} catch( e ){ }
-                        if( !obj.$.preventDefault ){
-                            obj.$.preventDefault=
-                            function( ){
-                                this.returnValue= false
-                                this.defaultPrevented= true
-                            }
-                        }
-                        return obj
-                    }
-                )
+                }
+            )
+        ,   function( event ){
+                this.$= event
+                return this
             }
         )
         
-        proto.toEvent=
-        $Poly
-        (   function(){
-                return this.$
-            }
-        )
-
         proto.type=
         $Poly
         (   function( ){
                 return this.$.type
             }
-        ,   $switch
-            (   $support.eventModel()
-            ,   {   'w3c': function( type ){
+        ,   $support.eventModel.select
+            (   {   'w3c': function( type ){
                         this.$.initEvent( type, this.$.bubbles, this.$.cancelable )
                         return this
                     }
@@ -107,9 +77,8 @@ $define
         )
         
         proto.target=
-        $switch
-        (   $support.eventModel()
-        ,   {   'w3c': function( ){
+        $support.eventModel.select
+        (   {   'w3c': function( ){
                     return this.$.target
                 }
             ,   'ms': function( ){
@@ -123,9 +92,8 @@ $define
         (   function( ){
                 return Boolean( this.$.defaultPrevented )
             }
-        ,   $switch
-            (   $support.eventModel()
-            ,   {   'w3c': function( val ){
+        ,   $support.eventModel.select
+            (   {   'w3c': function( val ){
                         if( val ) this.$.returnValue= !!val
                         else this.$.preventDefault()
                         return this
@@ -139,5 +107,22 @@ $define
             )
         )
 
+        proto.scream=
+        $support.eventModel.select
+        (   {   'w3c': function( node ){
+                    $raw( node ).dispatchEvent( this.$ )
+                    return this
+                }
+            ,   'ms': function( node ){
+                    var event= this
+                    if( !/^\w+$/.test( event.type() ) ){
+                        event= $Event().type( 'beforeeditfocus' )
+                        event.$.originalEvent= this.$
+                    }
+                    $raw( node ).fireEvent( 'on' + event.type(), event.$ )
+                }
+            }
+        )
+        
     })
 )

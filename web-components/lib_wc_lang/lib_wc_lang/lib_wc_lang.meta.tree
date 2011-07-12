@@ -1,0 +1,6 @@
+include module= wc/lang
+include module= wc/lang_css
+include module= wc/lang_js
+include module= wc/lang_sgml
+include module= wc/lang_pcre
+

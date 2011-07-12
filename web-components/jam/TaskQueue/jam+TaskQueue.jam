@@ -1,0 +1,54 @@
+with( $jam )
+$define
+(   '$TaskQueue'
+,   $Class( function( klass, proto ){
+        
+        proto.constructor=
+        function( ){
+            this.$= {}
+            this.$.queue= []
+            this.$.clock=
+            $Clock()
+            .handler( $Obj( this ).method( 'run' ) )
+            return this
+        }
+        
+        proto.latency=
+        $Poly
+        (   function( ){
+                return this.$.clock.latency()
+            }
+        ,   function( val ){
+                this.$.clock.latency( val )
+                return this
+            }
+        )
+        
+        proto.active=
+        $Poly
+        (   function( ){
+                return this.$.clock.active()
+            }
+        ,   function( val ){
+                this.$.clock.active( val )
+                return this
+            }
+        )
+        
+        proto.run=
+        function( ){
+            var proc= this.$.queue.shift()
+            proc()
+            if( !this.$.queue.length ) this.active( false )
+            return this
+        }
+        
+        proto.add=
+        function( task ){
+            this.$.queue.push( task )
+            this.active( true )
+            return this
+        }
+        
+    })
+)

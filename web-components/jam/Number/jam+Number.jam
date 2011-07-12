@@ -3,11 +3,10 @@ $define
 (   '$Number'
 ,   $Class( function( klass, proto ){
     
-        klass.create=
-        function( data ){
-            var obj= new klass
-            obj.$= Number( data )
-            return obj
+        proto.constructor=
+        function( numb ){
+            this.$= Number( numb )
+            return this
         }
         
         proto.valueOf=

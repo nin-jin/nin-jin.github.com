@@ -42,12 +42,5 @@
     <wc:js-test> _test.ok( $jam.$classOf( /a/ ), 'RegExp' ) </wc:js-test>
     <wc:js-test> _test.ok( $jam.$classOf( new Date ), 'Date' ) </wc:js-test>
     <wc:js-test> _test.ok( $jam.$classOf( new Error ), 'Error' ) </wc:js-test>
-    <wc:js-test>
-        var Obj= function(){
-            this.length= 0;
-        };
-        Obj.prototype= Array.prototype;
-        _test.ok( $jam.$classOf( new Obj ), 'Object' )
-    </wc:js-test>
 
 </doc:root>

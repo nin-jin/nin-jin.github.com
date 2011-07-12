@@ -4,25 +4,23 @@ $Component
 ,   function( nodeRoot ){
         return new function( ){
             nodeRoot= $Node( nodeRoot )
-            
-            var nodeResult= $Node( nodeRoot.$ ).ensureChild( 'wc:demo-result' )
 
-            var nodeSource0= $Node( nodeRoot.$ ).ensureChild( 'wc:demo-source' )
-            //var nodeSource= $Node( nodeSource0.$ ).ensureChild( 'div' ).editable( true )
+            var source= $String( nodeRoot.text() ).minimizeIndent().trim( /[\n\r]/ ).$
+            
+            nodeRoot.clear()
+            
+            var nodeResult=
+            $Node.Element( 'wc:demo_result' )
+            .parent( nodeRoot )
+            
+            var nodeSource0=
+            $Node.Element( 'wc:demo_source' )
+            .parent( nodeRoot )
+            
             var nodeSource=
-            $Node( nodeSource0.$ )
-            .ensureChild( 'wc:hlight' )
-            .state( 'editable', 'true' )
-            .state( 'lang', 'sgml' )
-            
-            var childList= nodeRoot.childList()
-            for( var i= 0; i < childList.length; ++i ){
-                var nodeChild= $Node( childList[ i ] )
-                if( /^wc:demo-/.test( nodeChild.name() ) ) continue
-                nodeSource.tail( nodeChild )
-            }
-            
-            nodeSource.text( $String( nodeSource.text() ).minimizeIndent().trim( /[\n\r]/ ) )
+            $Node.parse( '<wc:hlight class=" lang=sgml editable=true " />' )
+            .parent( nodeSource0 )
+            .text( source )
             
             var exec= $Thread( function( ){
                 var source= $String( nodeSource.text() ).minimizeIndent().trim( /[\n\r]/ )
@@ -30,25 +28,26 @@ $Component
                 nodeResult.html( source )
                 var scripts= nodeResult.descList( 'script' )
                 for( var i= 0; i < scripts.length; ++i ){
-                    var script= scripts[i]
-                    $eval( $Node( script ).text() )
+                    var script= $Node( scripts[i] )
+                    $eval( script.text() )
                 }
                 return true
             })
             
             exec()
         
-            var forgetCommits=
-            nodeSource.listen
-            (   '$jam.$eventCommit'
-            ,   function( ev ){
-                    exec()
-                }
-            )
+            var commitObserver=
+            $Observer()
+            .eventName( '$jam.$eventCommit' )
+            .node( nodeSource )
+            .handler( function( ev ){
+                exec()
+            })
+            .listen()
             
             this.destroy=
             function( ){
-                forgetCommits()
+                commitObserver.sleep()
             }
         }
     }

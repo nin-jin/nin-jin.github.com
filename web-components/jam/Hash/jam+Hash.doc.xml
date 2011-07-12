@@ -24,11 +24,11 @@
             _test.ok( hash.get( 'foo' ), 'bar' )
         </wc:js-test>
         <wc:js-test>
-            var hash= $jam.$Hash({ ns: 'foo', data: { 'foo:bar': 123 } })
+            var hash= $jam.$Hash({ prefix: 'foo:', obj: { 'foo:bar': 123 } })
             _test.ok( hash.has( 'bar' ) )
         </wc:js-test>
         <wc:js-test>
-            var hash= $jam.$Hash({ prefix: '', data: $jam })
+            var hash= $jam.$Hash({ prefix: '', obj: $jam })
             _test.ok( hash.has( '$Hash' ) )
         </wc:js-test>
     </p>

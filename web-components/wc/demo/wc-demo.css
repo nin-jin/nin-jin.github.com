@@ -5,13 +5,13 @@ wc\:demo {
     margin: 2pt 0;
 }
 
-wc\:demo-result {
+wc\:demo_result {
     display: block;
     border-bottom: 1px dotted #aaa;
     overflow: auto;
 }
 
-wc\:demo-source {
+wc\:demo_source {
     display: block;
     white-space: pre;
     overflow: auto;

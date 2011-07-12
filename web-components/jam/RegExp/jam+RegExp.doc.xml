@@ -17,7 +17,7 @@
         _test.ok( re.count(), 2 )
     </wc:js-test>
     <wc:js-test>
-        _test.ok( $jam.$RegExp.encode( '{[(' ), '\\{\\[\\(' )
+        _test.ok( $jam.$RegExp.escape( '{[(' ), '\\{\\[\\(' )
     </wc:js-test>
 
 </doc:root>

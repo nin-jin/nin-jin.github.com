@@ -81,7 +81,7 @@ $define
             
             this[ /(<[^>]+>)/.source ]=
             sgml.tag
-		    
+            
         })
         
         return sgml

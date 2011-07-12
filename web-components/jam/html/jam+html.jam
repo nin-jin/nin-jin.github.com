@@ -3,15 +3,14 @@ $define
 (   '$html'
 ,   new function(){
     
-        this.encode=
+        this.escape=
         function( str ){
-            return $String( str )
+            return String( str )
             .replace( /&/g, '&amp;' )
             .replace( /</g, '&lt;' )
             .replace( />/g, '&gt;' )
             .replace( /"/g, '&quot;' )
             .replace( /'/g, '&apos;' )
-            .$
         }
 
         this.decode=
@@ -29,12 +28,12 @@ $define
         }
         
         this.entitiy=
-        {	'nbsp': ' '
-        ,	'amp':  '&'
-        ,	'lt':   '<'
-        ,	'gt':   '>'
-        ,	'quot': '"'
-        ,	'apos': "'"
+        {    'nbsp': ' '
+        ,    'amp':  '&'
+        ,    'lt':   '<'
+        ,    'gt':   '>'
+        ,    'quot': '"'
+        ,    'apos': "'"
         }
         
         this.text=
@@ -49,7 +48,7 @@ $define
         }
         
         this.Template=
-        $TemplateFactory({ encoder: this.encode })
+        $TemplateFactory({ encoder: this.escape })
     
     }
 )

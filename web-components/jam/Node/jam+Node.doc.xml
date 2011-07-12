@@ -10,174 +10,130 @@
 
     <wc:js-test> _test.ok( $jam.$Node ) </wc:js-test>
     <wc:js-test>
-        var node= $jam.$Node( 'xxx' )
+        var node= $jam.$Node.Element( 'xxx' )
         _test.ok( node.name(), 'xxx' )
     </wc:js-test>
     <wc:js-test>
-        var node= $jam.$Node( 'xxx' )
-        _test.ok( node.parent().$, null )
+        var node= $jam.$Node.Element( 'xxx' )
+        _test.ok( node.parent(), null )
     </wc:js-test>
     <wc:js-test>
-        var node1= $jam.$Node( 'xxx' )
-        var node2= $jam.$Node( 'yyy' )
+        var node1= $jam.$Node.Element( 'xxx' )
+        var node2= $jam.$Node.Element( 'yyy' )
         node2.parent( node1 )
         _test.ok( node2.parent().$, node1.$ )
     </wc:js-test>
     <wc:js-test>
-        var node1= $jam.$Node( 'xxx' )
-        var node2= $jam.$Node( 'yyy' )
-        var node3= $jam.$Node( 'zzz' )
+        var node1= $jam.$Node.Element( 'xxx' )
+        var node2= $jam.$Node.Element( 'yyy' )
+        var node3= $jam.$Node.Element( 'zzz' )
         node2.parent( node1 )
         node2.next( node3 )
         _test.ok( node3.prev().$, node2.$ )
     </wc:js-test>
     <wc:js-test>
-        var node1= $jam.$Node( 'xxx' )
-        var node2= $jam.$Node( 'yyy' )
-        var node3= $jam.$Node( 'zzz' )
+        var node1= $jam.$Node.Element( 'xxx' )
+        var node2= $jam.$Node.Element( 'yyy' )
+        var node3= $jam.$Node.Element( 'zzz' )
         node2.parent( node1 )
         node2.next( node3 )
         _test.ok( node2.parent().$, node1.$ )
     </wc:js-test>
     <wc:js-test>
-        var node1= $jam.$Node( 'xxx' )
-        var node2= $jam.$Node( 'yyy' )
-        var node3= $jam.$Node( 'zzz' )
+        var node1= $jam.$Node.Element( 'xxx' )
+        var node2= $jam.$Node.Element( 'yyy' )
+        var node3= $jam.$Node.Element( 'zzz' )
         node2.parent( node1 )
         node2.prev( node3 )
         _test.ok( node3.next().$, node2.$ )
     </wc:js-test>
     <wc:js-test>
-        var node1= $jam.$Node( 'xxx' )
-        var node2= $jam.$Node( 'yyy' )
-        var node3= $jam.$Node( 'zzz' )
+        var node1= $jam.$Node.Element( 'xxx' )
+        var node2= $jam.$Node.Element( 'yyy' )
+        var node3= $jam.$Node.Element( 'zzz' )
         node2.parent( node1 )
         node2.prev( node3 )
         _test.ok( node2.parent().$, node1.$ )
     </wc:js-test>
     <wc:js-test>
-        var node1= $jam.$Node( 'xxx' )
-        var node2= $jam.$Node( 'yyy' )
-        var node3= $jam.$Node( 'zzz' )
+        var node1= $jam.$Node.Element( 'xxx' )
+        var node2= $jam.$Node.Element( 'yyy' )
+        var node3= $jam.$Node.Element( 'zzz' )
         node2.parent( node1 )
         node3.parent( node1 )
         _test.ok( node2.next().$, node3.$ )
     </wc:js-test>
     <wc:js-test>
-        var node1= $jam.$Node( 'xxx' )
-        var node2= $jam.$Node( 'yyy' )
-        var node3= $jam.$Node( 'zzz' )
+        var node1= $jam.$Node.Element( 'xxx' )
+        var node2= $jam.$Node.Element( 'yyy' )
+        var node3= $jam.$Node.Element( 'zzz' )
         node2.parent( node1 )
         node3.parent( node1 )
-        _test.ok( node1.childList().length, 2 )
+        _test.ok( node1.childList().length(), 2 )
     </wc:js-test>
     <wc:js-test>
-        var node1= $jam.$Node( 'xxx' )
-        var node2= $jam.$Node( 'yyy' )
-        var node3= $jam.$Node( 'zzz' )
+        var node1= $jam.$Node.Element( 'xxx' )
+        var node2= $jam.$Node.Element( 'yyy' )
+        var node3= $jam.$Node.Element( 'zzz' )
         node2.parent( node1 )
         node3.parent( node1 )
-        _test.ok( node1.childList( 'zzz' ).length, 1 )
+        _test.ok( node1.childList( 'zzz' ).length(), 1 )
     </wc:js-test>
     <wc:js-test>
-        var node1= $jam.$Node( 'xxx' )
-        var node2= $jam.$Node( 'yyy' )
-        var node3= $jam.$Node( 'zzz' )
+        var node1= $jam.$Node.Element( 'xxx' )
+        var node2= $jam.$Node.Element( 'yyy' )
+        var node3= $jam.$Node.Element( 'zzz' )
         node2.parent( node1 )
         node3.parent( node1 )
-        _test.ok( node1.childList( 'zzz' )[0], node3.$ )
+        _test.ok( node1.childList( 'zzz' ).get(0).$, node3.$ )
     </wc:js-test>
     <wc:js-test>
-        var node1= $jam.$Node( 'xxx' )
-        var node2= $jam.$Node( 'yyy' )
-        var node3= $jam.$Node( 'zzz' )
+        var node1= $jam.$Node.Element( 'xxx' )
+        var node2= $jam.$Node.Element( 'yyy' )
+        var node3= $jam.$Node.Element( 'zzz' )
         node2.parent( node1 )
         node3.parent( node1 )
         node1.clear()
-        _test.ok( node1.childList().length, 0 )
+        _test.ok( node1.childList().length(), 0 )
     </wc:js-test>
     <wc:js-test>
-        var node= $jam.$Node( 'xxx' )
+        var node= $jam.$Node.Element( 'xxx' )
         var source= '&lt;a&gt;1&lt;/a&gt;&lt;b&gt;2&lt;/b&gt;'
         node.html( source )
         _test.ok( node.html(), source )
     </wc:js-test>
     <wc:js-test>
-        var node= $jam.$Node( 'xxx' )
+        var node= $jam.$Node.Element( 'xxx' )
         var source= '&lt;a&gt;1&lt;/a&gt;&lt;b&gt;2&lt;/b&gt;'
         node.text( source )
         _test.ok( node.text(), source )
     </wc:js-test>
     <wc:js-test>
-        var node= $jam.$Node( 'xxx' )
+        var node= $jam.$Node.Element( 'xxx' )
         var source= '&lt;a&gt;1&lt;/a&gt;&lt;b&gt;2&lt;/b&gt;'
         node.html( source )
         _test.ok( node.text(), '12' )
     </wc:js-test>
     <wc:js-test>
-        var node1= $jam.$Node( 'xxx' )
-        var node2= $jam.$Node( 'yyy' )
-        var node3= $jam.$Node( 'zzz' )
+        var node1= $jam.$Node.Element( 'xxx' )
+        var node2= $jam.$Node.Element( 'yyy' )
+        var node3= $jam.$Node.Element( 'zzz' )
         node2.parent( node1 )
         node3.parent( node1 )
         _test.ok( node1.head().$, node2.$ )
     </wc:js-test>
     <wc:js-test>
-        var node1= $jam.$Node( 'xxx' )
-        var node2= $jam.$Node( 'yyy' )
-        var node3= $jam.$Node( 'zzz' )
+        var node1= $jam.$Node.Element( 'xxx' )
+        var node2= $jam.$Node.Element( 'yyy' )
+        var node3= $jam.$Node.Element( 'zzz' )
         node2.parent( node1 )
         node3.parent( node1 )
         _test.ok( node1.tail().$, node3.$ )
     </wc:js-test>
     <wc:js-test>
-        var node= $jam.$Node( 'xxx' )
+        var node= $jam.$Node.Element( 'xxx' )
         node.attr( 'foo', 'bar' )
         _test.ok( node.attr( 'foo' ), 'bar' )
-    </wc:js-test>
-
-    <h2>События</h2>
-    <wc:js-test>
-        var node1= $jam.$Node( $jam.$doc() )
-        var node2= $jam.$Node( $jam.$doc().body )
-        var forget= node1.listen( 'click', function( ev ){
-            _test.ok( ev.type, 'click' )
-        })
-        var ev= $jam.$Event().type( 'click' )
-        node2.scream( ev )
-        forget()
-    </wc:js-test>
-    <wc:js-test>
-        var node= $jam.$Node( $jam.$doc().body )
-        var catched= false
-        var forget= node.listen( 'click', function( ev ){
-            catched= true
-        })
-        var ev= $jam.$Event().type( 'click' )
-        forget()
-        node.scream( ev )
-        _test.ok( catched, false )
-    </wc:js-test>
-    <wc:js-test>
-        var node1= $jam.$Node( $jam.$doc() )
-        var node2= $jam.$Node( $jam.$doc().body )
-        var forget= node1.listen( 'jam:_test_Node_', function( ev ){
-            _test.ok( ev.type, 'jam:_test_Node_' )
-        })
-        var ev= $jam.$Event().type( 'jam:_test_Node_' )
-        node2.scream( ev )
-        forget()
-    </wc:js-test>
-    <wc:js-test>
-        var node= $jam.$Node( $jam.$doc().body )
-        var catched= false
-        var forget= node.listen( 'jam:_test_Node_', function( ev ){
-            catched= true
-        })
-        var ev= $jam.$Event().type( 'jam:_test_Node_' )
-        forget()
-        node.scream( ev )
-        _test.ok( catched, false )
     </wc:js-test>
 
 </doc:root>

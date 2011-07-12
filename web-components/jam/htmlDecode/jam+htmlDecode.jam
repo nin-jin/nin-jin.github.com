@@ -1,0 +1,16 @@
+with( $jam )
+$define
+(   '$htmlDecode'
+,   new function(){
+        var fromCharCode= $glob().String.fromCharCode
+        var parseInt= $glob().parseInt
+        var replacer= function( str, isHex, numb, name ){
+            if( name ) return $htmlEntities[ name ] || str
+            if( isHex ) numb= parseInt( numb, 16 )
+            return fromCharCode( numb )
+        }
+        return function( str ){
+            return String( str ).replace( /&(?:#(x)?(\d+)|(\w+));/g, replacer )
+        }
+    }
+)

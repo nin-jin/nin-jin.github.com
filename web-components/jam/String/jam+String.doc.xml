@@ -14,7 +14,7 @@
     </wc:js-test>
     <wc:js-test>
         var str= $jam.$String( 'foo' )
-        _test.not( $jam.$String( str ), str )
+        _test.ok( $jam.$String( str ), str )
     </wc:js-test>
     <wc:js-test>
         var str= $jam.$String( 'foo' )

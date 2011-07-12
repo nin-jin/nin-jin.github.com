@@ -1,7 +1,7 @@
 with( $wc )
 $define
-(	'$lang_css'
-,	new function(){
+(    '$lang_css'
+,    new function(){
     
         var css=
         function( str ){
@@ -23,42 +23,42 @@ $define
         css.stylesheet=
         $lang.Parser( new function( ){
         
-			this[ /(\/\*[\s\S]*?\*\/)/.source ]=
-			$Pipe( $lang_text, css.remark )
+            this[ /(\/\*[\s\S]*?\*\/)/.source ]=
+            $Pipe( $lang_text, css.remark )
 
-			this[ /(\*|(?:\\[\s\S]|[\w-])+)/.source ]=
-			$Pipe( $lang_text, css.tag )
+            this[ /(\*|(?:\\[\s\S]|[\w-])+)/.source ]=
+            $Pipe( $lang_text, css.tag )
 
-			this[ /(#(?:\\[\s\S]|[\w-])+)/.source ]=
+            this[ /(#(?:\\[\s\S]|[\w-])+)/.source ]=
             $Pipe( $lang_text, css.id )
 
-			this[ /(\.(?:\\[\s\S]|[\w-])+)/.source ]=
+            this[ /(\.(?:\\[\s\S]|[\w-])+)/.source ]=
             $Pipe( $lang_text, css.klass )
 
-			this[ /(::?(?:\\[\s\S]|[\w-])+)/.source ]=
+            this[ /(::?(?:\\[\s\S]|[\w-])+)/.source ]=
             $Pipe( $lang_text, css.pseudo )
 
-			this[ /\{([\s\S]+?)\}/.source ]=
+            this[ /\{([\s\S]+?)\}/.source ]=
             new function( ){
-				var openBracket= css.bracket( '{' )
-				var closeBracket= css.bracket( '}' )
-				return function( style ){
-					style= css.style( style )
-					return openBracket + style + closeBracket
-				}
-			}             
+                var openBracket= css.bracket( '{' )
+                var closeBracket= css.bracket( '}' )
+                return function( style ){
+                    style= css.style( style )
+                    return openBracket + style + closeBracket
+                }
+            }             
         })
         
         css.style=
         $lang.Parser( new function( ){
                 
-			this[ /(\/\*[\s\S]*?\*\/)/.source ]=
-			$Pipe( $lang_text, css.remark )
+            this[ /(\/\*[\s\S]*?\*\/)/.source ]=
+            $Pipe( $lang_text, css.remark )
 
-			this[ /([\w-]+\s*:)/.source  ]=
-			$Pipe( $lang_text, css.property )
+            this[ /([\w-]+\s*:)/.source  ]=
+            $Pipe( $lang_text, css.property )
 
-			this[ /([^:]+?(?:;|$))/.source ]=
+            this[ /([^:]+?(?:;|$))/.source ]=
             $Pipe( $lang_text, css.value )
             
         })

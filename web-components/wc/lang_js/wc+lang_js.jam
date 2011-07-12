@@ -1,7 +1,7 @@
 with( $wc )
 $define
-(	'$lang_js'
-,	new function(){
+(    '$lang_js'
+,    new function(){
     
         var js=
         function( str ){
@@ -32,7 +32,7 @@ $define
             this[ /("(?:[^\n"\\]*(?:\\\\|\\[^\\]))*[^\n"\\]*")/.source ]=
             $Pipe( $lang_text, js.string )
             
-            this[ /(\/(?:[^\n\/\\]*(?:\\\\|\\[^\\]))*[^\n\/\\]*\/)/.source ]=
+            this[ /(\/(?:[^\n\/\\]*(?:\\\\|\\[^\\]))*[^\n\/\\]*\/[mig]*)/.source ]=
             $Pipe( $lang_pcre, js.regexp )
             
             this[ /\b(_[\w$]*)\b/.source ]=

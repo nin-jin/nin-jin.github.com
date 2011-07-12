@@ -11,22 +11,12 @@ $Component
                 proc( _test )
                 return true
             })
+            
+            var source= $String( nodeRoot.text() ).minimizeIndent().trim( /[\n\r]/ ).$
         
-            var nodeSource0= $Node( nodeRoot.$ ).ensureChild( 'wc:js-test_source' )
-            var nodeSource=
-            $Node( nodeSource0.$ )
-            .ensureChild( 'wc:hlight' )
-            .state( 'editable', 'true' )
-            .state( 'lang', 'js' )
-            
-            var childList= nodeRoot.childList()
-            for( var i= 0; i < childList.length; ++i ){
-                var nodeChild= $Node( childList[ i ] )
-                if( /^wc:js-test_/.test( nodeChild.name() ) ) continue
-                nodeSource.tail( nodeChild )
-            }
-            
-            nodeSource.text( $String( nodeSource.text() ).minimizeIndent().trim( /[\n\r]/ ).$ )
+            nodeRoot.clear()
+            var nodeSource0= $Node.Element( 'wc:js-test_source' ).parent( nodeRoot )
+            var nodeSource= $Node.parse( '<wc:hlight class=" lang=js editable=true " />' ).text( source ).parent( nodeSource0 )
 
             var _test= {}
             
@@ -92,7 +82,7 @@ $Component
             
             var print=
             function( val ){
-                var node= $Node( 'wc:js-test_result' )
+                var node= $Node.Element( 'wc:js-test_result' )
                 node.text( val )
                 nodeRoot.tail( node )
             }
@@ -111,8 +101,8 @@ $Component
             var run=
             function( ){
                 var results= nodeRoot.childList( 'wc:js-test_result' )
-                for( var i= 0; i < results.length; ++i ){
-                    $Node( results[i] ).parent( null )
+                for( var i= 0; i < results.length(); ++i ){
+                    results.get(i).parent( null )
                 }
                 passed( 'wait' )
                 stop= null
@@ -122,19 +112,20 @@ $Component
             
             run()
 
-            var forgetCommit=
-            nodeRoot.listen
-            (   '$jam.$eventCommit'
-            ,   function( ev ){
-                    run()
-                }
-            )
+            var commitObserver=
+            $Observer()
+            .eventName( '$jam.$eventCommit' )
+            .node( nodeRoot )
+            .handler( function( ev ){
+                run()
+            })
+            .listen()
             
             this.destroy=
             function( ){
-                forgetCommit()
+                commitObserver.sleep()
                 if( stop ) stop()
-                passed= printValue= $Value()
+                _test.ok= _test.not= $Value()
             }
             
         }

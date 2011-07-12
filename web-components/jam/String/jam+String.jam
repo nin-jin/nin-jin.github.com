@@ -3,17 +3,11 @@ $define
 (   '$String'
 ,   $Class( function( klass, proto ){
     
-        klass.create=
-        $Poly
-        (   function( ){
-                return klass.create( '' )
-            }
-        ,   function( data ){
-                var obj= new klass
-                obj.$= String( data )
-                return obj
-            }
-        )
+        proto.constructor=
+        function( data ){
+            this.$= String( $raw( data ) || '' )
+            return this
+        }
         
         proto.incIndent=
         $Poly

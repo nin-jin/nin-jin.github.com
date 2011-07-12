@@ -14,7 +14,7 @@
     </wc:js-test>
     <wc:js-test>
         var numb= $jam.$Number( 123 )
-        _test.not( $jam.$Number( numb ), numb )
+        _test.ok( $jam.$Number( numb ), numb )
     </wc:js-test>
     <wc:js-test>
         var numb= $jam.$Number( 123 )

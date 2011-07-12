@@ -1,7 +1,7 @@
 with( $wc )
 $define
-(	'$lang_pcre'
-,	new function(){
+(    '$lang_pcre'
+,    new function(){
     
         var pcre=
         function( str ){

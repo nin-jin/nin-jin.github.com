@@ -3,17 +3,13 @@ $define
 (   '$RegExp'
 ,   $Class( function( klass, proto ){
     
-        klass.create=
+        proto.constructor=
         function( regexp ){
-            if( $classOf( regexp ) === 'Object' ){
-                regexp= RegExp( regexp.source, regexp.mods )
-            }
-            var obj= new klass
-            obj.$= new RegExp( regexp )
-            return obj
+            this.$= new RegExp( regexp )
+            return this
         }
         
-        klass.encode=
+        klass.escape=
         new function( ){
             var encodeChar= function( symb ){
                 return '\\' + symb
@@ -21,7 +17,7 @@ $define
             var specChars = '^({[\\.?+*]})$'
             var specRE= RegExp( '[' + specChars.replace( /./g, encodeChar ) + ']', 'g' )
             return function( str ){
-                return $String( str ).replace( specRE, encodeChar ).$
+                return String( str ).replace( specRE, encodeChar )
             }
         }
 

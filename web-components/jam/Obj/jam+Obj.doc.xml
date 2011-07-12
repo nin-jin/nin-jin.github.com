@@ -11,7 +11,7 @@
     <wc:js-test> _test.ok( $jam.$Obj ) </wc:js-test>
     <wc:js-test>
         var obj= $jam.$Obj( {} )
-        _test.ok( $jam.$Obj( obj ).$, obj )
+        _test.ok( $jam.$Obj( obj ), obj )
     </wc:js-test>
     <wc:js-test>
         var obj= {}

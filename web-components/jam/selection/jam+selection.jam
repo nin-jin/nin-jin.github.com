@@ -1,9 +1,8 @@
 with( $jam )
 $define
 (  '$selection'
-,   $switch
-    (   $support.selectionModel()
-    ,   {   'w3c': function( ){
+,   $support.selectionModel.select
+    (   {   'w3c': function( ){
                 return $glob().getSelection()
             }
         ,   'ms': function( ){

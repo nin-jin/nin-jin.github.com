@@ -19,11 +19,11 @@ $define
     
         return $Class( function( klass, proto ){
             
-            klass.create= function( str ){
-                var obj= new klass
-                obj.string= String( str )
-                obj.position= 0
-                return obj
+            proto.constructor=
+            function( str ){
+                this.string= String( str )
+                this.position= 0
+                return this
             }
             
             proto.next=

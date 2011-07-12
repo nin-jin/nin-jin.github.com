@@ -6,16 +6,17 @@ $define
         var handler= $Throttler
         (   50
         ,   function( event ){
-                event= $Event( event )
-                $Node( event.target() ).scream( $Event().type( '$jam.$eventEdit' ) )
+                $Event().type( '$jam.$eventEdit' ).scream( event.target() )
             }
         )
+
+        var obs= $Observer()
+        .node( $doc().documentElement )
+        .handler( handler )
         
-        var root= $Node( $doc().documentElement )
-        
-        root.listen( 'keyup', handler )
-        root.listen( 'cut', handler )
-        root.listen( 'paste', handler )
+        obs.clone().eventName( 'keyup' ).listen()
+        obs.clone().eventName( 'cut' ).listen()
+        obs.clone().eventName( 'paste' ).listen()
 
     }
 )
