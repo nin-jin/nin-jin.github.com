@@ -15,9 +15,15 @@ $Component
             .editable( editable === 'true' )
             .parent( nodeRoot )
     
+            var sourceLast= ''
             var update= function( ){
-                var source=
-                $String( nodeSource.text() )
+                var source= $String( nodeSource.text() )
+
+                if( source.$ === sourceLast ) return
+                sourceLast= source.$
+                
+                source=
+                source
                 .process( hlight )
                 .replace( /  /g, '\u00A0 ' )
                 .replace( /  /g, ' \u00A0' )
@@ -52,14 +58,14 @@ $Component
                 selRange.select()
             }
             
-            var editObserver=
+            var onEdit=
             $Observer()
             .eventName( '$jam.$eventEdit' )
             .node( nodeRoot )
             .handler( update )
             .listen()
             
-            var enterObserver=
+            var onEnter=
             $Observer()
             .eventName( 'keypress' )
             .node( nodeRoot )
@@ -73,7 +79,7 @@ $Component
             })
             .listen()
             
-            var tabObserver=
+            var onTab=
             $Observer()
             .eventName( 'keydown' )
             .node( nodeRoot )
@@ -87,9 +93,9 @@ $Component
             .listen()
             
             this.destroy= function( ){
-                editObserver.sleep()
-                enterObserver.sleep()
-                tabObserver.sleep()
+                onEdit.sleep()
+                onEnter.sleep()
+                onTab.sleep()
             }
 
             update()

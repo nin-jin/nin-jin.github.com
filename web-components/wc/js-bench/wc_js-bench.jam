@@ -120,6 +120,7 @@ $Component
                         if( timeOuter.exec > 256 ) break
                     } while( true )
 
+                    if( !timeOuter ) timeOuter= {}
                     timeOuter.compile= timeOuter.compile * 1000 / count
                     timeOuter.exec= timeOuter.exec * 1000 / count
                 } else {
@@ -143,6 +144,7 @@ $Component
                     if( timeInner.exec > 256 ) break
                 } while( true )
                 
+                if( !timeInner ) timeInner= {}
                 timeInner.compile= ( timeInner.compile * 1000 - timeOuter.compile ) / count
                 timeInner.exec= ( timeInner.exec * 1000 - timeOuter.exec ) / count
                 

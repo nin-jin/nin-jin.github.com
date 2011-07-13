@@ -1,2 +1,712 @@
-@import url( '../../jquery/-mix+doc/page_0.css?LO7O5P' );
-@import url( '../../jquery/-mix+doc/page_1.css?LO2G7C' );
+/* @import url( '../../html/html/html.css' ); */
+html {
+    width: 100%;
+    height: 100%;
+    background: white;
+    color: black;
+    font: 14pt/1.5 'Georgia', serif;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    overflow-y: scroll;
+}
+
+/* @import url( '../../html/a/html-a.css' ); */
+a {
+    text-decoration: none; text-decoration: inherit;
+    color: #66f;
+    cursor: pointer;
+}
+
+a:visited {
+    color: #669;
+}
+
+a:hover {
+    color: #66f;
+    text-decoration: underline;
+}
+
+a.reset\=true,
+a.reset\=true:visited,
+a.reset\=true:hover {
+    text-decoration: none; text-decoration: inherit;
+    color: none; color: inherit; $color: black;
+}
+
+/* @import url( '../../html/body/html-body.css' ); */
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* @import url( '../../html/code/html-code.css' ); */
+code {
+    display: inline-block; zoom: 1;
+    font-family: monospace;
+    font-size: 12pt;
+    line-height: 1;
+    white-space: pre-wrap;
+    position: relative;
+
+    -wc-background: ' type=solid color=black opacity=.05 ';
+    background: rgba( 0, 0, 0, .05 );
+}
+
+code.reset\=true {
+    display: inline;
+    font: inherit;
+    white-space: inherit;
+    position: static;
+
+    background: none;
+}
+
+/* @import url( '../../html/em/html-em.css' ); */
+em {
+    font-style: italic;
+}
+em.reset\=true {
+    font-style: normal; font-style: inherit;
+}
+
+/* @import url( '../../html/h/html-h1.css' ); */
+h1 {
+    font: 48px/1 'Times New Roman', serif;
+    margin: 40px 0 20px;
+    text-align: center;
+}
+
+h1.reset\=true {
+    font: inherit;
+    margin: 0;
+    text-align: inherit;
+}
+
+/* @import url( '../../html/h/html-h2.css' ); */
+h2 {
+    font: 40px/1 'Times New Roman', serif;
+    margin: 40px 0 20px;
+    text-align: center;
+}
+
+h2.reset\=true {
+    font: inherit;
+    margin: 0;
+    text-align: inherit;
+}
+
+/* @import url( '../../html/h/html-h3.css' ); */
+h3 {
+    font: 32px/1 'Times New Roman', serif;
+    margin: 40px 0 20px;
+    text-align: center;
+}
+
+h3.reset\=true {
+    font: inherit;
+    margin: 0;
+    text-align: inherit;
+}
+
+/* @import url( '../../html/h/html-h4.css' ); */
+h4 {
+    font: 26px/1 'Times New Roman', serif;
+    margin: 40px 0 20px;
+}
+
+h4.reset\=true {
+    font: inherit;
+    margin: 0;
+}
+
+/* @import url( '../../html/h/html-h5.css' ); */
+h5 {
+    font: bold 20px/1 'Times New Roman', serif;
+    margin: 40px 0 20px;
+}
+
+h5.reset\=true {
+    font: inherit;
+    margin: 0;
+}
+
+/* @import url( '../../html/h/html-h6.css' ); */
+h6 {
+    font: bold 16px/1 'Times New Roman', serif;
+    margin: 40px 0 20px;
+}
+
+h6.reset\=true {
+    font: inherit;
+    margin: 0;
+}
+
+/* @import url( '../../html/label/html-label.css' ); */
+label {
+    display: block;
+    margin: 1em 0;
+    clear: both;
+}
+
+label.reset\=true {
+    display: inline;
+    margin: 0;
+    clear: none;
+}
+
+/* @import url( '../../html/p/html-p.css' ); */
+p {
+    margin: 20px 0;
+}
+
+p.reset\=true {
+    margin: 0;
+}
+
+/* @import url( '../../html/strong/html-strong.css' ); */
+strong {
+    font-weight: bold;
+}
+strong.reset\=true {
+    font-weight: normal; font-weight: inherit;
+}
+
+/* @import url( '../../wc/binom/wc-binom-center.css' ); */
+wc\:binom-center {
+    text-align: center;
+    display: block;
+    float: left;
+    width: 100%;
+}
+
+/* @import url( '../../wc/binom/wc-binom-left.css' ); */
+wc\:binom-left {
+    display: table-cell;
+    padding-right: 5%;
+    border-right: 1px solid gray;
+    margin-right: -1px;
+    text-align: left;
+}
+
+/* @import url( '../../wc/binom/wc-binom-right.css' ); */
+wc\:binom-right {
+    display: table-cell;
+    padding-left: 5%;
+    border-left: 1px solid gray;
+    text-align: left;
+}
+
+/* @import url( '../../wc/binom/wc-binom.css' ); */
+wc\:binom {
+    display: table;
+    border-collapse: collapse;
+    border-top: 1px solid gray;
+    border-bottom: 1px solid gray;
+}
+
+/* @import url( '../../wc/button/wc-button.css' ); */
+wc\:button {
+    display: inline-block; zoom: 1;
+    position: relative;
+    $padding: .1em;
+}
+
+wc\:button button {
+    white-space: normal;
+    cursor: pointer;
+    $width: 1%;
+    overflow: visible;
+    z-index: 0;
+    text-align: center;
+    display: block;
+
+    position: relative;
+    top: -1px;
+
+    padding: .2em .4em;
+    $padding: .1em .2em;
+
+    font-size: 14px;
+    line-height: 1.2;
+
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+
+    -wc-css3_border: ' weight=1px dashstyle=solid color=#aaa ';
+    border: 1px solid #aaa;
+
+    -moz-border-radius: 4px;
+    -wc-css3_border-radius: 3px;
+    border-radius: 3px;
+
+    -wc-css3_background: ' type=gradient angle=180 color=#eee color2=#ccc ';
+    background: -o-linear-gradient( -90deg, #eee, #ccc );
+    background: -moz-linear-gradient( -90deg, #eee, #ccc );
+    background: -webkit-gradient( linear, left top, left bottom, from( #eee ), to( #ccc ) );
+    
+    -webkit-background-clip: padding-box;
+
+    -webkit-box-shadow: 1px 1px 1px #000;
+    -moz-box-shadow: 1px 1px 1px #000;
+    -wc-css3_box-shadow: ' type=single color=#000 offset=1px,1px ';
+    box-shadow: 1px 1px 1px #000;
+}
+
+wc\:button button:hover {
+    -wc-css3_background: ' type=gradient angle=180 color=#fff color2=#bbb ';
+    background: -o-linear-gradient( -90deg, #fff, #bbb );
+    background: -moz-linear-gradient( -90deg, #fff, #bbb );
+    background: -webkit-gradient( linear, left top, left bottom, from( #fff ), to( #bbb ) );
+
+    -webkit-box-shadow: 2px 2px 2px #000;
+    -moz-box-shadow: 2px 2px 1px #000;
+    -wc-css3_box-shadow: ' type=single color=#000 offset=2px,2px ';
+    box-shadow: 2px 2px 2px #000;
+}
+
+wc\:button button:active {
+    -webkit-box-shadow: 1px 1px 1px #000;
+    -moz-box-shadow: 1px 1px 1px #000;
+    -wc-css3_box-shadow: ' type=single color=#000 offset=1px,1px ';
+    box-shadow: 1px 1px 1px #000;
+}
+
+/* @import url( '../../wc/vml/vml.css' ); */
+vml\:shape,
+vml\:shapetype,
+vml\:group,
+vml\:vmlframe,
+vml\:background,
+vml\:line,
+vml\:polyline,
+vml\:curve,
+vml\:rect,
+vml\:roundrect,
+vml\:oval,
+vml\:arc,
+vml\:image,
+vml\:path,
+vml\:formulas,
+vml\:handles,
+vml\:f,
+vml\:fill,
+vml\:stroke,
+vml\:shadow,
+vml\:skew,
+vml\:imagedata,
+vml\:textbox,
+vml\:textpath,
+vml\:extrusion {
+    behavior: url(#default#VML);
+}
+
+/* @import url( '../../wc/demo/wc-demo.css' ); */
+wc\:demo {
+    display: block;
+    border: 1px solid #ccc;
+    max-width: 100%;
+    margin: 2pt 0;
+}
+
+wc\:demo_result {
+    display: block;
+    border-bottom: 1px dotted #aaa;
+    overflow: auto;
+}
+
+wc\:demo_source {
+    display: block;
+    white-space: pre;
+    overflow: auto;
+    font-size: 11pt;
+    line-height: 1.5;
+    background: #eef;
+}
+
+/* @import url( '../../wc/desktop/wc-desktop.css' ); */
+wc\:desktop {
+    display: block; zoom: 1;
+    min-width: 100%;
+    min-height: 100%;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+    background: url( '../../wc/desktop/wc-desktop_light.png' ) left top no-repeat #ddd;
+}
+
+/* @import url( '../../wc/footer/wc-footer.css' ); */
+wc\:footer {
+    width: 100%;
+    display: block;
+    overflow: hidden;
+    border-top: 1px solid #999;
+    padding: .1em 0;
+    font-size: 10pt;
+    text-align: center;
+    clear: both;
+}
+
+/* @import url( '../../wc/hlight/wc-hlight.css' ); */
+.wc_hlight_source {
+    padding: 2pt 4pt;
+    display: block;
+}
+
+/* @import url( '../../wc/js-bench/wc_js-bench.css' ); */
+wc\:js-bench_list {
+    font-size: 10pt;
+    line-height: 1.2;
+    display: inline-table;
+    vertical-align: top;
+    border-collapse: collapse;
+}
+
+wc\:js-bench_header {
+    display: table-row;
+    cursor: pointer;
+}
+
+wc\:js-bench {
+    display: table-row;
+}
+
+wc\:js-bench_column {
+    text-align: center;
+    font-family: sans-serif;
+    font-weight: bold;
+    color: #666;
+    display: table-cell;
+    padding: 0 4pt;
+}
+
+wc\:js-bench_runner {
+    text-align: right;
+    display: table-cell;
+    color: #060;
+}
+wc\:js-bench_header:hover wc\:js-bench_runner {
+    color: #090;
+}
+wc\:js-bench_header:active wc\:js-bench_runner {
+    color: #000;
+}
+
+wc\:js-bench_source {
+    display: table-cell;
+    background-color: #eee;
+    border: 1px solid #999;
+}
+
+wc\:js-bench_result {
+    border: 1px solid #999;
+    padding: 2pt 4pt;
+    text-align: right;
+    font-family: monospace;
+    display: table-cell;
+}
+
+wc\:js-bench_result.source\=inner {
+    background-color: #dfd;
+    font-weight: bold;
+}
+
+wc\:js-bench_result.source\=outer {
+    background-color: #edf;
+}
+
+wc\:js-bench.wait\=true wc\:js-bench_result {
+    background-color: #eee;
+}
+
+
+/* @import url( '../../wc/lang_pcre/wc-lang_pcre.css' ); */
+wc\:lang_pcre {
+    font-family: monospace;
+    white-space: pre-wrap;
+    line-height: 1;
+}
+
+wc\:lang_pcre-backslash {
+    color: #aaa;
+}
+
+wc\:lang_pcre-spec {
+    color: red;
+}
+
+wc\:lang_pcre-control {
+    font-weight: bold;
+}
+
+/* @import url( '../../wc/lang_js/wc+lang_js.css' ); */
+wc\:lang_js {
+    font-family: monospace;
+    line-height: 1;
+    white-space: pre;
+}
+
+wc\:lang_js-remark {
+    color: #bbb;
+    white-space: pre;
+}
+
+wc\:lang_js-string {
+    color: #393;
+    white-space: pre;
+}
+
+wc\:lang_js-internal {
+    color: #333;
+}
+
+wc\:lang_js-external {
+    font-weight: bold;
+}
+
+wc\:lang_js-keyword {
+    color: #339;
+    font-weight: bold;
+}
+
+wc\:lang_js-number {
+    color: #c30;
+    white-space: pre;
+}
+
+wc\:lang_js-regexp {
+    color: #939;
+    white-space: pre;
+}
+
+wc\:lang_js-bracket {
+    font-weight: bold;
+    white-space: pre;
+}
+
+wc\:lang_js-operator {
+    font-weight: bold;
+    color: #066;
+    white-space: pre;
+}
+
+/* @import url( '../../wc/js-test/wc_js-test.css' ); */
+wc\:js-test {
+    display: inline-block; zoom: 1;
+    font-size: 9pt;
+    font-family: 'Lucida Console', monospace;
+    border: 1px solid #ddd;
+    line-height: 1.5;
+    white-space: pre;
+    overflow: auto;
+    max-width: 100%;
+    vertical-align: top;
+    background: #eee;
+    margin: 2pt 0;
+    position: relative;
+}
+
+wc\:js-test.passed\=true {
+    background: #cfc;
+    border: 1px solid #ada;
+}
+
+wc\:js-test.passed\=false {
+    background: #fcc;
+    border: 1px solid #c99;
+}
+
+.wc_js-test_textarea {
+    display: none;
+}
+
+wc\:js-test_timeout {
+    display: block;
+    padding: 2pt 4pt;
+    font-size: 8pt;
+    background: #ffc;
+    border-bottom: 1px solid #dda;
+}
+
+wc\:js-test_source {
+    display: block;
+}
+
+wc\:js-test_result {
+    border-top: 1px solid #dda;
+    background: #ffc;
+    padding: 2pt 4pt;
+    display: block;
+}
+
+/* @import url( '../../wc/lang_css/wc+lang_css.css' ); */
+wc\:lang_css {
+    font-family: monospace;
+    white-space: pre-wrap;
+}
+
+wc\:lang_css-remark {
+    color: #bbb;
+    white-space: pre-wrap;
+}
+
+wc\:lang_css-selector {
+}
+
+wc\:lang_css-tag {
+    color: #a3a;
+    font-weight: bold;
+    white-space: pre;
+}
+
+wc\:lang_css-id {
+    color: red;
+    white-space: pre;
+}
+
+wc\:lang_css-class {
+    color: #d66;
+    font-weight: bold;
+    white-space: pre;
+}
+
+wc\:lang_css-pseudo {
+    color: #399;
+    white-space: pre;
+}
+
+wc\:lang_css-string {
+    color: #393;
+    white-space: pre-wrap;
+}
+
+wc\:lang_css-bracket {
+    color: #333;
+    font-weight: bold;
+    white-space: pre;
+}
+
+wc\:lang_css-property {
+    color: #339;
+    font-weight: bold;
+    white-space: pre;
+}
+
+wc\:lang_css-value {
+    color: black;
+    white-space: pre-wrap;
+}
+
+/* @import url( '../../wc/lang_sgml/wc+lang_sgml.css' ); */
+wc\:lang_sgml {
+    font-family: monospace;
+    white-space: pre-wrap;
+    line-height: 1;
+}
+
+wc\:lang_sgml-tag {
+    color: #a3a;
+}
+
+wc\:lang_sgml-tag-name {
+    font-weight: bold;
+}
+
+wc\:lang_sgml-attr-name {
+    color: #a33;
+}
+
+wc\:lang_sgml-attr-value {
+    color: #d66;
+}
+
+wc\:lang_sgml-comment {
+    color: #888;
+}
+
+wc\:lang_sgml-decl {
+    color: #066;
+}
+
+wc\:lang_sgml-comment {
+    color: #999;
+}
+
+/* @import url( '../../wc/paper/wc-paper.css' ); */
+wc\:paper {
+    display: block; zoom: 1;
+    position: relative;
+    font-color: black;
+    text-align: left;
+    overflow: auto;
+    
+    margin: 0 auto;
+
+    -wc-css3_border-radius: 2px;
+    border-radius: 2px;
+
+    -wc-css3_border: ' weight=1px dashstyle=solid color=#aaa ';
+    border: 1px solid #aaa;
+
+    -wc-css3_background: ' type=solid color=white ';
+    background: white;
+
+    -webkit-box-shadow: 3px 3px 3px #333;
+    -moz-box-shadow: 3px 3px 3px #333;
+    -wc-css3_box-shadow: ' type=double opacity=.75 color=#000 color2=#333 offset=3px,3px offset2=4px,4px ';
+    box-shadow: 3px 3px 3px #333;
+}
+
+/* @import url( '../../wc/sidebar/wc-sidebar.css' ); */
+wc\:sidebar {
+    position: relative;
+    z-index: 1;
+    padding: 2%;
+}
+
+wc\:sidebar.align\=left {
+    float: left;
+}
+
+wc\:sidebar.align\=right {
+    float: right;
+}
+
+/* @import url( '../../wc/spacer/wc-spacer.css' ); */
+wc\:spacer {
+    display: block;
+    margin: 9% 10%;
+    padding: 10px;
+    zoom: 1;
+    position: relative;
+    width: auto;
+}
+
+/* @import url( '../../wc/vmenu/wc-vmenu.css' ); */
+wc\:vmenu-root {
+    font-size: 12pt;
+}
+
+wc\:vmenu-branch {
+    display: block;
+    margin: .5em 0;
+}
+
+wc\:vmenu-leaf {
+    display: block;
+    padding: 0 .5em;
+    white-space: nowrap;
+    text-align: left;
+}
+
+a:hover wc\:vmenu-leaf {
+    background: white;
+}
+
+a.reset\=true.target\=true wc\:vmenu-leaf {
+    color: red;
+}
+
