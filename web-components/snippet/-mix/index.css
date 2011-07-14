@@ -251,5 +251,12 @@ snippet\:link {
 
 snippet\:descr {
     white-space: pre-line;
+    font-size: 8pt;
+    text-align: left;
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    line-height: 1;
 }
 

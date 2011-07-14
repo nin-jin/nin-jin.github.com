@@ -352,7 +352,7 @@ wc\:footer {
 }
 
 /* @import url( '../../wc/hlight/wc-hlight.css' ); */
-.wc_hlight {
+wc\:hlight {
     display: inline-block; zoom: 1;
 }
 

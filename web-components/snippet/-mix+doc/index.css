@@ -352,7 +352,7 @@ wc\:footer {
 }
 
 /* @import url( '../../wc/hlight/wc-hlight.css' ); */
-.wc_hlight {
+wc\:hlight {
     display: inline-block; zoom: 1;
 }
 
@@ -764,5 +764,12 @@ snippet\:link {
 
 snippet\:descr {
     white-space: pre-line;
+    font-size: 8pt;
+    text-align: left;
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    line-height: 1;
 }
 
