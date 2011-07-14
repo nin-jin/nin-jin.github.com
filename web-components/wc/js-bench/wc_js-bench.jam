@@ -24,11 +24,7 @@ $Component
             }
 
             var onClick=
-            $Observer()
-            .eventName( 'click' )
-            .node( nodeHeader )
-            .handler( refresh )
-            .listen()
+            nodeHeader.listen( 'click', refresh )
             
             return new function( ){
                 this.destroy=
@@ -162,17 +158,25 @@ $Component
                 nodeRoot.state( 'wait', 'true' )
             }
             
-            var onRun=
-            $Observer()
-            .eventName( '$jam.$eventCommit' )
-            .node( nodeRoot )
-            .handler( schedule )
-            .listen()
+            var clone=
+            function( ){
+                var node=
+                $Node.Element( 'wc:js-bench' )
+                .text( nodeSource.text() )
+                nodeRoot.next( node )
+            }
+            
+            var onCommit=
+            nodeRoot.listen( '$jam.$eventCommit', schedule )
+            
+            var onClone=
+            nodeRoot.listen( '$jam.$eventClone', clone )
             
             return new function( ){
                 this.destroy=
                 function( ){
-                    onRun.sleep()
+                    onCommit.sleep()
+                    onClone.sleep()
                 }
             }
 

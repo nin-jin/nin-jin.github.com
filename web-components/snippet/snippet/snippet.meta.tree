@@ -1,0 +1,2 @@
+include module= wc/js-bench
+include pack= html

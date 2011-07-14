@@ -1,0 +1,177 @@
+/* @import url( '../../html/html/html.css' ); */
+html {
+    width: 100%;
+    height: 100%;
+    background: white;
+    color: black;
+    font: 14pt/1.5 'Georgia', serif;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    overflow-y: scroll;
+}
+
+/* @import url( '../../html/a/html-a.css' ); */
+a {
+    text-decoration: none; text-decoration: inherit;
+    color: #66f;
+    cursor: pointer;
+}
+
+a:visited {
+    color: #669;
+}
+
+a:hover {
+    color: #66f;
+    text-decoration: underline;
+}
+
+a.reset\=true,
+a.reset\=true:visited,
+a.reset\=true:hover {
+    text-decoration: none; text-decoration: inherit;
+    color: none; color: inherit; $color: black;
+}
+
+/* @import url( '../../html/body/html-body.css' ); */
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* @import url( '../../html/code/html-code.css' ); */
+code {
+    display: inline-block; zoom: 1;
+    font-family: monospace;
+    font-size: 12pt;
+    line-height: 1;
+    white-space: pre-wrap;
+    position: relative;
+
+    -wc-background: ' type=solid color=black opacity=.05 ';
+    background: rgba( 0, 0, 0, .05 );
+}
+
+code.reset\=true {
+    display: inline;
+    font: inherit;
+    white-space: inherit;
+    position: static;
+
+    background: none;
+}
+
+/* @import url( '../../html/em/html-em.css' ); */
+em {
+    font-style: italic;
+}
+em.reset\=true {
+    font-style: normal; font-style: inherit;
+}
+
+/* @import url( '../../html/h/html-h1.css' ); */
+h1 {
+    font: 48px/1.2 'Times New Roman', serif;
+    margin: 40px 0 20px;
+    text-align: center;
+}
+
+h1.reset\=true {
+    font: inherit;
+    margin: 0;
+    text-align: inherit;
+}
+
+/* @import url( '../../html/h/html-h2.css' ); */
+h2 {
+    font: 40px/1.2 'Times New Roman', serif;
+    margin: 40px 0 20px;
+    text-align: center;
+}
+
+h2.reset\=true {
+    font: inherit;
+    margin: 0;
+    text-align: inherit;
+}
+
+/* @import url( '../../html/h/html-h3.css' ); */
+h3 {
+    font: 32px/1.2 'Times New Roman', serif;
+    margin: 40px 0 20px;
+    text-align: center;
+}
+
+h3.reset\=true {
+    font: inherit;
+    margin: 0;
+    text-align: inherit;
+}
+
+/* @import url( '../../html/h/html-h4.css' ); */
+h4 {
+    font: 26px/1.2 'Times New Roman', serif;
+    margin: 40px 0 20px;
+}
+
+h4.reset\=true {
+    font: inherit;
+    margin: 0;
+}
+
+/* @import url( '../../html/h/html-h5.css' ); */
+h5 {
+    font: bold 20px/1.2 'Times New Roman', serif;
+    margin: 40px 0 20px;
+}
+
+h5.reset\=true {
+    font: inherit;
+    margin: 0;
+}
+
+/* @import url( '../../html/h/html-h6.css' ); */
+h6 {
+    font: bold 16px/1.2 'Times New Roman', serif;
+    margin: 40px 0 20px;
+}
+
+h6.reset\=true {
+    font: inherit;
+    margin: 0;
+}
+
+/* @import url( '../../html/label/html-label.css' ); */
+label {
+    display: block;
+    margin: 1em 0;
+    clear: both;
+}
+
+label.reset\=true {
+    display: inline;
+    margin: 0;
+    clear: none;
+}
+
+/* @import url( '../../html/p/html-p.css' ); */
+p {
+    margin: 20px 0;
+    text-align: left;
+}
+
+p.reset\=true {
+    margin: 0;
+}
+
+/* @import url( '../../html/strong/html-strong.css' ); */
+strong {
+    font-weight: bold;
+}
+strong.reset\=true {
+    font-weight: normal; font-weight: inherit;
+}
+

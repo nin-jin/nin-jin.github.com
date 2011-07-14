@@ -59,6 +59,8 @@
     "../../jam/Hiqus/jam+Hiqus.jam?LO4GMQ",
     "../../jam/NodeList/jam+NodeList.jam?LO4DM7",
     "../../jam/raw/jam+raw.jam?LO40ZZ",
-    "../../jam/Node/jam+Node.jam?LO652X",
+    "../../jam/Event/jam+Event.jam?LO4HAA",
+    "../../jam/Observer/jam+Observer.jam?LO4K55",
+    "../../jam/Node/jam+Node.jam?LOB131",
     "../../html/a/html-a.jam?LNUPDF",
 null ])

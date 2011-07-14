@@ -36,18 +36,12 @@ $Component
             
             exec()
         
-            var commitObserver=
-            $Observer()
-            .eventName( '$jam.$eventCommit' )
-            .node( nodeSource )
-            .handler( function( ev ){
-                exec()
-            })
-            .listen()
+            var onCommit=
+            nodeSource.listen( '$jam.$eventCommit', exec )
             
             this.destroy=
             function( ){
-                commitObserver.sleep()
+                onCommit.sleep()
             }
         }
     }

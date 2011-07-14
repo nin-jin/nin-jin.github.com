@@ -2,16 +2,16 @@ with( $jam )
 $define
 (   '$eventCommit'
 ,   new function(){
-        $Observer()
-        .node( $doc().documentElement )
-        .eventName( 'keyup' )
-        .handler( function( event ){
+        var handler=
+        function( event ){
             if( !event.keyMeta() ) return
             if( event.keyShift() ) return
             if( event.keyAlt() ) return
             if( event.keyCode() != 13 ) return
             $Event().type( '$jam.$eventCommit' ).scream( event.target() )
-        })
-        .listen()
+        }
+        
+        $Node( $doc().documentElement )
+        .listen( 'keyup', handler )
     }
 )

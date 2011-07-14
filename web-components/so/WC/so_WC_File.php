@@ -85,16 +85,16 @@ class so_WC_File extends so_Meta {
                 
                 if( $packName ):
                     $pack= $this->root->createPack( $packName );
-                    $module= $pack->createModule( $moduleName );
                 else:
                     $pack= $this->pack;
-                    while( true ):
-                        $module= $pack->createModule( $moduleName );
-                        if( $module->exists ) break;
-                        $pack= $pack->donorPackJAM;
-                        if( !$pack ) break;
-                    endwhile;
                 endif;
+
+                while( true ):
+                    $module= $pack->createModule( $moduleName );
+                    if( $module->exists ) break;
+                    $pack= $pack->donorPackJAM;
+                    if( !$pack ) break;
+                endwhile;
                 
                 if( !$module->exists ) throw new Exception( "undefined module [{$module->id}]" );
                 $depends[ $module->id ]= $module;

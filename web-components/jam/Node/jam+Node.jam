@@ -283,6 +283,15 @@ $define
         function( ){
             return $Node( this.$.cloneNode( true ) )
         }
+        
+        proto.listen=
+        function( eventName, handler ){
+            return $Observer()
+            .eventName( eventName )
+            .node( this )
+            .handler( handler )
+            .listen()
+        }
 
     })
 )

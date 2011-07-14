@@ -5,12 +5,12 @@ wc\:js-test {
     border: 1px solid #ddd;
     line-height: 1.5;
     white-space: pre;
-    overflow: auto;
     max-width: 100%;
     vertical-align: top;
     background: #eee;
     margin: 2pt 0;
     position: relative;
+    text-align: left;
 }
 
 wc\:js-test.passed\=true {
@@ -37,6 +37,7 @@ wc\:js-test_timeout {
 
 wc\:js-test_source {
     display: block;
+    overflow: auto;
 }
 
 wc\:js-test_result {
@@ -45,3 +46,43 @@ wc\:js-test_result {
     padding: 2pt 4pt;
     display: block;
 }
+
+wc\:js-test_controls {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: -10pt;
+    font-size: 8pt;
+    line-height: 1;
+}
+
+wc\:js-test:hover wc\:js-test_controls {
+    display: block;
+}
+
+wc\:js-test_clone {
+    margin-right: -1px;
+    border: 1px solid #ccc;
+    background: #ffe;
+    padding: 1pt 2pt;
+    cursor: pointer;
+}
+
+wc\:js-test_clone:hover {
+    background: #cfc;
+    border: 1px solid #9c9;
+}
+
+wc\:js-test_delete {
+    margin-right: -1px;
+    border: 1px solid #ccc;
+    background: #ffe;
+    padding: 1pt 2pt;
+    cursor: pointer;
+}
+
+wc\:js-test_delete:hover {
+    background: #fcc;
+    border: 1px solid #c99;
+}
+

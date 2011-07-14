@@ -3,20 +3,20 @@ $define
 (   '$eventEdit'
 ,   new function(){
         
-        var handler= $Throttler
+        var handler=
+        $Throttler
         (   50
         ,   function( event ){
                 $Event().type( '$jam.$eventEdit' ).scream( event.target() )
             }
         )
 
-        var obs= $Observer()
-        .node( $doc().documentElement )
-        .handler( handler )
+        var node=
+        $Node( $doc().documentElement )
         
-        obs.clone().eventName( 'keyup' ).listen()
-        obs.clone().eventName( 'cut' ).listen()
-        obs.clone().eventName( 'paste' ).listen()
+        node.listen( 'keyup', handler )
+        node.listen( 'cut', handler )
+        node.listen( 'paste', handler )
 
     }
 )

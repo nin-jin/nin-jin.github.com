@@ -17,6 +17,9 @@ $Component
             nodeRoot.clear()
             var nodeSource0= $Node.Element( 'wc:js-test_source' ).parent( nodeRoot )
             var nodeSource= $Node.parse( '<wc:hlight class=" lang=js editable=true " />' ).text( source ).parent( nodeSource0 )
+            var nodeControls= $Node.Element( 'wc:js-test_controls' ).parent( nodeRoot )
+            var nodeClone= $Node.parse( '<wc:js-test_clone title="ctrl+shift+enter">clone' ).parent( nodeControls )
+            var nodeDelete= $Node.parse( '<wc:js-test_delete>delete' ).parent( nodeControls )
 
             var _test= {}
             
@@ -110,20 +113,47 @@ $Component
                 if(( !stop )&&( passed() === 'wait' )) passed( false )
             }
             
+            var clone=
+            function( ){
+                run()
+                var node=
+                $Node.Element( 'wc:js-test' )
+                .text( nodeSource.text() )
+                nodeRoot.prev( node )
+            }
+            
+            var del=
+            function( ){
+                nodeRoot.parent( null )
+            }
+            
             run()
 
-            var commitObserver=
-            $Observer()
-            .eventName( '$jam.$eventCommit' )
-            .node( nodeRoot )
-            .handler( function( ev ){
-                run()
+            var onCommit=
+            nodeRoot.listen( '$jam.$eventCommit', run )
+            
+            var onClone=
+            nodeRoot.listen( '$jam.$eventClone', clone )
+            
+            var onClone=
+            nodeRoot.listen( '$jam.$eventDelete', del )
+            
+            var onCloneClick=
+            nodeClone.listen( 'click', function( event ){
+                $Event().type( '$jam.$eventClone' ).scream( event.target() )
             })
-            .listen()
+            
+            var onDeleteClick=
+            nodeDelete.listen( 'click', function( event ){
+                $Event().type( '$jam.$eventDelete' ).scream( event.target() )
+            })
             
             this.destroy=
             function( ){
-                commitObserver.sleep()
+                onCommit.sleep()
+                onClone.sleep()
+                onCloneClick.sleep()
+                onDeleteClick.sleep()
                 if( stop ) stop()
                 _test.ok= _test.not= $Value()
             }
