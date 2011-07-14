@@ -67,8 +67,8 @@
     "../../jam/String/jam+String.jam?LO4E42",
     "../../jam/eventURIChanged/jam+eventURIChanged.jam?LOA8JL",
     "../../jam/eventCommit/jam+eventCommit.jam?LOB1BQ",
-    "../../jam/eventClone/jam+eventClone.jam?LOB1AG",
     "../../jam/eventDelete/jam+eventDelete.jam?LOB7XM",
+    "../../jam/eventEdit/jam+eventEdit.jam?LOB1G8",
     "../../html/html/html.jam?LNNGR7",
     "../../html/a/html-a.jam?LNUPDF",
     "../../wc/wc/wc.jam?LNNJ6F",
@@ -78,6 +78,7 @@
     "../../jam/htmlEscape/jam+htmlEscape.jam?LO5ZEJ",
     "../../jam/Lazy/jam+Lazy.jam?LNNGT0",
     "../../jam/Thread/jam+Thread.jam?LNTC9R",
+    "../../jam/eventClone/jam+eventClone.jam?LOB1AG",
     "../../wc/js-bench/wc_js-bench.jam?LOB1RL",
-    "../../snippet/snippet/snippet.jam?LOB8NN",
+    "../../snippet/snippet/snippet.jam?LOBB6Q",
 null ])

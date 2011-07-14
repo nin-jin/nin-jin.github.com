@@ -107,6 +107,6 @@
     "../../doc/doc/doc.jam?LNT3H8",
     "../../snippet/googl/googl.js?LOAAWR",
     "../../snippet/jsonlib/jsonlib.js?LOAALS",
-    "../../snippet/snippet/snippet.jam?LOB8NN",
+    "../../snippet/snippet/snippet.jam?LOBB6Q",
     "../../snippet/-mix+doc/compiled.vml.js?LOA1O7",
 null ])

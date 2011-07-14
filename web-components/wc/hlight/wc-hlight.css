@@ -1,3 +1,7 @@
+wc\:hlight {
+    display: inline-block; zoom: 1;
+}
+
 .wc_hlight_source {
     padding: 2pt 4pt;
     display: block;
