@@ -1803,6 +1803,10 @@ $Component
             
             nodeRoot.head( nodeHeader )
 
+            //var nodeControls= $Node.Element( 'wc:hontrol' ).parent( nodeRoot )
+            //var nodeClone= $Node.parse( '<wc:hontrol_clone title="ctrl+shift+enter">clone' ).parent( nodeControls )
+            //var nodeDelete= $Node.parse( '<wc:hontrol_delete>delete' ).parent( nodeControls )
+
             var refresh=
             function( ){
                 var benchList= nodeRoot.childList( 'wc:js-bench' )
@@ -1953,7 +1957,7 @@ $Component
                 var node=
                 $Node.Element( 'wc:js-bench' )
                 .text( nodeSource.text() )
-                nodeRoot.next( node )
+                nodeRoot.prev( node )
             }
             
             var onCommit=

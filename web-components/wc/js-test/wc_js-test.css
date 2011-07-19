@@ -47,42 +47,10 @@ wc\:js-test_result {
     display: block;
 }
 
-wc\:js-test_controls {
+wc\:js-test wc\:hontrol {
     display: none;
-    position: absolute;
-    right: 0;
-    top: -10pt;
-    font-size: 8pt;
-    line-height: 1;
 }
 
-wc\:js-test:hover wc\:js-test_controls {
+wc\:js-test:hover wc\:hontrol {
     display: block;
 }
-
-wc\:js-test_clone {
-    margin-right: -1px;
-    border: 1px solid #ccc;
-    background: #ffe;
-    padding: 1pt 2pt;
-    cursor: pointer;
-}
-
-wc\:js-test_clone:hover {
-    background: #cfc;
-    border: 1px solid #9c9;
-}
-
-wc\:js-test_delete {
-    margin-right: -1px;
-    border: 1px solid #ccc;
-    background: #ffe;
-    padding: 1pt 2pt;
-    cursor: pointer;
-}
-
-wc\:js-test_delete:hover {
-    background: #fcc;
-    border: 1px solid #c99;
-}
-

@@ -2426,6 +2426,10 @@ $Component
             
             nodeRoot.head( nodeHeader )
 
+            //var nodeControls= $Node.Element( 'wc:hontrol' ).parent( nodeRoot )
+            //var nodeClone= $Node.parse( '<wc:hontrol_clone title="ctrl+shift+enter">clone' ).parent( nodeControls )
+            //var nodeDelete= $Node.parse( '<wc:hontrol_delete>delete' ).parent( nodeControls )
+
             var refresh=
             function( ){
                 var benchList= nodeRoot.childList( 'wc:js-bench' )
@@ -2576,7 +2580,7 @@ $Component
                 var node=
                 $Node.Element( 'wc:js-bench' )
                 .text( nodeSource.text() )
-                nodeRoot.next( node )
+                nodeRoot.prev( node )
             }
             
             var onCommit=
@@ -2724,9 +2728,9 @@ $Component
             nodeRoot.clear()
             var nodeSource0= $Node.Element( 'wc:js-test_source' ).parent( nodeRoot )
             var nodeSource= $Node.parse( '<wc:hlight class=" lang=js editable=true " />' ).text( source ).parent( nodeSource0 )
-            var nodeControls= $Node.Element( 'wc:js-test_controls' ).parent( nodeRoot )
-            var nodeClone= $Node.parse( '<wc:js-test_clone title="ctrl+shift+enter">clone' ).parent( nodeControls )
-            var nodeDelete= $Node.parse( '<wc:js-test_delete>delete' ).parent( nodeControls )
+            var nodeControls= $Node.Element( 'wc:hontrol' ).parent( nodeRoot )
+            var nodeClone= $Node.parse( '<wc:hontrol_clone title="ctrl+shift+enter">clone' ).parent( nodeControls )
+            var nodeDelete= $Node.parse( '<wc:hontrol_delete>delete' ).parent( nodeControls )
 
             var _test= {}
             

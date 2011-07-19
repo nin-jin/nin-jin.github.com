@@ -78,9 +78,9 @@
     "../../wc/lang/wc+lang.jam?LO2FE0",
     "../../wc/lang_pcre/wc+lang_pcre.jam?LO2FE0",
     "../../wc/lang_js/wc+lang_js.jam?LO608A",
-    "../../wc/js-test/wc_js-test.jam?LOB539",
+    "../../wc/js-test/wc_js-test.jam?LOD0PQ",
     "../../jam/Obj/jam+Obj.jam?LO68LT",
     "../../jam/Clock/jam+Clock.jam?LO6BBE",
     "../../jam/TaskQueue/jam+TaskQueue.jam?LO6IOW",
-    "../../wc/js-bench/wc_js-bench.jam?LOB1RL",
+    "../../wc/js-bench/wc_js-bench.jam?LOJSRD",
 null ])

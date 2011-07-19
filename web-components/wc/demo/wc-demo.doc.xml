@@ -11,19 +11,21 @@
     
     <wc:demo>
     <![CDATA[
-        <wc:demo>
-            &lt;a
-                id="_wc-demo_test_1_"
-                href="http://ya.ru/"
-                onclick=" alert( 'Спасибо!' ) "
-                style=" color: red "
-                >
-                Нажми меня
-            &lt;/a&gt;
-            &lt;script&gt;
-                document.getElementById( '_wc-demo_test_1_' ).innerHTML+= '!'
-            &lt;/script&gt;
-        </wc:demo>
+        <wc:spacer>
+            <wc:demo>
+                &lt;a
+                    id="_wc-demo_test_1_"
+                    href="http://ya.ru/"
+                    onclick=" alert( 'Спасибо!' ) "
+                    style=" color: red "
+                    >
+                    Нажми меня
+                &lt;/a&gt;
+                &lt;script&gt;
+                    document.getElementById( '_wc-demo_test_1_' ).innerHTML+= '!'
+                &lt;/script&gt;
+            </wc:demo>
+        </wc:spacer>
     ]]>
     </wc:demo>
 

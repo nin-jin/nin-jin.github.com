@@ -79,6 +79,6 @@
     "../../jam/Lazy/jam+Lazy.jam?LNNGT0",
     "../../jam/Thread/jam+Thread.jam?LNTC9R",
     "../../jam/eventClone/jam+eventClone.jam?LOB1AG",
-    "../../wc/js-bench/wc_js-bench.jam?LOB1RL",
+    "../../wc/js-bench/wc_js-bench.jam?LOJSRD",
     "../../snippet/snippet/snippet.jam?LOBB6Q",
 null ])

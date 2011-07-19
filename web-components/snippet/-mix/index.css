@@ -219,6 +219,7 @@ wc\:js-bench_source {
     display: table-cell;
     background-color: #eee;
     border: 1px solid #999;
+    text-align: left;
 }
 
 wc\:js-bench_result {

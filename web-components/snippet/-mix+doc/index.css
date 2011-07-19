@@ -361,6 +361,43 @@ wc\:hlight {
     display: block;
 }
 
+/* @import url( '../../wc/hontrol/wc_hontrol.css' ); */
+wc\:hontrol {
+    display: block;
+    position: absolute;
+    right: 0;
+    bottom: -10pt;
+    font-size: 8pt;
+    line-height: 1;
+}
+
+wc\:hontrol_clone {
+    margin-right: -1px;
+    border: 1px solid #bbb;
+    background: #ffe;
+    padding: 1pt 2pt;
+    cursor: pointer;
+}
+
+wc\:hontrol_clone:hover {
+    background: #cfc;
+    border: 1px solid #9c9;
+}
+
+wc\:hontrol_delete {
+    margin-right: -1px;
+    border: 1px solid #bbb;
+    background: #ffe;
+    padding: 1pt 2pt;
+    cursor: pointer;
+}
+
+wc\:hontrol_delete:hover {
+    background: #fcc;
+    border: 1px solid #c99;
+}
+
+
 /* @import url( '../../wc/js-bench/wc_js-bench.css' ); */
 wc\:js-bench_list {
     font-size: 10pt;
@@ -405,6 +442,7 @@ wc\:js-bench_source {
     display: table-cell;
     background-color: #eee;
     border: 1px solid #999;
+    text-align: left;
 }
 
 wc\:js-bench_result {
@@ -548,45 +586,13 @@ wc\:js-test_result {
     display: block;
 }
 
-wc\:js-test_controls {
+wc\:js-test wc\:hontrol {
     display: none;
-    position: absolute;
-    right: 0;
-    top: -10pt;
-    font-size: 8pt;
-    line-height: 1;
 }
 
-wc\:js-test:hover wc\:js-test_controls {
+wc\:js-test:hover wc\:hontrol {
     display: block;
 }
-
-wc\:js-test_clone {
-    margin-right: -1px;
-    border: 1px solid #ccc;
-    background: #ffe;
-    padding: 1pt 2pt;
-    cursor: pointer;
-}
-
-wc\:js-test_clone:hover {
-    background: #cfc;
-    border: 1px solid #9c9;
-}
-
-wc\:js-test_delete {
-    margin-right: -1px;
-    border: 1px solid #ccc;
-    background: #ffe;
-    padding: 1pt 2pt;
-    cursor: pointer;
-}
-
-wc\:js-test_delete:hover {
-    background: #fcc;
-    border: 1px solid #c99;
-}
-
 
 /* @import url( '../../wc/lang_css/wc+lang_css.css' ); */
 wc\:lang_css {
