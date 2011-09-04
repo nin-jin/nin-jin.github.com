@@ -3514,6 +3514,14 @@ $Component
                     var child= childList.get( i )
                     if( child.name() === 'wc:js-test' ){
                         var source= child.childList( 'wc:js-test_source' ).get(0).text()
+                    } else if( child.name() === 'wc:js-bench_list' ){
+                    	var benches= child.childList( 'wc:js-bench' )
+                        for( var i= 0; i < benches.length(); ++i ){
+                        	var source= benches.get(i).childList('wc:js-bench_source').get(0).text()
+                            source= $String( source ).trim( /[\r\n]/ ).replace( /    /, '\t' ).$
+                            chunks.push( 'wc:js-bench=' + encodeURIComponent( source ) )
+                        }
+                    	continue
                     } else {
                         var source= child.text()
                     }
