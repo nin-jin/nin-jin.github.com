@@ -3488,12 +3488,19 @@ $Component
             var hash= $doc().location.hash
             if( !hash ) hash= '#h1=Snippet!;wc:js-test=_test.ok()'
             var chunks= hash.substring( 1 ).split( ';' )
+            var lastBenchList= null
             for( var i= 0; i < chunks.length; ++i ){
                 var pair= chunks[i].split( '=' )
                 if( pair.length < 2 ) continue
                 var source= decodeURIComponent( pair[1] ).replace( /\t/, '    ' )
-                var content= $Node.parse( '<wc:hlight class=" editable=true " />' ).text( source )
-                $Node.Element( pair[0] ).tail( content ).parent( nodeContent )
+                if( pair[0] === 'wc:js-bench') {
+                	if( !lastBenchList ) lastBenchList= $Node.Element( 'wc:js-bench_list' ).parent( nodeContent )
+                	$Node.Element( pair[0] ).text( source ).parent( lastBenchList )
+                } else {
+                	lastBenchList= null
+                    var content= $Node.parse( '<wc:hlight class=" editable=true " />' ).text( source )
+                    $Node.Element( pair[0] ).tail( content ).parent( nodeContent )
+                }
             }
         }
         
