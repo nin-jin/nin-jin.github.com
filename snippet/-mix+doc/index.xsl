@@ -85,8 +85,8 @@
     
                                 <div id="disqus_thread">
                                     <script>
-                                        //disqus_developer= 1
-                                        disqus_url= document.location.origin + document.location.pathname
+                                        disqus_developer= 1
+                                        disqus_url= '//' + document.location.host + document.location.pathname
                                     </script>
                                     <script src="http://nin-jin.disqus.com/embed.js" async="async" defer="defer">//</script>
                                 </div>
