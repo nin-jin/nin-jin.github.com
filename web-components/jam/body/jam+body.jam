@@ -1,7 +1,0 @@
-with( $jam )
-$define
-(   '$body'
-,   function( ){
-        return $doc().body
-    }
-)

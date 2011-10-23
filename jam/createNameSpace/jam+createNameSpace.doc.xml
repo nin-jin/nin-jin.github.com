@@ -1,0 +1,36 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>$createNameSpace</h1>
+    <p>Создаёт новое глобальное пространство имён, наследующее поля от текущего.</p>
+    
+    <wc:js-test> _test.not( this.$jam$2 ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam$.$createNameSpace( '$jam$2' ) ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam$2.$createNameSpace ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam$2.$createNameSpace( '$jam$3' ) ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam$2 ) </wc:js-test>
+    <wc:js-test> _test.not( $jam$, $jam$2 ) </wc:js-test>
+    <wc:js-test>
+        $jam$2.someField= 'some value'
+        _test.ok()
+    </wc:js-test>
+    <wc:js-test> _test.not( $jam$.someField ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam$2.someField ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam$3.someField ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam$3.$jam$, $jam$ ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam$3.$jam$2, $jam$2 ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam$3.$jam$3, $jam$3 ) </wc:js-test>
+    <wc:js-test>
+        delete this.$jam$2
+        _test.not( this.$jam$2 )
+    </wc:js-test>
+    <wc:js-test>
+        delete window.$jam$3
+        _test.not( this.$jam$3 )
+    </wc:js-test>
+
+</doc:root>

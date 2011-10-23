@@ -1,0 +1,39 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>$Component</h1>
+    <p>Создаёт компоненту, которая инстанцирует виджеты при появлении в доме элементов с определённым именем, а при удалении элементов - разрушает виджеты. Принимает на вход два параметра - имя тэга (может быть звёздочка) и фабрику виджетов (ей будет передан элемент). </p>
+    
+    <wc:js-test>
+        _test.deadline( 500 )
+        with( $jam$ )
+        $Component
+        (   'wc:component-test'
+        ,   function( nodeRoot ){
+                _test.ok( $Node( nodeRoot ).text() )
+            }
+        )
+    </wc:js-test>
+    
+    <wc:js-test>
+        _test.deadline( 500 )
+        with( $jam$ )
+        var comp= $Component
+        (   'wc:component-test'
+        ,   function( nodeRoot ){
+            }
+        )
+        _test.ok( comp )
+    </wc:js-test>
+    
+    <wc:demo>
+    <![CDATA[
+        <wc:component-test> test </wc:component-test>
+    ]]>
+    </wc:demo>
+    
+</doc:root>

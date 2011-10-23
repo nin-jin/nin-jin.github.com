@@ -1,6 +1,0 @@
-strong {
-    font-weight: bold;
-}
-strong.reset\=true {
-    font-weight: normal; font-weight: inherit;
-}

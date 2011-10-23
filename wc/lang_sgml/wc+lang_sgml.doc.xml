@@ -1,0 +1,25 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>$lang_sgml</h1>
+    
+    <wc:hlight class=" lang=sgml " >
+    <![CDATA[
+        <!doctype html>
+        <html>
+            <wc:hlight
+                class=" lang=sgml "
+                style=" color: red "
+                onclick=" alert( 'hi!' ) "
+                >
+                Пробел: &nbsp;
+            </wc:hlight>
+        </html>
+    ]]>
+    </wc:hlight>
+
+</doc:root>

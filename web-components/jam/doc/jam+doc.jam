@@ -1,2 +1,0 @@
-with( $jam )
-$define( '$doc', $Value( $glob().document ) )

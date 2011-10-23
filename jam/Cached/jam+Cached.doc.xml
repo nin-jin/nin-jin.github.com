@@ -1,0 +1,33 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>$Cached</h1>
+
+    <p>Враппер, кэширующий результат исполнения функции по первому параметру приведённому к строке.</p>
+
+    <wc:js-test> _test.ok( $jam$.$Cached ) </wc:js-test>
+    <wc:js-test>
+        var rnd= $jam$.$Cached( Math.random )
+        _test.ok( rnd( 100 ), rnd( 100 ) )
+    </wc:js-test>
+    <wc:js-test>
+        var rnd= $jam$.$Cached( Math.random )
+        _test.not( rnd( 100 ), rnd( 101 ) )
+    </wc:js-test>
+    <wc:js-test>
+        var rnd= $jam$.$Cached( Math.random )
+        _test.ok( rnd( 100, 1 ), rnd( 100, 2 ) )
+    </wc:js-test>
+    <wc:js-test>
+        var rnd= $jam$.$Cached( Math.random )
+        _test.not( rnd( 100, 1 ), rnd( 101, 1 ) )
+    </wc:js-test>
+    <wc:js-test>
+        _test.not( $jam$.$Cached(Math.random)( 100 ), $jam$.$Cached( Math.random )( 100 ) )
+    </wc:js-test>
+
+</doc:root>

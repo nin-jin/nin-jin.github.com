@@ -1,6 +1,0 @@
-with( $jam )
-$define
-(   '$eventDelete'
-,   new function( ){
-    }
-)

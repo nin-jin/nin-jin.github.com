@@ -1,9 +1,0 @@
-h5 {
-    font: bold 20px/1.2 'Times New Roman', serif;
-    margin: 40px 0 20px;
-}
-
-h5.reset\=true {
-    font: inherit;
-    margin: 0;
-}

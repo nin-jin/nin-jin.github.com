@@ -1,7 +1,0 @@
-with( $jam )
-$define
-(   '$eval'
-,   $Thread(function( source ){
-        return $glob().eval( source )
-    })
-)

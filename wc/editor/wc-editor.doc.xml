@@ -1,0 +1,24 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>wc:editor</h1>
+    
+    <p>Встраиваемый редактор с поддержкой подсветки синтаксиса.</p>
+
+    <wc:demo>
+    <![CDATA[
+        <wc:editor class=" hlight=js " >
+            var Test= function( ){
+                this.foo= "b/a/r"
+                /* var \*/
+            }
+            return new Test
+        </wc:editor>
+    ]]>
+    </wc:demo>
+
+</doc:root>

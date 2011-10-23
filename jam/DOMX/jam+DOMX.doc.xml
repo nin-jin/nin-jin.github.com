@@ -1,0 +1,31 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+
+    <h1>$jam.$DOMX</h1>
+    <p>Обёртка вокруг XML документа.</p>
+
+    <wc:js-test>
+    <![CDATA[
+        with( $jam ){
+            var str= '<xxx/>'
+            _test.ok( $DOMX.parse( str ).toString(), str )
+        }
+    ]]>
+    </wc:js-test>
+
+    <wc:js-test>
+    <![CDATA[
+        with( $jam ){
+            var xml= $DOMX.parse( '<xxx />' )
+            var xsl= $DOMX.parse( '<stylesheet version="1.0" xmlns="http://www.w3.org/1999/XSL/Transform"><template match="xxx"><yyy xmlns="y"/></template></stylesheet>' )
+            var res= $DOMX.parse( '<yyy xmlns="y" />' )
+            _test.ok( xml.transform( xsl ).toString(), res.toString() )
+        }
+    ]]>
+    </wc:js-test>
+
+</doc:root>

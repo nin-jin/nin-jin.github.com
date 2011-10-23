@@ -1,0 +1,53 @@
+<?xml-stylesheet href="../-mix+doc/index.xsl" type="text/xsl" ?>
+<doc:root
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:wc="https://github.com/nin-jin/wc"
+    xmlns:doc="https://github.com/nin-jin/doc"
+    >
+    
+    <h1>$Poly</h1>
+
+    <p>Создаёт полиморфную функцию из переданных в параметрах функций. Первая будет вызвана если параметров не передано, вторая, если передан 1 и так далее. Если будет передано неправильное число параметров, то выпадет исключение.</p>
+
+    <wc:js-test> _test.ok( $jam$.$Poly ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam$.$Poly() ) </wc:js-test>
+    <wc:js-test>
+        var poly=
+        $jam$.$Poly
+        (   function(){
+                return 123
+            }
+        ,   Math.abs
+        )
+        _test.ok( poly(), 123 )
+    </wc:js-test>
+    <wc:js-test>
+        var poly=
+        $jam$.$Poly
+        (   function(){
+                return 123
+            }
+        ,   Math.abs
+        )
+        _test.ok( poly( -5 ), 5 )
+    </wc:js-test>
+    <wc:js-test>
+        var poly=
+        $jam$.$Poly
+        (   null
+        ,   Math.abs
+        ,   Math.pow
+        )
+        _test.ok( poly( -5 ), 5 )
+    </wc:js-test>
+    <wc:js-test>
+        var poly=
+        $jam$.$Poly
+        (   null
+        ,   Math.abs
+        ,   Math.pow
+        )
+        _test.ok( poly( -2, 3 ), -8 )
+    </wc:js-test>
+
+</doc:root>
