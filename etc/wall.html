@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:html="" xmlns:r5="repka">
+    <head>
+        <style>
+            r5\:wall {
+                background: skyblue;
+                display: block;
+                font-size: 0;
+            }
+            r5\:brick {
+                display: inline-block;
+                vertical-align: baseline;
+            }
+            r5\:brick-top {
+                display: inline-block;
+                width: 150px;
+                vertical-align: text-bottom;
+                background: red;
+                font-size: 16px;
+                line-height: 20px;
+            }
+            r5\:brick-bot {
+                display: inline-block;
+                width: 150px;
+                vertical-align: text-top;
+                background: blue;
+                margin: 0 0 0 -150px;
+                font-size: 16px;
+                line-height: 20px;
+            }
+            img {
+                vertical-align: middle;
+            }
+        </style>
+    </head>
+    <body>
+        
+        <r5:wall>
+            <r5:brick>
+                <r5:brick-top>1</r5:brick-top>
+                <r5:brick-bot>2</r5:brick-bot>
+            </r5:brick>
+            <r5:brick>
+                <r5:brick-top><img src="about:blank" width="150px" height="150"/></r5:brick-top>
+                <r5:brick-bot>2</r5:brick-bot>
+            </r5:brick>
+            <r5:brick>
+                <r5:brick-top>1 wercq ewr we rc wq er vw er wqr</r5:brick-top>
+                <r5:brick-bot>2</r5:brick-bot>
+            </r5:brick>
+            <r5:brick>
+                <r5:brick-top>1</r5:brick-top>
+                <r5:brick-bot>2 aerc erqe r cqer cqercqw rec qer qc er qer </r5:brick-bot>
+            </r5:brick>
+            <r5:brick>
+                <r5:brick-top>1 wercq ewr we rc wq er vw er wqrvre rv aer cae r caer qaer </r5:brick-top>
+                <r5:brick-bot>2 aerc erqe r cqer cqercqw rec qer qc er qer </r5:brick-bot>
+            </r5:brick>
+        </r5:wall>
+        
+    </body>
+</html>
