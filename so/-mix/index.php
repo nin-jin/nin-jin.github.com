@@ -704,7 +704,11 @@ class so_Compile_All {
                 $pack->mixModule->createFile( 'min.xsl' ),
                 $pack->mixModule->createFile( 'min.css' ),
                 $pack->mixModule->createFile( 'min.js' ),
-                $pack->mixModule->createFile( 'min.php' ),
+                $pack->mixDocModule->createFile( 'min.php' ),
+                $pack->mixDocModule->createFile( 'min.xsl' ),
+                $pack->mixDocModule->createFile( 'min.css' ),
+                $pack->mixDocModule->createFile( 'min.js' ),
+                $pack->mixDocModule->createFile( 'min.php' ),
             );
             
             $replacer= function( $matches ) use( &$names, &$minName ) {

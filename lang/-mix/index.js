@@ -1,21 +1,21 @@
 ;if( this.$jam ) throw new Error( 'Redeclaration of [$jam]' )
 var $jam= {}
-;$jam.F= function( val ){
+;$jam.BG= function( val ){
 var value= function(){
 return val
 }
 value.toString= function(){
-return '$jam.F: ' + String( val )
+return '$jam.BG: ' + String( val )
 }
 return value
 }
-;$jam.G= $jam.F( this )
-;$jam.H=
+;$jam.BH= $jam.BG( this )
+;$jam.BI=
 new function( ){
 var Ghost= function(){}
 return function( key, value ){
 var keyList= key.split( '.' )
-var obj= $jam.G()
+var obj= $jam.BH()
 while( true ){
 key= keyList.shift()
 if( !keyList.length ) break
@@ -39,8 +39,8 @@ obj[ key ]= value
 return this
 }
 }
-;$jam.H
-(   '$jam.I'
+;$jam.BI
+(   '$jam.BJ'
 ,   function( str ){
 return String( str )
 .replace( /&/g, '&amp;' )
@@ -54,9 +54,9 @@ return String( str )
 function( name ){
 return $lang[ name ] || $lang.text
 }
-$lang.text= $jam.I
-;$jam.H
-(   '$jam.J'
+$lang.text= $jam.BJ
+;$jam.BI
+(   '$jam.BK'
 ,   new function(){
 var simple= function( data ){
 return data
@@ -74,14 +74,14 @@ return arguments[0]
 }
 }
 )
-;$jam.K=
+;$jam.BL=
 function( init ){
 var klass=
 function( ){
 if( this instanceof klass ) return this
 return klass.create.apply( klass, arguments )
 }
-klass.constructor= $jam.K
+klass.constructor= $jam.BL
 klass.create=
 function( arg ){
 if( arguments.length ){
@@ -105,9 +105,9 @@ constructor= klass.prototype.constructor
 klass.prototype.constructor= klass
 return klass
 }
-;$jam.H
-(   '$jam.L'
-,   $jam.K( function( klass, proto ){
+;$jam.BI
+(   '$jam.BM'
+,   $jam.BL( function( klass, proto ){
 proto.constructor=
 function( regexp ){
 this.$= new RegExp( regexp )
@@ -129,10 +129,10 @@ function( ){
 var str= ''
 for( var i= 0; i < arguments.length; ++i ){
 var chunk= arguments[ i ]
-if( i % 2 ) chunk= $jam.L.escape( chunk )
+if( i % 2 ) chunk= $jam.BM.escape( chunk )
 str+= chunk
 }
-return $jam.L( str )
+return $jam.BM( str )
 }
 proto.source=
 function(){
@@ -147,22 +147,22 @@ return RegExp( '^$|' + this.$.source ).exec( '' ).length - offset
 }
 })
 )
-;$jam.H
-(   '$jam.M'
+;$jam.BI
+(   '$jam.BN'
 ,   function( lexems ){
 if( !lexems ) throw new Error( 'lexems is required' )
 var nameList= []
 var regexpList= []
 var sizeList= []
 for( var name in lexems ){
-var regexp= $jam.L( lexems[ name ] )
+var regexp= $jam.BM( lexems[ name ] )
 nameList.push( name )
 regexpList.push( regexp.source() )
 sizeList.push( regexp.count() )
 }
 var regexp= RegExp( '([\\s\\S]*?)(?:((' + regexpList.join( ')|(' ) + '))|($\n?))', 'gm' )
-var count= $jam.L(regexp).count()
-return $jam.K( function( klass, proto ){
+var count= $jam.BM(regexp).count()
+return $jam.BL( function( klass, proto ){
 proto.constructor=
 function( str ){
 this.string= String( str )
@@ -211,19 +211,19 @@ return this
 })
 }
 )
-;$jam.H
-(    '$jam.N'
+;$jam.BI
+(    '$jam.BO'
 ,    function( syntaxes ){
 var lexems= []
 var handlers= []
-handlers[ '' ]= syntaxes[ '' ] || $jam.J()
+handlers[ '' ]= syntaxes[ '' ] || $jam.BK()
 for( var regexp in syntaxes ){
 if( !syntaxes.hasOwnProperty( regexp ) ) continue
 if( !regexp ) continue
 lexems.push( RegExp( regexp ) )
 handlers.push( syntaxes[ regexp ] )
 }
-var lexer= $jam.M( lexems )
+var lexer= $jam.BN( lexems )
 return function( str ){
 var res= []
 for( var i= lexer( str ); i.next().found; ){
@@ -234,8 +234,8 @@ return res
 }
 }
 )
-;$jam.H
-(   '$jam.O'
+;$jam.BI
+(   '$jam.BP'
 ,   function( delim ){
 delim= delim || ''
 return function( list ){
@@ -246,9 +246,9 @@ return list.join( delim )
 ;$lang.Parser=
 function( map ){
 if( !map[ '' ] ) map[ '' ]= $lang.text
-return $jam.J
-(   $jam.N( map )
-,   $jam.O()
+return $jam.BK
+(   $jam.BO( map )
+,   $jam.BP()
 )
 }
 ;$lang.Wrapper=
@@ -279,15 +279,15 @@ css.value= $lang.Wrapper( 'lang:css_value' )
 css.stylesheet=
 $lang.Parser( new function( ){
 this[ /(\/\*[\s\S]*?\*\/)/.source ]=
-$jam.J( $lang.text, css.remark )
+$jam.BK( $lang.text, css.remark )
 this[ /(\*|(?:\\[\s\S]|[\w-])+)/.source ]=
-$jam.J( $lang.text, css.tag )
+$jam.BK( $lang.text, css.tag )
 this[ /(#(?:\\[\s\S]|[\w-])+)/.source ]=
-$jam.J( $lang.text, css.id )
+$jam.BK( $lang.text, css.id )
 this[ /(\.(?:\\[\s\S]|[\w-])+)/.source ]=
-$jam.J( $lang.text, css.klass )
+$jam.BK( $lang.text, css.klass )
 this[ /(::?(?:\\[\s\S]|[\w-])+)/.source ]=
-$jam.J( $lang.text, css.pseudo )
+$jam.BK( $lang.text, css.pseudo )
 this[ /\{([\s\S]+?)\}/.source ]=
 new function( ){
 var openBracket= css.bracket( '{' )
@@ -301,11 +301,11 @@ return openBracket + style + closeBracket
 css.style=
 $lang.Parser( new function( ){
 this[ /(\/\*[\s\S]*?\*\/)/.source ]=
-$jam.J( $lang.text, css.remark )
+$jam.BK( $lang.text, css.remark )
 this[ /([\w-]+\s*:)/.source  ]=
-$jam.J( $lang.text, css.property )
+$jam.BK( $lang.text, css.property )
 this[ /([^:]+?(?:;|$))/.source ]=
-$jam.J( $lang.text, css.value )
+$jam.BK( $lang.text, css.value )
 })
 return css
 }
@@ -330,7 +330,7 @@ return backslash + pcre.spec( $lang.text( symbol ) )
 }
 }
 this[ /([(){}\[\]$*+?^])/.source ]=
-$jam.J( $lang.text, pcre.control )
+$jam.BK( $lang.text, pcre.control )
 })
 return pcre
 }
@@ -353,27 +353,27 @@ js.operator= $lang.Wrapper( 'lang:js_operator' )
 js.content=
 $lang.Parser( new function(){
 this[ /(\/\*[\s\S]*?\*\/)/.source ]=
-$jam.J( $lang.text, js.remark )
+$jam.BK( $lang.text, js.remark )
 this[ /(\/\/[^\n]*)/.source ]=
-$jam.J( $lang.text, js.remark )
+$jam.BK( $lang.text, js.remark )
 this[ /('(?:[^\n'\\]*(?:\\\\|\\[^\\]))*[^\n'\\]*')/.source ]=
-$jam.J( $lang.text, js.string )
+$jam.BK( $lang.text, js.string )
 this[ /("(?:[^\n"\\]*(?:\\\\|\\[^\\]))*[^\n"\\]*")/.source ]=
-$jam.J( $lang.text, js.string )
+$jam.BK( $lang.text, js.string )
 this[ /(\/(?:[^\n\/\\]*(?:\\\\|\\[^\\]))*[^\n\/\\]*\/[mig]*)/.source ]=
-$jam.J( $lang.pcre, js.regexp )
+$jam.BK( $lang.pcre, js.regexp )
 this[ /\b(_[\w$]*)\b/.source ]=
-$jam.J( $lang.text, js.internal )
+$jam.BK( $lang.text, js.internal )
 this[ /(\$[\w$]*)(?![\w$])/.source ]=
-$jam.J( $lang.text, js.external )
+$jam.BK( $lang.text, js.external )
 this[ /\b(this|function|new|var|if|else|switch|case|default|for|in|while|do|with|boolean|continue|break|throw|true|false|void|try|catch|null|typeof|instanceof|return|delete|window|document|let|each|yield)\b/.source ]=
-$jam.J( $lang.text, js.keyword )
+$jam.BK( $lang.text, js.keyword )
 this[ /((?:\d*\.)?\d(?:[eE])?)/.source ]=
-$jam.J( $lang.text, js.number )
+$jam.BK( $lang.text, js.number )
 this[ /([(){}\[\]])/.source ]=
-$jam.J( $lang.text, js.bracket )
+$jam.BK( $lang.text, js.bracket )
 this[ /(\+{1,2}|-{1,2}|\*|\/|&{1,2}|\|{1,2}|={1,2}|%|\^|!)/.source ]=
-$jam.J( $lang.text, js.operator )
+$jam.BK( $lang.text, js.operator )
 })
 return js
 }
@@ -393,7 +393,7 @@ php.keyword= $lang.Wrapper( 'lang:php_keyword' )
 php.content=
 $lang.Parser( new function(){
 this[ /\b(__halt_compiler|abstract|and|array|as|break|callable|case|catch|class|clone|const|continue|declare|default|die|do|echo|else|elseif|empty|enddeclare|endfor|endforeach|endif|endswitch|endwhile|eval|exit|extends|final|for|foreach|function|global|gotoif|implements|include|include_once|instanceof|insteadof|interface|isset|list|namespace|new|or|print|private|protected|public|require|require_once|return|static|switch|throw|trait|try|unset|use|var|while|xor|__CLASS__|__DIR__|__FILE__|__FUNCTION__|__LINE__|__METHOD__|__NAMESPACE__|__TRAIT__)\b/.source ]=
-$jam.J( $lang.text, php.keyword )
+$jam.BK( $lang.text, php.keyword )
 this[ /(\$)(\w+)\b/.source ]=
 function( dollar, variable ){
 dollar= $lang.php.dollar( dollar )
@@ -404,9 +404,9 @@ this[ /(\w+)(?=\s*\()/.source ]=
 php.func
 this[ /('(?:[^\n'\\]*(?:\\\\|\\[^\\]))*[^\n'\\]*')/.source ]=
 this[ /("(?:[^\n"\\]*(?:\\\\|\\[^\\]))*[^\n"\\]*")/.source ]=
-$jam.J( $lang.text, php.string )
+$jam.BK( $lang.text, php.string )
 this[ /((?:\d*\.)?\d(?:[eE])?)/.source ]=
-$jam.J( $lang.text, php.number )
+$jam.BK( $lang.text, php.number )
 })
 return php
 }
@@ -425,7 +425,7 @@ sgml.attrValue= $lang.Wrapper( 'lang:sgml_attr-value' )
 sgml.comment= $lang.Wrapper( 'lang:sgml_comment' )
 sgml.decl= $lang.Wrapper( 'lang:sgml_decl' )
 sgml.tag=
-$jam.J
+$jam.BK
 (   $lang.Parser( new function(){
 this[ /^(<\/?)([a-zA-Z][\w:-]*)/.source ]=
 function( bracket, tagName ){
@@ -458,9 +458,9 @@ return prefix + name + sep + value
 sgml.content=
 $lang.Parser( new function(){
 this[ /(<!--[\s\S]*?-->)/.source ]=
-$jam.J( $lang.text, sgml.comment )
+$jam.BK( $lang.text, sgml.comment )
 this[ /(<![\s\S]*?>)/.source ]=
-$jam.J( $lang.text, sgml.decl )
+$jam.BK( $lang.text, sgml.decl )
 this[ /(<[sS][tT][yY][lL][eE][^>]*>)([\s\S]+?)(<\/[sS][tT][yY][lL][eE]>)/.source ]=
 function( prefix, content, postfix ){
 prefix= $lang.sgml.tag( prefix )
@@ -480,7 +480,7 @@ sgml.tag
 })
 return sgml
 }
-;$jam.H
+;$jam.BI
 (    '$lang.tags'
 ,    new function(){
 var tags=
@@ -493,7 +493,7 @@ tags.content=
 $lang.Parser( new function(){
 this[ /^(\s*?)([^\n\r]+)(\s*?)$/.source ]=
 function( open, text, close ){
-return open + '<a href="?gist/list/' + $jam.I( text ) + '">' + tags.item( text ) + '</a>' + close
+return open + '<a href="?gist/list/' + $jam.BJ( text ) + '">' + tags.item( text ) + '</a>' + close
 }
 })
 return tags
@@ -576,13 +576,13 @@ middle= md.linkMarker( middle )
 close= md.linkMarker( close )
 href= title ? md.linkHref( href ) : md.linkTitle( href )
 title= md.linkTitle( md.inline( title ) )
-return md.link( '<a href="' + $jam.I( uri ) + '">' + open + title + middle + href + close + '</a>' )
+return md.link( '<a href="' + $jam.BJ( uri ) + '">' + open + title + middle + href + close + '</a>' )
 }
 // image
 // [url]
 this[ /(\[)([^\[\]]+)(\])/.source ]=
 function( open, href, close ){
-return md.image( md.imageHref( open + href + close ) + '<a href="' + $jam.I( href ) + '"><object data="' + $jam.I( href ) + '"></object></a>' )
+return md.image( md.imageHref( open + href + close ) + '<a href="' + $jam.BJ( href ) + '"><object data="' + $jam.BJ( href ) + '"></object></a>' )
 }
 // emphasis
 // /some text/
@@ -683,7 +683,7 @@ this[ /^((?:[\?\/\.]|https?:|ftps?:).*?)$(\n?)/.source ]=
 function( url, close ){
 var href= md.embedHref( url + close )
 url= url.replace( /\xAD/g, '' )
-var embed= md.embed( '<a href="' + $jam.I( url ) + '"><image src="' + $jam.I( url ) + '" /></a>' )
+var embed= md.embed( '<a href="' + $jam.BJ( url ) + '"><image src="' + $jam.BJ( url ) + '" /></a>' )
 return href + embed
 }
 // table
