@@ -1,21 +1,21 @@
 ;if( this.$jam ) throw new Error( 'Redeclaration of [$jam]' )
 var $jam= {}
-;$jam.BG= function( val ){
+;$jam.EU= function( val ){
 var value= function(){
 return val
 }
 value.toString= function(){
-return '$jam.BG: ' + String( val )
+return '$jam.EU: ' + String( val )
 }
 return value
 }
-;$jam.BH= $jam.BG( this )
-;$jam.BI=
+;$jam.EV= $jam.EU( this )
+;$jam.EW=
 new function( ){
 var Ghost= function(){}
 return function( key, value ){
 var keyList= key.split( '.' )
-var obj= $jam.BH()
+var obj= $jam.EV()
 while( true ){
 key= keyList.shift()
 if( !keyList.length ) break
@@ -39,46 +39,46 @@ obj[ key ]= value
 return this
 }
 }
-;$jam.BI( '$jam.BK', $jam.BG( $jam.BH().document ) )
-;$jam.BI
-(   '$jam.CA'
+;$jam.EW( '$jam.EY', $jam.EU( $jam.EV().document ) )
+;$jam.EW
+(   '$jam.FO'
 ,   function( timeout, proc ){
-var timerID= $jam.BH().setTimeout( proc, timeout )
+var timerID= $jam.EV().setTimeout( proc, timeout )
 return function( ){
-$jam.BH().clearTimeout( timerID )
+$jam.EV().clearTimeout( timerID )
 }
 }
 )
-;$jam.BI
-(   '$jam.CD.then'
+;$jam.EW
+(   '$jam.FR.then'
 ,   function( proc ){
 var checker= function( ){
-if( $jam.CD() ) proc()
-else $jam.CA( 10, checker )
+if( $jam.FR() ) proc()
+else $jam.FO( 10, checker )
 }
 checker()
 }
 )
-;$jam.BI
-(   '$jam.CD'
+;$jam.EW
+(   '$jam.FR'
 ,   function( ){
-var state= $jam.BK().readyState
+var state= $jam.EY().readyState
 if( state === 'loaded' ) return true
 if( state === 'complete' ) return true
 return false
 }
 )
-;$jam.CP=
+;$jam.GD=
 function( ns ){
-if( !$jam.BK().getElementsByTagNameNS ) return
-var nodeList= $jam.BK().getElementsByTagNameNS( ns, '*' )
-var docEl= $jam.BK().documentElement
+if( !$jam.EY().getElementsByTagNameNS ) return
+var nodeList= $jam.EY().getElementsByTagNameNS( ns, '*' )
+var docEl= $jam.EY().documentElement
 var tracking= function( ){
 sleep()
 var node
 while( node= nodeList[0] ){
 var parent= node.parentNode
-var newNode= $jam.BK().createElement( node.nodeName )
+var newNode= $jam.EY().createElement( node.nodeName )
 var attrList= node.attributes
 for( var i= 0; i < attrList.length; ++i ){
 var attr= attrList[ i ]
@@ -90,7 +90,7 @@ if( node.parentNode === parent ) parent.removeChild( node )
 }
 rise()
 }
-$jam.CD.then( tracking )
+$jam.FR.then( tracking )
 tracking()
 function rise( ){
 docEl.addEventListener( 'DOMNodeInserted', tracking, false )
@@ -99,8 +99,8 @@ function sleep( ){
 docEl.removeEventListener( 'DOMNodeInserted', tracking, false )
 }
 }
-;$jam.BI
-(   '$jam.CE'
+;$jam.EW
+(   '$jam.FS'
 ,   function( key, map ){
 if( !map.hasOwnProperty( key ) ) {
 throw new Error( 'Key [' + key + '] not found in map' )
@@ -108,32 +108,32 @@ throw new Error( 'Key [' + key + '] not found in map' )
 return map[ key ]
 }
 )
-;$jam.BI
-(   '$jam.CF'
+;$jam.EW
+(   '$jam.FT'
 ,   new function(){
 var Support= function( state ){
-var sup= $jam.BG( state )
+var sup= $jam.EU( state )
 sup.select= function( map ){
-return $jam.CE( this(), map )
+return $jam.FS( this(), map )
 }
 return sup
 }
-var node= $jam.BK().createElement( 'html:div' )
+var node= $jam.EY().createElement( 'html:div' )
 this.msie= Support(  false )
-this.xmlModel= Support( ( $jam.BH().DOMParser && $jam.BH().XSLTProcessor ) ? 'w3c' : 'ms' )
+this.xmlModel= Support( ( $jam.EV().DOMParser && $jam.EV().XSLTProcessor ) ? 'w3c' : 'ms' )
 }
 )
-;$jam.BI
-(   '$jam.CG'
+;$jam.EW
+(   '$jam.FU'
 ,   function( tagName, factory ){
-if(!( this instanceof $jam.CG )) return new $jam.CG( tagName, factory )
+if(!( this instanceof $jam.FU )) return new $jam.FU( tagName, factory )
 var fieldName= 'componnet|' + tagName + '|' + (new Date).getTime()
-var nodes= $jam.BK().getElementsByTagName( tagName )
+var nodes= $jam.EY().getElementsByTagName( tagName )
 var elements= []
-var rootNS=$jam.BK().documentElement.namespaceURI
+var rootNS=$jam.EY().documentElement.namespaceURI
 var checkName=
 ( tagName === '*' )
-?    $jam.BG( true )
+?    $jam.EU( true )
 :    new function(){
 var nameChecker= RegExp( '^' + tagName + '$', 'i' )
 return function checkName_right( el ){
@@ -208,25 +208,25 @@ check4attach( nodes )
 check4detach( elements )
 }
 var interval=
-$jam.BH().setInterval( tracking, 200 )
-$jam.CD.then(function whenReady(){
-$jam.BH().clearInterval( interval )
+$jam.EV().setInterval( tracking, 200 )
+$jam.FR.then(function whenReady(){
+$jam.EV().clearInterval( interval )
 attachIfLoaded= attach
 tracking()
 })
-var docEl= $jam.BK().documentElement
+var docEl= $jam.EY().documentElement
 docEl.addEventListener( 'DOMNodeInserted', function whenNodeInserted( ev ){
 var node= ev.target
 check4attach([ node ])
-if( !$jam.CF.msie() && node.getElementsByTagName ) check4attach( node.getElementsByTagName( tagName ) )
+if( !$jam.FT.msie() && node.getElementsByTagName ) check4attach( node.getElementsByTagName( tagName ) )
 }, false )
 docEl.addEventListener( 'DOMNodeRemoved', function whenNodeRemoved( ev ){
 var node= ev.target
 check4detach([ node ])
-if( !$jam.CF.msie() && node.getElementsByTagName ) check4detach( node.getElementsByTagName( tagName ) )
+if( !$jam.FT.msie() && node.getElementsByTagName ) check4detach( node.getElementsByTagName( tagName ) )
 }, false )
-this.tagName= $jam.BG( tagName )
-this.factory= $jam.BG( factory )
+this.tagName= $jam.EU( tagName )
+this.factory= $jam.EU( factory )
 this.elements=
 function elements( ){
 return elements.slice( 0 )
@@ -234,14 +234,14 @@ return elements.slice( 0 )
 tracking()
 }
 )
-;$jam.BJ=
+;$jam.EX=
 function( init ){
 var klass=
 function( ){
 if( this instanceof klass ) return this
 return klass.create.apply( klass, arguments )
 }
-klass.constructor= $jam.BJ
+klass.constructor= $jam.EX
 klass.create=
 function( arg ){
 if( arguments.length ){
@@ -265,8 +265,8 @@ constructor= klass.prototype.constructor
 klass.prototype.constructor= klass
 return klass
 }
-;$jam.BI
-(   '$jam.BL'
+;$jam.EW
+(   '$jam.EZ'
 ,   function(){
 var map= arguments
 return function(){
@@ -274,8 +274,8 @@ return map[ arguments.length ].apply( this, arguments )
 }
 }
 )
-;$jam.BI
-(   '$jam.BM'
+;$jam.EW
+(   '$jam.FA'
 ,   {    'nbsp': ' '
 ,    'amp':  '&'
 ,    'lt':   '<'
@@ -284,13 +284,13 @@ return map[ arguments.length ].apply( this, arguments )
 ,    'apos': "'"
 }
 )
-;$jam.BI
-(   '$jam.BN'
+;$jam.EW
+(   '$jam.FB'
 ,   new function(){
-var fromCharCode= $jam.BH().String.fromCharCode
-var parseInt= $jam.BH().parseInt
+var fromCharCode= $jam.EV().String.fromCharCode
+var parseInt= $jam.EV().parseInt
 var replacer= function( str, isHex, numb, name ){
-if( name ) return $jam.BM[ name ] || str
+if( name ) return $jam.FA[ name ] || str
 if( isHex ) numb= parseInt( numb, 16 )
 return fromCharCode( numb )
 }
@@ -299,10 +299,10 @@ return String( str ).replace( /&(?:#(x)?(\d+)|(\w+));/g, replacer )
 }
 }
 )
-;$jam.BI
-(   '$jam.BO'
+;$jam.EW
+(   '$jam.FC'
 ,   function( html ){
-return $jam.BN
+return $jam.FB
 (   String( html )
 .replace( /<div><br[^>]*>/gi, '\n' )
 .replace( /<br[^>]*>/gi, '\n' )
@@ -311,23 +311,23 @@ return $jam.BN
 )
 }
 )
-;$jam.BI
-(   '$jam.BP'
+;$jam.EW
+(   '$jam.FD'
 ,   new function( ){
 var toString = {}.toString
 return function( val ){
 if( val === void 0 ) return 'Undefined'
 if( val === null ) return 'Null'
-if( val === $jam.BH() ) return 'Global'
+if( val === $jam.EV() ) return 'Global'
 return toString.call( val ).replace( /^\[object |\]$/g, '' )
 }
 }
 )
-;$jam.BI
-(   '$jam.BQ'
-,   $jam.BJ( function( klass, proto ){
+;$jam.EW
+(   '$jam.FE'
+,   $jam.EX( function( klass, proto ){
 proto.constructor=
-$jam.BL
+$jam.EZ
 (   function( ){
 return klass({ })
 }
@@ -341,31 +341,31 @@ return this
 }
 )
 proto.get=
-$jam.BL
+$jam.EZ
 (   function( ){
 return this.get( [] )
 }
 ,   function( keyList ){
-if( $jam.BP( keyList ) === 'String' ){
+if( $jam.FD( keyList ) === 'String' ){
 keyList= keyList.split( this.splitterKeys )
 }
 var cur= this.$.data
 for( var i= 0; i < keyList.length; ++i ){
 var key= keyList[ i ]
 cur= cur[ key ]
-if( $jam.BP( cur ) !== 'Object' ) break
+if( $jam.FD( cur ) !== 'Object' ) break
 }
 return cur
 }
 )
 proto.put=
-$jam.BL
+$jam.EZ
 (   null
 ,   function( keyList ){
 return this.put( keyList, true )
 }
 ,   function( keyList, value ){
-if( $jam.BP( keyList ) === 'String' ){
+if( $jam.FD( keyList ) === 'String' ){
 var keyListRaw= keyList.split( this.$.splitterKeys )
 keyList= []
 for( var i= 0; i < keyListRaw.length; ++i ){
@@ -376,7 +376,7 @@ keyList.push( keyListRaw[ i ] )
 var cur= this.$.data
 for( var i= 0; i < keyList.length - 1; ++i ){
 var key= keyList[ i ]
-if( $jam.BP( cur[ key ] ) === 'Object' ){
+if( $jam.FD( cur[ key ] ) === 'Object' ){
 cur= cur[ key ]
 } else {
 cur= cur[ key ]= {}
@@ -389,7 +389,7 @@ return this
 )
 proto.merge=
 function( json ){
-if( $jam.BP( json ) === 'String' ){
+if( $jam.FD( json ) === 'String' ){
 var chunks= json.split( this.$.splitterChunks )
 for( var i= 0; i < chunks.length; ++i ){
 var chunk= chunks[i]
@@ -423,7 +423,7 @@ merge( json, this.$.data )
 return this
 }
 proto.toString=
-$jam.BL
+$jam.EZ
 (   function( ){
 var chunks=
 function( prefix, obj ){
@@ -447,13 +447,13 @@ return chunks.call( this, '', this.$.data ).join( this.$.splitterChunks )
 )
 })
 )
-;$jam.BI
-(   '$jam.BR'
-,   $jam.BJ( function( klass, proto ){
+;$jam.EW
+(   '$jam.FF'
+,   $jam.EX( function( klass, proto ){
 proto.get=
 function( index ){
 var node= this.$[ index ]
-return $jam.BS( node )
+return $jam.FG( node )
 }
 proto.length=
 function( ){
@@ -469,18 +469,18 @@ return this.get( this.length() - 1 )
 }
 })
 )
-;$jam.BI
-(   '$jam.BT'
+;$jam.EW
+(   '$jam.FH'
 ,   function( obj ){
 if( !obj ) return obj
 var klass= obj.constructor
 if( !klass ) return obj
 var superClass= klass.constructor
-if( superClass !== $jam.BJ ) return obj
+if( superClass !== $jam.EX ) return obj
 return klass.raw( obj )
 }
 )
-;$jam.BU=
+;$jam.FI=
 new function( ){
 var codes= []
 var keyCode= function( code ){
@@ -538,12 +538,12 @@ codes[ keyCode[ name ] ]= name
 }
 return keyCode
 }
-;$jam.BV=
-$jam.BJ( function( klass, proto ){
+;$jam.FJ=
+$jam.EX( function( klass, proto ){
 proto.constructor=
-$jam.BL
+$jam.EZ
 (   function( ){
-this.$= $jam.BK().createEvent( 'Event' )
+this.$= $jam.EY().createEvent( 'Event' )
 this.$.initEvent( '', true, true )
 return this
 }
@@ -553,7 +553,7 @@ return this
 }
 )
 proto.type=
-$jam.BL
+$jam.EZ
 (   function( ){
 return this.$.type
 }
@@ -563,7 +563,7 @@ return this
 }
 )
 proto.data=
-$jam.BL
+$jam.EZ
 (   function( ){
 return this.$.extendedData
 }
@@ -573,35 +573,35 @@ return this
 }
 )
 proto.keyMeta=
-$jam.BL
+$jam.EZ
 (   function( ){
 return Boolean( this.$.metaKey || this.$.ctrlKey )
 }
 )
 proto.keyShift=
-$jam.BL
+$jam.EZ
 (   function( ){
 return Boolean( this.$.shiftKey )
 }
 )
 proto.keyAlt=
-$jam.BL
+$jam.EZ
 (   function( ){
 return Boolean( this.$.altKey )
 }
 )
 proto.keyAccel=
-$jam.BL
+$jam.EZ
 (   function( ){
 return this.keyMeta() || this.keyShift() || this.keyAlt()
 }
 )
 proto.keyCode=
-$jam.BL
+$jam.EZ
 (   function( ){
 var code= this.$.keyCode
 var keyCode= new Number( code )
-keyCode[ $jam.BU( code ) ]= code
+keyCode[ $jam.FI( code ) ]= code
 return keyCode
 }
 )
@@ -614,7 +614,7 @@ function( ){
 return this.$.target
 }
 proto.wheel=
-$jam.BL
+$jam.EZ
 (   function( ){
 if( this.$.wheelDelta ) return - this.$.wheelDelta / 120 
 return this.$.detail / 4
@@ -625,7 +625,7 @@ return this
 }
 )
 proto.defaultBehavior=
-$jam.BL
+$jam.EZ
 (   function( ){
 return Boolean( this.$.defaultPrevented )
 }
@@ -637,13 +637,13 @@ return this
 )
 proto.scream=
 function( node ){
-$jam.BT( node ).dispatchEvent( this.$ )
+$jam.FH( node ).dispatchEvent( this.$ )
 return this
 }
 })
-;$jam.BI
-(   '$jam.BW'
-,   $jam.BJ( function( klass, proto ){
+;$jam.EW
+(   '$jam.FK'
+,   $jam.EX( function( klass, proto ){
 proto.constructor=
 function( ){
 this.$= {}
@@ -657,7 +657,7 @@ return klass()
 .handler( this.handler() )
 }
 proto.eventName=
-$jam.BL
+$jam.EZ
 (   function( ){
 return this.$.eventName
 }
@@ -668,18 +668,18 @@ return this
 }
 )
 proto.node=
-$jam.BL
+$jam.EZ
 (   function( ){
 return this.$.node
 }
 ,   function( node ){
 this.sleep()
-this.$.node= $jam.BT( node )
+this.$.node= $jam.FH( node )
 return this
 }
 )
 proto.handler=
-$jam.BL
+$jam.EZ
 (   function( ){
 return this.$.handler
 }
@@ -689,7 +689,7 @@ this.sleep()
 this.$.handler= handler
 this.$.internalHandler=
 function( event ){
-return handler.call( self.node(), $jam.BV( event ) )
+return handler.call( self.node(), $jam.FJ( event ) )
 }
 return this
 }
@@ -709,7 +709,7 @@ this.$.active= false
 return this
 }
 proto.active=
-$jam.BL
+$jam.EZ
 (   function( ){
 return Boolean( this.$.active )
 }
@@ -721,29 +721,29 @@ return this
 )
 })
 )
-;$jam.BI
-(   '$jam.BS'
-,   $jam.BJ( function( klass, proto ){
+;$jam.EW
+(   '$jam.FG'
+,   $jam.EX( function( klass, proto ){
 klass.Element=
 function( name ){
-return klass.create( $jam.BK().createElement( name ) )
+return klass.create( $jam.EY().createElement( name ) )
 }
 klass.Text=
 function( str ){
-return klass.create( $jam.BK().createTextNode( str ) )
+return klass.create( $jam.EY().createTextNode( str ) )
 }
 klass.Comment=
 function( str ){
-return klass.create( $jam.BK().createComment( str ) )
+return klass.create( $jam.EY().createComment( str ) )
 }
 klass.Fragment=
 function( ){
-return klass.create( $jam.BK().createDocumentFragment() )
+return klass.create( $jam.EY().createDocumentFragment() )
 }
 proto.text=
-$jam.BL
+$jam.EZ
 (   function( ){
-return $jam.BO( this.$.innerHTML )
+return $jam.FC( this.$.innerHTML )
 }
 ,   new function(){
 return function( val ){
@@ -755,7 +755,7 @@ return this
 }
 )
 proto.html=
-$jam.BL
+$jam.EZ
 (   function( ){
 var val= this.$.innerHTML
 .replace
@@ -788,7 +788,7 @@ function( ){
 return this.$.nodeName.toLowerCase()
 }
 proto.attr=
-$jam.BL
+$jam.EZ
 (   null
 ,   function( name ){
 return this.$.getAttribute( name )
@@ -800,15 +800,15 @@ return this
 }    
 )
 proto.state=
-$jam.BL
+$jam.EZ
 (   function( ){
 return this.param( [] )
 }
 ,   function( key ){
-return $jam.BQ({ splitterChunks: ' ' }).merge( this.$.className || '' ).get( key )
+return $jam.FE({ splitterChunks: ' ' }).merge( this.$.className || '' ).get( key )
 }
 ,   function( key, value ){
-this.$.className= $jam.BQ({ splitterChunks: ' ' }).merge( this.$.className ).put( key, value )
+this.$.className= $jam.FE({ splitterChunks: ' ' }).merge( this.$.className ).put( key, value )
 return this
 }
 )
@@ -843,7 +843,7 @@ var rect= this.$.getBoundingClientRect()
 return rect.top
 }
 proto.editable=
-$jam.BL
+$jam.EZ
 (   function( ){
 var editable= this.$.contentEditable
 if( editable == 'inherit' ) return this.parent().editable()
@@ -862,7 +862,7 @@ do {
 if( name && node.name().replace( name, '' ) ) continue
 filtered.push( node )
 } while( node= node.parent() )
-return $jam.BR( filtered )
+return $jam.FF( filtered )
 }
 proto.childList=
 function( name ){
@@ -872,7 +872,7 @@ for( var i= this.head(); i; i= i.next() ){
 if( name && i.name().replace( name, '' ) ) continue
 filtered.push( i )
 }
-return $jam.BR( filtered )
+return $jam.FF( filtered )
 }
 proto.descList=
 function( name ){
@@ -881,15 +881,15 @@ var filtered= []
 for( var i= 0; i < list.length; ++i ){
 filtered.push( list[ i ] )
 }
-return $jam.BR( filtered )
+return $jam.FF( filtered )
 }
 proto.parent= 
-$jam.BL
+$jam.EZ
 (   function( ){
-return $jam.BS( this.$.parentNode )
+return $jam.FG( this.$.parentNode )
 }
 ,   function( node ){
-node= $jam.BT( node )
+node= $jam.FH( node )
 var parent= this.$.parentNode
 if( node ){
 if( parent === node ) return this
@@ -912,7 +912,7 @@ if( !current ) return current
 }
 proto.surround=
 function( node ){
-var node= $jam.BT( node )
+var node= $jam.FH( node )
 var parent= this.$.parentNode
 var next= this.$.nextSibling
 node.appendChild( this.$ )
@@ -924,7 +924,7 @@ function( ){
 for( var head; head= this.head(); ){
 this.prev( head )
 }
-//if( this.name() === 'br' ) return this;//this.prev( $jam.BS.Text( '\r\n' ) )
+//if( this.name() === 'br' ) return this;//this.prev( $jam.FG.Text( '\r\n' ) )
 this.parent( null )
 return this
 }
@@ -944,34 +944,34 @@ curr= next
 return this
 }
 proto.head=
-$jam.BL
+$jam.EZ
 (   function(){
-return $jam.BS( this.$.firstChild )
+return $jam.FG( this.$.firstChild )
 }
 ,   function( node ){
-this.$.insertBefore( $jam.BT( node ), this.$.firstChild )
+this.$.insertBefore( $jam.FH( node ), this.$.firstChild )
 return this
 }
 )
 proto.tail=
-$jam.BL
+$jam.EZ
 (   function(){
-return $jam.BS( this.$.lastChild )
+return $jam.FG( this.$.lastChild )
 }
 ,   function( node ){
-this.$.appendChild( $jam.BT( node ) )
+this.$.appendChild( $jam.FH( node ) )
 return this
 }
 )
 proto.next=
-$jam.BL
+$jam.EZ
 (   function(){
-return $jam.BS( this.$.nextSibling )
+return $jam.FG( this.$.nextSibling )
 }
 ,   function( node ){
 var parent= this.$.parentNode
 var next= this.$.nextSibling
-parent.insertBefore( $jam.BT( node ), next ) 
+parent.insertBefore( $jam.FH( node ), next ) 
 return this
 }   
 )
@@ -1000,19 +1000,19 @@ if( !node ) return null
 }
 }
 proto.prev=
-$jam.BL
+$jam.EZ
 (   function(){
-return $jam.BS( this.$.previousSibling )
+return $jam.FG( this.$.previousSibling )
 }
 ,   function( node ){
-node= $jam.BT( node )
+node= $jam.FH( node )
 var parent= this.$.parentNode
 parent.insertBefore( node, this.$ ) 
 return this
 }   
 )
 proto.inDom=
-$jam.BL
+$jam.EZ
 (   function( ){
 var doc= node.$.ownerDocument
 var node= this
@@ -1031,7 +1031,7 @@ parent.html( html )
 var child= parent.head()
 if( !child ) return null
 if( !child.next() ) return child
-var fragment= $jam.BS.Fragment()
+var fragment= $jam.FG.Fragment()
 while( child= parent.head() ) fragment.tail( child )
 return fragment
 }
@@ -1046,15 +1046,15 @@ return parent.html()
 }
 proto.clone=
 function( ){
-return $jam.BS( this.$.cloneNode( false ) )
+return $jam.FG( this.$.cloneNode( false ) )
 }
 proto.cloneTree=
 function( ){
-return $jam.BS( this.$.cloneNode( true ) )
+return $jam.FG( this.$.cloneNode( true ) )
 }
 proto.listen=
 function( eventName, handler ){
-return $jam.BW()
+return $jam.FK()
 .eventName( eventName )
 .node( this )
 .handler( handler )
@@ -1062,18 +1062,18 @@ return $jam.BW()
 }
 })
 )
-;$jam.CG
+;$jam.FU
 (   'a'
 ,   function( el ){
-var isTarget= ( el.href == $jam.BK().location.href )
-$jam.BS( el ).state( 'target', isTarget )
+var isTarget= ( el.href == $jam.EY().location.href )
+$jam.FG( el ).state( 'target', isTarget )
 }
 )
-;$jam.BI
-(   '$jam.CQ'
-,   $jam.BJ( function( klass, proto ){
+;$jam.EW
+(   '$jam.GE'
+,   $jam.EX( function( klass, proto ){
 proto.constructor=
-$jam.BL
+$jam.EZ
 (   function( ){
 this.$= { prefix: ':', obj: {} }
 return this
@@ -1103,10 +1103,10 @@ return this
 }
 })
 )
-;$jam.BI
-(    '$jam.CR'
+;$jam.EW
+(    '$jam.GF'
 ,    function( func ){
-var cache= $jam.CQ()
+var cache= $jam.GE()
 return function( key ){
 if( cache.has( key ) ) return cache.get( key )
 var value= func.apply( this, arguments )
@@ -1115,8 +1115,8 @@ return value
 }
 }
 )
-;$jam.CH=
-$jam.BJ( function( klass, proto ){
+;$jam.FV=
+$jam.EX( function( klass, proto ){
 proto.has=
 function( key ){
 return ( key in this.$ )
@@ -1151,16 +1151,16 @@ init( this.$ )
 return this
 }
 })
-;$jam.BI
-(   '$jam.CI'
-,   $jam.BJ( function( klass, proto ){
+;$jam.EW
+(   '$jam.FW'
+,   $jam.EX( function( klass, proto ){
 proto.constructor=
 function( ){
 this.$= { latency: 0, stopper: null, active: false }
 return this
 }
 proto.latency=
-$jam.BL
+$jam.EZ
 (   function( ){
 return this.$.latency
 }
@@ -1171,7 +1171,7 @@ return this
 }
 )
 proto.active=
-$jam.BL
+$jam.EZ
 (   function( ){
 return this.$.active
 }
@@ -1182,7 +1182,7 @@ return this
 }
 )
 proto.handler=
-$jam.BL
+$jam.EZ
 (   function( ){
 return this.$.handler
 }
@@ -1196,9 +1196,9 @@ proto.start=
 function( ){
 if( this.active() ) return this
 this.$.stoper=
-$jam.CA
+$jam.FO
 (   this.latency()
-,   $jam.CH( this )
+,   $jam.FV( this )
 .method( 'tick' )
 )
 this.$.active= true
@@ -1222,8 +1222,8 @@ return this
 }
 })
 )
-;$jam.BI
-(   '$jam.CS'
+;$jam.EW
+(   '$jam.GG'
 ,   function( delim ){
 delim= delim || ''
 return function( list ){
@@ -1231,30 +1231,30 @@ return list.join( delim )
 }
 }
 )
-;$jam.BI
-(   '$jam.CK'
-,   $jam.BJ( function( klass, proto ){
+;$jam.EW
+(   '$jam.FY'
+,   $jam.EX( function( klass, proto ){
 proto.constructor=
 function( data ){
-this.$= String( $jam.BT( data ) || '' )
+this.$= String( $jam.FH( data ) || '' )
 return this
 }
 proto.incIndent=
-$jam.BL
+$jam.EZ
 (   function( ){
 this.$= this.$.replace( /^/mg, '    ' )
 return this
 }
 )
 proto.decIndent=
-$jam.BL
+$jam.EZ
 (   function( ){
 this.$= this.$.replace( /^    |^\t/mg, '' )
 return this
 }
 )
 proto.minimizeIndent=
-$jam.BL
+$jam.EZ
 (   function( ){
 this.normilizeSpaces()
 var minIndent= 1/0
@@ -1267,14 +1267,14 @@ return this
 }
 )
 proto.normilizeSpaces=
-$jam.BL
+$jam.EZ
 (   function( ){
 this.$= this.$.replace( /\t/g, '    ' ).replace( /\u00A0/, ' ' )
 return this
 }
 )
 proto.trim=
-$jam.BL
+$jam.EZ
 (   function( ){
 return this.trim( /\s/ )
 }
@@ -1285,7 +1285,7 @@ return this
 }
 )
 proto.process=
-$jam.BL
+$jam.EZ
 (   null
 ,   function( proc ){
 this.$= proc( this.$ )
@@ -1293,7 +1293,7 @@ return this
 }
 )
 proto.replace=
-$jam.BL
+$jam.EZ
 (   null
 ,   function( from ){
 return this.replace( from, '' )
@@ -1304,7 +1304,7 @@ return this
 }
 )
 proto.mult=
-$jam.BL
+$jam.EZ
 (   null
 ,   function( count ){
 this.$= Array( count + 1 ).join( this.$ )
@@ -1312,22 +1312,22 @@ return this
 }
 )
 proto.length=
-$jam.BL
+$jam.EZ
 (   function( ){
 return this.$.length
 }
 )
 proto.toString=
-$jam.BL
+$jam.EZ
 (   function( ){
 return this.$
 }
 )
 })
 )
-;$jam.BI
-(   '$jam.CT'
-,   $jam.BJ( function( klass, proto ){
+;$jam.EW
+(   '$jam.GH'
+,   $jam.EX( function( klass, proto ){
 proto.constructor=
 function( dom ){
 if( dom.toDOMDocument ) dom= dom.toDOMDocument()
@@ -1339,53 +1339,53 @@ function( ){
 return this.$
 }
 proto.toString=
-$jam.CF.xmlModel.select(
+$jam.FT.xmlModel.select(
 {   'w3c': function( ){
 var serializer= new XMLSerializer
 var text= serializer.serializeToString( this.$ )
 return text
 }
 ,   'ms': function( ){
-return $jam.CK( this.$.xml ).trim().$
+return $jam.FY( this.$.xml ).trim().$
 }
 })
 proto.transform=
-$jam.CF.xmlModel.select(
+$jam.FT.xmlModel.select(
 {   'w3c': function( stylesheet ){
 var proc= new XSLTProcessor
-proc.importStylesheet( $jam.BT( stylesheet ) )
+proc.importStylesheet( $jam.FH( stylesheet ) )
 var doc= proc.transformToDocument( this.$ )
-return $jam.CT( doc )
+return $jam.GH( doc )
 }
 ,   'ms': function( stylesheet ){
-var text= this.$.transformNode( $jam.BT( stylesheet ) )
-return $jam.CT.parse( text )
+var text= this.$.transformNode( $jam.FH( stylesheet ) )
+return $jam.GH.parse( text )
 }
 })
 klass.parse=
-$jam.CF.xmlModel.select(
+$jam.FT.xmlModel.select(
 {   'w3c': function( str ){
 var parser= new DOMParser
 var doc= parser.parseFromString( str, 'text/xml' )
-return $jam.CT( doc )
+return $jam.GH( doc )
 }
 ,   'ms': function( str ){
 var doc= new ActiveXObject( 'MSXML2.DOMDocument' )
 doc.async= false
 doc.loadXML( str )
-return $jam.CT( doc )
+return $jam.GH( doc )
 }
 })
 })
 )
-;$jam.BI
-(  '$jam.CU'
+;$jam.EW
+(  '$jam.GI'
 ,   function( ){
-return $jam.BH().getSelection()
+return $jam.EV().getSelection()
 }
 )
-;$jam.BI
-(   '$jam.CL'
+;$jam.EW
+(   '$jam.FZ'
 ,   function( str ){
 return String( str )
 .replace( /&/g, '&amp;' )
@@ -1395,15 +1395,15 @@ return String( str )
 .replace( /'/g, '&apos;' )
 }
 )
-;$jam.BI
-(   '$jam.CV'
-,   $jam.BJ( function( klass, proto ){
+;$jam.EW
+(   '$jam.GJ'
+,   $jam.EX( function( klass, proto ){
 proto.constructor=
-$jam.BL
+$jam.EZ
 (   function( ){
-var sel= $jam.CU()
+var sel= $jam.GI()
 if( sel.rangeCount ) this.$= sel.getRangeAt( 0 ).cloneRange()
-else this.$= $jam.BK().createRange()
+else this.$= $jam.EY().createRange()
 return this
 }
 ,   function( range ){
@@ -1414,7 +1414,7 @@ return this
 )
 proto.select=
 function( ){
-var sel= $jam.CU()
+var sel= $jam.GI()
 sel.removeAllRanges()
 sel.addRange( this.$ )
 return this
@@ -1435,29 +1435,29 @@ this.$.deleteContents()
 return this
 }
 proto.text=
-$jam.BL
+$jam.EZ
 (   function( ){
-return $jam.BO( this.html() )
+return $jam.FC( this.html() )
 }
 ,   function( text ){
-this.html( $jam.CL( text ) )
+this.html( $jam.FZ( text ) )
 return this
 }
 )
 proto.html=
-$jam.BL
+$jam.EZ
 (   function( ){
-return $jam.BS( this.$.cloneContents() ).toString()
+return $jam.FG( this.$.cloneContents() ).toString()
 }
 ,   function( html ){
-var node= html ? $jam.BS.parse( html ).$ : $jam.BS.Text( '' ).$
+var node= html ? $jam.FG.parse( html ).$ : $jam.FG.Text( '' ).$
 this.replace( node )
 return this
 }
 )
 proto.replace=
 function( node ){
-node= $jam.BT( node )
+node= $jam.FH( node )
 this.dropContents()
 this.$.insertNode( node )
 this.$.selectNode( node )
@@ -1469,13 +1469,13 @@ return this.$.commonAncestorContainer
 }
 proto.compare=
 function( how, range ){
-range= $jam.CV( range ).$
+range= $jam.GJ( range ).$
 how= Range[ how.replace( '2', '_to_' ).toUpperCase() ]
 return range.compareBoundaryPoints( how, this.$ )
 }
 proto.hasRange=
 function( range ){
-range= $jam.CV( range )
+range= $jam.GJ( range )
 var isAfterStart= ( this.compare( 'start2start', range ) >= 0 )
 var isBeforeEnd= ( this.compare( 'end2end', range ) <= 0 )
 return isAfterStart && isBeforeEnd
@@ -1484,7 +1484,7 @@ proto.equalize=
 function( how, range ){
 how= how.split( 2 )
 var method= { start: 'setStart', end: 'setEnd' }[ how[ 0 ] ]
-range= $jam.CV( range ).$
+range= $jam.GJ( range ).$
 this.$[ method ]( range[ how[1] + 'Container' ], range[ how[1] + 'Offset' ] )
 return this
 }
@@ -1492,18 +1492,18 @@ proto.move=
 function( offset ){
 this.collapse2start()
 if( offset === 0 ) return this
-var current= $jam.BS( this.$.startContainer )
+var current= $jam.FG( this.$.startContainer )
 if( this.$.startOffset ){
 var temp= current.$.childNodes[ this.$.startOffset - 1 ]
 if( temp ){
-current= $jam.BS( temp ).follow()
+current= $jam.FG( temp ).follow()
 } else {
 offset+= this.$.startOffset
 }
 }
 while( current ){
 if( current.name() === '#text' ){
-var range= $jam.CV().aimNode( current )
+var range= $jam.GJ().aimNode( current )
 var length= current.$.nodeValue.length
 if( !offset ){
 this.equalize( 'start2start', range )
@@ -1519,7 +1519,7 @@ if( current.name() === 'br' ){
 if( offset > 1 ){
 offset-= 1
 } else {
-var range= $jam.CV().aimNode( current )
+var range= $jam.GJ().aimNode( current )
 this.equalize( 'start2end', range )
 return this
 }
@@ -1530,22 +1530,22 @@ return this
 }
 proto.clone=
 function( ){
-return $jam.CV( this.$.cloneRange() )
+return $jam.GJ( this.$.cloneRange() )
 }
 proto.aimNodeContent=
 function( node ){
-this.$.selectNodeContents( $jam.BT( node ) )
+this.$.selectNodeContents( $jam.FH( node ) )
 return this
 }
 proto.aimNode=
 function( node ){
-this.$.selectNode( $jam.BT( node ) )
+this.$.selectNode( $jam.FH( node ) )
 return this
 }
 })
 )
-;$jam.BI
-(   '$jam.CM'
+;$jam.EW
+(   '$jam.GA'
 ,   function( gen ){
 var proc= function(){
 proc= gen.call( this )
@@ -1554,13 +1554,13 @@ return proc.apply( this, arguments )
 var lazy= function(){
 return proc.apply( this, arguments )
 }
-lazy.gen= $jam.BG( gen )
+lazy.gen= $jam.EU( gen )
 return lazy
 }
 )
-;$jam.BI
-(   '$jam.CW'
-,   $jam.BJ( function( klass, proto ){
+;$jam.EW
+(   '$jam.GK'
+,   $jam.EX( function( klass, proto ){
 proto.constructor=
 function( regexp ){
 this.$= new RegExp( regexp )
@@ -1582,10 +1582,10 @@ function( ){
 var str= ''
 for( var i= 0; i < arguments.length; ++i ){
 var chunk= arguments[ i ]
-if( i % 2 ) chunk= $jam.CW.escape( chunk )
+if( i % 2 ) chunk= $jam.GK.escape( chunk )
 str+= chunk
 }
-return $jam.CW( str )
+return $jam.GK( str )
 }
 proto.source=
 function(){
@@ -1600,22 +1600,22 @@ return RegExp( '^$|' + this.$.source ).exec( '' ).length - offset
 }
 })
 )
-;$jam.BI
-(   '$jam.CX'
+;$jam.EW
+(   '$jam.GL'
 ,   function( lexems ){
 if( !lexems ) throw new Error( 'lexems is required' )
 var nameList= []
 var regexpList= []
 var sizeList= []
 for( var name in lexems ){
-var regexp= $jam.CW( lexems[ name ] )
+var regexp= $jam.GK( lexems[ name ] )
 nameList.push( name )
 regexpList.push( regexp.source() )
 sizeList.push( regexp.count() )
 }
 var regexp= RegExp( '([\\s\\S]*?)(?:((' + regexpList.join( ')|(' ) + '))|($\n?))', 'gm' )
-var count= $jam.CW(regexp).count()
-return $jam.BJ( function( klass, proto ){
+var count= $jam.GK(regexp).count()
+return $jam.EX( function( klass, proto ){
 proto.constructor=
 function( str ){
 this.string= String( str )
@@ -1664,9 +1664,9 @@ return this
 })
 }
 )
-;$jam.BI
-(   '$jam.CY'
-,   $jam.BJ( function( klass, proto ){
+;$jam.EW
+(   '$jam.GM'
+,   $jam.EX( function( klass, proto ){
 proto.constructor=
 function( numb ){
 this.$= Number( numb )
@@ -1678,8 +1678,8 @@ return this.$
 }
 })
 )
-;$jam.BI
-(   '$jam.CZ'
+;$jam.EW
+(   '$jam.GN'
 ,   new function(){
 var simple= function( data ){
 return data
@@ -1697,19 +1697,19 @@ return arguments[0]
 }
 }
 )
-;$jam.BI
-(    '$jam.DA'
+;$jam.EW
+(    '$jam.GO'
 ,    function( syntaxes ){
 var lexems= []
 var handlers= []
-handlers[ '' ]= syntaxes[ '' ] || $jam.CZ()
+handlers[ '' ]= syntaxes[ '' ] || $jam.GN()
 for( var regexp in syntaxes ){
 if( !syntaxes.hasOwnProperty( regexp ) ) continue
 if( !regexp ) continue
 lexems.push( RegExp( regexp ) )
 handlers.push( syntaxes[ regexp ] )
 }
-var lexer= $jam.CX( lexems )
+var lexer= $jam.GL( lexems )
 return function( str ){
 var res= []
 for( var i= lexer( str ); i.next().found; ){
@@ -1720,20 +1720,20 @@ return res
 }
 }
 )
-;$jam.BI
-(   '$jam.CJ'
-,   $jam.BJ( function( klass, proto ){
+;$jam.EW
+(   '$jam.FX'
+,   $jam.EX( function( klass, proto ){
 proto.constructor=
 function( ){
 this.$= {}
 this.$.queue= []
 this.$.clock=
-$jam.CI()
-.handler( $jam.CH( this ).method( 'run' ) )
+$jam.FW()
+.handler( $jam.FV( this ).method( 'run' ) )
 return this
 }
 proto.latency=
-$jam.BL
+$jam.EZ
 (   function( ){
 return this.$.clock.latency()
 }
@@ -1743,7 +1743,7 @@ return this
 }
 )
 proto.active=
-$jam.BL
+$jam.EZ
 (   function( ){
 return this.$.clock.active()
 }
@@ -1767,25 +1767,25 @@ return this
 }
 })
 )
-;$jam.BI
-(   '$jam.DB'
+;$jam.EW
+(   '$jam.GP'
 ,   new function( ){
 var factory= function( arg ){
 if( !arg ) arg= {}
 var open= arg.tokens && arg.tokens[0] || '{'
 var close= arg.tokens && arg.tokens[1] || '}'
-var openEncoded= $jam.CW.escape( open )
-var closeEncoded= $jam.CW.escape( close )
+var openEncoded= $jam.GK.escape( open )
+var closeEncoded= $jam.GK.escape( close )
 var Selector= arg.Selector || arg.encoder && factory.Selector( arg.encoder ) || factory.Selector()
-var parse= $jam.DA( new function(){
+var parse= $jam.GO( new function(){
 this[ openEncoded + openEncoded ]=
-$jam.BG( open )
+$jam.EU( open )
 this[ closeEncoded +closeEncoded ]=
-$jam.BG( close )
+$jam.EU( close )
 this[ '(' + openEncoded + '([^' + openEncoded + closeEncoded + ']*)' + closeEncoded + ')' ]=
 Selector
 })
-return $jam.BJ( function( klass, proto ){
+return $jam.EX( function( klass, proto ){
 proto.constructor=
 function( str ){
 this.struct= parse( str )
@@ -1811,9 +1811,9 @@ return this.struct.join( '' )
 })
 }
 factory.Selector=
-$jam.BL
-(   $jam.CM( function( ){
-return $jam.BG( factory.Selector( $jam.CZ() ) )
+$jam.EZ
+(   $jam.GA( function( ){
+return $jam.EU( factory.Selector( $jam.GN() ) )
 })
 ,   function( proc ){
 return function( str, key ){
@@ -1824,7 +1824,7 @@ return proc( data[ key ] )
 return selector
 }
 }
-selector.toString= $jam.BG( str )
+selector.toString= $jam.EU( str )
 return selector
 }
 }
@@ -1832,15 +1832,15 @@ return selector
 return factory
 }
 )
-;$jam.BI
-(   '$jam.CN'
-,   $jam.CM( function(){
-var poolNode= $jam.CM( function(){
-var body= $jam.BK().getElementsByTagName( 'body' )[ 0 ]
-var pool= $jam.BK().createElement( 'wc:H:pool' )
+;$jam.EW
+(   '$jam.GB'
+,   $jam.GA( function(){
+var poolNode= $jam.GA( function(){
+var body= $jam.EY().getElementsByTagName( 'body' )[ 0 ]
+var pool= $jam.EY().createElement( 'wc:H:pool' )
 pool.style.display= 'none'
 body.insertBefore( pool, body.firstChild )
-return $jam.BG( pool )
+return $jam.EU( pool )
 })
 var free= []
 return function( proc ){
@@ -1850,11 +1850,11 @@ var self= this
 var args= arguments
 var starter= free.pop()
 if( !starter ){
-var starter= $jam.BK().createElement( 'button' )
+var starter= $jam.EY().createElement( 'button' )
 poolNode().appendChild( starter )
 }
 starter.onclick= function( ev ){
-( ev || $jam.BH().event ).cancelBubble= true
+( ev || $jam.EV().event ).cancelBubble= true
 res= proc.apply( self, args )
 }
 starter.click()
@@ -1864,8 +1864,8 @@ return res
 }
 })
 )
-;$jam.BI
-(    '$jam.CB'
+;$jam.EW
+(    '$jam.FP'
 ,    function( latency, func ){
 var self
 var arg
@@ -1874,15 +1874,15 @@ return function(){
 self= this
 arg= arguments
 if( stop ) return
-stop= $jam.CA( latency, function(){
+stop= $jam.FO( latency, function(){
 stop= null
 func.apply( self, arg )
 })
 }
 }
 )
-;$jam.BI
-(   '$jam.DC'
+;$jam.EW
+(   '$jam.GQ'
 ,   function( map ){
 var Selector= function( str, key ){
 var keyList= key.split( ':' )
@@ -1891,17 +1891,17 @@ var selector= function( data ){
 var value= ( fieldName === '.' ) ? data : data[ fieldName ]
 if( value ) return selector
 }
-selector.toString= $jam.BG( str )
+selector.toString= $jam.EU( str )
 return selector
 }
-var Template= $jam.DB({ Selector: Selector })
+var Template= $jam.GP({ Selector: Selector })
 for( var key in map ) map[ key ]= Template( map[ key ] )
 return 
 }
 )
-;$jam.BI
-(   '$jam.DD'
-,   $jam.BJ( function( klass, proto ){
+;$jam.EW
+(   '$jam.GR'
+,   $jam.EX( function( klass, proto ){
 proto.constructor=
 function( data ){
 this.$= data || []
@@ -1914,7 +1914,7 @@ var lineSep= syntax.lineSep || ';'
 var valSep= syntax.valSep || '='
 var oneIndent= syntax.oneIndent || '+'
 var keySep= syntax.keySep || '_'
-var lineParser= $jam.CW.build( '^((?:', oneIndent, ')*)(.*?)(?:', valSep, '(.*))?$' ).$
+var lineParser= $jam.GK.build( '^((?:', oneIndent, ')*)(.*?)(?:', valSep, '(.*))?$' ).$
 var parser=
 function( str ){
 var lineList= str.split( lineSep )
@@ -1940,26 +1940,26 @@ val= [{ name: key, content: val }]
 }
 cur.push( val[0] )
 }
-return $jam.DD( data )
+return $jam.GR( data )
 }
 return parser
 }
 })
 )
-;$jam.BI
-(   '$jam.DE'
+;$jam.EW
+(   '$jam.GS'
 ,   function( ){
-return $jam.BK().body
+return $jam.EY().body
 }
 )
-;$jam.BI
-(   '$jam.DF'
-,   $jam.CN(function( source ){
-return $jam.BH().eval( source )
+;$jam.EW
+(   '$jam.GT'
+,   $jam.GB(function( source ){
+return $jam.EV().eval( source )
 })
 )
-;$jam.BI
-(   '$jam.CO'
+;$jam.EW
+(   '$jam.GC'
 ,   new function(){
 var handler=
 function( event ){
@@ -1967,14 +1967,14 @@ if( !event.keyMeta() ) return
 if( !event.keyShift() ) return
 if( event.keyAlt() ) return
 if( event.keyCode() != 13 ) return
-$jam.BV().type( '$jam.CO' ).scream( event.target() )
+$jam.FJ().type( '$jam.GC' ).scream( event.target() )
 }
-$jam.BS( $jam.BK().documentElement )
+$jam.FG( $jam.EY().documentElement )
 .listen( 'keyup', handler )
 }
 )
-;$jam.BI
-(   '$jam.BY'
+;$jam.EW
+(   '$jam.FM'
 ,   new function(){
 var handler=
 function( event ){
@@ -1983,14 +1983,14 @@ if( event.keyShift() ) return
 if( event.keyAlt() ) return
 if( event.keyCode() != 13 && event.keyCode() != 'S'.charCodeAt( 0 ) ) return
 event.defaultBehavior( false )
-$jam.BV().type( '$jam.BY' ).scream( event.target() )
+$jam.FJ().type( '$jam.FM' ).scream( event.target() )
 }
-$jam.BS( $jam.BK().documentElement )
+$jam.FG( $jam.EY().documentElement )
 .listen( 'keydown', handler )
 }
 )
-;$jam.BI
-(   '$jam.BZ'
+;$jam.EW
+(   '$jam.FN'
 ,   new function( ){
 var handler=
 function( event ){
@@ -1998,21 +1998,21 @@ if( !event.keyShift() ) return
 if( event.keyMeta() ) return
 if( event.keyAlt() ) return
 if( event.keyCode() != 46 ) return
-if( !$jam.BH().confirm( 'Are you sure to delee this?' ) ) return
-$jam.BV().type( '$jam.BZ' ).scream( event.target() )
+if( !$jam.EV().confirm( 'Are you sure to delee this?' ) ) return
+$jam.FJ().type( '$jam.FN' ).scream( event.target() )
 }
-$jam.BS( $jam.BK().documentElement )
+$jam.FG( $jam.EY().documentElement )
 .listen( 'keyup', handler )
 }
 )
-;$jam.BI
-(   '$jam.CC'
+;$jam.EW
+(   '$jam.FQ'
 ,   new function(){
 var scream=
-$jam.CB
+$jam.FP
 (   50
 ,   function( target ){
-$jam.BV().type( '$jam.CC' ).scream( target )
+$jam.FJ().type( '$jam.FQ' ).scream( target )
 }
 )
 var handler=
@@ -2022,45 +2022,45 @@ if( event.keyCode() >= 33 && event.keyCode() <= 40 ) return
 scream( event.target() )
 }
 var node=
-$jam.BS( $jam.BK().documentElement )
+$jam.FG( $jam.EY().documentElement )
 node.listen( 'keyup', handler )
 node.listen( 'cut', handler )
 node.listen( 'paste', handler )
 }
 )
-;$jam.BI
-(   '$jam.DG'
+;$jam.EW
+(   '$jam.GU'
 ,   new function(){
 var handler=
 function( event ){
-$jam.BV()
+$jam.FJ()
 .type( '$jam.$eventScroll' )
 .wheel( event.wheel() )
 .scream( event.target() )
 }
-var docEl= $jam.BS( $jam.BK().documentElement )
+var docEl= $jam.FG( $jam.EY().documentElement )
 docEl.listen( 'mousewheel', handler )
 docEl.listen( 'DOMMouseScroll', handler )
 }
 )
-;$jam.BI
-(   '$jam.BX'
+;$jam.EW
+(   '$jam.FL'
 ,   new function(){
-var lastURI= $jam.BK().location.href
+var lastURI= $jam.EY().location.href
 var refresh=
 function( ){
-var newURI= $jam.BK().location.href
+var newURI= $jam.EY().location.href
 if( lastURI === newURI ) return
 lastURI= newURI
-$jam.BV().type( '$jam.BX' ).scream( $jam.BK() )
+$jam.FJ().type( '$jam.FL' ).scream( $jam.EY() )
 }
-$jam.BH().setInterval( refresh, 20)
+$jam.EV().setInterval( refresh, 20)
 }
 )
-;$jam.BI
-(   '$jam.DH'
+;$jam.EW
+(   '$jam.GV'
 ,   new function(){
-var console= $jam.BH().console
+var console= $jam.EV().console
 if( !console || !console.log ){
 return function(){
 alert( [].slice.call( arguments ) )
@@ -2071,17 +2071,17 @@ Function.prototype.apply.call( console.log, console, arguments )
 }
 }
 )
-;$jam.BI
-(   '$jam.DI'
-,   $jam.BH().encodeURIComponent
+;$jam.EW
+(   '$jam.GW'
+,   $jam.EV().encodeURIComponent
 )
-;$jam.CG
+;$jam.FU
 (   'wc:AC'
 ,   function( nodeRoot ){
 return new function( ){
 var update= function( ){
-nodeRoot= $jam.BS( nodeRoot )
-var ratio= parseFloat( nodeRoot.attr( 'wc:AY' ) )
+nodeRoot= $jam.FG( nodeRoot )
+var ratio= parseFloat( nodeRoot.attr( 'wc:EB' ) )
 nodeRoot.$.style.height= Math.min( nodeRoot.width() * ratio, window.innerHeight * .9 ) + 'px'
 }
 update()
@@ -2094,10 +2094,10 @@ window.removeEventListener( 'resize', update )
 )
 ;this.$lang=
 function( name ){
-return $lang[ name ] || $lang.text
+return $lang[ name ] || $lang.AH
 }
-$lang.text= $jam.CL
-;$lang.Wrapper=
+$lang.AH= $jam.FZ
+;$lang.GX=
 function( name ){
 var prefix= '<' + name + '>'
 var postfix= '</' + name + '>'
@@ -2105,43 +2105,43 @@ return function( content ){
 return prefix + content + postfix
 }
 }
-;$lang.Parser=
+;$lang.GY=
 function( map ){
-if( !map[ '' ] ) map[ '' ]= $lang.text
-return $jam.CZ
-(   $jam.DA( map )
-,   $jam.CS()
+if( !map[ '' ] ) map[ '' ]= $lang.AH
+return $jam.GN
+(   $jam.GO( map )
+,   $jam.GG()
 )
 }
-;$lang.css=
+;$lang.AJ=
 new function(){
 var css=
 function( str ){
 return css.root( css.stylesheet( str ) )
 }
-css.root= $lang.Wrapper( 'lang:css' )
-css.remark= $lang.Wrapper( 'lang:css_remark' )
-css.string= $lang.Wrapper( 'lang:css_string' )
-css.bracket= $lang.Wrapper( 'lang:css_bracket' )
-css.selector= $lang.Wrapper( 'lang:css_selector' )
-css.tag= $lang.Wrapper( 'lang:css_tag' )
-css.id= $lang.Wrapper( 'lang:css_id' )
-css.klass= $lang.Wrapper( 'lang:css_class' )
-css.pseudo= $lang.Wrapper( 'lang:css_pseudo' )
-css.property= $lang.Wrapper( 'lang:css_property' )
-css.value= $lang.Wrapper( 'lang:css_value' )
+css.root= $lang.GX( 'lang:AJ' )
+css.remark= $lang.GX( 'lang:AK' )
+css.string= $lang.GX( 'lang:AQ' )
+css.bracket= $lang.GX( 'lang:AR' )
+css.selector= $lang.GX( 'lang:AL' )
+css.tag= $lang.GX( 'lang:AM' )
+css.id= $lang.GX( 'lang:AN' )
+css.klass= $lang.GX( 'lang:AO' )
+css.pseudo= $lang.GX( 'lang:AP' )
+css.property= $lang.GX( 'lang:AS' )
+css.value= $lang.GX( 'lang:AT' )
 css.stylesheet=
-$lang.Parser( new function( ){
+$lang.GY( new function( ){
 this[ /(\/\*[\s\S]*?\*\/)/.source ]=
-$jam.CZ( $lang.text, css.remark )
+$jam.GN( $lang.AH, css.remark )
 this[ /(\*|(?:\\[\s\S]|[\w-])+)/.source ]=
-$jam.CZ( $lang.text, css.tag )
+$jam.GN( $lang.AH, css.tag )
 this[ /(#(?:\\[\s\S]|[\w-])+)/.source ]=
-$jam.CZ( $lang.text, css.id )
+$jam.GN( $lang.AH, css.id )
 this[ /(\.(?:\\[\s\S]|[\w-])+)/.source ]=
-$jam.CZ( $lang.text, css.klass )
+$jam.GN( $lang.AH, css.klass )
 this[ /(::?(?:\\[\s\S]|[\w-])+)/.source ]=
-$jam.CZ( $lang.text, css.pseudo )
+$jam.GN( $lang.AH, css.pseudo )
 this[ /\{([\s\S]+?)\}/.source ]=
 new function( ){
 var openBracket= css.bracket( '{' )
@@ -2153,117 +2153,117 @@ return openBracket + style + closeBracket
 }             
 })
 css.style=
-$lang.Parser( new function( ){
+$lang.GY( new function( ){
 this[ /(\/\*[\s\S]*?\*\/)/.source ]=
-$jam.CZ( $lang.text, css.remark )
+$jam.GN( $lang.AH, css.remark )
 this[ /([\w-]+\s*:)/.source  ]=
-$jam.CZ( $lang.text, css.property )
+$jam.GN( $lang.AH, css.property )
 this[ /([^:]+?(?:;|$))/.source ]=
-$jam.CZ( $lang.text, css.value )
+$jam.GN( $lang.AH, css.value )
 })
 return css
 }
-;$lang.pcre=
+;$lang.AU=
 new function(){
 var pcre=
 function( str ){
 return pcre.root( pcre.content( str ) )
 }
-pcre.root= $lang.Wrapper( 'lang:pcre' )
-pcre.backslash= $lang.Wrapper( 'lang:pcre_backslash' )
-pcre.control= $lang.Wrapper( 'lang:pcre_control' )
-pcre.spec= $lang.Wrapper( 'lang:pcre_spec' )
-pcre.text= $lang.Wrapper( 'lang:pcre_text' )
+pcre.root= $lang.GX( 'lang:AU' )
+pcre.backslash= $lang.GX( 'lang:AV' )
+pcre.control= $lang.GX( 'lang:AX' )
+pcre.spec= $lang.GX( 'lang:AW' )
+pcre.text= $lang.GX( 'lang:EC' )
 pcre.content=
-$lang.Parser( new function(){
+$lang.GY( new function(){
 this[ /\\([\s\S])/.source ]=
 new function( ){
 var backslash= pcre.backslash( '\\' )
 return function( symbol ){
-return backslash + pcre.spec( $lang.text( symbol ) )
+return backslash + pcre.spec( $lang.AH( symbol ) )
 }
 }
 this[ /([(){}\[\]$*+?^])/.source ]=
-$jam.CZ( $lang.text, pcre.control )
+$jam.GN( $lang.AH, pcre.control )
 })
 return pcre
 }
-;$lang.js=
+;$lang.AY=
 new function(){
 var js=
 function( str ){
 return js.root( js.content( str ) )
 }
-js.root= $lang.Wrapper( 'lang:js' )
-js.remark= $lang.Wrapper( 'lang:js_remark' )
-js.string= $lang.Wrapper( 'lang:js_string' )
-js.internal= $lang.Wrapper( 'lang:js_internal' )
-js.external= $lang.Wrapper( 'lang:js_external' )
-js.keyword= $lang.Wrapper( 'lang:js_keyword' )
-js.number= $lang.Wrapper( 'lang:js_number' )
-js.regexp= $lang.Wrapper( 'lang:js_regexp' )
-js.bracket= $lang.Wrapper( 'lang:js_bracket' )
-js.operator= $lang.Wrapper( 'lang:js_operator' )
+js.root= $lang.GX( 'lang:AY' )
+js.remark= $lang.GX( 'lang:AZ' )
+js.string= $lang.GX( 'lang:BA' )
+js.internal= $lang.GX( 'lang:BB' )
+js.external= $lang.GX( 'lang:BC' )
+js.keyword= $lang.GX( 'lang:BD' )
+js.number= $lang.GX( 'lang:BE' )
+js.regexp= $lang.GX( 'lang:BF' )
+js.bracket= $lang.GX( 'lang:BG' )
+js.operator= $lang.GX( 'lang:BH' )
 js.content=
-$lang.Parser( new function(){
+$lang.GY( new function(){
 this[ /(\/\*[\s\S]*?\*\/)/.source ]=
-$jam.CZ( $lang.text, js.remark )
+$jam.GN( $lang.AH, js.remark )
 this[ /(\/\/[^\n]*)/.source ]=
-$jam.CZ( $lang.text, js.remark )
+$jam.GN( $lang.AH, js.remark )
 this[ /('(?:[^\n'\\]*(?:\\\\|\\[^\\]))*[^\n'\\]*')/.source ]=
-$jam.CZ( $lang.text, js.string )
+$jam.GN( $lang.AH, js.string )
 this[ /("(?:[^\n"\\]*(?:\\\\|\\[^\\]))*[^\n"\\]*")/.source ]=
-$jam.CZ( $lang.text, js.string )
+$jam.GN( $lang.AH, js.string )
 this[ /(\/(?:[^\n\/\\]*(?:\\\\|\\[^\\]))*[^\n\/\\]*\/[mig]*)/.source ]=
-$jam.CZ( $lang.pcre, js.regexp )
+$jam.GN( $lang.AU, js.regexp )
 this[ /\b(_[\w$]*)\b/.source ]=
-$jam.CZ( $lang.text, js.internal )
+$jam.GN( $lang.AH, js.internal )
 this[ /(\$[\w$]*)(?![\w$])/.source ]=
-$jam.CZ( $lang.text, js.external )
+$jam.GN( $lang.AH, js.external )
 this[ /\b(this|function|new|var|if|else|switch|case|default|for|in|while|do|with|boolean|continue|break|throw|true|false|void|try|catch|null|typeof|instanceof|return|delete|window|document|let|each|yield)\b/.source ]=
-$jam.CZ( $lang.text, js.keyword )
+$jam.GN( $lang.AH, js.keyword )
 this[ /((?:\d*\.)?\d(?:[eE])?)/.source ]=
-$jam.CZ( $lang.text, js.number )
+$jam.GN( $lang.AH, js.number )
 this[ /([(){}\[\]])/.source ]=
-$jam.CZ( $lang.text, js.bracket )
+$jam.GN( $lang.AH, js.bracket )
 this[ /(\+{1,2}|-{1,2}|\*|\/|&{1,2}|\|{1,2}|={1,2}|%|\^|!)/.source ]=
-$jam.CZ( $lang.text, js.operator )
+$jam.GN( $lang.AH, js.operator )
 })
 return js
 }
-;$lang.sgml=
+;$lang.BI=
 new function(){
 var sgml=
 function( str ){
 return sgml.root( sgml.content( str ) )
 }
-sgml.root= $lang.Wrapper( 'lang:sgml' )
-sgml.tag= $lang.Wrapper( 'lang:sgml_tag' )
-sgml.tagBracket= $lang.Wrapper( 'lang:sgml_tag-bracket' )
-sgml.tagName= $lang.Wrapper( 'lang:sgml_tag-name' )
-sgml.attrName= $lang.Wrapper( 'lang:sgml_attr-name' )
-sgml.attrValue= $lang.Wrapper( 'lang:sgml_attr-value' )
-sgml.comment= $lang.Wrapper( 'lang:sgml_comment' )
-sgml.decl= $lang.Wrapper( 'lang:sgml_decl' )
+sgml.root= $lang.GX( 'lang:BI' )
+sgml.tag= $lang.GX( 'lang:BJ' )
+sgml.tagBracket= $lang.GX( 'lang:ED' )
+sgml.tagName= $lang.GX( 'lang:BK' )
+sgml.attrName= $lang.GX( 'lang:BL' )
+sgml.attrValue= $lang.GX( 'lang:BM' )
+sgml.comment= $lang.GX( 'lang:BN' )
+sgml.decl= $lang.GX( 'lang:BO' )
 sgml.tag=
-$jam.CZ
-(   $lang.Parser( new function(){
+$jam.GN
+(   $lang.GY( new function(){
 this[ /^(<\/?)([a-zA-Z][\w:-]*)/.source ]=
 function( bracket, tagName ){
-return sgml.tagBracket( $lang.text( bracket ) ) + sgml.tagName( tagName )
+return sgml.tagBracket( $lang.AH( bracket ) ) + sgml.tagName( tagName )
 } 
 this[ /(\s)([sS][tT][yY][lL][eE])(\s*=\s*)(")([\s\S]*?)(")/.source ]=
 this[ /(\s)([sS][tT][yY][lL][eE])(\s*=\s*)(')([\s\S]*?)(')/.source ]=
 function( prefix, name, sep, open, value, close ){
 name= sgml.attrName( name )
-value= sgml.attrValue( open + $lang.css.style( value ) + close )
+value= sgml.attrValue( open + $lang.AJ.style( value ) + close )
 return prefix + name + sep + value
 }
 this[ /(\s)([oO][nN]\w+)(\s*=\s*)(")([\s\S]*?)(")/.source ]=
 this[ /(\s)([oO][nN]\w+)(\s*=\s*)(')([\s\S]*?)(')/.source ]=
 function( prefix, name, sep, open, value, close ){
 name= sgml.attrName( name )
-value= sgml.attrValue( open + $lang.js( value ) + close )
+value= sgml.attrValue( open + $lang.AY( value ) + close )
 return prefix + name + sep + value
 }
 this[ /(\s)([a-zA-Z][\w:-]+)(\s*=\s*)("[\s\S]*?")/.source ]=
@@ -2274,26 +2274,26 @@ value= sgml.attrValue( value )
 return prefix + name + sep + value
 }
 })
-,   $lang.Wrapper( 'lang:sgml_tag' )
+,   $lang.GX( 'lang:BJ' )
 )
 sgml.content=
-$lang.Parser( new function(){
+$lang.GY( new function(){
 this[ /(<!--[\s\S]*?-->)/.source ]=
-$jam.CZ( $lang.text, sgml.comment )
+$jam.GN( $lang.AH, sgml.comment )
 this[ /(<![\s\S]*?>)/.source ]=
-$jam.CZ( $lang.text, sgml.decl )
+$jam.GN( $lang.AH, sgml.decl )
 this[ /(<[sS][tT][yY][lL][eE][^>]*>)([\s\S]+?)(<\/[sS][tT][yY][lL][eE]>)/.source ]=
 function( prefix, content, postfix ){
-prefix= $lang.sgml.tag( prefix )
-postfix= $lang.sgml.tag( postfix )
-content= $lang.css( content )
+prefix= $lang.BI.tag( prefix )
+postfix= $lang.BI.tag( postfix )
+content= $lang.AJ( content )
 return prefix + content + postfix
 }
 this[ /(<[sS][cC][rR][iI][pP][tT][^>]*>)([\s\S]+?)(<\/[sS][cC][rR][iI][pP][tT]>)/.source ]=
 function( prefix, content, postfix ){
-prefix= $lang.sgml.tag( prefix )
-postfix= $lang.sgml.tag( postfix )
-content= $lang.js( content )
+prefix= $lang.BI.tag( prefix )
+postfix= $lang.BI.tag( postfix )
+content= $lang.AY( content )
 return prefix + content + postfix
 }
 this[ /(<[^>]+>)/.source ]=
@@ -2301,37 +2301,37 @@ sgml.tag
 })
 return sgml
 }
-;$jam.CG
+;$jam.FU
 (   'wc:R'
 ,   function( nodeRoot ){
 return new function( ){
-nodeRoot= $jam.BS( nodeRoot )
-var source= $jam.CK( nodeRoot.text() ).minimizeIndent().trim( /[\n\r]/ ).$
+nodeRoot= $jam.FG( nodeRoot )
+var source= $jam.FY( nodeRoot.text() ).minimizeIndent().trim( /[\n\r]/ ).$
 nodeRoot.clear()
 var nodeResult=
-$jam.BS.Element( 'wc:AH' )
+$jam.FG.Element( 'wc:BP' )
 .parent( nodeRoot )
 var nodeSource0=
-$jam.BS.Element( 'wc:AI' )
+$jam.FG.Element( 'wc:BQ' )
 .parent( nodeRoot )
 var nodeSource=
-$jam.BS.parse( '<wc:L wc:M="sgml" />' )
+$jam.FG.parse( '<wc:L wc:M="sgml" />' )
 .text( source )
 .parent( nodeSource0 )
-var exec= $jam.CN( function( ){
-var source= $jam.CK( nodeSource.text() ).minimizeIndent().trim( /[\n\r]/ )
+var exec= $jam.GB( function( ){
+var source= $jam.FY( nodeSource.text() ).minimizeIndent().trim( /[\n\r]/ )
 //nodeSource.text( source )
 nodeResult.html( source )
 var scripts= nodeResult.descList( 'script' )
 for( var i= 0; i < scripts.length; ++i ){
-var script= $jam.BS( scripts[i] )
-$jam.DF( script.text() )
+var script= $jam.FG( scripts[i] )
+$jam.GT( script.text() )
 }
 return true
 })
 exec()
 var onCommit=
-nodeSource.listen( '$jam.BY', exec )
+nodeSource.listen( '$jam.FM', exec )
 this.destroy=
 function( ){
 onCommit.sleep()
@@ -2339,111 +2339,111 @@ onCommit.sleep()
 }
 }
 )
-;$lang.php=
+;$lang.EE=
 new function( ){
 var php=
 function( str ){
 return php.root( php.content( str ) )
 }
-php.root= $lang.Wrapper( 'lang:php' )
-php.dollar= $lang.Wrapper( 'lang:php_dollar' )
-php.variable= $lang.Wrapper( 'lang:php_variable' )
-php.string= $lang.Wrapper( 'lang:php_string' )
-php.number= $lang.Wrapper( 'lang:php_number' )
-php.func= $lang.Wrapper( 'lang:php_func' )
-php.keyword= $lang.Wrapper( 'lang:php_keyword' )
+php.root= $lang.GX( 'lang:EE' )
+php.dollar= $lang.GX( 'lang:BR' )
+php.variable= $lang.GX( 'lang:BS' )
+php.string= $lang.GX( 'lang:BT' )
+php.number= $lang.GX( 'lang:BW' )
+php.func= $lang.GX( 'lang:BU' )
+php.keyword= $lang.GX( 'lang:BV' )
 php.content=
-$lang.Parser( new function(){
+$lang.GY( new function(){
 this[ /\b(__halt_compiler|abstract|and|array|as|break|callable|case|catch|class|clone|const|continue|declare|default|die|do|echo|else|elseif|empty|enddeclare|endfor|endforeach|endif|endswitch|endwhile|eval|exit|extends|final|for|foreach|function|global|gotoif|implements|include|include_once|instanceof|insteadof|interface|isset|list|namespace|new|or|print|private|protected|public|require|require_once|return|static|switch|throw|trait|try|unset|use|var|while|xor|__CLASS__|__DIR__|__FILE__|__FUNCTION__|__LINE__|__METHOD__|__NAMESPACE__|__TRAIT__)\b/.source ]=
-$jam.CZ( $lang.text, php.keyword )
+$jam.GN( $lang.AH, php.keyword )
 this[ /(\$)(\w+)\b/.source ]=
 function( dollar, variable ){
-dollar= $lang.php.dollar( dollar )
-variable= $lang.php.variable( variable )
+dollar= $lang.EE.dollar( dollar )
+variable= $lang.EE.variable( variable )
 return dollar + variable
 }
 this[ /(\w+)(?=\s*\()/.source ]=
 php.func
 this[ /('(?:[^\n'\\]*(?:\\\\|\\[^\\]))*[^\n'\\]*')/.source ]=
 this[ /("(?:[^\n"\\]*(?:\\\\|\\[^\\]))*[^\n"\\]*")/.source ]=
-$jam.CZ( $lang.text, php.string )
+$jam.GN( $lang.AH, php.string )
 this[ /((?:\d*\.)?\d(?:[eE])?)/.source ]=
-$jam.CZ( $lang.text, php.number )
+$jam.GN( $lang.AH, php.number )
 })
 return php
 }
-;$jam.BI
-(    '$lang.tags'
+;$jam.EW
+(    '$lang.EF'
 ,    new function(){
 var tags=
 function( str ){
 return tags.root( tags.content( str ) )
 }
-tags.root= $lang.Wrapper( 'lang:tags' )
-tags.item= $lang.Wrapper( 'lang:tags_item' )
+tags.root= $lang.GX( 'lang:EF' )
+tags.item= $lang.GX( 'lang:EG' )
 tags.content=
-$lang.Parser( new function(){
+$lang.GY( new function(){
 this[ /^(\s*?)([^\n\r]+)(\s*?)$/.source ]=
 function( open, text, close ){
-return open + '<a href="?gist/list/' + $jam.CL( text ) + '">' + tags.item( text ) + '</a>' + close
+return open + '<a href="?gist/list/' + $jam.FZ( text ) + '">' + tags.item( text ) + '</a>' + close
 }
 })
 return tags
 }
 ) 
-;$lang.md=
+;$lang.BX=
 new function(){
 var md=
 function( str ){
 return md.root( md.content( str ) )
 }
-md.root= $lang.Wrapper( 'lang:md' )
-md.header1= $lang.Wrapper( 'lang:md_header-1' )
-md.header2= $lang.Wrapper( 'lang:md_header-2' )
-md.header3= $lang.Wrapper( 'lang:md_header-3' )
-md.header4= $lang.Wrapper( 'lang:md_header-4' )
-md.header5= $lang.Wrapper( 'lang:md_header-5' )
-md.header6= $lang.Wrapper( 'lang:md_header-6' )
-md.headerMarker= $lang.Wrapper( 'lang:md_header-marker' )
-md.quote= $lang.Wrapper( 'lang:md_quote' )
-md.quoteMarker= $lang.Wrapper( 'lang:md_quote-marker' )
-md.quoteInline= $lang.Wrapper( 'lang:md_quote-inline' )
-md.quoteInlineMarker= $lang.Wrapper( 'lang:md_quote-inline-marker' )
-md.image= $lang.Wrapper( 'lang:md_image' )
-md.imageHref= $lang.Wrapper( 'lang:md_image-href' )
-md.embed= $lang.Wrapper( 'lang:md_embed' )
-md.embedHref= $lang.Wrapper( 'lang:md_embed-href' )
-md.link= $lang.Wrapper( 'lang:md_link' )
-md.linkMarker= $lang.Wrapper( 'lang:md_link-marker' )
-md.linkTitle= $lang.Wrapper( 'lang:md_link-title' )
-md.linkHref= $lang.Wrapper( 'lang:md_link-href' )
-md.author= $lang.Wrapper( 'lang:md_author' )
-md.indent= $lang.Wrapper( 'lang:md_indent' )
-md.escapingMarker= $lang.Wrapper( 'lang:md_escaping-marker' )
-md.emphasis= $lang.Wrapper( 'lang:md_emphasis' )
-md.emphasisMarker= $lang.Wrapper( 'lang:md_emphasis-marker' )
-md.strong= $lang.Wrapper( 'lang:md_strong' )
-md.strongMarker= $lang.Wrapper( 'lang:md_strong-marker' )
-md.super= $lang.Wrapper( 'lang:md_super' )
-md.superMarker= $lang.Wrapper( 'lang:md_super-marker' )
-md.sub= $lang.Wrapper( 'lang:md_sub' )
-md.subMarker= $lang.Wrapper( 'lang:md_sub-marker' )
-md.math= $lang.Wrapper( 'lang:md_math' )
-md.remark= $lang.Wrapper( 'lang:md_remark' )
-md.table= $lang.Wrapper( 'lang:md_table' )
-md.tableRow= $lang.Wrapper( 'lang:md_table-row' )
-md.tableCell= $lang.Wrapper( 'lang:md_table-cell' )
-md.tableMarker= $lang.Wrapper( 'lang:md_table-marker' )
-md.code= $lang.Wrapper( 'lang:md_code' )
-md.codeMarker= $lang.Wrapper( 'lang:md_code-marker' )
-md.codeLang= $lang.Wrapper( 'lang:md_code-lang' )
-md.codeContent= $lang.Wrapper( 'lang:md_code-content' )
-md.html= $lang.Wrapper( 'lang:md_html' )
-md.htmlTag= $lang.Wrapper( 'lang:md_html-tag' )
-md.htmlContent= $lang.Wrapper( 'lang:md_html-content' )
-md.para= $lang.Wrapper( 'lang:md_para' )
+md.root= $lang.GX( 'lang:BX' )
+md.header1= $lang.GX( 'lang:CN' )
+md.header2= $lang.GX( 'lang:CM' )
+md.header3= $lang.GX( 'lang:CL' )
+md.header4= $lang.GX( 'lang:EH' )
+md.header5= $lang.GX( 'lang:EI' )
+md.header6= $lang.GX( 'lang:EJ' )
+md.headerMarker= $lang.GX( 'lang:CO' )
+md.quote= $lang.GX( 'lang:CP' )
+md.quoteMarker= $lang.GX( 'lang:CQ' )
+md.quoteInline= $lang.GX( 'lang:CR' )
+md.quoteInlineMarker= $lang.GX( 'lang:CS' )
+md.image= $lang.GX( 'lang:CC' )
+md.imageHref= $lang.GX( 'lang:CD' )
+md.embed= $lang.GX( 'lang:BY' )
+md.embedHref= $lang.GX( 'lang:BZ' )
+md.link= $lang.GX( 'lang:CE' )
+md.linkMarker= $lang.GX( 'lang:CH' )
+md.linkTitle= $lang.GX( 'lang:CF' )
+md.linkHref= $lang.GX( 'lang:CG' )
+md.author= $lang.GX( 'lang:CI' )
+md.indent= $lang.GX( 'lang:CJ' )
+md.escapingMarker= $lang.GX( 'lang:DD' )
+md.emphasis= $lang.GX( 'lang:DE' )
+md.emphasisMarker= $lang.GX( 'lang:DF' )
+md.strong= $lang.GX( 'lang:DG' )
+md.strongMarker= $lang.GX( 'lang:DH' )
+md.super= $lang.GX( 'lang:DI' )
+md.superMarker= $lang.GX( 'lang:DJ' )
+md.sub= $lang.GX( 'lang:DK' )
+md.subMarker= $lang.GX( 'lang:DL' )
+md.math= $lang.GX( 'lang:CT' )
+md.remark= $lang.GX( 'lang:DM' )
+md.table= $lang.GX( 'lang:CU' )
+md.tableRow= $lang.GX( 'lang:CV' )
+md.tableCell= $lang.GX( 'lang:CX' )
+md.tableMarker= $lang.GX( 'lang:CY' )
+md.code= $lang.GX( 'lang:CZ' )
+md.codeMarker= $lang.GX( 'lang:DA' )
+md.codeLang= $lang.GX( 'lang:DB' )
+md.codeContent= $lang.GX( 'lang:DC' )
+md.html= $lang.GX( 'lang:EK' )
+md.htmlTag= $lang.GX( 'lang:EL' )
+md.htmlContent= $lang.GX( 'lang:EM' )
+md.para= $lang.GX( 'lang:CK' )
 md.inline=
-$lang.Parser( new function(){
+$lang.GY( new function(){
 // indentation
 // ^\s+
 this[ /^(\s+)/.source ]=
@@ -2468,18 +2468,18 @@ middle= md.linkMarker( middle )
 close= md.linkMarker( close )
 href= title ? md.linkHref( href ) : md.linkTitle( href )
 title= md.linkTitle( md.inline( title ) )
-return md.link( '<a href="' + $jam.CL( uri ) + '">' + open + title + middle + href + close + '</a>' )
+return md.link( '<a href="' + $jam.FZ( uri ) + '">' + open + title + middle + href + close + '</a>' )
 }
 // image
 // [url]
 this[ /(\[)([^\[\]]+)(\])/.source ]=
 function( open, href, close ){
-return md.image( md.imageHref( open + href + close ) + '<a href="' + $jam.CL( href ) + '"><object data="' + $jam.CL( href ) + '"></object></a>' )
+return md.image( md.imageHref( open + href + close ) + '<a href="' + $jam.FZ( href ) + '"><object data="' + $jam.FZ( href ) + '"></object></a>' )
 }
 // emphasis
 // /some text/
 this[ /([^\s"({[]\/)/.source ]=
-$lang.text
+$lang.AH
 this[ /(\/)([^\/\s](?:[\s\S]*?[^\/\s])?)(\/)(?=[\s,.:;!?")}\]]|$)/.source ]=
 function( open, content, close ){
 open = md.emphasisMarker( open )
@@ -2490,7 +2490,7 @@ return md.emphasis( open + content + close )
 // strong
 // *some text*
 this[ /([^\s"({[]\*)/.source ]=
-$lang.text            
+$lang.AH            
 this[ /(\*)([^\*\s](?:[\s\S]*?[^\*\s])?)(\*)(?=[\s,.:;!?")}\]]|$)/.source ]=
 function( open, content, close ){
 open = md.strongMarker( open )
@@ -2533,7 +2533,7 @@ return md.remark( open + content + close )
 }
 })
 md.content=
-$lang.Parser( new function(){
+$lang.GY( new function(){
 // header
 // !!! Title
 this[ /^(!!! )(.*?)$/.source ]=
@@ -2566,7 +2566,7 @@ this[ /^(http:\/\/youtu.be\/)(\w+)(.*$\n?)/.source ]=
 function( prefix, id, close ){
 var href= md.embedHref( prefix + id + close )
 var uri= 'http://www.youtube.com/embed/' + id
-var embed= md.embed( '<wc:AC wc:AY=".75"><iframe class="wc_lang_md_embed-object" src="' + uri + '" allowfullscreen></iframe></wc:AC>' )
+var embed= md.embed( '<wc:AC wc:EB=".75"><iframe class="wc_lang_md_embed-object" src="' + uri + '" allowfullscreen></iframe></wc:AC>' )
 return href + embed
 }
 // image
@@ -2575,7 +2575,7 @@ this[ /^((?:[\?\/\.]|https?:|ftps?:).*?)$(\n?)/.source ]=
 function( url, close ){
 var href= md.embedHref( url + close )
 url= url.replace( /\xAD/g, '' )
-var embed= md.embed( '<a href="' + $jam.CL( url ) + '"><image src="' + $jam.CL( url ) + '" /></a>' )
+var embed= md.embed( '<a href="' + $jam.FZ( url ) + '"><image src="' + $jam.FZ( url ) + '" /></a>' )
 return href + embed
 }
 // table
@@ -2600,7 +2600,7 @@ cell= md.tableMarker( '\n| ' ) + cell
 cells[ c ]= md.tableCell( cell )
 }
 row= cells.join( '' )
-var rowSep= '<lang:md_table-row-sep><wc:AZ colspan="300">\n--</wc:AZ></lang:md_table-row-sep>'
+var rowSep= '<lang:CW><wc:EN colspan="300">\n--</wc:EN></lang:CW>'
 rows[ r ]= rowSep + md.tableRow( row )
 }
 content= rows.join( '' )
@@ -2633,43 +2633,43 @@ this.extend= function( target, source ){
 for( var key in source ) target[ key ]= source[ key ]
 }
 }
-$jam.CG( 'wc:BA', function( nodeRoot ){
-nodeRoot= $jam.BS( nodeRoot )
-var script= $jam.BS.Element( 'script' ).attr( 'src', '//nin-jin.disqus.com/thread.js?url=' + $jam.DI( '//' + document.location.host + document.location.pathname ) )
+$jam.FU( 'wc:EO', function( nodeRoot ){
+nodeRoot= $jam.FG( nodeRoot )
+var script= $jam.FG.Element( 'script' ).attr( 'src', '//nin-jin.disqus.com/thread.js?url=' + $jam.GW( '//' + document.location.host + document.location.pathname ) )
 script.listen( 'load', function( ){
 console.log( DISQUS.jsonData )
-var thread= nodeRoot.html( $lang.md( '  0 *a* b' ) )
+var thread= nodeRoot.html( $lang.BX( '  0 *a* b' ) )
 var postList= DISQUS.jsonData.posts
 var userList= DISQUS.jsonData.users
 for( var id in postList ){
 var post= postList[ id ]
 var user= userList[ post.user_key ]
-var message= $jam.BS.Element( 'wc:BB' )
-$jam.BS.Element( 'wc:BC' ).text( user.display_name ).parent( message )
-$jam.BS.Element( 'wc:BD' ).text( post.raw_message ).parent( message )
+var message= $jam.FG.Element( 'wc:EP' )
+$jam.FG.Element( 'wc:EQ' ).text( user.display_name ).parent( message )
+$jam.FG.Element( 'wc:ER' ).text( post.raw_message ).parent( message )
 message.parent( nodeRoot )
 }
 } )
 nodeRoot.head( script )
 } )
-;$jam.CG
+;$jam.FU
 (   'wc:L'
 ,   function( nodeRoot ){
 return new function( ){
-nodeRoot= $jam.BS( nodeRoot )
-var source= $jam.CL( nodeRoot.text() ).replace( /\r?\n/g, '<br />' )
+nodeRoot= $jam.FG( nodeRoot )
+var source= $jam.FZ( nodeRoot.text() ).replace( /\r?\n/g, '<br />' )
 nodeRoot.clear()
-var nodeSource= $jam.BS.parse( '<div class=" wc_editor_content " />' )
+var nodeSource= $jam.FG.parse( '<div class=" wc_editor_content " />' )
 .html( source )
 .parent( nodeRoot )
 var sourceLast= ''
-var update= $jam.CB( 50, function( ){
-//var source= $jam.CK( nodeSource.text() ).replace( /\n?\r?$/, '\n' ).$
+var update= $jam.FP( 50, function( ){
+//var source= $jam.FY( nodeSource.text() ).replace( /\n?\r?$/, '\n' ).$
 var source= nodeSource.text()
 if( source === sourceLast ) return
 sourceLast= source
 source=
-$jam.CK( source )
+$jam.FY( source )
 .process( $lang( nodeRoot.attr( 'wc:M' ) ) )
 .replace( /  /g, '\u00A0 ' )
 .replace( /  /g, ' \u00A0' )
@@ -2677,20 +2677,20 @@ $jam.CK( source )
 .replace( /$/, '\n' )
 .replace( /\n/g, '<br/>' )
 .$
-var nodeRange= $jam.CV().aimNodeContent( nodeSource )
-var startPoint= $jam.CV().collapse2start()
+var nodeRange= $jam.GJ().aimNodeContent( nodeSource )
+var startPoint= $jam.GJ().collapse2start()
 //console.log(nodeRange.html())
-var endPoint= $jam.CV().collapse2end()
+var endPoint= $jam.GJ().collapse2end()
 var hasStart= nodeRange.hasRange( startPoint )
 var hasEnd= nodeRange.hasRange( endPoint )
 if( hasStart ){
-var metRange= $jam.CV()
+var metRange= $jam.GJ()
 .equalize( 'end2start', startPoint )
 .equalize( 'start2start', nodeRange )
 var offsetStart= metRange.text().length
 }
 if( hasEnd ){
-var metRange= $jam.CV()
+var metRange= $jam.GJ()
 .equalize( 'end2start', endPoint )
 .equalize( 'start2start', nodeRange )
 var offsetEnd= metRange.text().length
@@ -2698,7 +2698,7 @@ var offsetEnd= metRange.text().length
 }
 //console.log(offsetStart,offsetEnd)
 nodeSource.html( source )
-var selRange= $jam.CV()
+var selRange= $jam.GJ()
 if( hasStart ){
 var startRange= nodeRange.clone().move( offsetStart )
 selRange.equalize( 'start2start', startRange )
@@ -2711,23 +2711,23 @@ selRange.select()
 }
 //nodeSource.dissolveTree()
 //console.log(source.charCodeAt( source.length -1 ))
-//if( source.charAt( source.length -1 ) !== '\n' ) nodeSource.tail( $jam.BS.Text( '\n' ) )
-//if( !source ) $jam.CV().aimNode( nodeSource.head() ).collapse2end().select()
-//if( nodeSource.tail() && nodeSource.tail().name() !== 'br' ) nodeSource.tail( $jam.BS.Element( 'br' ) )
+//if( source.charAt( source.length -1 ) !== '\n' ) nodeSource.tail( $jam.FG.Text( '\n' ) )
+//if( !source ) $jam.GJ().aimNode( nodeSource.head() ).collapse2end().select()
+//if( nodeSource.tail() && nodeSource.tail().name() !== 'br' ) nodeSource.tail( $jam.FG.Element( 'br' ) )
 } )
 var onEdit=
-nodeRoot.listen( '$jam.CC', update )
+nodeRoot.listen( '$jam.FQ', update )
 var onEnter=
 nodeRoot.listen( 'keypress', function( event ){
-event= $jam.BV( event )
+event= $jam.FJ( event )
 if( !event.keyCode().enter ) return
 if( event.keyAccel() ) return
 event.defaultBehavior( false )
-$jam.CV().html( '<br/>' ).collapse2end().select()
+$jam.GJ().html( '<br/>' ).collapse2end().select()
 })
 var onAltSymbol=
 nodeRoot.listen( 'keydown', function( event ){
-event= $jam.BV( event )
+event= $jam.FJ( event )
 //console.log( event.keyCode() )
 if( !event.keyAlt() ) return
 if( event.keyShift() ){
@@ -2764,91 +2764,91 @@ this[ 'backSlash' ]= '|'
 this[ 'closeBracket' ]= ']'
 }
 }
-var symbol= symbolSet[ $jam.BU( event.keyCode() ) ]
+var symbol= symbolSet[ $jam.FI( event.keyCode() ) ]
 if( !symbol ) return
 event.defaultBehavior( false )
-$jam.CV().text( symbol ).collapse2end().select()
+$jam.GJ().text( symbol ).collapse2end().select()
 })
 //var onBackspace=
 //nodeRoot.listen( 'keydown', function( event ){
-//    event= $jam.BV( event )
+//    event= $jam.FJ( event )
 //    if( event.keyCode() != 8 ) return
 //    if( event.keyAccel() ) return
 //    event.defaultBehavior( false )
-//    var fullRange= $jam.CV().aimNodeContent( nodeSource )
-//    var newOffset= fullRange.clone().equalize( 'end2start', $jam.CV() ).text().length - 1
+//    var fullRange= $jam.GJ().aimNodeContent( nodeSource )
+//    var newOffset= fullRange.clone().equalize( 'end2start', $jam.GJ() ).text().length - 1
 //    if( newOffset < 0 ) newOffset= 0
-//    var range= fullRange.clone().move( newOffset ).equalize( 'end2end', $jam.CV() )
+//    var range= fullRange.clone().move( newOffset ).equalize( 'end2end', $jam.GJ() )
 //    range.dropContents()
 //})
 var onTab=
 nodeRoot.listen( 'keydown', function( event ){
-event= $jam.BV( event )
+event= $jam.FJ( event )
 if( !event.keyCode().tab ) return
 if( event.keyAccel() ) return
 event.defaultBehavior( false )
-$jam.CV().text( '    ' ).collapse2end().select()
+$jam.GJ().text( '    ' ).collapse2end().select()
 })
 var onLeave=
 nodeSource.listen( 'blur', function( event ){
-$jam.BV().type( '$jam.BY' ).scream( nodeRoot )
+$jam.FJ().type( '$jam.FM' ).scream( nodeRoot )
 })
 var onActivate=
 nodeRoot.listen( 'mousedown', function( event ){
-event= $jam.BV( event )
+event= $jam.FJ( event )
 if( !event.keyMeta() ) return
-nodeRoot.attr( 'wc:AJ', true )
+nodeRoot.attr( 'wc:CA', true )
 nodeSource.editable( true )
 })
 var onDeactivate=
 nodeRoot.listen( 'keydown', function( event ){
-event= $jam.BV( event )
+event= $jam.FJ( event )
 if( !event.keyCode().escape ) return
 nodeSource.editable( false )
-nodeRoot.attr( 'wc:AJ', false )
+nodeRoot.attr( 'wc:CA', false )
 event.defaultBehavior( false )
 })
 this.destroy= function( ){
 onEdit.sleep()
 onLeave.sleep()
 }
-$jam.CA( 0, update )
-nodeRoot.attr( 'wc:AK', true )
+$jam.FO( 0, update )
+nodeRoot.attr( 'wc:DN', true )
 }
 }
 )
-;$jam.CG
+;$jam.FU
 (   'wc:O'
 ,   function( nodeRoot ){
 return new function( ){
-nodeRoot= $jam.BS( nodeRoot )
+nodeRoot= $jam.FG( nodeRoot )
 var hlight= $lang( nodeRoot.state( 'lang' ) )
-var source= $jam.CK( nodeRoot.text() ).minimizeIndent().trim( /[\r\n]/ ).$
+var source= $jam.FY( nodeRoot.text() ).minimizeIndent().trim( /[\r\n]/ ).$
 nodeRoot
 .html( hlight( source ) )
 }
 }
 )
-;$jam.CG
+;$jam.FU
 (   'wc:A'
 ,   new function( ){
 return function( nodeRoot ){
-nodeRoot= $jam.BS( nodeRoot )
+nodeRoot= $jam.FG( nodeRoot )
 var nodeHeader=
-$jam.BS.parse( '<wc:B title="ctrl + enter" />' )
-.tail( $jam.BS.parse( '<wc:E>Run ►' ) )
-.tail( $jam.BS.parse( '<wc:D>inner (µs)' ) )
-.tail( $jam.BS.parse( '<wc:D>outer (µs)' ) )
+$jam.FG.parse( '<wc:B title="ctrl + enter" />' )
+.tail( $jam.FG.parse( '<wc:E>Run ►' ) )
+.tail( $jam.FG.parse( '<wc:D>inner (µs)' ) )
+.tail( $jam.FG.parse( '<wc:D>outer (µs)' ) )
 nodeRoot.head( nodeHeader )
-//var nodeControls= $jam.BS.Element( 'wc:I' ).parent( nodeRoot )
-//var nodeClone= $jam.BS.parse( '<wc:J title="ctrl+shift+enter">clone' ).parent( nodeControls )
-//var nodeDelete= $jam.BS.parse( '<wc:K>delete' ).parent( nodeControls )
+//var nodeControls= $jam.FG.Element( 'wc:I' ).parent( nodeRoot )
+//var nodeClone= $jam.FG.parse( '<wc:J title="ctrl+shift+enter">clone' ).parent( nodeControls )
+//var nodeDelete= $jam.FG.parse( '<wc:K>delete' ).parent( nodeControls )
 var refresh=
 function( ){
 var benchList= nodeRoot.childList( 'wc:C' )
 for( var i= 0; i < benchList.length(); ++i ){
-$jam.BV()
-.type( '$jam.BY' )
+$jam.FJ()
+.type( '$jam.FM' )
 .scream( benchList.get( i ) )
 }
 }
@@ -2863,29 +2863,29 @@ onClick.sleep()
 }
 }
 )
-$jam.CG
+$jam.FU
 (   'wc:C'
 ,   new function( ){
 var queue=
-$jam.CJ()
+$jam.FX()
 .latency( 100 )
 var parser= /^([\s\S]*?)_bench\.begin\(\)([\s\S]*)_bench\.end\(\)([\s\S]*)$/
 return function( nodeRoot ){
-nodeRoot= $jam.BS( nodeRoot )
-var source= $jam.CK( nodeRoot.text() ).minimizeIndent().trim( /[\r\n]/ ).$
+nodeRoot= $jam.FG( nodeRoot )
+var source= $jam.FY( nodeRoot.text() ).minimizeIndent().trim( /[\r\n]/ ).$
 nodeRoot
 .clear()
 var nodeSource=
-$jam.BS.parse( '<wc:F><wc:L wc:M="js">' + $jam.CL( source ) )
+$jam.FG.parse( '<wc:F><wc:L wc:M="js">' + $jam.FZ( source ) )
 .parent( nodeRoot )
 var nodeInner=
-$jam.BS.parse( '<wc:G class=" source=inner " />' )
+$jam.FG.parse( '<wc:G class=" source=inner " />' )
 .parent( nodeRoot )
 var nodeOuter=
-$jam.BS.parse( '<wc:G class=" source=outer " />' )
+$jam.FG.parse( '<wc:G class=" source=outer " />' )
 .parent( nodeRoot )
-nodeRoot.surround( $jam.BS.Fragment() ) // for chrome 12
-var calc= $jam.CN( function( source ){
+nodeRoot.surround( $jam.FG.Fragment() ) // for chrome 12
+var calc= $jam.GB( function( source ){
 var startCompile= new Date
 var proc= new Function( '', source )
 var endCompile= new Date
@@ -2961,14 +2961,14 @@ nodeRoot.state( 'wait', 'true' )
 var clone=
 function( ){
 var node=
-$jam.BS.Element( 'wc:C' )
+$jam.FG.Element( 'wc:C' )
 .text( nodeSource.text() )
 nodeRoot.prev( node )
 }
 var onCommit=
-nodeRoot.listen( '$jam.BY', schedule )
+nodeRoot.listen( '$jam.FM', schedule )
 var onClone=
-nodeRoot.listen( '$jam.CO', clone )
+nodeRoot.listen( '$jam.GC', clone )
 return new function( ){
 this.destroy=
 function( ){
@@ -2979,30 +2979,30 @@ onClone.sleep()
 }
 }
 )
-;$jam.CG
+;$jam.FU
 (   'wc:N'
 ,   function( nodeRoot ){
 return new function( ){
-nodeRoot= $jam.BS( nodeRoot )
-var exec= $jam.CN( function( ){
+nodeRoot= $jam.FG( nodeRoot )
+var exec= $jam.GB( function( ){
 var source= nodeSource.text()
 var proc= new Function( '_test', source )
 proc( _test )
 return true
 })
-var source= $jam.CK( nodeRoot.text() ).minimizeIndent().trim( /[\n\r]/ ).$
+var source= $jam.FY( nodeRoot.text() ).minimizeIndent().trim( /[\n\r]/ ).$
 nodeRoot.clear()
-var nodeSource0= $jam.BS.Element( 'wc:P' ).parent( nodeRoot )
-var nodeSource= $jam.BS.parse( '<wc:L wc:M="js" />' ).text( source ).parent( nodeSource0 )
-var nodeControls= $jam.BS.Element( 'wc:I' ).parent( nodeRoot )
-var nodeClone= $jam.BS.parse( '<wc:J title="ctrl+shift+enter">clone' ).parent( nodeControls )
-var nodeDelete= $jam.BS.parse( '<wc:K>delete' ).parent( nodeControls )
+var nodeSource0= $jam.FG.Element( 'wc:P' ).parent( nodeRoot )
+var nodeSource= $jam.FG.parse( '<wc:L wc:M="js" />' ).text( source ).parent( nodeSource0 )
+var nodeControls= $jam.FG.Element( 'wc:I' ).parent( nodeRoot )
+var nodeClone= $jam.FG.parse( '<wc:J title="ctrl+shift+enter">clone' ).parent( nodeControls )
+var nodeDelete= $jam.FG.parse( '<wc:K>delete' ).parent( nodeControls )
 var _test= {}
 var checkDone= function( ){
 if( passed() !== 'wait' ) throw new Error( 'Test already done' )
 }
 _test.ok=
-$jam.BL
+$jam.EZ
 (   function( ){
 checkDone()
 if( passed() === 'wait' ) passed( true )
@@ -3024,7 +3024,7 @@ throw new Error( 'Results is not equal' )
 }
 )
 _test.not=
-$jam.BL
+$jam.EZ
 (   function( ){
 checkDone()
 passed( false )
@@ -3053,15 +3053,15 @@ stop= null
 throw new Error( 'Timeout!' )
 }
 _test.deadline=
-$jam.BL
+$jam.EZ
 (   null
 ,   function( ms ){
 if( stop ) throw new Error( 'Deadline redeclaration' )
-stop= $jam.CA( ms, noMoreWait )
+stop= $jam.FO( ms, noMoreWait )
 }
 )
 var passed=
-$jam.BL
+$jam.EZ
 (   function( ){
 return nodeRoot.state( 'passed' )
 }
@@ -3071,7 +3071,7 @@ nodeRoot.state( 'passed', val )
 )
 var print=
 function( val ){
-var node= $jam.BS.Element( 'wc:AN' )
+var node= $jam.FG.Element( 'wc:DQ' )
 node.text( val )
 nodeRoot.tail( node )
 }
@@ -3083,11 +3083,11 @@ print( 'Function: [object Function]' )
 return
 }
 }
-print( $jam.BP( val ) + ': ' + val )
+print( $jam.FD( val ) + ': ' + val )
 }
 var run=
 function( ){
-var results= nodeRoot.childList( 'wc:AN' )
+var results= nodeRoot.childList( 'wc:DQ' )
 for( var i= 0; i < results.length(); ++i ){
 results.get(i).parent( null )
 }
@@ -3100,7 +3100,7 @@ var clone=
 function( ){
 run()
 var node=
-$jam.BS.Element( 'wc:N' )
+$jam.FG.Element( 'wc:N' )
 .text( nodeSource.text() )
 nodeRoot.prev( node )
 }
@@ -3110,18 +3110,18 @@ nodeRoot.parent( null )
 }
 run()
 var onCommit=
-nodeRoot.listen( '$jam.BY', run )
+nodeRoot.listen( '$jam.FM', run )
 var onClone=
-nodeRoot.listen( '$jam.CO', clone )
+nodeRoot.listen( '$jam.GC', clone )
 var onClone=
-nodeRoot.listen( '$jam.BZ', del )
+nodeRoot.listen( '$jam.FN', del )
 var onCloneClick=
 nodeClone.listen( 'click', function( event ){
-$jam.BV().type( '$jam.CO' ).scream( event.target() )
+$jam.FJ().type( '$jam.GC' ).scream( event.target() )
 })
 var onDeleteClick=
 nodeDelete.listen( 'click', function( event ){
-$jam.BV().type( '$jam.BZ' ).scream( event.target() )
+$jam.FJ().type( '$jam.FN' ).scream( event.target() )
 })
 this.destroy=
 function( ){
@@ -3130,41 +3130,41 @@ onClone.sleep()
 onCloneClick.sleep()
 onDeleteClick.sleep()
 if( stop ) stop()
-_test.ok= _test.not= $jam.BG()
+_test.ok= _test.not= $jam.EU()
 }
 }
 }
 )
-;$jam.CG
-(   'wc:AP'
+;$jam.FU
+(   'wc:DS'
 ,   function( nodeRoot ){
-nodeRoot= $jam.BS( nodeRoot )
+nodeRoot= $jam.FG( nodeRoot )
 nodeRoot.listen
-(   '$jam.CC'
+(   '$jam.FQ'
 ,   function( ){
-var text= $jam.BO( nodeRoot.html() )
+var text= $jam.FC( nodeRoot.html() )
 nodeRoot.state( 'modified', text !== textLast )
 }
 )
 nodeRoot.listen
-(   '$jam.CC'
-,   $jam.CB
+(   '$jam.FQ'
+,   $jam.FP
 (   5000
 ,   save
 )
 )
 nodeRoot.listen
-(   '$jam.BY'
+(   '$jam.FM'
 ,   save
 )
-var textLast= $jam.BO( nodeRoot.html() )
+var textLast= $jam.FC( nodeRoot.html() )
 function save( ){
-var text= $jam.BO( nodeRoot.html() )
+var text= $jam.FC( nodeRoot.html() )
 if( text === textLast ) return
 var xhr= new XMLHttpRequest
-xhr.open( text ? 'PUT' : 'DELETE', nodeRoot.attr( 'wc:BE' ) )
+xhr.open( text ? 'PUT' : 'DELETE', nodeRoot.attr( 'wc:ES' ) )
 xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' )
-xhr.send( nodeRoot.attr( 'wc:BF' ) + '=' + encodeURIComponent( text ) )
+xhr.send( nodeRoot.attr( 'wc:ET' ) + '=' + encodeURIComponent( text ) )
 textLast= text
 nodeRoot.state( 'modified', false )
 }
@@ -3172,20 +3172,20 @@ return new function( ){
 }
 }
 )
-;$jam.CP( 'https://github.com/nin-jin/wc' )
-;$jam.CG
-(   'wc:AT'
+;$jam.GD( 'https://github.com/nin-jin/wc' )
+;$jam.FU
+(   'wc:DW'
 ,   function( nodeRoot ){
 nodeRoot=
-$jam.BS( nodeRoot )
+$jam.FG( nodeRoot )
 var nodeLink=
 nodeRoot.childList( 'a' ).get( 0 )
 var nodeFrame=
 nodeRoot.childList( 'iframe' ).get( 0 )
-if( !nodeFrame ) nodeFrame= $jam.BS.Element( 'iframe' ).parent( nodeRoot )
+if( !nodeFrame ) nodeFrame= $jam.FG.Element( 'iframe' ).parent( nodeRoot )
 nodeFrame.attr( 'src', nodeLink.attr( 'href' ) )
 var opened=
-$jam.BL
+$jam.EZ
 (   function(){
 return nodeRoot.state( 'opened' ) != 'false'
 }
@@ -3201,7 +3201,7 @@ event.defaultBehavior( false )
 })
 }
 )
-;$jam.CP( 'https://github.com/nin-jin/doc' )
+;$jam.GD( 'https://github.com/nin-jin/doc' )
 ;function googl(url, cb) {
 jsonlib.fetch({
 url: 'https://www.googleapis.com/urlshortener/v1/url',
@@ -3385,7 +3385,7 @@ lib['urandom'] = urandom;
 $Component
 (   'snippet:root'
 ,   function( nodeRoot ){
-nodeRoot= $jam.BS( nodeRoot )
+nodeRoot= $jam.FG( nodeRoot )
 var nodeContent= nodeRoot.descList( 'snippet:content' ).get( 0 )
 var nodeLink= nodeRoot.descList( 'snippet:link' ).get( 0 )
 var load=
@@ -3398,8 +3398,8 @@ for( var i= 0; i < chunks.length; ++i ){
 var pair= chunks[i].split( '=' )
 if( pair.length < 2 ) continue
 var source= decodeURIComponent( pair[1] ).replace( /\t/, '    ' )
-var content= $jam.BS.parse( '<wc:O class=" editable=true " />' ).text( source )
-$jam.BS.Element( pair[0] ).tail( content ).parent( nodeContent )
+var content= $jam.FG.parse( '<wc:O class=" editable=true " />' ).text( source )
+$jam.FG.Element( pair[0] ).tail( content ).parent( nodeContent )
 }
 }
 var save=
@@ -3422,27 +3422,27 @@ $doc().location= '#' + chunks.join( ';' )
 nodeLink.clear()
 googl($doc().location.href,function( href ){
 if( href ){
-$jam.BS.Element( 'a' )
+$jam.FG.Element( 'a' )
 .text( href )
 .attr( 'href', href )
 .parent( nodeLink )
 } else {
-var form= $jam.BS.parse( '<form method="post" target="_blank" action="http://goo.gl/action/shorten">' ).parent( nodeLink )
-var url= $jam.BS.parse( '<input type="hidden" name="url" />' ).attr( 'value', $doc().location.href ).parent( form )
-var submit= $jam.BS.parse( '<wc:Q><button type="submit">get short link' ).parent( form ) 
+var form= $jam.FG.parse( '<form method="post" target="_blank" action="http://goo.gl/action/shorten">' ).parent( nodeLink )
+var url= $jam.FG.parse( '<input type="hidden" name="url" />' ).attr( 'value', $doc().location.href ).parent( form )
+var submit= $jam.FG.parse( '<wc:Q><button type="submit">get short link' ).parent( form ) 
 }
 })
 }
 )
 load()
 var onURIChanged=
-$jam.BS( $doc() ).listen( '$jam.BX', load )
+$jam.FG( $doc() ).listen( '$jam.FL', load )
 var onCommit=
-nodeRoot.listen( '$jam.BY', save )
+nodeRoot.listen( '$jam.FM', save )
 var onDelete=
-nodeRoot.listen( '$jam.BZ', save )
+nodeRoot.listen( '$jam.FN', save )
 var onEdit=
-nodeRoot.listen( '$jam.CC', function( ){
+nodeRoot.listen( '$jam.FQ', function( ){
 nodeLink.clear()
 })
 return new function( ){

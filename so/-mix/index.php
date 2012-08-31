@@ -704,7 +704,7 @@ class so_Compile_All {
                 $pack->mixModule->createFile( 'min.xsl' ),
                 $pack->mixModule->createFile( 'min.css' ),
                 $pack->mixModule->createFile( 'min.js' ),
-                $pack->mixDocModule->createFile( 'min.php' ),
+                $pack->mixModule->createFile( 'min.php' ),
                 $pack->mixDocModule->createFile( 'min.xsl' ),
                 $pack->mixDocModule->createFile( 'min.css' ),
                 $pack->mixDocModule->createFile( 'min.js' ),
@@ -718,7 +718,7 @@ class so_Compile_All {
                 return $prefix . $bs . ':' . $name;
             };
             foreach( $fileList as $file ):
-                $minified= preg_replace_callback( '/(wc)(\\\\?):([a-z0-9_-]+)/i', $replacer, $file->content );
+                $minified= preg_replace_callback( '/\b(wc|lang)(\\\\?):([a-z0-9_-]+)/i', $replacer, $file->content );
                 $file->content= $minified;
             endforeach;
             
@@ -729,12 +729,12 @@ class so_Compile_All {
                 return '$' . $prefix . '.' . $name;
             };
             foreach( $fileList as $file ):
-                $minified= preg_replace_callback( '/\$(wc|jam)\.([a-z0-9_-]+)/i', $replacer, $file->content );
+                $minified= preg_replace_callback( '/\$(wc|jam|lang)\.([a-z0-9_-]+)/i', $replacer, $file->content );
                 $file->content= $minified;
             endforeach;
             
             foreach( $fileList as $file ):
-                $pack->mixModule->createFile( $file->name . '.gz' )->content= gzencode( $file->content, 9 );
+                $file->module->createFile( $file->name . '.gz' )->content= gzencode( $file->content, 9 );
             endforeach;
             
             $registry= so_dom::make( '<so:compile_name-list xmlns:so="https://github.com/nin-jin/so" />' );
