@@ -1,3204 +1,3837 @@
-;if( this.$jam ) throw new Error( 'Redeclaration of [$jam]' )
+;// jam/jam/jam.jam.js
+if( this.$jam ) throw new Error( 'Redeclaration of [$jam]' )
 var $jam= {}
-;$jam.EU= function( val ){
-var value= function(){
-return val
+
+;// jam/Value/jam+Value.jam.js
+$jam.Value= function( val ){
+    var value= function(){
+        return val
+    }
+    value.toString= function(){
+        return '$jam.Value: ' + String( val )
+    }
+    return value
 }
-value.toString= function(){
-return '$jam.EU: ' + String( val )
-}
-return value
-}
-;$jam.EV= $jam.EU( this )
-;$jam.EW=
+
+;// jam/glob/jam+glob.jam.js
+$jam.glob= $jam.Value( this )
+
+;// jam/define/jam+define.jam.js
+$jam.define=
 new function( ){
-var Ghost= function(){}
-return function( key, value ){
-var keyList= key.split( '.' )
-var obj= $jam.EV()
-while( true ){
-key= keyList.shift()
-if( !keyList.length ) break
-var next= obj[ key ]
-if( next ){
-obj= next
-} else {
-obj= obj[ key ]= new Ghost
+
+    var Ghost= function(){}
+    
+    return function( key, value ){
+        var keyList= key.split( '.' )
+        
+        var obj= $jam.glob()
+        while( true ){
+            key= keyList.shift()
+            if( !keyList.length ) break
+            
+            var next= obj[ key ]
+            if( next ){
+                obj= next
+            } else {
+                obj= obj[ key ]= new Ghost
+            }
+        }
+        
+        if( key in obj ){
+            var val= obj[ key ]
+            if(!( val instanceof Ghost )) throw new Error( 'Redeclaration of [' + key + ']' )
+            
+            for( i in val ){
+                if( !val.hasOwnProperty( i ) ) continue
+                if( i in value ) throw new Error( 'Redeclaration of [' + i + ']' )
+                value[ i ]= val[ i ]
+            }
+        }
+        
+        obj[ key ]= value
+        
+        return this
+    }
+    
 }
-}
-if( key in obj ){
-var val= obj[ key ]
-if(!( val instanceof Ghost )) throw new Error( 'Redeclaration of [' + key + ']' )
-for( i in val ){
-if( !val.hasOwnProperty( i ) ) continue
-if( i in value ) throw new Error( 'Redeclaration of [' + i + ']' )
-value[ i ]= val[ i ]
-}
-}
-obj[ key ]= value
-return this
-}
-}
-;$jam.EW( '$jam.EX', $jam.EU( $jam.EV().document ) )
-;$jam.EW
-(   '$jam.EY'
+
+;// jam/doc/jam+doc.jam.js
+$jam.define( '$jam.doc', $jam.Value( $jam.glob().document ) )
+
+;// jam/schedule/jam+schedule.jam.js
+$jam.define
+(   '$jam.schedule'
 ,   function( timeout, proc ){
-var timerID= $jam.EV().setTimeout( proc, timeout )
-return function( ){
-$jam.EV().clearTimeout( timerID )
-}
-}
+        var timerID= $jam.glob().setTimeout( proc, timeout )
+        return function( ){
+            $jam.glob().clearTimeout( timerID )
+        }
+    }
 )
-;$jam.EW
-(   '$jam.EZ.then'
+
+;// jam/domReady/jam+domReady+then.jam.js
+$jam.define
+(   '$jam.domReady.then'
 ,   function( proc ){
-var checker= function( ){
-if( $jam.EZ() ) proc()
-else $jam.EY( 10, checker )
-}
-checker()
-}
+        var checker= function( ){
+            if( $jam.domReady() ) proc()
+            else $jam.schedule( 10, checker )
+        }
+        checker()
+    }
 )
-;$jam.EW
-(   '$jam.EZ'
+;// jam/domReady/jam+domReady.jam.js
+$jam.define
+(   '$jam.domReady'
 ,   function( ){
-var state= $jam.EX().readyState
-if( state === 'loaded' ) return true
-if( state === 'complete' ) return true
-return false
-}
+        var state= $jam.doc().readyState
+        if( state === 'loaded' ) return true
+        if( state === 'complete' ) return true
+        return false
+    }
 )
-;$jam.FA=
+
+;// jam/htmlize/jam+htmlize.jam.js
+$jam.htmlize=
 function( ns ){
-if( !$jam.EX().getElementsByTagNameNS ) return
-var nodeList= $jam.EX().getElementsByTagNameNS( ns, '*' )
-var docEl= $jam.EX().documentElement
-var tracking= function( ){
-sleep()
-var node
-while( node= nodeList[0] ){
-var parent= node.parentNode
-var newNode= $jam.EX().createElement( node.nodeName )
-var attrList= node.attributes
-for( var i= 0; i < attrList.length; ++i ){
-var attr= attrList[ i ]
-newNode.setAttribute( attr.nodeName, attr.nodeValue ) 
+    if( !$jam.doc().getElementsByTagNameNS ) return
+    var nodeList= $jam.doc().getElementsByTagNameNS( ns, '*' )
+    var docEl= $jam.doc().documentElement
+    
+    var tracking= function( ){
+        sleep()
+        var node
+        while( node= nodeList[0] ){
+            var parent= node.parentNode
+            var newNode= $jam.doc().createElement( node.nodeName )
+            var attrList= node.attributes
+            for( var i= 0; i < attrList.length; ++i ){
+                var attr= attrList[ i ]
+                newNode.setAttribute( attr.nodeName, attr.nodeValue ) 
+            }
+            var child; while( child= node.firstChild ) newNode.appendChild( child )
+            parent.insertBefore( newNode, node )
+            if( node.parentNode === parent ) parent.removeChild( node )
+        }
+        rise()
+    }
+    
+    $jam.domReady.then( tracking )
+    tracking()
+    
+    function rise( ){
+        docEl.addEventListener( 'DOMNodeInserted', tracking, false )
+    }
+    function sleep( ){
+        docEl.removeEventListener( 'DOMNodeInserted', tracking, false )
+    }
 }
-var child; while( child= node.firstChild ) newNode.appendChild( child )
-parent.insertBefore( newNode, node )
-if( node.parentNode === parent ) parent.removeChild( node )
-}
-rise()
-}
-$jam.EZ.then( tracking )
-tracking()
-function rise( ){
-docEl.addEventListener( 'DOMNodeInserted', tracking, false )
-}
-function sleep( ){
-docEl.removeEventListener( 'DOMNodeInserted', tracking, false )
-}
-}
-;$jam.EW
-(   '$jam.FB'
+
+;// jam/switch/jam+switch.jam.js
+$jam.define
+(   '$jam.switch'
 ,   function( key, map ){
-if( !map.hasOwnProperty( key ) ) {
-throw new Error( 'Key [' + key + '] not found in map' )
-}
-return map[ key ]
-}
+        if( !map.hasOwnProperty( key ) ) {
+            throw new Error( 'Key [' + key + '] not found in map' )
+        }
+        return map[ key ]
+    }
 )
-;$jam.EW
-(   '$jam.FC'
+
+;// jam/support/jam+support.jam.js
+$jam.define
+(   '$jam.support'
 ,   new function(){
-var Support= function( state ){
-var sup= $jam.EU( state )
-sup.select= function( map ){
-return $jam.FB( this(), map )
-}
-return sup
-}
-var node= $jam.EX().createElement( 'html:div' )
-this.msie= Support(  false )
-this.xmlModel= Support( ( $jam.EV().DOMParser && $jam.EV().XSLTProcessor ) ? 'w3c' : 'ms' )
-}
+        var Support= function( state ){
+            var sup= $jam.Value( state )
+            sup.select= function( map ){
+                return $jam.switch( this(), map )
+            }
+            return sup
+        }
+    
+        var node= $jam.doc().createElement( 'html:div' )
+        
+        this.msie= Support( /*@cc_on!@*/ false )
+        this.xmlModel= Support( ( $jam.glob().DOMParser && $jam.glob().XSLTProcessor ) ? 'w3c' : 'ms' )
+    }
 )
-;$jam.EW
-(   '$jam.FD'
+
+;// jam/Component/jam+Component.jam.js
+$jam.define
+(   '$jam.Component'
 ,   function( tagName, factory ){
-if(!( this instanceof $jam.FD )) return new $jam.FD( tagName, factory )
-var fieldName= 'componnet|' + tagName + '|' + (new Date).getTime()
-var nodes= $jam.EX().getElementsByTagName( tagName )
-var elements= []
-var rootNS=$jam.EX().documentElement.namespaceURI
-var checkName=
-( tagName === '*' )
-?    $jam.EU( true )
-:    new function(){
-var nameChecker= RegExp( '^' + tagName + '$', 'i' )
-return function checkName_right( el ){
-var ns= el.namespaceURI
-if( ns && ns !== rootNS ) return false
-return nameChecker.test( el.nodeName )
-}
-}
-function isAttached( el ){
-return typeof el[ fieldName ] === 'object'
-}
-function attach( el ){
-el[ fieldName ]= null
-var widget= factory( el )
-el[ fieldName ]= widget || null
-if( widget ) elements.push( el )
-}
-function attachIfLoaded( el ){
-var cur= el
-do {
-if( !cur.nextSibling ) continue
-attach( el )
-break
-} while( cur= cur.parentNode )
-}
-function dropElement( el ){
-for( var i= 0; i < elements.length; ++i ){
-if( elements[ i ] !== el ) continue
-elements.splice( i, 1 )
-return
-}
-}
-function detach( nodeList ){
-for( var i= 0, len= nodeList.length; i < len; ++i ){
-var node= nodeList[ i ]
-var widget= node[ fieldName ]
-if( widget.destroy ) widget.destroy()
-node[ fieldName ]= void 0
-dropElement( node )
-}
-}
-function check4attach( nodeList ){
-var filtered= []
-filtering:
-for( var i= 0, len= nodeList.length; i < len; ++i ){
-var node= nodeList[ i ]
-if( isAttached( node ) ) continue
-if( !checkName( node ) ) continue
-filtered.push( node )
-}
-for( var i= 0, len= filtered.length; i < len; ++i ){
-attachIfLoaded( filtered[ i ] )
-}
-}
-function check4detach( nodeList ){
-var filtered= []
-filtering:
-for( var i= 0, len= nodeList.length; i < len; ++i ){
-var node= nodeList[ i ]
-if( !node[ fieldName ] ) continue
-var current= node
-var doc= current.ownerDocument
-while( current= current.parentNode ){
-if( current === doc ) continue filtering
-}
-filtered.push( node )
-}
-detach( filtered )
-}
-function tracking( ){
-check4attach( nodes )
-check4detach( elements )
-}
-var interval=
-$jam.EV().setInterval( tracking, 200 )
-$jam.EZ.then(function whenReady(){
-$jam.EV().clearInterval( interval )
-attachIfLoaded= attach
-tracking()
-})
-var docEl= $jam.EX().documentElement
-docEl.addEventListener( 'DOMNodeInserted', function whenNodeInserted( ev ){
-var node= ev.target
-check4attach([ node ])
-if( !$jam.FC.msie() && node.getElementsByTagName ) check4attach( node.getElementsByTagName( tagName ) )
-}, false )
-docEl.addEventListener( 'DOMNodeRemoved', function whenNodeRemoved( ev ){
-var node= ev.target
-check4detach([ node ])
-if( !$jam.FC.msie() && node.getElementsByTagName ) check4detach( node.getElementsByTagName( tagName ) )
-}, false )
-this.tagName= $jam.EU( tagName )
-this.factory= $jam.EU( factory )
-this.elements=
-function elements( ){
-return elements.slice( 0 )
-}
-tracking()
-}
+        if(!( this instanceof $jam.Component )) return new $jam.Component( tagName, factory )
+        var fieldName= 'componnet|' + tagName + '|' + (new Date).getTime()
+    
+        var nodes= $jam.doc().getElementsByTagName( tagName )
+    
+        var elements= []
+        var rootNS=$jam.doc().documentElement.namespaceURI
+    
+        var checkName=
+        ( tagName === '*' )
+        ?    $jam.Value( true )
+        :    new function(){
+                var nameChecker= RegExp( '^' + tagName + '$', 'i' )
+                return function checkName_right( el ){
+                    var ns= el.namespaceURI
+                    if( ns && ns !== rootNS ) return false
+                    return nameChecker.test( el.nodeName )
+                }
+            }
+        
+        function isAttached( el ){
+            return typeof el[ fieldName ] === 'object'
+        }
+        
+        function attach( el ){
+    
+            el[ fieldName ]= null
+            var widget= factory( el )
+            el[ fieldName ]= widget || null
+            if( widget ) elements.push( el )
+        }
+        
+        function attachIfLoaded( el ){
+            var cur= el
+            do {
+                if( !cur.nextSibling ) continue
+                attach( el )
+                break
+            } while( cur= cur.parentNode )
+        }
+        
+        function dropElement( el ){
+            for( var i= 0; i < elements.length; ++i ){
+                if( elements[ i ] !== el ) continue
+                elements.splice( i, 1 )
+                return
+            }
+        }
+        
+        function detach( nodeList ){
+            for( var i= 0, len= nodeList.length; i < len; ++i ){
+                var node= nodeList[ i ]
+                var widget= node[ fieldName ]
+                if( widget.destroy ) widget.destroy()
+                node[ fieldName ]= void 0
+                dropElement( node )
+            }
+        }
+        
+        function check4attach( nodeList ){
+            var filtered= []
+            filtering:
+            for( var i= 0, len= nodeList.length; i < len; ++i ){
+                var node= nodeList[ i ]
+                if( isAttached( node ) ) continue
+                if( !checkName( node ) ) continue
+                filtered.push( node )
+            }
+            for( var i= 0, len= filtered.length; i < len; ++i ){
+                attachIfLoaded( filtered[ i ] )
+            }
+        }
+    
+        function check4detach( nodeList ){
+            var filtered= []
+            filtering:
+            for( var i= 0, len= nodeList.length; i < len; ++i ){
+                var node= nodeList[ i ]
+    
+                if( !node[ fieldName ] ) continue
+    
+                var current= node
+                var doc= current.ownerDocument
+                while( current= current.parentNode ){
+                    if( current === doc ) continue filtering
+                }
+    
+                filtered.push( node )
+            }
+            detach( filtered )
+        }
+    
+        function tracking( ){
+            check4attach( nodes )
+            check4detach( elements )
+        }
+    
+        var interval=
+        $jam.glob().setInterval( tracking, 200 )
+    
+        $jam.domReady.then(function whenReady(){
+            $jam.glob().clearInterval( interval )
+            attachIfLoaded= attach
+            tracking()
+        })
+    
+        var docEl= $jam.doc().documentElement
+        docEl.addEventListener( 'DOMNodeInserted', function whenNodeInserted( ev ){
+            var node= ev.target
+            //$jam.schedule( 0, function( ){
+                check4attach([ node ])
+                if( !$jam.support.msie() && node.getElementsByTagName ) check4attach( node.getElementsByTagName( tagName ) )
+            //})
+        }, false )
+        docEl.addEventListener( 'DOMNodeRemoved', function whenNodeRemoved( ev ){
+            var node= ev.target
+            //$jam.schedule( 0, function( ){
+                check4detach([ node ])
+                if( !$jam.support.msie() && node.getElementsByTagName ) check4detach( node.getElementsByTagName( tagName ) )
+            //})
+        }, false )
+        
+        this.tagName= $jam.Value( tagName )
+        this.factory= $jam.Value( factory )
+        this.elements=
+        function elements( ){
+            return elements.slice( 0 )
+        }
+        
+        tracking()
+    }
 )
-;$jam.FE=
+
+;// jam/Class/jam+Class.jam.js
+$jam.Class=
 function( init ){
-var klass=
-function( ){
-if( this instanceof klass ) return this
-return klass.create.apply( klass, arguments )
+    var klass=
+    function( ){
+        if( this instanceof klass ) return this
+        return klass.create.apply( klass, arguments )
+    }
+    
+    klass.constructor= $jam.Class
+    
+    klass.create=
+    function( arg ){
+        if( arguments.length ){
+            if(( arg === void 0 )||( arg === null )) return arg
+            if( arg instanceof klass ) return arg
+        }
+        var obj= new klass
+        return constructor.apply( obj, arguments )
+    }
+    
+    klass.raw=
+    function( obj ){
+        return ( obj )&&( ( obj instanceof klass ) ? obj.$ : obj )
+    }
+    
+    var proto= klass.prototype
+    var constructor= proto.constructor= function( arg ){
+        this.$= arg
+        return this
+    }
+    
+    init( klass, proto )
+    
+    constructor= klass.prototype.constructor
+    klass.prototype.constructor= klass
+    
+    return klass
 }
-klass.constructor= $jam.FE
-klass.create=
-function( arg ){
-if( arguments.length ){
-if(( arg === void 0 )||( arg === null )) return arg
-if( arg instanceof klass ) return arg
-}
-var obj= new klass
-return constructor.apply( obj, arguments )
-}
-klass.raw=
-function( obj ){
-return ( obj )&&( ( obj instanceof klass ) ? obj.$ : obj )
-}
-var proto= klass.prototype
-var constructor= proto.constructor= function( arg ){
-this.$= arg
-return this
-}
-init( klass, proto )
-constructor= klass.prototype.constructor
-klass.prototype.constructor= klass
-return klass
-}
-;$jam.EW
-(   '$jam.FF'
+
+;// jam/Poly/jam+Poly.jam.js
+$jam.define
+(   '$jam.Poly'
 ,   function(){
-var map= arguments
-return function(){
-return map[ arguments.length ].apply( this, arguments )
-}
-}
+        var map= arguments
+        return function(){
+            return map[ arguments.length ].apply( this, arguments )
+        }
+    }
 )
-;$jam.EW
-(   '$jam.FG'
+
+;// jam/htmlEntities/jam+htmlEntities.jam.js
+$jam.define
+(   '$jam.htmlEntities'
 ,   {    'nbsp': ' '
-,    'amp':  '&'
-,    'lt':   '<'
-,    'gt':   '>'
-,    'quot': '"'
-,    'apos': "'"
-}
+    ,    'amp':  '&'
+    ,    'lt':   '<'
+    ,    'gt':   '>'
+    ,    'quot': '"'
+    ,    'apos': "'"
+    }
 )
-;$jam.EW
-(   '$jam.FH'
+
+;// jam/htmlDecode/jam+htmlDecode.jam.js
+$jam.define
+(   '$jam.htmlDecode'
 ,   new function(){
-var fromCharCode= $jam.EV().String.fromCharCode
-var parseInt= $jam.EV().parseInt
-var replacer= function( str, isHex, numb, name ){
-if( name ) return $jam.FG[ name ] || str
-if( isHex ) numb= parseInt( numb, 16 )
-return fromCharCode( numb )
-}
-return function( str ){
-return String( str ).replace( /&(?:#(x)?(\d+)|(\w+));/g, replacer )
-}
-}
+        var fromCharCode= $jam.glob().String.fromCharCode
+        var parseInt= $jam.glob().parseInt
+        var replacer= function( str, isHex, numb, name ){
+            if( name ) return $jam.htmlEntities[ name ] || str
+            if( isHex ) numb= parseInt( numb, 16 )
+            return fromCharCode( numb )
+        }
+        return function( str ){
+            return String( str ).replace( /&(?:#(x)?(\d+)|(\w+));/g, replacer )
+        }
+    }
 )
-;$jam.EW
-(   '$jam.FI'
+
+;// jam/html2text/jam+html2text.jam.js
+$jam.define
+(   '$jam.html2text'
 ,   function( html ){
-return $jam.FH
-(   String( html )
-.replace( /<div><br[^>]*>/gi, '\n' )
-.replace( /<br[^>]*>/gi, '\n' )
-.replace( /<div>/gi, '\n' )
-.replace( /<[^<>]+>/g, '' )
+        return $jam.htmlDecode
+        (   String( html )
+            .replace( /<div><br[^>]*>/gi, '\n' )
+            .replace( /<br[^>]*>/gi, '\n' )
+            .replace( /<div>/gi, '\n' )
+            .replace( /<[^<>]+>/g, '' )
+        )
+    }
 )
-}
-)
-;$jam.EW
-(   '$jam.FJ'
+
+;// jam/classOf/jam+classOf.jam.js
+$jam.define
+(   '$jam.classOf'
 ,   new function( ){
-var toString = {}.toString
-return function( val ){
-if( val === void 0 ) return 'Undefined'
-if( val === null ) return 'Null'
-if( val === $jam.EV() ) return 'Global'
-return toString.call( val ).replace( /^\[object |\]$/g, '' )
-}
-}
+        var toString = {}.toString
+        return function( val ){
+            if( val === void 0 ) return 'Undefined'
+            if( val === null ) return 'Null'
+            if( val === $jam.glob() ) return 'Global'
+            return toString.call( val ).replace( /^\[object |\]$/g, '' )
+        }
+    }
 )
-;$jam.EW
-(   '$jam.FK'
-,   $jam.FE( function( klass, proto ){
-proto.constructor=
-$jam.FF
-(   function( ){
-return klass({ })
-}
-,   function( hiqus ){
-this.$= {}
-this.$.splitterChunks= hiqus.splitterChunks || '&'
-this.$.splitterPair= hiqus.splitterPair || '='
-this.$.splitterKeys= hiqus.splitterKeys || '_'
-this.$.data= hiqus.data || {}
-return this
-}
+
+;// jam/Hiqus/jam+Hiqus.jam.js
+$jam.define
+(   '$jam.Hiqus'
+,   $jam.Class( function( klass, proto ){
+        
+        proto.constructor=
+        $jam.Poly
+        (   function( ){
+                return klass({ })
+            }
+        ,   function( hiqus ){
+                this.$= {}
+                this.$.splitterChunks= hiqus.splitterChunks || '&'
+                this.$.splitterPair= hiqus.splitterPair || '='
+                this.$.splitterKeys= hiqus.splitterKeys || '_'
+                this.$.data= hiqus.data || {}
+                return this
+            }
+        )
+        
+        proto.get=
+        $jam.Poly
+        (   function( ){
+                return this.get( [] )
+            }
+        ,   function( keyList ){
+                if( $jam.classOf( keyList ) === 'String' ){
+                    keyList= keyList.split( this.splitterKeys )
+                }
+                var cur= this.$.data
+                for( var i= 0; i < keyList.length; ++i ){
+                    var key= keyList[ i ]
+                    cur= cur[ key ]
+                    if( $jam.classOf( cur ) !== 'Object' ) break
+                }
+                return cur
+            }
+        )
+        
+        proto.put=
+        $jam.Poly
+        (   null
+        ,   function( keyList ){
+                return this.put( keyList, true )
+            }
+        ,   function( keyList, value ){
+                if( $jam.classOf( keyList ) === 'String' ){
+                    var keyListRaw= keyList.split( this.$.splitterKeys )
+                    keyList= []
+                    for( var i= 0; i < keyListRaw.length; ++i ){
+                        if( !keyListRaw[ i ] ) continue
+                        keyList.push( keyListRaw[ i ] )
+                    }
+                }
+                var cur= this.$.data
+                for( var i= 0; i < keyList.length - 1; ++i ){
+                    var key= keyList[ i ]
+                    if( $jam.classOf( cur[ key ] ) === 'Object' ){
+                        cur= cur[ key ]
+                    } else {
+                        cur= cur[ key ]= {}
+                    }
+                }
+                if( value === null ) delete cur[ keyList[ i ] ]
+                else cur[ keyList[ i ] ]= value
+                return this
+            }
+        )
+        
+        proto.merge=
+        function( json ){
+            if( $jam.classOf( json ) === 'String' ){
+                var chunks= json.split( this.$.splitterChunks )
+                for( var i= 0; i < chunks.length; ++i ){
+                    var chunk= chunks[i]
+                    if( !chunk ) continue
+                    var pair= chunk.split( this.$.splitterPair )
+                    if( pair.length > 2 ) continue;
+                    var key= pair[ 0 ]
+                    var val= pair[ pair.length - 1 ]
+                    this.put( key, val )
+                }
+            } else {
+                if( json instanceof klass ) json= json.$.data
+                var merge=
+                function( from, to ){
+                    for( var key in from ){
+                        if( !from.hasOwnProperty( key ) ) continue
+                        if( from[ key ] === null ){
+                            delete to[ key ]
+                        } else if( typeof from[ key ] === 'object' ){
+                            if( typeof to[ key ] !== 'object' ){
+                                to[ key ]= {}
+                            }
+                            merge( from[ key ], to[ key ] )
+                        } else {
+                            to[ key ]= String( from[ key ] )
+                        }
+                    }
+                }
+                merge( json, this.$.data )
+            }
+            return this
+        }
+        
+        proto.toString=
+        $jam.Poly
+        (   function( ){
+                var chunks=
+                function( prefix, obj ){
+                    var chunkList= []
+                    for( var key in obj ){
+                        if( !obj.hasOwnProperty( key ) ) continue
+                        var val= obj[ key ]
+                        if( val === null ) continue
+                        if( prefix ) key= prefix + this.$.splitterKeys + key
+                        if( typeof val === 'object' ){
+                            chunkList= chunkList.concat( chunks.call( this, key, val ) )
+                        } else {
+                            if( val === key ) chunkList.push( key )
+                            else chunkList.push( key + this.$.splitterPair + val )
+                        }
+                    }
+                    return chunkList
+                }
+                return chunks.call( this, '', this.$.data ).join( this.$.splitterChunks )
+            }
+        )
+            
+    })
 )
-proto.get=
-$jam.FF
-(   function( ){
-return this.get( [] )
-}
-,   function( keyList ){
-if( $jam.FJ( keyList ) === 'String' ){
-keyList= keyList.split( this.splitterKeys )
-}
-var cur= this.$.data
-for( var i= 0; i < keyList.length; ++i ){
-var key= keyList[ i ]
-cur= cur[ key ]
-if( $jam.FJ( cur ) !== 'Object' ) break
-}
-return cur
-}
+
+;// jam/NodeList/jam+NodeList.jam.js
+$jam.define
+(   '$jam.NodeList'
+,   $jam.Class( function( klass, proto ){
+        
+        proto.get=
+        function( index ){
+            var node= this.$[ index ]
+            return $jam.Node( node )
+        }
+        
+        proto.length=
+        function( ){
+            return Number( this.$.length )
+        }
+        
+        proto.head=
+        function( ){
+            return this.get( 0 )
+        }
+        
+        proto.tail=
+        function( ){
+            return this.get( this.length() - 1 )
+        }
+        
+    })
 )
-proto.put=
-$jam.FF
-(   null
-,   function( keyList ){
-return this.put( keyList, true )
-}
-,   function( keyList, value ){
-if( $jam.FJ( keyList ) === 'String' ){
-var keyListRaw= keyList.split( this.$.splitterKeys )
-keyList= []
-for( var i= 0; i < keyListRaw.length; ++i ){
-if( !keyListRaw[ i ] ) continue
-keyList.push( keyListRaw[ i ] )
-}
-}
-var cur= this.$.data
-for( var i= 0; i < keyList.length - 1; ++i ){
-var key= keyList[ i ]
-if( $jam.FJ( cur[ key ] ) === 'Object' ){
-cur= cur[ key ]
-} else {
-cur= cur[ key ]= {}
-}
-}
-if( value === null ) delete cur[ keyList[ i ] ]
-else cur[ keyList[ i ] ]= value
-return this
-}
-)
-proto.merge=
-function( json ){
-if( $jam.FJ( json ) === 'String' ){
-var chunks= json.split( this.$.splitterChunks )
-for( var i= 0; i < chunks.length; ++i ){
-var chunk= chunks[i]
-if( !chunk ) continue
-var pair= chunk.split( this.$.splitterPair )
-if( pair.length > 2 ) continue;
-var key= pair[ 0 ]
-var val= pair[ pair.length - 1 ]
-this.put( key, val )
-}
-} else {
-if( json instanceof klass ) json= json.$.data
-var merge=
-function( from, to ){
-for( var key in from ){
-if( !from.hasOwnProperty( key ) ) continue
-if( from[ key ] === null ){
-delete to[ key ]
-} else if( typeof from[ key ] === 'object' ){
-if( typeof to[ key ] !== 'object' ){
-to[ key ]= {}
-}
-merge( from[ key ], to[ key ] )
-} else {
-to[ key ]= String( from[ key ] )
-}
-}
-}
-merge( json, this.$.data )
-}
-return this
-}
-proto.toString=
-$jam.FF
-(   function( ){
-var chunks=
-function( prefix, obj ){
-var chunkList= []
-for( var key in obj ){
-if( !obj.hasOwnProperty( key ) ) continue
-var val= obj[ key ]
-if( val === null ) continue
-if( prefix ) key= prefix + this.$.splitterKeys + key
-if( typeof val === 'object' ){
-chunkList= chunkList.concat( chunks.call( this, key, val ) )
-} else {
-if( val === key ) chunkList.push( key )
-else chunkList.push( key + this.$.splitterPair + val )
-}
-}
-return chunkList
-}
-return chunks.call( this, '', this.$.data ).join( this.$.splitterChunks )
-}
-)
-})
-)
-;$jam.EW
-(   '$jam.FL'
-,   $jam.FE( function( klass, proto ){
-proto.get=
-function( index ){
-var node= this.$[ index ]
-return $jam.FM( node )
-}
-proto.length=
-function( ){
-return Number( this.$.length )
-}
-proto.head=
-function( ){
-return this.get( 0 )
-}
-proto.tail=
-function( ){
-return this.get( this.length() - 1 )
-}
-})
-)
-;$jam.EW
-(   '$jam.FN'
+
+;// jam/raw/jam+raw.jam.js
+$jam.define
+(   '$jam.raw'
 ,   function( obj ){
-if( !obj ) return obj
-var klass= obj.constructor
-if( !klass ) return obj
-var superClass= klass.constructor
-if( superClass !== $jam.FE ) return obj
-return klass.raw( obj )
-}
+        if( !obj ) return obj
+        var klass= obj.constructor
+        if( !klass ) return obj
+        var superClass= klass.constructor
+        if( superClass !== $jam.Class ) return obj
+        return klass.raw( obj )
+    }
 )
-;$jam.FO=
+
+;// jam/keyCode/jam+keyCode.jam.js
+$jam.keyCode=
 new function( ){
-var codes= []
-var keyCode= function( code ){
-return codes[ code ] || 'unknown'
+
+    var codes= []
+    
+    var keyCode= function( code ){
+        return codes[ code ] || 'unknown'
+    }
+
+    keyCode.ctrlPause= 3
+    keyCode.backSpace= 8
+    keyCode.tab= 9
+    keyCode.enter= 13
+    keyCode.shift= 16
+    keyCode.ctrl= 17
+    keyCode.alt= 18
+    keyCode.pause= 19
+    keyCode.capsLock= 20
+    keyCode.escape= 27
+    keyCode.space= 32
+    keyCode.pageUp= 33
+    keyCode.pageDown= 34
+    keyCode.end= 35
+    keyCode.home= 36
+    keyCode.left= 37
+    keyCode.up= 38
+    keyCode.right= 39
+    keyCode.down= 40
+    
+    keyCode.insert= 45
+    keyCode.delete= 46
+    
+    for( var code= 48; code <= 57; ++code ){
+        keyCode[ String.fromCharCode( code ).toLowerCase() ]= code
+    }
+
+    for( var code= 65; code <= 90; ++code ){
+        keyCode[ String.fromCharCode( code ).toLowerCase() ]= code
+    }
+
+    keyCode.win= 91
+    keyCode.context= 93
+
+    for( var numb= 1; numb <= 12; ++numb ){
+        keyCode[ 'f' + numb ]= 111 + numb
+    }
+    
+    keyCode.numLock= 144
+    keyCode.scrollLock= 145
+    
+    keyCode.semicolon= 186
+    keyCode.plus= 187
+    keyCode.minus= 189
+    keyCode.comma= 188
+    keyCode.period= 190
+    keyCode.slash= 191
+    keyCode.tilde= 192
+    
+    keyCode.openBracket= 219
+    keyCode.backSlash= 220
+    keyCode.closeBracket= 221
+    keyCode.apostrophe= 222
+    keyCode.backSlashLeft= 226
+    
+    for( var name in keyCode ){
+        if( !keyCode.hasOwnProperty( name ) ) continue
+        codes[ keyCode[ name ] ]= name
+    }
+    
+    return keyCode
+    
 }
-keyCode.ctrlPause= 3
-keyCode.backSpace= 8
-keyCode.tab= 9
-keyCode.enter= 13
-keyCode.shift= 16
-keyCode.ctrl= 17
-keyCode.alt= 18
-keyCode.pause= 19
-keyCode.capsLock= 20
-keyCode.escape= 27
-keyCode.space= 32
-keyCode.pageUp= 33
-keyCode.pageDown= 34
-keyCode.end= 35
-keyCode.home= 36
-keyCode.left= 37
-keyCode.up= 38
-keyCode.right= 39
-keyCode.down= 40
-keyCode.insert= 45
-keyCode.delete= 46
-for( var code= 48; code <= 57; ++code ){
-keyCode[ String.fromCharCode( code ).toLowerCase() ]= code
-}
-for( var code= 65; code <= 90; ++code ){
-keyCode[ String.fromCharCode( code ).toLowerCase() ]= code
-}
-keyCode.win= 91
-keyCode.context= 93
-for( var numb= 1; numb <= 12; ++numb ){
-keyCode[ 'f' + numb ]= 111 + numb
-}
-keyCode.numLock= 144
-keyCode.scrollLock= 145
-keyCode.semicolon= 186
-keyCode.plus= 187
-keyCode.minus= 189
-keyCode.comma= 188
-keyCode.period= 190
-keyCode.slash= 191
-keyCode.tilde= 192
-keyCode.openBracket= 219
-keyCode.backSlash= 220
-keyCode.closeBracket= 221
-keyCode.apostrophe= 222
-keyCode.backSlashLeft= 226
-for( var name in keyCode ){
-if( !keyCode.hasOwnProperty( name ) ) continue
-codes[ keyCode[ name ] ]= name
-}
-return keyCode
-}
-;$jam.FP=
-$jam.FE( function( klass, proto ){
-proto.constructor=
-$jam.FF
-(   function( ){
-this.$= $jam.EX().createEvent( 'Event' )
-this.$.initEvent( '', true, true )
-return this
-}
-,   function( event ){
-this.$= event
-return this
-}
-)
-proto.type=
-$jam.FF
-(   function( ){
-return this.$.type
-}
-,   function( type ){
-this.$.initEvent( type, this.$.bubbles, this.$.cancelable )
-return this
-}
-)
-proto.data=
-$jam.FF
-(   function( ){
-return this.$.extendedData
-}
-,   function( data ){
-this.$.extendedData= data
-return this
-}
-)
-proto.keyMeta=
-$jam.FF
-(   function( ){
-return Boolean( this.$.metaKey || this.$.ctrlKey )
-}
-)
-proto.keyShift=
-$jam.FF
-(   function( ){
-return Boolean( this.$.shiftKey )
-}
-)
-proto.keyAlt=
-$jam.FF
-(   function( ){
-return Boolean( this.$.altKey )
-}
-)
-proto.keyAccel=
-$jam.FF
-(   function( ){
-return this.keyMeta() || this.keyShift() || this.keyAlt()
-}
-)
-proto.keyCode=
-$jam.FF
-(   function( ){
-var code= this.$.keyCode
-var keyCode= new Number( code )
-keyCode[ $jam.FO( code ) ]= code
-return keyCode
-}
-)
-proto.button=
-function( ){
-return this.$.button
-}
-proto.target=
-function( ){
-return this.$.target
-}
-proto.wheel=
-$jam.FF
-(   function( ){
-if( this.$.wheelDelta ) return - this.$.wheelDelta / 120 
-return this.$.detail / 4
-}
-,   function( val ){
-this.$.wheelDelta= - val * 120
-return this
-}
-)
-proto.defaultBehavior=
-$jam.FF
-(   function( ){
-return Boolean( this.$.defaultPrevented )
-}
-,   function( val ){
-if( val ) this.$.returnValue= !!val
-else this.$.preventDefault()
-return this
-}
-)
-proto.scream=
-function( node ){
-$jam.FN( node ).dispatchEvent( this.$ )
-return this
-}
+;// jam/Event/jam+Event.jam.js
+$jam.Event=
+$jam.Class( function( klass, proto ){
+
+    proto.constructor=
+    $jam.Poly
+    (   function( ){
+            this.$= $jam.doc().createEvent( 'Event' )
+            this.$.initEvent( '', true, true )
+            return this
+        }
+    ,   function( event ){
+            this.$= event
+            return this
+        }
+    )
+    
+    proto.type=
+    $jam.Poly
+    (   function( ){
+            return this.$.type
+        }
+    ,   function( type ){
+            this.$.initEvent( type, this.$.bubbles, this.$.cancelable )
+            return this
+        }
+    )
+        
+    proto.data=
+    $jam.Poly
+    (   function( ){
+            return this.$.extendedData
+        }
+    ,   function( data ){
+            this.$.extendedData= data
+            return this
+        }
+    )
+        
+    proto.keyMeta=
+    $jam.Poly
+    (   function( ){
+            return Boolean( this.$.metaKey || this.$.ctrlKey )
+        }
+    )
+    
+    proto.keyShift=
+    $jam.Poly
+    (   function( ){
+            return Boolean( this.$.shiftKey )
+        }
+    )
+    
+    proto.keyAlt=
+    $jam.Poly
+    (   function( ){
+            return Boolean( this.$.altKey )
+        }
+    )
+    
+    proto.keyAccel=
+    $jam.Poly
+    (   function( ){
+            return this.keyMeta() || this.keyShift() || this.keyAlt()
+        }
+    )
+    
+    proto.keyCode=
+    $jam.Poly
+    (   function( ){
+            var code= this.$.keyCode
+            var keyCode= new Number( code )
+            keyCode[ $jam.keyCode( code ) ]= code
+            return keyCode
+        }
+    )
+    
+    proto.button=
+    function( ){
+        return this.$.button
+    }
+    
+    proto.target=
+    function( ){
+        return this.$.target
+    }
+    
+    proto.wheel=
+    $jam.Poly
+    (   function( ){
+            if( this.$.wheelDelta ) return - this.$.wheelDelta / 120 
+            return this.$.detail / 4
+        }
+    ,   function( val ){
+            this.$.wheelDelta= - val * 120
+            return this
+        }
+    )
+    
+    proto.defaultBehavior=
+    $jam.Poly
+    (   function( ){
+            return Boolean( this.$.defaultPrevented )
+        }
+    ,   function( val ){
+            if( val ) this.$.returnValue= !!val
+            else this.$.preventDefault()
+            return this
+        }
+    )
+    
+    proto.scream=
+    function( node ){
+        $jam.raw( node ).dispatchEvent( this.$ )
+        return this
+    }
+    
 })
-;$jam.EW
-(   '$jam.FQ'
-,   $jam.FE( function( klass, proto ){
-proto.constructor=
-function( ){
-this.$= {}
-return this
-}
-proto.clone=
-function( ){
-return klass()
-.eventName( this.eventName() )
-.node( this.node() )
-.handler( this.handler() )
-}
-proto.eventName=
-$jam.FF
-(   function( ){
-return this.$.eventName
-}
-,   function( name ){
-this.sleep()
-this.$.eventName= String( name )
-return this
-}
+
+;// jam/Observer/jam+Observer.jam.js
+$jam.define
+(   '$jam.Observer'
+,   $jam.Class( function( klass, proto ){
+        
+        proto.constructor=
+        function( ){
+            this.$= {}
+            return this
+        }
+        
+        proto.clone=
+        function( ){
+            return klass()
+            .eventName( this.eventName() )
+            .node( this.node() )
+            .handler( this.handler() )
+        }
+        
+        proto.eventName=
+        $jam.Poly
+        (   function( ){
+                return this.$.eventName
+            }
+        ,   function( name ){
+                this.sleep()
+                this.$.eventName= String( name )
+                return this
+            }
+        )
+        
+        proto.node=
+        $jam.Poly
+        (   function( ){
+                return this.$.node
+            }
+        ,   function( node ){
+                this.sleep()
+                this.$.node= $jam.raw( node )
+                return this
+            }
+        )
+        
+        proto.handler=
+        $jam.Poly
+        (   function( ){
+                return this.$.handler
+            }
+        ,   function( handler ){
+                var self= this
+                this.sleep()
+                this.$.handler= handler
+                this.$.internalHandler=
+                function( event ){
+                    return handler.call( self.node(), $jam.Event( event ) )
+                }
+                return this
+            }
+        )
+        
+        proto.listen=
+        function( ){
+            if( this.$.active ) return this
+            this.$.node.addEventListener( this.$.eventName, this.$.internalHandler, false )
+            this.$.active= true
+            return this
+        }
+        
+        proto.sleep=
+        function( ){
+            if( !this.$.active ) return this
+            this.$.node.removeEventListener( this.$.eventName, this.$.internalHandler, false )
+            this.$.active= false
+            return this
+        }
+        
+        proto.active=
+        $jam.Poly
+        (   function( ){
+                return Boolean( this.$.active )
+            }
+        ,   function( val ){
+                if( val ) this.listen()
+                else this.sleep()
+                return this
+            }
+        )
+        
+    })
 )
-proto.node=
-$jam.FF
-(   function( ){
-return this.$.node
-}
-,   function( node ){
-this.sleep()
-this.$.node= $jam.FN( node )
-return this
-}
+
+;// jam/Node/jam+Node.jam.js
+$jam.define
+(   '$jam.Node'
+,   $jam.Class( function( klass, proto ){
+        
+        klass.Element=
+        function( name ){
+            return klass.create( $jam.doc().createElement( name ) )
+        }
+        
+        klass.Text=
+        function( str ){
+            return klass.create( $jam.doc().createTextNode( str ) )
+        }
+        
+        klass.Comment=
+        function( str ){
+            return klass.create( $jam.doc().createComment( str ) )
+        }
+        
+        klass.Fragment=
+        function( ){
+            return klass.create( $jam.doc().createDocumentFragment() )
+        }
+        
+        proto.text=
+        $jam.Poly
+        (   function( ){
+                return $jam.html2text( this.$.innerHTML )
+            }
+        ,   new function(){
+                return function( val ){
+                    val= String( val )
+                    if( this.text() === val ) return this
+                    this.$.textContent= val
+                    return this
+                }
+            }
+        )
+        
+        proto.html=
+        $jam.Poly
+        (   function( ){
+                var val= this.$.innerHTML
+                .replace
+                (   /<\/?[A-Z]+/g
+                ,   function( str ){
+                        return str.toLowerCase()
+                    }
+                )
+                return val
+            }
+        ,   function( val ){
+                val= String( val )
+                if( this.html() === val ) return this
+                this.clear()
+                this.$.innerHTML= String( val )
+                return this
+            }
+        )
+        
+        proto.clear=
+        function( ){
+            while( true ){
+                var child= this.$.firstChild
+                if( !child ) break
+                this.$.removeChild( child )
+            }
+            return this
+        }
+        
+        proto.name=
+        function( ){
+            return this.$.nodeName.toLowerCase()
+        }
+        
+        proto.attr=
+        $jam.Poly
+        (   null
+        ,   function( name ){
+                return this.$.getAttribute( name )
+            }
+        ,   function( name, val ){
+                this.$.setAttribute( String( name ), String( val ) )
+                this.$.className+= ''
+                return this
+            }    
+        )
+        
+        proto.state=
+        $jam.Poly
+        (   function( ){
+                return this.param( [] )
+            }
+        ,   function( key ){
+                return $jam.Hiqus({ splitterChunks: ' ' }).merge( this.$.className || '' ).get( key )
+            }
+        ,   function( key, value ){
+                this.$.className= $jam.Hiqus({ splitterChunks: ' ' }).merge( this.$.className ).put( key, value )
+                return this
+            }
+        )
+        
+        proto.width=
+        function( ){
+            if( 'offsetWidth' in this.$ ) return this.$.offsetWidth
+            if( 'getBoundingClientRect' in this.$ ){
+                var rect= this.$.getBoundingClientRect()
+                return rect.right - rect.left
+            }
+            return 0
+        }
+        
+        proto.height=
+        function( ){
+            if( 'offsetHeight' in this.$ ) return this.$.offsetHeight
+            if( 'getBoundingClientRect' in this.$ ){
+                var rect= this.$.getBoundingClientRect()
+                return rect.bottom - rect.top
+            }
+            return 0
+        }
+        
+        proto.posLeft=
+        function( ){
+            if( 'offsetLeft' in this.$ ) return this.$.offsetLeft
+            var rect= this.$.getBoundingClientRect()
+            return rect.left
+        }
+        
+        proto.posTop=
+        function( ){
+            if( 'offsetTop' in this.$ ) return this.$.offsetTop
+            var rect= this.$.getBoundingClientRect()
+            return rect.top
+        }
+        
+        proto.editable=
+        $jam.Poly
+        (   function( ){
+                var editable= this.$.contentEditable
+                if( editable == 'inherit' ) return this.parent().editable()
+                return editable == 'true'
+            }
+        ,   function( val ){
+                this.$.contentEditable= val
+                return this
+            }
+        )
+        
+        proto.ancList=
+        function( name ){
+            var filtered= []
+            var node= this
+            do {
+                if( name && node.name().replace( name, '' ) ) continue
+                filtered.push( node )
+            } while( node= node.parent() )
+            
+            return $jam.NodeList( filtered )
+        }
+        
+        proto.childList=
+        function( name ){
+            var list= this.$.childNodes
+            var filtered= []
+            
+            for( var i= this.head(); i; i= i.next() ){
+                if( name && i.name().replace( name, '' ) ) continue
+                filtered.push( i )
+            }
+            
+            return $jam.NodeList( filtered )
+        }
+        
+        proto.descList=
+        function( name ){
+            var list= this.$.getElementsByTagName( name )
+            var filtered= []
+            
+            for( var i= 0; i < list.length; ++i ){
+                filtered.push( list[ i ] )
+            }
+            
+            return $jam.NodeList( filtered )
+        }
+
+        proto.parent= 
+        $jam.Poly
+        (   function( ){
+                return $jam.Node( this.$.parentNode )
+            }
+        ,   function( node ){
+                node= $jam.raw( node )
+                var parent= this.$.parentNode
+                if( node ){
+                    if( parent === node ) return this
+                    node.appendChild( this.$ )
+                } else {
+                    if( !parent ) return this
+                    parent.removeChild( this.$ )
+                }
+                return this
+            }
+        )
+        
+        proto.ancestor=
+        function( name ){
+            var current= this
+            while( true ){
+                if( current.name() === name ) return current
+                current= current.parent()
+                if( !current ) return current
+            }
+        }
+        
+        proto.surround=
+        function( node ){
+            var node= $jam.raw( node )
+            var parent= this.$.parentNode
+            var next= this.$.nextSibling
+            node.appendChild( this.$ )
+            parent.insertBefore( node, next )
+            return this
+        }
+        
+        proto.dissolve=
+        function( ){
+            for( var head; head= this.head(); ){
+                this.prev( head )
+            }
+            //if( this.name() === 'br' ) return this;//this.prev( $jam.Node.Text( '\r\n' ) )
+            this.parent( null )
+            return this
+        }
+        
+        proto.dissolveTree=
+        function( ){
+            var endNode= this.follow()
+            var curr= this
+            while( curr ){
+                curr= curr.delve()
+                if( !curr ) break;
+                if( curr.$ === endNode.$ ) break;
+                if( curr.name() === '#text' ) continue;
+                var next= curr.delve()
+                curr.dissolve()
+                curr= next
+            }
+            return this
+        }
+        
+        proto.head=
+        $jam.Poly
+        (   function(){
+                return $jam.Node( this.$.firstChild )
+            }
+        ,   function( node ){
+                this.$.insertBefore( $jam.raw( node ), this.$.firstChild )
+                return this
+            }
+        )
+        
+        proto.tail=
+        $jam.Poly
+        (   function(){
+                return $jam.Node( this.$.lastChild )
+            }
+        ,   function( node ){
+                this.$.appendChild( $jam.raw( node ) )
+                return this
+            }
+        )
+        
+        proto.next=
+        $jam.Poly
+        (   function(){
+                return $jam.Node( this.$.nextSibling )
+            }
+        ,   function( node ){
+                var parent= this.$.parentNode
+                var next= this.$.nextSibling
+                parent.insertBefore( $jam.raw( node ), next ) 
+                return this
+            }   
+        )
+        
+        proto.delve=
+        function( ){
+            return this.head() || this.follow()
+        }
+
+        proto.follow=
+        function( ){
+            var node= this
+            while( true ){
+                var next= node.next()
+                if( next ) return next
+                node= node.parent()
+                if( !node ) return null
+            }
+        }
+
+        proto.precede=
+        function( ){
+            var node= this
+            while( true ){
+                var next= node.prev()
+                if( next ) return next
+                node= node.parent()
+                if( !node ) return null
+            }
+        }
+
+        proto.prev=
+        $jam.Poly
+        (   function(){
+                return $jam.Node( this.$.previousSibling )
+            }
+        ,   function( node ){
+                node= $jam.raw( node )
+                var parent= this.$.parentNode
+                parent.insertBefore( node, this.$ ) 
+                return this
+            }   
+        )
+        
+        proto.inDom=
+        $jam.Poly
+        (   function( ){
+                var doc= node.$.ownerDocument
+                var node= this
+                while( true ){
+                    if( node.$ === doc ) return true
+                    node= node.parent()
+                    if( !node ) return false
+                }
+            }
+        )
+        
+        klass.parse=
+        new function( ){
+            var parent= klass.Element( 'div' )
+            return function( html ){
+                parent.html( html )
+                var child= parent.head()
+                if( !child ) return null
+                if( !child.next() ) return child
+                var fragment= $jam.Node.Fragment()
+                while( child= parent.head() ) fragment.tail( child )
+                return fragment
+            }
+        }
+
+        proto.toString=
+        new function( ){
+            var parent= klass.Element( 'div' )
+            return function( ){
+                parent.clear().tail( this.cloneTree() )
+                return parent.html()
+            }
+        }
+        
+        proto.clone=
+        function( ){
+            return $jam.Node( this.$.cloneNode( false ) )
+        }
+
+        proto.cloneTree=
+        function( ){
+            return $jam.Node( this.$.cloneNode( true ) )
+        }
+        
+        proto.listen=
+        function( eventName, handler ){
+            return $jam.Observer()
+            .eventName( eventName )
+            .node( this )
+            .handler( handler )
+            .listen()
+        }
+
+    })
 )
-proto.handler=
-$jam.FF
-(   function( ){
-return this.$.handler
-}
-,   function( handler ){
-var self= this
-this.sleep()
-this.$.handler= handler
-this.$.internalHandler=
-function( event ){
-return handler.call( self.node(), $jam.FP( event ) )
-}
-return this
-}
-)
-proto.listen=
-function( ){
-if( this.$.active ) return this
-this.$.node.addEventListener( this.$.eventName, this.$.internalHandler, false )
-this.$.active= true
-return this
-}
-proto.sleep=
-function( ){
-if( !this.$.active ) return this
-this.$.node.removeEventListener( this.$.eventName, this.$.internalHandler, false )
-this.$.active= false
-return this
-}
-proto.active=
-$jam.FF
-(   function( ){
-return Boolean( this.$.active )
-}
-,   function( val ){
-if( val ) this.listen()
-else this.sleep()
-return this
-}
-)
-})
-)
-;$jam.EW
-(   '$jam.FM'
-,   $jam.FE( function( klass, proto ){
-klass.Element=
-function( name ){
-return klass.create( $jam.EX().createElement( name ) )
-}
-klass.Text=
-function( str ){
-return klass.create( $jam.EX().createTextNode( str ) )
-}
-klass.Comment=
-function( str ){
-return klass.create( $jam.EX().createComment( str ) )
-}
-klass.Fragment=
-function( ){
-return klass.create( $jam.EX().createDocumentFragment() )
-}
-proto.text=
-$jam.FF
-(   function( ){
-return $jam.FI( this.$.innerHTML )
-}
-,   new function(){
-return function( val ){
-val= String( val )
-if( this.text() === val ) return this
-this.$.textContent= val
-return this
-}
-}
-)
-proto.html=
-$jam.FF
-(   function( ){
-var val= this.$.innerHTML
-.replace
-(   /<\/?[A-Z]+/g
-,   function( str ){
-return str.toLowerCase()
-}
-)
-return val
-}
-,   function( val ){
-val= String( val )
-if( this.html() === val ) return this
-this.clear()
-this.$.innerHTML= String( val )
-return this
-}
-)
-proto.clear=
-function( ){
-while( true ){
-var child= this.$.firstChild
-if( !child ) break
-this.$.removeChild( child )
-}
-return this
-}
-proto.name=
-function( ){
-return this.$.nodeName.toLowerCase()
-}
-proto.attr=
-$jam.FF
-(   null
-,   function( name ){
-return this.$.getAttribute( name )
-}
-,   function( name, val ){
-this.$.setAttribute( String( name ), String( val ) )
-this.$.className+= ''
-return this
-}    
-)
-proto.state=
-$jam.FF
-(   function( ){
-return this.param( [] )
-}
-,   function( key ){
-return $jam.FK({ splitterChunks: ' ' }).merge( this.$.className || '' ).get( key )
-}
-,   function( key, value ){
-this.$.className= $jam.FK({ splitterChunks: ' ' }).merge( this.$.className ).put( key, value )
-return this
-}
-)
-proto.width=
-function( ){
-if( 'offsetWidth' in this.$ ) return this.$.offsetWidth
-if( 'getBoundingClientRect' in this.$ ){
-var rect= this.$.getBoundingClientRect()
-return rect.right - rect.left
-}
-return 0
-}
-proto.height=
-function( ){
-if( 'offsetHeight' in this.$ ) return this.$.offsetHeight
-if( 'getBoundingClientRect' in this.$ ){
-var rect= this.$.getBoundingClientRect()
-return rect.bottom - rect.top
-}
-return 0
-}
-proto.posLeft=
-function( ){
-if( 'offsetLeft' in this.$ ) return this.$.offsetLeft
-var rect= this.$.getBoundingClientRect()
-return rect.left
-}
-proto.posTop=
-function( ){
-if( 'offsetTop' in this.$ ) return this.$.offsetTop
-var rect= this.$.getBoundingClientRect()
-return rect.top
-}
-proto.editable=
-$jam.FF
-(   function( ){
-var editable= this.$.contentEditable
-if( editable == 'inherit' ) return this.parent().editable()
-return editable == 'true'
-}
-,   function( val ){
-this.$.contentEditable= val
-return this
-}
-)
-proto.ancList=
-function( name ){
-var filtered= []
-var node= this
-do {
-if( name && node.name().replace( name, '' ) ) continue
-filtered.push( node )
-} while( node= node.parent() )
-return $jam.FL( filtered )
-}
-proto.childList=
-function( name ){
-var list= this.$.childNodes
-var filtered= []
-for( var i= this.head(); i; i= i.next() ){
-if( name && i.name().replace( name, '' ) ) continue
-filtered.push( i )
-}
-return $jam.FL( filtered )
-}
-proto.descList=
-function( name ){
-var list= this.$.getElementsByTagName( name )
-var filtered= []
-for( var i= 0; i < list.length; ++i ){
-filtered.push( list[ i ] )
-}
-return $jam.FL( filtered )
-}
-proto.parent= 
-$jam.FF
-(   function( ){
-return $jam.FM( this.$.parentNode )
-}
-,   function( node ){
-node= $jam.FN( node )
-var parent= this.$.parentNode
-if( node ){
-if( parent === node ) return this
-node.appendChild( this.$ )
-} else {
-if( !parent ) return this
-parent.removeChild( this.$ )
-}
-return this
-}
-)
-proto.ancestor=
-function( name ){
-var current= this
-while( true ){
-if( current.name() === name ) return current
-current= current.parent()
-if( !current ) return current
-}
-}
-proto.surround=
-function( node ){
-var node= $jam.FN( node )
-var parent= this.$.parentNode
-var next= this.$.nextSibling
-node.appendChild( this.$ )
-parent.insertBefore( node, next )
-return this
-}
-proto.dissolve=
-function( ){
-for( var head; head= this.head(); ){
-this.prev( head )
-}
-//if( this.name() === 'br' ) return this;//this.prev( $jam.FM.Text( '\r\n' ) )
-this.parent( null )
-return this
-}
-proto.dissolveTree=
-function( ){
-var endNode= this.follow()
-var curr= this
-while( curr ){
-curr= curr.delve()
-if( !curr ) break;
-if( curr.$ === endNode.$ ) break;
-if( curr.name() === '#text' ) continue;
-var next= curr.delve()
-curr.dissolve()
-curr= next
-}
-return this
-}
-proto.head=
-$jam.FF
-(   function(){
-return $jam.FM( this.$.firstChild )
-}
-,   function( node ){
-this.$.insertBefore( $jam.FN( node ), this.$.firstChild )
-return this
-}
-)
-proto.tail=
-$jam.FF
-(   function(){
-return $jam.FM( this.$.lastChild )
-}
-,   function( node ){
-this.$.appendChild( $jam.FN( node ) )
-return this
-}
-)
-proto.next=
-$jam.FF
-(   function(){
-return $jam.FM( this.$.nextSibling )
-}
-,   function( node ){
-var parent= this.$.parentNode
-var next= this.$.nextSibling
-parent.insertBefore( $jam.FN( node ), next ) 
-return this
-}   
-)
-proto.delve=
-function( ){
-return this.head() || this.follow()
-}
-proto.follow=
-function( ){
-var node= this
-while( true ){
-var next= node.next()
-if( next ) return next
-node= node.parent()
-if( !node ) return null
-}
-}
-proto.precede=
-function( ){
-var node= this
-while( true ){
-var next= node.prev()
-if( next ) return next
-node= node.parent()
-if( !node ) return null
-}
-}
-proto.prev=
-$jam.FF
-(   function(){
-return $jam.FM( this.$.previousSibling )
-}
-,   function( node ){
-node= $jam.FN( node )
-var parent= this.$.parentNode
-parent.insertBefore( node, this.$ ) 
-return this
-}   
-)
-proto.inDom=
-$jam.FF
-(   function( ){
-var doc= node.$.ownerDocument
-var node= this
-while( true ){
-if( node.$ === doc ) return true
-node= node.parent()
-if( !node ) return false
-}
-}
-)
-klass.parse=
-new function( ){
-var parent= klass.Element( 'div' )
-return function( html ){
-parent.html( html )
-var child= parent.head()
-if( !child ) return null
-if( !child.next() ) return child
-var fragment= $jam.FM.Fragment()
-while( child= parent.head() ) fragment.tail( child )
-return fragment
-}
-}
-proto.toString=
-new function( ){
-var parent= klass.Element( 'div' )
-return function( ){
-parent.clear().tail( this.cloneTree() )
-return parent.html()
-}
-}
-proto.clone=
-function( ){
-return $jam.FM( this.$.cloneNode( false ) )
-}
-proto.cloneTree=
-function( ){
-return $jam.FM( this.$.cloneNode( true ) )
-}
-proto.listen=
-function( eventName, handler ){
-return $jam.FQ()
-.eventName( eventName )
-.node( this )
-.handler( handler )
-.listen()
-}
-})
-)
-;$jam.FD
+
+;// html/a/html-a.jam.js
+$jam.Component
 (   'a'
 ,   function( el ){
-var isTarget= ( el.href == $jam.EX().location.href )
-$jam.FM( el ).state( 'target', isTarget )
-}
+        var isTarget= ( el.href == $jam.doc().location.href )
+        $jam.Node( el ).state( 'target', isTarget )
+    }
 )
-;$jam.EW
-(   '$jam.FR'
-,   $jam.FE( function( klass, proto ){
-proto.constructor=
-$jam.FF
-(   function( ){
-this.$= { prefix: ':', obj: {} }
-return this
-}
-,   function( hash ){
-this.$= {}
-this.$.prefix= hash.prefix || ''
-this.$.obj= hash.obj || {}
-return this
-}
+
+;// jam/Hash/jam+Hash.jam.js
+$jam.define
+(   '$jam.Hash'
+,   $jam.Class( function( klass, proto ){
+
+        proto.constructor=
+        $jam.Poly
+        (   function( ){
+                this.$= { prefix: ':', obj: {} }
+                return this
+            }
+        ,   function( hash ){
+                this.$= {}
+                this.$.prefix= hash.prefix || ''
+                this.$.obj= hash.obj || {}
+                return this
+            }
+        )
+
+        proto.key2field= function( key ){
+            return this.$.prefix + key
+        }
+
+        proto.has= function( key ){
+            key= this.key2field( key )
+            return this.$.obj.hasOwnProperty( key )
+        }
+
+        proto.get= function( key ){
+            key= this.key2field( key )
+            return this.$.obj[ key ]
+        }
+
+        proto.put= function( key, value ){
+            key= this.key2field( key )
+            this.$.obj[ key ]= value
+            return this
+        }
+
+    })
 )
-proto.key2field= function( key ){
-return this.$.prefix + key
-}
-proto.has= function( key ){
-key= this.key2field( key )
-return this.$.obj.hasOwnProperty( key )
-}
-proto.get= function( key ){
-key= this.key2field( key )
-return this.$.obj[ key ]
-}
-proto.put= function( key, value ){
-key= this.key2field( key )
-this.$.obj[ key ]= value
-return this
-}
-})
-)
-;$jam.EW
-(    '$jam.FS'
+
+;// jam/Cached/jam+Cached.jam.js
+$jam.define
+(    '$jam.Cached'
 ,    function( func ){
-var cache= $jam.FR()
-return function( key ){
-if( cache.has( key ) ) return cache.get( key )
-var value= func.apply( this, arguments )
-cache.put( key, value )
-return value 
-}
-}
+        var cache= $jam.Hash()
+        return function( key ){
+            if( cache.has( key ) ) return cache.get( key )
+            var value= func.apply( this, arguments )
+            cache.put( key, value )
+            return value 
+        }
+    }
 )
-;$jam.FT=
-$jam.FE( function( klass, proto ){
-proto.has=
-function( key ){
-return ( key in this.$ )
-}
-proto.get=
-function( key ){
-return this.$[ key ]
-}
-proto.put=
-function( key, value ){
-this.$[ key ]= value
-return this
-}
-proto.define=
-function( key, value ){
-if( this.has( key ) ){
-throw new Error( 'Redeclaration of [' + key + ']' )
-}
-this.put( key, value )
-return this
-}
-proto.method=
-function( name ){
-var obj= this.$
-return function( ){
-return obj[ name ].apply( obj, arguments )
-}
-}
-proto.init=
-function( init ){
-init( this.$ )
-return this
-}
+
+;// jam/Obj/jam+Obj.jam.js
+$jam.Obj=
+$jam.Class( function( klass, proto ){
+    
+    proto.has=
+    function( key ){
+        return ( key in this.$ )
+    }
+    
+    proto.get=
+    function( key ){
+        return this.$[ key ]
+    }
+    
+    proto.put=
+    function( key, value ){
+        this.$[ key ]= value
+        return this
+    }
+    
+    proto.define=
+    function( key, value ){
+        if( this.has( key ) ){
+            throw new Error( 'Redeclaration of [' + key + ']' )
+        }
+        this.put( key, value )
+        return this
+    }
+    
+    proto.method=
+    function( name ){
+        var obj= this.$
+        return function( ){
+            return obj[ name ].apply( obj, arguments )
+        }
+    }
+
+    proto.init=
+    function( init ){
+        init( this.$ )
+        return this
+    }
+
 })
-;$jam.EW
-(   '$jam.FU'
-,   $jam.FE( function( klass, proto ){
-proto.constructor=
-function( ){
-this.$= { latency: 0, stopper: null, active: false }
-return this
-}
-proto.latency=
-$jam.FF
-(   function( ){
-return this.$.latency
-}
-,   function( val ){
-this.stop()
-this.$.latency= Number( val )
-return this
-}
+
+;// jam/Clock/jam+Clock.jam.js
+$jam.define
+(   '$jam.Clock'
+,   $jam.Class( function( klass, proto ){
+        
+        proto.constructor=
+        function( ){
+            this.$= { latency: 0, stopper: null, active: false }
+            return this
+        }
+        
+        proto.latency=
+        $jam.Poly
+        (   function( ){
+                return this.$.latency
+            }
+        ,   function( val ){
+                this.stop()
+                this.$.latency= Number( val )
+                return this
+            }
+        )
+        
+        proto.active=
+        $jam.Poly
+        (   function( ){
+                return this.$.active
+            }
+        ,   function( val ){
+                if( val ) this.start()
+                else this.stop()
+                return this
+            }
+        )
+        
+        proto.handler=
+        $jam.Poly
+        (   function( ){
+                return this.$.handler
+            }
+        ,   function( proc ){
+                this.stop()
+                this.$.handler= proc
+                return this
+            }
+        )
+        
+        proto.start=
+        function( ){
+            if( this.active() ) return this
+            this.$.stoper=
+            $jam.schedule
+            (   this.latency()
+            ,   $jam.Obj( this )
+                .method( 'tick' )
+            )
+            this.$.active= true
+            return this
+        }
+        
+        proto.stop=
+        function( ){
+            if( !this.active() ) return this
+            this.$.stoper()
+            this.$.active= false
+            return this
+        }
+        
+        proto.tick=
+        function( ){
+            var proc= this.$.handler
+            proc()
+            if( !this.active() ) return this
+            this.$.active= false
+            this.start()
+            return this
+        }
+        
+    })
 )
-proto.active=
-$jam.FF
-(   function( ){
-return this.$.active
-}
-,   function( val ){
-if( val ) this.start()
-else this.stop()
-return this
-}
-)
-proto.handler=
-$jam.FF
-(   function( ){
-return this.$.handler
-}
-,   function( proc ){
-this.stop()
-this.$.handler= proc
-return this
-}
-)
-proto.start=
-function( ){
-if( this.active() ) return this
-this.$.stoper=
-$jam.EY
-(   this.latency()
-,   $jam.FT( this )
-.method( 'tick' )
-)
-this.$.active= true
-return this
-}
-proto.stop=
-function( ){
-if( !this.active() ) return this
-this.$.stoper()
-this.$.active= false
-return this
-}
-proto.tick=
-function( ){
-var proc= this.$.handler
-proc()
-if( !this.active() ) return this
-this.$.active= false
-this.start()
-return this
-}
-})
-)
-;$jam.EW
-(   '$jam.FV'
+
+;// jam/Concater/jam+Concater.jam.js
+$jam.define
+(   '$jam.Concater'
 ,   function( delim ){
-delim= delim || ''
-return function( list ){
-return list.join( delim )
-}
-}
+        delim= delim || ''
+        return function( list ){
+            return list.join( delim )
+        }
+    }
 )
-;$jam.EW
-(   '$jam.FW'
-,   $jam.FE( function( klass, proto ){
-proto.constructor=
-function( data ){
-this.$= String( $jam.FN( data ) || '' )
-return this
-}
-proto.incIndent=
-$jam.FF
-(   function( ){
-this.$= this.$.replace( /^/mg, '    ' )
-return this
-}
+
+;// jam/String/jam+String.jam.js
+$jam.define
+(   '$jam.String'
+,   $jam.Class( function( klass, proto ){
+    
+        proto.constructor=
+        function( data ){
+            this.$= String( $jam.raw( data ) || '' )
+            return this
+        }
+        
+        proto.incIndent=
+        $jam.Poly
+        (   function( ){
+                this.$= this.$.replace( /^/mg, '    ' )
+                return this
+            }
+        )
+
+        proto.decIndent=
+        $jam.Poly
+        (   function( ){
+                this.$= this.$.replace( /^    |^\t/mg, '' )
+                return this
+            }
+        )
+
+        proto.minimizeIndent=
+        $jam.Poly
+        (   function( ){
+                this.normilizeSpaces()
+                var minIndent= 1/0
+                this.$.replace( /^( *)[^ \r\n]/mg, function( str, indent ){
+                    if( indent.length < minIndent ) minIndent= indent.length
+                })
+                if( minIndent === 1/0 ) return this
+                this.$= this.$.replace( RegExp( '^[ ]{0,' + minIndent + '}', 'mg' ), '' )
+                return this
+            }
+        )
+
+        proto.normilizeSpaces=
+        $jam.Poly
+        (   function( ){
+                this.$= this.$.replace( /\t/g, '    ' ).replace( /\u00A0/, ' ' )
+                return this
+            }
+        )
+        
+        proto.trim=
+        $jam.Poly
+        (   function( ){
+                return this.trim( /\s/ )
+            }
+        ,   function( what ){
+                this.$= this.$.replace( RegExp( '^(' + what.source + ')+' ), '' )
+                this.$= this.$.replace( RegExp( '(' + what.source + ')+$' ), '' )
+                return this
+            }
+        )
+        
+        proto.process=
+        $jam.Poly
+        (   null
+        ,   function( proc ){
+                this.$= proc( this.$ )
+                return this
+            }
+        )
+        
+        proto.replace=
+        $jam.Poly
+        (   null
+        ,   function( from ){
+                return this.replace( from, '' )
+            }
+        ,   function( from, to ){
+                this.$= this.$.replace( from, to )
+                return this
+            }
+        )
+        
+        proto.mult=
+        $jam.Poly
+        (   null
+        ,   function( count ){
+                this.$= Array( count + 1 ).join( this.$ )
+                return this
+            }
+        )
+        
+        proto.length=
+        $jam.Poly
+        (   function( ){
+                return this.$.length
+            }
+        )
+        
+        proto.toString=
+        $jam.Poly
+        (   function( ){
+                return this.$
+            }
+        )
+
+    })
 )
-proto.decIndent=
-$jam.FF
-(   function( ){
-this.$= this.$.replace( /^    |^\t/mg, '' )
-return this
-}
+
+;// jam/DOMX/jam+DOMX.jam.js
+$jam.define
+(   '$jam.DOMX'
+,   $jam.Class( function( klass, proto ){
+    
+        proto.constructor=
+        function( dom ){
+            if( dom.toDOMDocument ) dom= dom.toDOMDocument()
+            this.$= dom
+            return this
+        }
+        
+        proto.toDOMDocument=
+        function( ){
+            return this.$
+        }
+        
+        proto.toString=
+        $jam.support.xmlModel.select(
+        {   'w3c': function( ){
+                var serializer= new XMLSerializer
+                var text= serializer.serializeToString( this.$ )
+                return text
+            }
+        ,   'ms': function( ){
+                return $jam.String( this.$.xml ).trim().$
+            }
+        })
+        
+        proto.transform=
+        $jam.support.xmlModel.select(
+        {   'w3c': function( stylesheet ){
+                var proc= new XSLTProcessor
+                proc.importStylesheet( $jam.raw( stylesheet ) )
+                var doc= proc.transformToDocument( this.$ )
+                return $jam.DOMX( doc )
+            }
+        ,   'ms': function( stylesheet ){
+                var text= this.$.transformNode( $jam.raw( stylesheet ) )
+                return $jam.DOMX.parse( text )
+            }
+        })
+        
+        klass.parse=
+        $jam.support.xmlModel.select(
+        {   'w3c': function( str ){
+            var parser= new DOMParser
+                var doc= parser.parseFromString( str, 'text/xml' )
+                return $jam.DOMX( doc )
+            }
+        ,   'ms': function( str ){
+                var doc= new ActiveXObject( 'MSXML2.DOMDocument' )
+                doc.async= false
+                doc.loadXML( str )
+                return $jam.DOMX( doc )
+            }
+        })
+
+    })
 )
-proto.minimizeIndent=
-$jam.FF
-(   function( ){
-this.normilizeSpaces()
-var minIndent= 1/0
-this.$.replace( /^( *)[^ \r\n]/mg, function( str, indent ){
-if( indent.length < minIndent ) minIndent= indent.length
-})
-if( minIndent === 1/0 ) return this
-this.$= this.$.replace( RegExp( '^[ ]{0,' + minIndent + '}', 'mg' ), '' )
-return this
-}
-)
-proto.normilizeSpaces=
-$jam.FF
-(   function( ){
-this.$= this.$.replace( /\t/g, '    ' ).replace( /\u00A0/, ' ' )
-return this
-}
-)
-proto.trim=
-$jam.FF
-(   function( ){
-return this.trim( /\s/ )
-}
-,   function( what ){
-this.$= this.$.replace( RegExp( '^(' + what.source + ')+' ), '' )
-this.$= this.$.replace( RegExp( '(' + what.source + ')+$' ), '' )
-return this
-}
-)
-proto.process=
-$jam.FF
-(   null
-,   function( proc ){
-this.$= proc( this.$ )
-return this
-}
-)
-proto.replace=
-$jam.FF
-(   null
-,   function( from ){
-return this.replace( from, '' )
-}
-,   function( from, to ){
-this.$= this.$.replace( from, to )
-return this
-}
-)
-proto.mult=
-$jam.FF
-(   null
-,   function( count ){
-this.$= Array( count + 1 ).join( this.$ )
-return this
-}
-)
-proto.length=
-$jam.FF
-(   function( ){
-return this.$.length
-}
-)
-proto.toString=
-$jam.FF
-(   function( ){
-return this.$
-}
-)
-})
-)
-;$jam.EW
-(   '$jam.FX'
-,   $jam.FE( function( klass, proto ){
-proto.constructor=
-function( dom ){
-if( dom.toDOMDocument ) dom= dom.toDOMDocument()
-this.$= dom
-return this
-}
-proto.toDOMDocument=
-function( ){
-return this.$
-}
-proto.toString=
-$jam.FC.xmlModel.select(
-{   'w3c': function( ){
-var serializer= new XMLSerializer
-var text= serializer.serializeToString( this.$ )
-return text
-}
-,   'ms': function( ){
-return $jam.FW( this.$.xml ).trim().$
-}
-})
-proto.transform=
-$jam.FC.xmlModel.select(
-{   'w3c': function( stylesheet ){
-var proc= new XSLTProcessor
-proc.importStylesheet( $jam.FN( stylesheet ) )
-var doc= proc.transformToDocument( this.$ )
-return $jam.FX( doc )
-}
-,   'ms': function( stylesheet ){
-var text= this.$.transformNode( $jam.FN( stylesheet ) )
-return $jam.FX.parse( text )
-}
-})
-klass.parse=
-$jam.FC.xmlModel.select(
-{   'w3c': function( str ){
-var parser= new DOMParser
-var doc= parser.parseFromString( str, 'text/xml' )
-return $jam.FX( doc )
-}
-,   'ms': function( str ){
-var doc= new ActiveXObject( 'MSXML2.DOMDocument' )
-doc.async= false
-doc.loadXML( str )
-return $jam.FX( doc )
-}
-})
-})
-)
-;$jam.EW
-(  '$jam.FY'
+
+;// jam/selection/jam+selection.jam.js
+$jam.define
+(  '$jam.selection'
 ,   function( ){
-return $jam.EV().getSelection()
-}
+        return $jam.glob().getSelection()
+    }
 )
-;$jam.EW
-(   '$jam.FZ'
+
+;// jam/htmlEscape/jam+htmlEscape.jam.js
+$jam.define
+(   '$jam.htmlEscape'
 ,   function( str ){
-return String( str )
-.replace( /&/g, '&amp;' )
-.replace( /</g, '&lt;' )
-.replace( />/g, '&gt;' )
-.replace( /"/g, '&quot;' )
-.replace( /'/g, '&apos;' )
-}
+        return String( str )
+        .replace( /&/g, '&amp;' )
+        .replace( /</g, '&lt;' )
+        .replace( />/g, '&gt;' )
+        .replace( /"/g, '&quot;' )
+        .replace( /'/g, '&apos;' )
+    }
 )
-;$jam.EW
-(   '$jam.GA'
-,   $jam.FE( function( klass, proto ){
-proto.constructor=
-$jam.FF
-(   function( ){
-var sel= $jam.FY()
-if( sel.rangeCount ) this.$= sel.getRangeAt( 0 ).cloneRange()
-else this.$= $jam.EX().createRange()
-return this
-}
-,   function( range ){
-if( !range ) throw new Error( 'Wrong TextRange object' )
-this.$= klass.raw( range )
-return this
-}
+
+;// jam/DomRange/jam+DomRange.jam.js
+$jam.define
+(   '$jam.DomRange'
+,   $jam.Class( function( klass, proto ){
+    
+        proto.constructor=
+        $jam.Poly
+        (   function( ){
+                var sel= $jam.selection()
+                if( sel.rangeCount ) this.$= sel.getRangeAt( 0 ).cloneRange()
+                else this.$= $jam.doc().createRange()
+                return this
+            }
+        ,   function( range ){
+                if( !range ) throw new Error( 'Wrong TextRange object' )
+                this.$= klass.raw( range )
+                return this
+            }
+        )
+        
+        proto.select=
+        function( ){
+            var sel= $jam.selection()
+            sel.removeAllRanges()
+            sel.addRange( this.$ )
+            return this
+        }
+        
+        proto.collapse2end=
+        function( ){
+            this.$.collapse( false )
+            return this
+        }
+        
+        proto.collapse2start=
+        function( ){
+            this.$.collapse( true )
+            return this
+        }
+        
+        proto.dropContents=
+        function( ){
+            this.$.deleteContents()
+            return this
+        }
+        
+        proto.text=
+        $jam.Poly
+        (   function( ){
+                return $jam.html2text( this.html() )
+            }
+        ,   function( text ){
+                this.html( $jam.htmlEscape( text ) )
+                return this
+            }
+        )
+        
+        proto.html=
+        $jam.Poly
+        (   function( ){
+                return $jam.Node( this.$.cloneContents() ).toString()
+            }
+        ,   function( html ){
+                var node= html ? $jam.Node.parse( html ).$ : $jam.Node.Text( '' ).$
+                this.replace( node )
+                return this
+            }
+        )
+        
+        proto.replace=
+        function( node ){
+            node= $jam.raw( node )
+            this.dropContents()
+            this.$.insertNode( node )
+            this.$.selectNode( node )
+            return this
+        }
+        
+        proto.ancestorNode=
+        function( ){
+            return this.$.commonAncestorContainer
+        }
+        
+        proto.compare=
+        function( how, range ){
+            range= $jam.DomRange( range ).$
+            how= Range[ how.replace( '2', '_to_' ).toUpperCase() ]
+            return range.compareBoundaryPoints( how, this.$ )
+        }
+        
+        proto.hasRange=
+        function( range ){
+            range= $jam.DomRange( range )
+            var isAfterStart= ( this.compare( 'start2start', range ) >= 0 )
+            var isBeforeEnd= ( this.compare( 'end2end', range ) <= 0 )
+            return isAfterStart && isBeforeEnd
+        }
+        
+        proto.equalize=
+        function( how, range ){
+            how= how.split( 2 )
+            var method= { start: 'setStart', end: 'setEnd' }[ how[ 0 ] ]
+            range= $jam.DomRange( range ).$
+            this.$[ method ]( range[ how[1] + 'Container' ], range[ how[1] + 'Offset' ] )
+            return this
+        }
+        
+        proto.move=
+        function( offset ){
+            this.collapse2start()
+            if( offset === 0 ) return this
+            var current= $jam.Node( this.$.startContainer )
+            if( this.$.startOffset ){
+                var temp= current.$.childNodes[ this.$.startOffset - 1 ]
+                if( temp ){
+                    current= $jam.Node( temp ).follow()
+                } else {
+                    offset+= this.$.startOffset
+                }
+            }
+            while( current ){
+                if( current.name() === '#text' ){
+                    var range= $jam.DomRange().aimNode( current )
+                    var length= current.$.nodeValue.length
+                    
+                    if( !offset ){
+                        this.equalize( 'start2start', range )
+                        return this
+                    } else if( offset > length ){
+                        offset-= length
+                    } else {
+                        this.$.setStart( current.$, offset )
+                        return this
+                    }
+                }
+                if( current.name() === 'br' ){
+                    if( offset > 1 ){
+                        offset-= 1
+                    } else {
+                        var range= $jam.DomRange().aimNode( current )
+                        this.equalize( 'start2end', range )
+                        return this
+                    }
+                }
+                current= current.delve()
+            }
+            return this
+        }
+        
+        proto.clone=
+        function( ){
+            return $jam.DomRange( this.$.cloneRange() )
+        }
+        
+        proto.aimNodeContent=
+        function( node ){
+            this.$.selectNodeContents( $jam.raw( node ) )
+            return this
+        }
+        
+        proto.aimNode=
+        function( node ){
+            this.$.selectNode( $jam.raw( node ) )
+            return this
+        }
+        
+    })
 )
-proto.select=
-function( ){
-var sel= $jam.FY()
-sel.removeAllRanges()
-sel.addRange( this.$ )
-return this
-}
-proto.collapse2end=
-function( ){
-this.$.collapse( false )
-return this
-}
-proto.collapse2start=
-function( ){
-this.$.collapse( true )
-return this
-}
-proto.dropContents=
-function( ){
-this.$.deleteContents()
-return this
-}
-proto.text=
-$jam.FF
-(   function( ){
-return $jam.FI( this.html() )
-}
-,   function( text ){
-this.html( $jam.FZ( text ) )
-return this
-}
-)
-proto.html=
-$jam.FF
-(   function( ){
-return $jam.FM( this.$.cloneContents() ).toString()
-}
-,   function( html ){
-var node= html ? $jam.FM.parse( html ).$ : $jam.FM.Text( '' ).$
-this.replace( node )
-return this
-}
-)
-proto.replace=
-function( node ){
-node= $jam.FN( node )
-this.dropContents()
-this.$.insertNode( node )
-this.$.selectNode( node )
-return this
-}
-proto.ancestorNode=
-function( ){
-return this.$.commonAncestorContainer
-}
-proto.compare=
-function( how, range ){
-range= $jam.GA( range ).$
-how= Range[ how.replace( '2', '_to_' ).toUpperCase() ]
-return range.compareBoundaryPoints( how, this.$ )
-}
-proto.hasRange=
-function( range ){
-range= $jam.GA( range )
-var isAfterStart= ( this.compare( 'start2start', range ) >= 0 )
-var isBeforeEnd= ( this.compare( 'end2end', range ) <= 0 )
-return isAfterStart && isBeforeEnd
-}
-proto.equalize=
-function( how, range ){
-how= how.split( 2 )
-var method= { start: 'setStart', end: 'setEnd' }[ how[ 0 ] ]
-range= $jam.GA( range ).$
-this.$[ method ]( range[ how[1] + 'Container' ], range[ how[1] + 'Offset' ] )
-return this
-}
-proto.move=
-function( offset ){
-this.collapse2start()
-if( offset === 0 ) return this
-var current= $jam.FM( this.$.startContainer )
-if( this.$.startOffset ){
-var temp= current.$.childNodes[ this.$.startOffset - 1 ]
-if( temp ){
-current= $jam.FM( temp ).follow()
-} else {
-offset+= this.$.startOffset
-}
-}
-while( current ){
-if( current.name() === '#text' ){
-var range= $jam.GA().aimNode( current )
-var length= current.$.nodeValue.length
-if( !offset ){
-this.equalize( 'start2start', range )
-return this
-} else if( offset > length ){
-offset-= length
-} else {
-this.$.setStart( current.$, offset )
-return this
-}
-}
-if( current.name() === 'br' ){
-if( offset > 1 ){
-offset-= 1
-} else {
-var range= $jam.GA().aimNode( current )
-this.equalize( 'start2end', range )
-return this
-}
-}
-current= current.delve()
-}
-return this
-}
-proto.clone=
-function( ){
-return $jam.GA( this.$.cloneRange() )
-}
-proto.aimNodeContent=
-function( node ){
-this.$.selectNodeContents( $jam.FN( node ) )
-return this
-}
-proto.aimNode=
-function( node ){
-this.$.selectNode( $jam.FN( node ) )
-return this
-}
-})
-)
-;$jam.EW
-(   '$jam.GB'
+
+;// jam/Lazy/jam+Lazy.jam.js
+$jam.define
+(   '$jam.Lazy'
 ,   function( gen ){
-var proc= function(){
-proc= gen.call( this )
-return proc.apply( this, arguments )
-}
-var lazy= function(){
-return proc.apply( this, arguments )
-}
-lazy.gen= $jam.EU( gen )
-return lazy
-}
+        var proc= function(){
+            proc= gen.call( this )
+            return proc.apply( this, arguments )
+        }
+        var lazy= function(){
+            return proc.apply( this, arguments )
+        }
+        lazy.gen= $jam.Value( gen )
+        return lazy
+    }
 )
-;$jam.EW
-(   '$jam.GC'
-,   $jam.FE( function( klass, proto ){
-proto.constructor=
-function( regexp ){
-this.$= new RegExp( regexp )
-return this
-}
-klass.escape=
-new function( ){
-var encodeChar= function( symb ){
-return '\\' + symb
-}
-var specChars = '^({[\\.?+*]})$'
-var specRE= RegExp( '[' + specChars.replace( /./g, encodeChar ) + ']', 'g' )
-return function( str ){
-return String( str ).replace( specRE, encodeChar )
-}
-}
-klass.build=
-function( ){
-var str= ''
-for( var i= 0; i < arguments.length; ++i ){
-var chunk= arguments[ i ]
-if( i % 2 ) chunk= $jam.GC.escape( chunk )
-str+= chunk
-}
-return $jam.GC( str )
-}
-proto.source=
-function(){
-return this.$.source
-}
-proto.count=
-new function( ){
-var offset= /^$/.exec( '' ).length
-return function( ){
-return RegExp( '^$|' + this.$.source ).exec( '' ).length - offset
-}
-}
-})
+
+;// jam/RegExp/jam+RegExp.jam.js
+$jam.define
+(   '$jam.RegExp'
+,   $jam.Class( function( klass, proto ){
+    
+        proto.constructor=
+        function( regexp ){
+            this.$= new RegExp( regexp )
+            return this
+        }
+        
+        klass.escape=
+        new function( ){
+            var encodeChar= function( symb ){
+                return '\\' + symb
+            }
+            var specChars = '^({[\\.?+*]})$'
+            var specRE= RegExp( '[' + specChars.replace( /./g, encodeChar ) + ']', 'g' )
+            return function( str ){
+                return String( str ).replace( specRE, encodeChar )
+            }
+        }
+        
+        klass.build=
+        function( ){
+            var str= ''
+            for( var i= 0; i < arguments.length; ++i ){
+                var chunk= arguments[ i ]
+                if( i % 2 ) chunk= $jam.RegExp.escape( chunk )
+                str+= chunk
+            }
+            return $jam.RegExp( str )
+        }
+
+        proto.source=
+        function(){
+            return this.$.source
+        }
+
+        proto.count=
+        new function( ){
+            var offset= /^$/.exec( '' ).length
+            return function( ){
+                return RegExp( '^$|' + this.$.source ).exec( '' ).length - offset
+            }
+        }
+
+    })
 )
-;$jam.EW
-(   '$jam.GD'
+
+;// jam/Lexer/jam+Lexer.jam.js
+$jam.define
+(   '$jam.Lexer'
 ,   function( lexems ){
-if( !lexems ) throw new Error( 'lexems is required' )
-var nameList= []
-var regexpList= []
-var sizeList= []
-for( var name in lexems ){
-var regexp= $jam.GC( lexems[ name ] )
-nameList.push( name )
-regexpList.push( regexp.source() )
-sizeList.push( regexp.count() )
-}
-var regexp= RegExp( '([\\s\\S]*?)(?:((' + regexpList.join( ')|(' ) + '))|($\n?))', 'gm' )
-var count= $jam.GC(regexp).count()
-return $jam.FE( function( klass, proto ){
-proto.constructor=
-function( str ){
-this.string= String( str )
-this.position= 0
-return this
-}
-proto.next=
-function(){
-regexp.lastIndex= this.position
-var found= regexp.exec( this.string )
-var prefix= found[1]
-if( prefix ){
-this.position+= prefix.length
-this.name= ''
-this.found= prefix
-this.chunks= [ prefix ]
-return this
-} else if( found[ 2 ] ){
-this.position+= found[ 2 ].length
-var offset= 4
-for( var i= 0; i < sizeList.length; ++i ){
-var size= sizeList[ i ]
-if( found[ offset - 1 ] ){
-this.name= nameList[ i ]
-this.found= found[2]
-this.chunks= found.slice( offset, offset + size )
-return this
-}
-offset+= size + 1
-}
-throw new Error( 'something wrong' )
-} else if( regexp.lastIndex >= this.string.length ){
-delete this.name
-delete this.found
-delete this.chunks
-return this
-} else {
-//console.log(found,regexp,this.string,count)
-this.position+= found[count] ? found[count].length : 0
-this.name= ''
-this.found= found[count]
-this.chunks= [ found[count] ]
-return this
-}
-}
-})
-}
+        if( !lexems ) throw new Error( 'lexems is required' )
+    
+        var nameList= []
+        var regexpList= []
+        var sizeList= []
+    
+        for( var name in lexems ){
+            var regexp= $jam.RegExp( lexems[ name ] )
+            nameList.push( name )
+            regexpList.push( regexp.source() )
+            sizeList.push( regexp.count() )
+        }
+        
+        var regexp= RegExp( '([\\s\\S]*?)(?:((' + regexpList.join( ')|(' ) + '))|($\n?))', 'gm' )
+        var count= $jam.RegExp(regexp).count()
+        
+        return $jam.Class( function( klass, proto ){
+            
+            proto.constructor=
+            function( str ){
+                this.string= String( str )
+                this.position= 0
+                return this
+            }
+            
+            proto.next=
+            function(){
+                regexp.lastIndex= this.position
+                var found= regexp.exec( this.string )
+                var prefix= found[1]
+                if( prefix ){
+                    this.position+= prefix.length
+                    this.name= ''
+                    this.found= prefix
+                    this.chunks= [ prefix ]
+                    return this
+                } else if( found[ 2 ] ){
+                    this.position+= found[ 2 ].length
+                    var offset= 4
+                    for( var i= 0; i < sizeList.length; ++i ){
+                        var size= sizeList[ i ]
+                        if( found[ offset - 1 ] ){
+                            this.name= nameList[ i ]
+                            this.found= found[2]
+                            this.chunks= found.slice( offset, offset + size )
+                            return this
+                        }
+                        offset+= size + 1
+                    }
+                    throw new Error( 'something wrong' )
+                } else if( regexp.lastIndex >= this.string.length ){
+                    delete this.name
+                    delete this.found
+                    delete this.chunks
+                    return this
+                } else {
+                //console.log(found,regexp,this.string,count)
+                    this.position+= found[count] ? found[count].length : 0
+                    this.name= ''
+                    this.found= found[count]
+                    this.chunks= [ found[count] ]
+                    return this
+                }
+            }
+            
+        })
+    }
 )
-;$jam.EW
-(   '$jam.GE'
-,   $jam.FE( function( klass, proto ){
-proto.constructor=
-function( numb ){
-this.$= Number( numb )
-return this
-}
-proto.valueOf=
-function( ){
-return this.$
-}
-})
+
+;// jam/Number/jam+Number.jam.js
+$jam.define
+(   '$jam.Number'
+,   $jam.Class( function( klass, proto ){
+    
+        proto.constructor=
+        function( numb ){
+            this.$= Number( numb )
+            return this
+        }
+        
+        proto.valueOf=
+        function( ){
+            return this.$
+        }
+
+    })
 )
-;$jam.EW
-(   '$jam.GF'
+
+;// jam/Pipe/jam+Pipe.jam.js
+$jam.define
+(   '$jam.Pipe'
 ,   new function(){
-var simple= function( data ){
-return data
-}
-return function( ){
-var list= arguments
-var len= list.length
-if( len === 1 ) return list[0]
-if( len === 0 ) return simple
-return function(){
-if( !arguments.length ) arguments.length= 1
-for( var i= 0; i < len; ++i ) arguments[0]= list[ i ].apply( this, arguments )
-return arguments[0]
-}
-}
-}
+        var simple= function( data ){
+            return data
+        }
+        return function( ){
+            var list= arguments
+            var len= list.length
+            if( len === 1 ) return list[0]
+            if( len === 0 ) return simple
+            return function(){
+                if( !arguments.length ) arguments.length= 1
+                for( var i= 0; i < len; ++i ) arguments[0]= list[ i ].apply( this, arguments )
+                return arguments[0]
+            }
+        }
+    }
 )
-;$jam.EW
-(    '$jam.GG'
+
+;// jam/Parser/jam+Parser.jam.js
+$jam.define
+(    '$jam.Parser'
 ,    function( syntaxes ){
-var lexems= []
-var handlers= []
-handlers[ '' ]= syntaxes[ '' ] || $jam.GF()
-for( var regexp in syntaxes ){
-if( !syntaxes.hasOwnProperty( regexp ) ) continue
-if( !regexp ) continue
-lexems.push( RegExp( regexp ) )
-handlers.push( syntaxes[ regexp ] )
-}
-var lexer= $jam.GD( lexems )
-return function( str ){
-var res= []
-for( var i= lexer( str ); i.next().found; ){
-var val= handlers[ i.name ].apply( this, i.chunks )
-if( val !== void 0 ) res.push( val )
-}
-return res
-}
-}
+        var lexems= []
+        var handlers= []
+        handlers[ '' ]= syntaxes[ '' ] || $jam.Pipe()
+
+        for( var regexp in syntaxes ){
+            if( !syntaxes.hasOwnProperty( regexp ) ) continue
+            if( !regexp ) continue
+            lexems.push( RegExp( regexp ) )
+            handlers.push( syntaxes[ regexp ] )
+        }
+        var lexer= $jam.Lexer( lexems )
+        
+        return function( str ){
+            var res= []
+            for( var i= lexer( str ); i.next().found; ){
+                var val= handlers[ i.name ].apply( this, i.chunks )
+                if( val !== void 0 ) res.push( val )
+            }
+            return res
+        }
+    }
 )
-;$jam.EW
-(   '$jam.GH'
-,   $jam.FE( function( klass, proto ){
-proto.constructor=
-function( ){
-this.$= {}
-this.$.queue= []
-this.$.clock=
-$jam.FU()
-.handler( $jam.FT( this ).method( 'run' ) )
-return this
-}
-proto.latency=
-$jam.FF
-(   function( ){
-return this.$.clock.latency()
-}
-,   function( val ){
-this.$.clock.latency( val )
-return this
-}
+
+;// jam/TaskQueue/jam+TaskQueue.jam.js
+$jam.define
+(   '$jam.TaskQueue'
+,   $jam.Class( function( klass, proto ){
+        
+        proto.constructor=
+        function( ){
+            this.$= {}
+            this.$.queue= []
+            this.$.clock=
+            $jam.Clock()
+            .handler( $jam.Obj( this ).method( 'run' ) )
+            return this
+        }
+        
+        proto.latency=
+        $jam.Poly
+        (   function( ){
+                return this.$.clock.latency()
+            }
+        ,   function( val ){
+                this.$.clock.latency( val )
+                return this
+            }
+        )
+        
+        proto.active=
+        $jam.Poly
+        (   function( ){
+                return this.$.clock.active()
+            }
+        ,   function( val ){
+                this.$.clock.active( val )
+                return this
+            }
+        )
+        
+        proto.run=
+        function( ){
+            var proc= this.$.queue.shift()
+            proc()
+            if( !this.$.queue.length ) this.active( false )
+            return this
+        }
+        
+        proto.add=
+        function( task ){
+            this.$.queue.push( task )
+            this.active( true )
+            return this
+        }
+        
+    })
 )
-proto.active=
-$jam.FF
-(   function( ){
-return this.$.clock.active()
-}
-,   function( val ){
-this.$.clock.active( val )
-return this
-}
-)
-proto.run=
-function( ){
-var proc= this.$.queue.shift()
-proc()
-if( !this.$.queue.length ) this.active( false )
-return this
-}
-proto.add=
-function( task ){
-this.$.queue.push( task )
-this.active( true )
-return this
-}
-})
-)
-;$jam.EW
-(   '$jam.GI'
+
+;// jam/TemplateFactory/jam+TemplateFactory.jam.js
+$jam.define
+(   '$jam.TemplateFactory'
 ,   new function( ){
-var factory= function( arg ){
-if( !arg ) arg= {}
-var open= arg.tokens && arg.tokens[0] || '{'
-var close= arg.tokens && arg.tokens[1] || '}'
-var openEncoded= $jam.GC.escape( open )
-var closeEncoded= $jam.GC.escape( close )
-var Selector= arg.Selector || arg.encoder && factory.Selector( arg.encoder ) || factory.Selector()
-var parse= $jam.GG( new function(){
-this[ openEncoded + openEncoded ]=
-$jam.EU( open )
-this[ closeEncoded +closeEncoded ]=
-$jam.EU( close )
-this[ '(' + openEncoded + '([^' + openEncoded + closeEncoded + ']*)' + closeEncoded + ')' ]=
-Selector
-})
-return $jam.FE( function( klass, proto ){
-proto.constructor=
-function( str ){
-this.struct= parse( str )
-this.fill( {} )
-return this
-}
-proto.clone=
-function( ){
-return klass( this.struct.slice( 0 ) )
-}
-proto.fill=
-function( data ){
-for( var i= 0; i < this.struct.length; ++i ){
-if( typeof this.struct[ i ] !== 'function' ) continue
-this.struct[ i ]= this.struct[ i ]( data )
-}
-return this
-}
-proto.toString=
-function( ){
-return this.struct.join( '' )
-}
-})
-}
-factory.Selector=
-$jam.FF
-(   $jam.GB( function( ){
-return $jam.EU( factory.Selector( $jam.GF() ) )
-})
-,   function( proc ){
-return function( str, key ){
-var selector= function( data ){
-if( key in data ){
-return proc( data[ key ] )
-} else {
-return selector
-}
-}
-selector.toString= $jam.EU( str )
-return selector
-}
-}
+
+        var factory= function( arg ){
+            if( !arg ) arg= {}
+            
+            var open= arg.tokens && arg.tokens[0] || '{'
+            var close= arg.tokens && arg.tokens[1] || '}'
+            
+            var openEncoded= $jam.RegExp.escape( open )
+            var closeEncoded= $jam.RegExp.escape( close )
+            
+            var Selector= arg.Selector || arg.encoder && factory.Selector( arg.encoder ) || factory.Selector()
+    
+            var parse= $jam.Parser( new function(){
+                this[ openEncoded + openEncoded ]=
+                $jam.Value( open )
+                
+                this[ closeEncoded +closeEncoded ]=
+                $jam.Value( close )
+                
+                this[ '(' + openEncoded + '([^' + openEncoded + closeEncoded + ']*)' + closeEncoded + ')' ]=
+                Selector
+            })
+    
+            return $jam.Class( function( klass, proto ){
+                
+                proto.constructor=
+                function( str ){
+                    this.struct= parse( str )
+                    this.fill( {} )
+                    return this
+                }
+                
+                proto.clone=
+                function( ){
+                    return klass( this.struct.slice( 0 ) )
+                }
+                
+                proto.fill=
+                function( data ){
+                    for( var i= 0; i < this.struct.length; ++i ){
+                        if( typeof this.struct[ i ] !== 'function' ) continue
+                        this.struct[ i ]= this.struct[ i ]( data )
+                    }
+                    return this
+                }
+    
+                proto.toString=
+                function( ){
+                    return this.struct.join( '' )
+                }
+    
+            })
+        }
+        
+        factory.Selector=
+        $jam.Poly
+        (   $jam.Lazy( function( ){
+                return $jam.Value( factory.Selector( $jam.Pipe() ) )
+            })
+        ,   function( proc ){
+                return function( str, key ){
+                    var selector= function( data ){
+                        if( key in data ){
+                            return proc( data[ key ] )
+                        } else {
+                            return selector
+                        }
+                    }
+                    selector.toString= $jam.Value( str )
+                    return selector
+                }
+            }
+        )
+        
+        return factory
+
+    }
 )
-return factory
-}
+
+;// jam/Thread/jam+Thread.jam.js
+$jam.define
+(   '$jam.Thread'
+,   $jam.Lazy( function(){
+    
+        var poolNode= $jam.Lazy( function(){
+            var body= $jam.doc().getElementsByTagName( 'body' )[ 0 ]
+            var pool= $jam.doc().createElement( 'wc:Thread:pool' )
+            pool.style.display= 'none'
+            body.insertBefore( pool, body.firstChild )
+            return $jam.Value( pool )
+        })
+            
+        var free= []
+    
+        return function( proc ){
+            return function( ){
+                var res
+                var self= this
+                var args= arguments
+    
+                var starter= free.pop()
+                if( !starter ){
+                    var starter= $jam.doc().createElement( 'button' )
+                    poolNode().appendChild( starter )
+                }
+                
+                starter.onclick= function( ev ){
+                    ( ev || $jam.glob().event ).cancelBubble= true
+                    res= proc.apply( self, args )
+                }
+                starter.click()
+    
+                free.push( starter )
+                return res
+            }
+        }
+    
+    })
 )
-;$jam.EW
-(   '$jam.GJ'
-,   $jam.GB( function(){
-var poolNode= $jam.GB( function(){
-var body= $jam.EX().getElementsByTagName( 'body' )[ 0 ]
-var pool= $jam.EX().createElement( 'wc:DZ:pool' )
-pool.style.display= 'none'
-body.insertBefore( pool, body.firstChild )
-return $jam.EU( pool )
-})
-var free= []
-return function( proc ){
-return function( ){
-var res
-var self= this
-var args= arguments
-var starter= free.pop()
-if( !starter ){
-var starter= $jam.EX().createElement( 'button' )
-poolNode().appendChild( starter )
-}
-starter.onclick= function( ev ){
-( ev || $jam.EV().event ).cancelBubble= true
-res= proc.apply( self, args )
-}
-starter.click()
-free.push( starter )
-return res
-}
-}
-})
-)
-;$jam.EW
-(    '$jam.GK'
+
+;// jam/Throttler/jam+Throttler.jam.js
+$jam.define
+(    '$jam.Throttler'
 ,    function( latency, func ){
-var self
-var arg
-var stop
-return function(){
-self= this
-arg= arguments
-if( stop ) return
-stop= $jam.EY( latency, function(){
-stop= null
-func.apply( self, arg )
-})
-}
-}
+        var self
+        var arg
+        var stop
+        return function(){
+            self= this
+            arg= arguments
+            if( stop ) return
+            stop= $jam.schedule( latency, function(){
+                stop= null
+                func.apply( self, arg )
+            })
+        }
+    }
 )
-;$jam.EW
-(   '$jam.GL'
+
+;// jam/Transformer/jam+Transformer.jam.js
+$jam.define
+(   '$jam.Transformer'
 ,   function( map ){
-var Selector= function( str, key ){
-var keyList= key.split( ':' )
-var fieldName= keyList.shift()
-var selector= function( data ){
-var value= ( fieldName === '.' ) ? data : data[ fieldName ]
-if( value ) return selector
-}
-selector.toString= $jam.EU( str )
-return selector
-}
-var Template= $jam.GI({ Selector: Selector })
-for( var key in map ) map[ key ]= Template( map[ key ] )
-return 
-}
+        
+        var Selector= function( str, key ){
+            var keyList= key.split( ':' )
+            var fieldName= keyList.shift()
+            var selector= function( data ){
+                var value= ( fieldName === '.' ) ? data : data[ fieldName ]
+                if( value ) return selector
+            }
+            selector.toString= $jam.Value( str )
+            return selector
+        }
+        
+        var Template= $jam.TemplateFactory({ Selector: Selector })
+        for( var key in map ) map[ key ]= Template( map[ key ] )
+        
+        return 
+    }
 )
-;$jam.EW
-(   '$jam.GM'
-,   $jam.FE( function( klass, proto ){
-proto.constructor=
-function( data ){
-this.$= data || []
-return this
-}
-klass.Parser=
-function( syntax ){
-if( !syntax ) syntax= {}
-var lineSep= syntax.lineSep || ';'
-var valSep= syntax.valSep || '='
-var oneIndent= syntax.oneIndent || '+'
-var keySep= syntax.keySep || '_'
-var lineParser= $jam.GC.build( '^((?:', oneIndent, ')*)(.*?)(?:', valSep, '(.*))?$' ).$
-var parser=
-function( str ){
-var lineList= str.split( lineSep )
-var data= []
-var stack= [ data ]
-for( var i= 0; i < lineList.length; ++i ){
-var line= lineParser.exec( lineList[ i ] )
-var indentCount= line[1].length / oneIndent.length
-stack= stack.slice( stack.length - indentCount - 1 )
-var path= line[2]
-var val= line[3]
-var keyList= path.split( keySep )
-var keyEnd= keyList.pop()
-var cur= stack[0]
-if( keyEnd ){
-keyList.push( keyEnd )
-} else {
-stack.unshift( val= [] )
-}
-while( keyList.length ){
-var key= keyList.pop()
-val= [{ name: key, content: val }]
-}
-cur.push( val[0] )
-}
-return $jam.GM( data )
-}
-return parser
-}
-})
+
+;// jam/Tree/jam+Tree.jam.js
+$jam.define
+(   '$jam.Tree'
+,   $jam.Class( function( klass, proto ){
+        
+        proto.constructor=
+        function( data ){
+            this.$= data || []
+            return this
+        }
+        
+        klass.Parser=
+        function( syntax ){
+            if( !syntax ) syntax= {}
+            var lineSep= syntax.lineSep || ';'
+            var valSep= syntax.valSep || '='
+            var oneIndent= syntax.oneIndent || '+'
+            var keySep= syntax.keySep || '_'
+            var lineParser= $jam.RegExp.build( '^((?:', oneIndent, ')*)(.*?)(?:', valSep, '(.*))?$' ).$
+
+            var parser=
+            function( str ){
+                var lineList= str.split( lineSep )
+                var data= []
+                var stack= [ data ]
+                
+                for( var i= 0; i < lineList.length; ++i ){
+                    var line= lineParser.exec( lineList[ i ] )
+                    var indentCount= line[1].length / oneIndent.length
+                    stack= stack.slice( stack.length - indentCount - 1 )
+                    var path= line[2]
+                    var val= line[3]
+                    var keyList= path.split( keySep )
+                    var keyEnd= keyList.pop()
+                    var cur= stack[0]
+                    if( keyEnd ){
+                        keyList.push( keyEnd )
+                    } else {
+                        stack.unshift( val= [] )
+                    }
+                    while( keyList.length ){
+                        var key= keyList.pop()
+                        val= [{ name: key, content: val }]
+                    }
+                    cur.push( val[0] )
+                }
+                
+                return $jam.Tree( data )
+            }
+            
+            return parser
+        }
+        
+    })
 )
-;$jam.EW
-(   '$jam.GN'
+;// jam/body/jam+body.jam.js
+$jam.define
+(   '$jam.body'
 ,   function( ){
-return $jam.EX().body
-}
+        return $jam.doc().body
+    }
 )
-;$jam.EW
-(   '$jam.GO'
-,   $jam.GJ(function( source ){
-return $jam.EV().eval( source )
-})
+
+;// jam/eval/jam+eval.jam.js
+$jam.define
+(   '$jam.eval'
+,   $jam.Thread(function( source ){
+        return $jam.glob().eval( source )
+    })
 )
-;$jam.EW
-(   '$jam.GP'
+
+;// jam/eventClone/jam+eventClone.jam.js
+$jam.define
+(   '$jam.eventClone'
 ,   new function(){
-var handler=
-function( event ){
-if( !event.keyMeta() ) return
-if( !event.keyShift() ) return
-if( event.keyAlt() ) return
-if( event.keyCode() != 13 ) return
-$jam.FP().type( '$jam.GP' ).scream( event.target() )
-}
-$jam.FM( $jam.EX().documentElement )
-.listen( 'keyup', handler )
-}
+        var handler=
+        function( event ){
+            if( !event.keyMeta() ) return
+            if( !event.keyShift() ) return
+            if( event.keyAlt() ) return
+            if( event.keyCode() != 13 ) return
+            $jam.Event().type( '$jam.eventClone' ).scream( event.target() )
+        }
+        
+        $jam.Node( $jam.doc().documentElement )
+        .listen( 'keyup', handler )
+    }
 )
-;$jam.EW
-(   '$jam.GQ'
+
+;// jam/eventCommit/jam+eventCommit.jam.js
+$jam.define
+(   '$jam.eventCommit'
 ,   new function(){
-var handler=
-function( event ){
-if( !event.keyMeta() ) return
-if( event.keyShift() ) return
-if( event.keyAlt() ) return
-if( event.keyCode() != 13 && event.keyCode() != 'S'.charCodeAt( 0 ) ) return
-event.defaultBehavior( false )
-$jam.FP().type( '$jam.GQ' ).scream( event.target() )
-}
-$jam.FM( $jam.EX().documentElement )
-.listen( 'keydown', handler )
-}
+        var handler=
+        function( event ){
+            if( !event.keyMeta() ) return
+            if( event.keyShift() ) return
+            if( event.keyAlt() ) return
+            if( event.keyCode() != 13 && event.keyCode() != 'S'.charCodeAt( 0 ) ) return
+            event.defaultBehavior( false )
+            $jam.Event().type( '$jam.eventCommit' ).scream( event.target() )
+        }
+        
+        $jam.Node( $jam.doc().documentElement )
+        .listen( 'keydown', handler )
+    }
 )
-;$jam.EW
-(   '$jam.GR'
+
+;// jam/eventDelete/jam+eventDelete.jam.js
+$jam.define
+(   '$jam.eventDelete'
 ,   new function( ){
-var handler=
-function( event ){
-if( !event.keyShift() ) return
-if( event.keyMeta() ) return
-if( event.keyAlt() ) return
-if( event.keyCode() != 46 ) return
-if( !$jam.EV().confirm( 'Are you sure to delee this?' ) ) return
-$jam.FP().type( '$jam.GR' ).scream( event.target() )
-}
-$jam.FM( $jam.EX().documentElement )
-.listen( 'keyup', handler )
-}
+        var handler=
+        function( event ){
+            if( !event.keyShift() ) return
+            if( event.keyMeta() ) return
+            if( event.keyAlt() ) return
+            if( event.keyCode() != 46 ) return
+            if( !$jam.glob().confirm( 'Are you sure to delee this?' ) ) return
+            $jam.Event().type( '$jam.eventDelete' ).scream( event.target() )
+        }
+        
+        $jam.Node( $jam.doc().documentElement )
+        .listen( 'keyup', handler )
+    }
 )
-;$jam.EW
-(   '$jam.GS'
+
+;// jam/eventEdit/jam+eventEdit.jam.js
+$jam.define
+(   '$jam.eventEdit'
 ,   new function(){
-var scream=
-$jam.GK
-(   50
-,   function( target ){
-$jam.FP().type( '$jam.GS' ).scream( target )
-}
+        
+        var scream=
+        $jam.Throttler
+        (   50
+        ,   function( target ){
+                $jam.Event().type( '$jam.eventEdit' ).scream( target )
+            }
+        )
+
+        var handler=
+        function( event ){
+            if( event.keyCode() >= 16 && event.keyCode() <= 18 ) return
+            if( event.keyCode() >= 33 && event.keyCode() <= 40 ) return
+            scream( event.target() )
+        }
+
+        var node=
+        $jam.Node( $jam.doc().documentElement )
+        
+        node.listen( 'keyup', handler )
+        node.listen( 'cut', handler )
+        node.listen( 'paste', handler )
+
+    }
 )
-var handler=
-function( event ){
-if( event.keyCode() >= 16 && event.keyCode() <= 18 ) return
-if( event.keyCode() >= 33 && event.keyCode() <= 40 ) return
-scream( event.target() )
-}
-var node=
-$jam.FM( $jam.EX().documentElement )
-node.listen( 'keyup', handler )
-node.listen( 'cut', handler )
-node.listen( 'paste', handler )
-}
-)
-;$jam.EW
-(   '$jam.GT'
+
+;// jam/eventScroll/jam+eventScroll.jam.js
+$jam.define
+(   '$jam.eventScroll'
 ,   new function(){
-var handler=
-function( event ){
-$jam.FP()
-.type( '$jam.$eventScroll' )
-.wheel( event.wheel() )
-.scream( event.target() )
-}
-var docEl= $jam.FM( $jam.EX().documentElement )
-docEl.listen( 'mousewheel', handler )
-docEl.listen( 'DOMMouseScroll', handler )
-}
+        var handler=
+        function( event ){
+            $jam.Event()
+            .type( '$jam.$eventScroll' )
+            .wheel( event.wheel() )
+            .scream( event.target() )
+        }
+        
+        var docEl= $jam.Node( $jam.doc().documentElement )
+        docEl.listen( 'mousewheel', handler )
+        docEl.listen( 'DOMMouseScroll', handler )
+    }
 )
-;$jam.EW
-(   '$jam.GU'
+
+;// jam/eventURIChanged/jam+eventURIChanged.jam.js
+$jam.define
+(   '$jam.eventURIChanged'
 ,   new function(){
-var lastURI= $jam.EX().location.href
-var refresh=
-function( ){
-var newURI= $jam.EX().location.href
-if( lastURI === newURI ) return
-lastURI= newURI
-$jam.FP().type( '$jam.GU' ).scream( $jam.EX() )
-}
-$jam.EV().setInterval( refresh, 20)
-}
+        
+        var lastURI= $jam.doc().location.href
+        
+        var refresh=
+        function( ){
+            var newURI= $jam.doc().location.href
+            if( lastURI === newURI ) return
+            lastURI= newURI
+            $jam.Event().type( '$jam.eventURIChanged' ).scream( $jam.doc() )
+        }
+        
+        $jam.glob().setInterval( refresh, 20)
+    }
 )
-;$jam.EW
-(   '$jam.GV'
+
+;// jam/log/jam+log.jam.js
+$jam.define
+(   '$jam.log'
 ,   new function(){
-var console= $jam.EV().console
-if( !console || !console.log ){
-return function(){
-alert( [].slice.call( arguments ) )
-}
-}
-return function(){
-Function.prototype.apply.call( console.log, console, arguments )
-}
-}
+        var console= $jam.glob().console
+        if( !console || !console.log ){
+            return function(){
+                alert( [].slice.call( arguments ) )
+            }
+        }
+        return function(){
+            Function.prototype.apply.call( console.log, console, arguments )
+        }
+    }
 )
-;$jam.EW
-(   '$jam.GW'
-,   $jam.EV().encodeURIComponent
+
+;// jam/uriEscape/jam+uriEscape.jam.js
+$jam.define
+(   '$jam.uriEscape'
+,   $jam.glob().encodeURIComponent
 )
-;$jam.FD
-(   'wc:M'
+
+;// wc/aspect/wc+aspect.jam.js
+$jam.Component
+(   'wc:aspect'
 ,   function( nodeRoot ){
-return new function( ){
-var update= function( ){
-nodeRoot= $jam.FM( nodeRoot )
-var ratio= parseFloat( nodeRoot.attr( 'wc:EA' ) )
-nodeRoot.$.style.height= Math.min( nodeRoot.width() * ratio, window.innerHeight * .9 ) + 'px'
-}
-update()
-window.addEventListener( 'resize', update )
-this.destroy= function( ){
-window.removeEventListener( 'resize', update )
-}
-}
-}
+        return new function( ){
+            var update= function( ){
+                nodeRoot= $jam.Node( nodeRoot )
+                var ratio= parseFloat( nodeRoot.attr( 'wc:aspect_ratio' ) )
+                nodeRoot.$.style.height= Math.min( nodeRoot.width() * ratio, window.innerHeight * .9 ) + 'px'
+            }
+            update()
+            window.addEventListener( 'resize', update )
+            this.destroy= function( ){
+                window.removeEventListener( 'resize', update )
+            }
+        }
+    }
 )
-;this.$lang=
+
+;// lang/lang/lang.jam.js
+this.$lang=
 function( name ){
-return $lang[ name ] || $lang.S
+    return $lang[ name ] || $lang.text
 }
-$lang.S= $jam.FZ
-;$lang.GX=
+
+$lang.text= $jam.htmlEscape
+;// lang/Wrapper/lang_Wrapper.jam.js
+$lang.Wrapper=
 function( name ){
-var prefix= '<' + name + '>'
-var postfix= '</' + name + '>'
-return function( content ){
-return prefix + content + postfix
+    var prefix= '<' + name + '>'
+    var postfix= '</' + name + '>'
+    return function( content ){
+        return prefix + content + postfix
+    }
 }
-}
-;$lang.GY=
+
+;// lang/Parser/lang_Parser.jam.js
+$lang.Parser=
 function( map ){
-if( !map[ '' ] ) map[ '' ]= $lang.S
-return $jam.GF
-(   $jam.GG( map )
-,   $jam.FV()
-)
+    if( !map[ '' ] ) map[ '' ]= $lang.text
+    return $jam.Pipe
+    (   $jam.Parser( map )
+    ,   $jam.Concater()
+    )
 }
-;$lang.U=
+
+;// lang/css/lang_css.jam.js
+$lang.css=
 new function(){
-var css=
-function( str ){
-return css.root( css.stylesheet( str ) )
+    
+    var css=
+    function( str ){
+        return css.root( css.stylesheet( str ) )
+    }
+    
+    css.root= $lang.Wrapper( 'lang:css' )
+    css.remark= $lang.Wrapper( 'lang:css_remark' )
+    css.string= $lang.Wrapper( 'lang:css_string' )
+    css.bracket= $lang.Wrapper( 'lang:css_bracket' )
+    css.selector= $lang.Wrapper( 'lang:css_selector' )
+    css.tag= $lang.Wrapper( 'lang:css_tag' )
+    css.id= $lang.Wrapper( 'lang:css_id' )
+    css.klass= $lang.Wrapper( 'lang:css_class' )
+    css.pseudo= $lang.Wrapper( 'lang:css_pseudo' )
+    css.property= $lang.Wrapper( 'lang:css_property' )
+    css.value= $lang.Wrapper( 'lang:css_value' )
+    
+    css.stylesheet=
+    $lang.Parser( new function( ){
+        
+        this[ /(\/\*[\s\S]*?\*\/)/.source ]=
+        $jam.Pipe( $lang.text, css.remark )
+        
+        this[ /(\*|(?:\\[\s\S]|[\w-])+)/.source ]=
+        $jam.Pipe( $lang.text, css.tag )
+        
+        this[ /(#(?:\\[\s\S]|[\w-])+)/.source ]=
+        $jam.Pipe( $lang.text, css.id )
+        
+        this[ /(\.(?:\\[\s\S]|[\w-])+)/.source ]=
+        $jam.Pipe( $lang.text, css.klass )
+        
+        this[ /(::?(?:\\[\s\S]|[\w-])+)/.source ]=
+        $jam.Pipe( $lang.text, css.pseudo )
+        
+        this[ /\{([\s\S]+?)\}/.source ]=
+        new function( ){
+            var openBracket= css.bracket( '{' )
+            var closeBracket= css.bracket( '}' )
+            return function( style ){
+                style= css.style( style )
+                return openBracket + style + closeBracket
+            }
+        }             
+    })
+    
+    css.style=
+    $lang.Parser( new function( ){
+            
+        this[ /(\/\*[\s\S]*?\*\/)/.source ]=
+        $jam.Pipe( $lang.text, css.remark )
+        
+        this[ /([\w-]+\s*:)/.source  ]=
+        $jam.Pipe( $lang.text, css.property )
+        
+        this[ /([^:]+?(?:;|$))/.source ]=
+        $jam.Pipe( $lang.text, css.value )
+        
+    })
+    
+    return css
 }
-css.root= $lang.GX( 'lang:U' )
-css.remark= $lang.GX( 'lang:V' )
-css.string= $lang.GX( 'lang:AB' )
-css.bracket= $lang.GX( 'lang:AC' )
-css.selector= $lang.GX( 'lang:W' )
-css.tag= $lang.GX( 'lang:X' )
-css.id= $lang.GX( 'lang:Y' )
-css.klass= $lang.GX( 'lang:Z' )
-css.pseudo= $lang.GX( 'lang:AA' )
-css.property= $lang.GX( 'lang:AD' )
-css.value= $lang.GX( 'lang:AE' )
-css.stylesheet=
-$lang.GY( new function( ){
-this[ /(\/\*[\s\S]*?\*\/)/.source ]=
-$jam.GF( $lang.S, css.remark )
-this[ /(\*|(?:\\[\s\S]|[\w-])+)/.source ]=
-$jam.GF( $lang.S, css.tag )
-this[ /(#(?:\\[\s\S]|[\w-])+)/.source ]=
-$jam.GF( $lang.S, css.id )
-this[ /(\.(?:\\[\s\S]|[\w-])+)/.source ]=
-$jam.GF( $lang.S, css.klass )
-this[ /(::?(?:\\[\s\S]|[\w-])+)/.source ]=
-$jam.GF( $lang.S, css.pseudo )
-this[ /\{([\s\S]+?)\}/.source ]=
-new function( ){
-var openBracket= css.bracket( '{' )
-var closeBracket= css.bracket( '}' )
-return function( style ){
-style= css.style( style )
-return openBracket + style + closeBracket
-}
-}             
-})
-css.style=
-$lang.GY( new function( ){
-this[ /(\/\*[\s\S]*?\*\/)/.source ]=
-$jam.GF( $lang.S, css.remark )
-this[ /([\w-]+\s*:)/.source  ]=
-$jam.GF( $lang.S, css.property )
-this[ /([^:]+?(?:;|$))/.source ]=
-$jam.GF( $lang.S, css.value )
-})
-return css
-}
-;$lang.AF=
+
+;// lang/pcre/lang_pcre.jam.js
+$lang.pcre=
 new function(){
-var pcre=
-function( str ){
-return pcre.root( pcre.content( str ) )
+
+    var pcre=
+    function( str ){
+        return pcre.root( pcre.content( str ) )
+    }
+
+    pcre.root= $lang.Wrapper( 'lang:pcre' )
+    pcre.backslash= $lang.Wrapper( 'lang:pcre_backslash' )
+    pcre.control= $lang.Wrapper( 'lang:pcre_control' )
+    pcre.spec= $lang.Wrapper( 'lang:pcre_spec' )
+    pcre.text= $lang.Wrapper( 'lang:pcre_text' )
+    
+    pcre.content=
+    $lang.Parser( new function(){
+    
+        this[ /\\([\s\S])/.source ]=
+        new function( ){
+            var backslash= pcre.backslash( '\\' )
+            return function( symbol ){
+                return backslash + pcre.spec( $lang.text( symbol ) )
+            }
+        }
+
+        this[ /([(){}\[\]$*+?^])/.source ]=
+        $jam.Pipe( $lang.text, pcre.control )
+        
+    })
+    
+    return pcre
 }
-pcre.root= $lang.GX( 'lang:AF' )
-pcre.backslash= $lang.GX( 'lang:AG' )
-pcre.control= $lang.GX( 'lang:AI' )
-pcre.spec= $lang.GX( 'lang:AH' )
-pcre.text= $lang.GX( 'lang:EB' )
-pcre.content=
-$lang.GY( new function(){
-this[ /\\([\s\S])/.source ]=
-new function( ){
-var backslash= pcre.backslash( '\\' )
-return function( symbol ){
-return backslash + pcre.spec( $lang.S( symbol ) )
-}
-}
-this[ /([(){}\[\]$*+?^])/.source ]=
-$jam.GF( $lang.S, pcre.control )
-})
-return pcre
-}
-;$lang.AJ=
+
+;// lang/js/lang_js.jam.js
+$lang.js=
 new function(){
-var js=
-function( str ){
-return js.root( js.content( str ) )
+
+    var js=
+    function( str ){
+        return js.root( js.content( str ) )
+    }
+
+    js.root= $lang.Wrapper( 'lang:js' )
+    js.remark= $lang.Wrapper( 'lang:js_remark' )
+    js.string= $lang.Wrapper( 'lang:js_string' )
+    js.internal= $lang.Wrapper( 'lang:js_internal' )
+    js.external= $lang.Wrapper( 'lang:js_external' )
+    js.keyword= $lang.Wrapper( 'lang:js_keyword' )
+    js.number= $lang.Wrapper( 'lang:js_number' )
+    js.regexp= $lang.Wrapper( 'lang:js_regexp' )
+    js.bracket= $lang.Wrapper( 'lang:js_bracket' )
+    js.operator= $lang.Wrapper( 'lang:js_operator' )
+         
+    js.content=
+    $lang.Parser( new function(){
+    
+        this[ /(\/\*[\s\S]*?\*\/)/.source ]=
+        $jam.Pipe( $lang.text, js.remark )
+        this[ /(\/\/[^\n]*)/.source ]=
+        $jam.Pipe( $lang.text, js.remark )
+        
+        this[ /('(?:[^\n'\\]*(?:\\\\|\\[^\\]))*[^\n'\\]*')/.source ]=
+        $jam.Pipe( $lang.text, js.string )
+        this[ /("(?:[^\n"\\]*(?:\\\\|\\[^\\]))*[^\n"\\]*")/.source ]=
+        $jam.Pipe( $lang.text, js.string )
+        
+        this[ /(\/(?:[^\n\/\\]*(?:\\\\|\\[^\\]))*[^\n\/\\]*\/[mig]*)/.source ]=
+        $jam.Pipe( $lang.pcre, js.regexp )
+        
+        this[ /\b(_[\w$]*)\b/.source ]=
+        $jam.Pipe( $lang.text, js.internal )
+        
+        this[ /(\$[\w$]*)(?![\w$])/.source ]=
+        $jam.Pipe( $lang.text, js.external )
+
+        this[ /\b(this|function|new|var|if|else|switch|case|default|for|in|while|do|with|boolean|continue|break|throw|true|false|void|try|catch|null|typeof|instanceof|return|delete|window|document|let|each|yield)\b/.source ]=
+        $jam.Pipe( $lang.text, js.keyword )
+        
+        this[ /((?:\d*\.)?\d(?:[eE])?)/.source ]=
+        $jam.Pipe( $lang.text, js.number )
+        
+        this[ /([(){}\[\]])/.source ]=
+        $jam.Pipe( $lang.text, js.bracket )
+        
+        this[ /(\+{1,2}|-{1,2}|\*|\/|&{1,2}|\|{1,2}|={1,2}|%|\^|!)/.source ]=
+        $jam.Pipe( $lang.text, js.operator )
+        
+    })
+    
+    return js
 }
-js.root= $lang.GX( 'lang:AJ' )
-js.remark= $lang.GX( 'lang:AK' )
-js.string= $lang.GX( 'lang:AL' )
-js.internal= $lang.GX( 'lang:AM' )
-js.external= $lang.GX( 'lang:AN' )
-js.keyword= $lang.GX( 'lang:AO' )
-js.number= $lang.GX( 'lang:AP' )
-js.regexp= $lang.GX( 'lang:AQ' )
-js.bracket= $lang.GX( 'lang:AR' )
-js.operator= $lang.GX( 'lang:AS' )
-js.content=
-$lang.GY( new function(){
-this[ /(\/\*[\s\S]*?\*\/)/.source ]=
-$jam.GF( $lang.S, js.remark )
-this[ /(\/\/[^\n]*)/.source ]=
-$jam.GF( $lang.S, js.remark )
-this[ /('(?:[^\n'\\]*(?:\\\\|\\[^\\]))*[^\n'\\]*')/.source ]=
-$jam.GF( $lang.S, js.string )
-this[ /("(?:[^\n"\\]*(?:\\\\|\\[^\\]))*[^\n"\\]*")/.source ]=
-$jam.GF( $lang.S, js.string )
-this[ /(\/(?:[^\n\/\\]*(?:\\\\|\\[^\\]))*[^\n\/\\]*\/[mig]*)/.source ]=
-$jam.GF( $lang.AF, js.regexp )
-this[ /\b(_[\w$]*)\b/.source ]=
-$jam.GF( $lang.S, js.internal )
-this[ /(\$[\w$]*)(?![\w$])/.source ]=
-$jam.GF( $lang.S, js.external )
-this[ /\b(this|function|new|var|if|else|switch|case|default|for|in|while|do|with|boolean|continue|break|throw|true|false|void|try|catch|null|typeof|instanceof|return|delete|window|document|let|each|yield)\b/.source ]=
-$jam.GF( $lang.S, js.keyword )
-this[ /((?:\d*\.)?\d(?:[eE])?)/.source ]=
-$jam.GF( $lang.S, js.number )
-this[ /([(){}\[\]])/.source ]=
-$jam.GF( $lang.S, js.bracket )
-this[ /(\+{1,2}|-{1,2}|\*|\/|&{1,2}|\|{1,2}|={1,2}|%|\^|!)/.source ]=
-$jam.GF( $lang.S, js.operator )
-})
-return js
-}
-;$lang.AT=
+
+;// lang/sgml/lang_sgml.jam.js
+$lang.sgml=
 new function(){
-var sgml=
-function( str ){
-return sgml.root( sgml.content( str ) )
+
+    var sgml=
+    function( str ){
+        return sgml.root( sgml.content( str ) )
+    }
+
+    sgml.root= $lang.Wrapper( 'lang:sgml' )
+    sgml.tag= $lang.Wrapper( 'lang:sgml_tag' )
+    sgml.tagBracket= $lang.Wrapper( 'lang:sgml_tag-bracket' )
+    sgml.tagName= $lang.Wrapper( 'lang:sgml_tag-name' )
+    sgml.attrName= $lang.Wrapper( 'lang:sgml_attr-name' )
+    sgml.attrValue= $lang.Wrapper( 'lang:sgml_attr-value' )
+    sgml.comment= $lang.Wrapper( 'lang:sgml_comment' )
+    sgml.decl= $lang.Wrapper( 'lang:sgml_decl' )
+    
+    sgml.tag=
+    $jam.Pipe
+    (   $lang.Parser( new function(){
+        
+            this[ /^(<\/?)([a-zA-Z][\w:-]*)/.source ]=
+            function( bracket, tagName ){
+                return sgml.tagBracket( $lang.text( bracket ) ) + sgml.tagName( tagName )
+            } 
+            
+            this[ /(\s)([sS][tT][yY][lL][eE])(\s*=\s*)(")([\s\S]*?)(")/.source ]=
+            this[ /(\s)([sS][tT][yY][lL][eE])(\s*=\s*)(')([\s\S]*?)(')/.source ]=
+            function( prefix, name, sep, open, value, close ){
+                name= sgml.attrName( name )
+                value= sgml.attrValue( open + $lang.css.style( value ) + close )
+                return prefix + name + sep + value
+            }
+
+            this[ /(\s)([oO][nN]\w+)(\s*=\s*)(")([\s\S]*?)(")/.source ]=
+            this[ /(\s)([oO][nN]\w+)(\s*=\s*)(')([\s\S]*?)(')/.source ]=
+            function( prefix, name, sep, open, value, close ){
+                name= sgml.attrName( name )
+                value= sgml.attrValue( open + $lang.js( value ) + close )
+                return prefix + name + sep + value
+            }
+
+            this[ /(\s)([a-zA-Z][\w:-]+)(\s*=\s*)("[\s\S]*?")/.source ]=
+            this[ /(\s)([a-zA-Z][\w:-]+)(\s*=\s*)('[\s\S]*?')/.source ]=
+            function( prefix, name, sep, value ){
+                name= sgml.attrName( name )
+                value= sgml.attrValue( value )
+                return prefix + name + sep + value
+            }
+        
+        })
+    ,   $lang.Wrapper( 'lang:sgml_tag' )
+    )
+
+    sgml.content=
+    $lang.Parser( new function(){
+    
+        this[ /(<!--[\s\S]*?-->)/.source ]=
+        $jam.Pipe( $lang.text, sgml.comment )
+        
+        this[ /(<![\s\S]*?>)/.source ]=
+        $jam.Pipe( $lang.text, sgml.decl )
+        
+        this[ /(<[sS][tT][yY][lL][eE][^>]*>)([\s\S]+?)(<\/[sS][tT][yY][lL][eE]>)/.source ]=
+        function( prefix, content, postfix ){
+            prefix= $lang.sgml.tag( prefix )
+            postfix= $lang.sgml.tag( postfix )
+            content= $lang.css( content )
+            return prefix + content + postfix
+        }
+        
+        this[ /(<[sS][cC][rR][iI][pP][tT][^>]*>)([\s\S]+?)(<\/[sS][cC][rR][iI][pP][tT]>)/.source ]=
+        function( prefix, content, postfix ){
+            prefix= $lang.sgml.tag( prefix )
+            postfix= $lang.sgml.tag( postfix )
+            content= $lang.js( content )
+            return prefix + content + postfix
+        }
+        
+        this[ /(<[^>]+>)/.source ]=
+        sgml.tag
+        
+    })
+    
+    return sgml
 }
-sgml.root= $lang.GX( 'lang:AT' )
-sgml.tag= $lang.GX( 'lang:AU' )
-sgml.tagBracket= $lang.GX( 'lang:EC' )
-sgml.tagName= $lang.GX( 'lang:AV' )
-sgml.attrName= $lang.GX( 'lang:AW' )
-sgml.attrValue= $lang.GX( 'lang:AX' )
-sgml.comment= $lang.GX( 'lang:AY' )
-sgml.decl= $lang.GX( 'lang:AZ' )
-sgml.tag=
-$jam.GF
-(   $lang.GY( new function(){
-this[ /^(<\/?)([a-zA-Z][\w:-]*)/.source ]=
-function( bracket, tagName ){
-return sgml.tagBracket( $lang.S( bracket ) ) + sgml.tagName( tagName )
-} 
-this[ /(\s)([sS][tT][yY][lL][eE])(\s*=\s*)(")([\s\S]*?)(")/.source ]=
-this[ /(\s)([sS][tT][yY][lL][eE])(\s*=\s*)(')([\s\S]*?)(')/.source ]=
-function( prefix, name, sep, open, value, close ){
-name= sgml.attrName( name )
-value= sgml.attrValue( open + $lang.U.style( value ) + close )
-return prefix + name + sep + value
-}
-this[ /(\s)([oO][nN]\w+)(\s*=\s*)(")([\s\S]*?)(")/.source ]=
-this[ /(\s)([oO][nN]\w+)(\s*=\s*)(')([\s\S]*?)(')/.source ]=
-function( prefix, name, sep, open, value, close ){
-name= sgml.attrName( name )
-value= sgml.attrValue( open + $lang.AJ( value ) + close )
-return prefix + name + sep + value
-}
-this[ /(\s)([a-zA-Z][\w:-]+)(\s*=\s*)("[\s\S]*?")/.source ]=
-this[ /(\s)([a-zA-Z][\w:-]+)(\s*=\s*)('[\s\S]*?')/.source ]=
-function( prefix, name, sep, value ){
-name= sgml.attrName( name )
-value= sgml.attrValue( value )
-return prefix + name + sep + value
-}
-})
-,   $lang.GX( 'lang:AU' )
-)
-sgml.content=
-$lang.GY( new function(){
-this[ /(<!--[\s\S]*?-->)/.source ]=
-$jam.GF( $lang.S, sgml.comment )
-this[ /(<![\s\S]*?>)/.source ]=
-$jam.GF( $lang.S, sgml.decl )
-this[ /(<[sS][tT][yY][lL][eE][^>]*>)([\s\S]+?)(<\/[sS][tT][yY][lL][eE]>)/.source ]=
-function( prefix, content, postfix ){
-prefix= $lang.AT.tag( prefix )
-postfix= $lang.AT.tag( postfix )
-content= $lang.U( content )
-return prefix + content + postfix
-}
-this[ /(<[sS][cC][rR][iI][pP][tT][^>]*>)([\s\S]+?)(<\/[sS][cC][rR][iI][pP][tT]>)/.source ]=
-function( prefix, content, postfix ){
-prefix= $lang.AT.tag( prefix )
-postfix= $lang.AT.tag( postfix )
-content= $lang.AJ( content )
-return prefix + content + postfix
-}
-this[ /(<[^>]+>)/.source ]=
-sgml.tag
-})
-return sgml
-}
-;$jam.FD
-(   'wc:A'
+
+;// wc/demo/wc-demo.jam.js
+$jam.Component
+(   'wc:demo'
 ,   function( nodeRoot ){
-return new function( ){
-nodeRoot= $jam.FM( nodeRoot )
-var source= $jam.FW( nodeRoot.text() ).minimizeIndent().trim( /[\n\r]/ ).$
-nodeRoot.clear()
-var nodeResult=
-$jam.FM.Element( 'wc:BA' )
-.parent( nodeRoot )
-var nodeSource0=
-$jam.FM.Element( 'wc:BB' )
-.parent( nodeRoot )
-var nodeSource=
-$jam.FM.parse( '<wc:BL wc:ED="sgml" />' )
-.text( source )
-.parent( nodeSource0 )
-var exec= $jam.GJ( function( ){
-var source= $jam.FW( nodeSource.text() ).minimizeIndent().trim( /[\n\r]/ )
-//nodeSource.text( source )
-nodeResult.html( source )
-var scripts= nodeResult.descList( 'script' )
-for( var i= 0; i < scripts.length; ++i ){
-var script= $jam.FM( scripts[i] )
-$jam.GO( script.text() )
-}
-return true
-})
-exec()
-var onCommit=
-nodeSource.listen( '$jam.GQ', exec )
-this.destroy=
-function( ){
-onCommit.sleep()
-}
-}
-}
+        return new function( ){
+            nodeRoot= $jam.Node( nodeRoot )
+
+            var source= $jam.String( nodeRoot.text() ).minimizeIndent().trim( /[\n\r]/ ).$
+            
+            nodeRoot.clear()
+            
+            var nodeResult=
+            $jam.Node.Element( 'wc:demo_result' )
+            .parent( nodeRoot )
+            
+            var nodeSource0=
+            $jam.Node.Element( 'wc:demo_source' )
+            .parent( nodeRoot )
+            
+            var nodeSource=
+            $jam.Node.parse( '<wc:editor wc:editor_hlight="sgml" />' )
+            .text( source )
+            .parent( nodeSource0 )
+            
+            var exec= $jam.Thread( function( ){
+                var source= $jam.String( nodeSource.text() ).minimizeIndent().trim( /[\n\r]/ )
+                //nodeSource.text( source )
+                nodeResult.html( source )
+                var scripts= nodeResult.descList( 'script' )
+                for( var i= 0; i < scripts.length; ++i ){
+                    var script= $jam.Node( scripts[i] )
+                    $jam.eval( script.text() )
+                }
+                return true
+            })
+            
+            exec()
+        
+            var onCommit=
+            nodeSource.listen( '$jam.eventCommit', exec )
+            
+            this.destroy=
+            function( ){
+                onCommit.sleep()
+            }
+        }
+    }
 )
-;$lang.EE=
+
+;// lang/php/lang_php.jam.js
+$lang.php=
 new function( ){
-var php=
-function( str ){
-return php.root( php.content( str ) )
+
+    var php=
+    function( str ){
+        return php.root( php.content( str ) )
+    }
+
+    php.root= $lang.Wrapper( 'lang:php' )
+    php.dollar= $lang.Wrapper( 'lang:php_dollar' )
+    php.variable= $lang.Wrapper( 'lang:php_variable' )
+    php.string= $lang.Wrapper( 'lang:php_string' )
+    php.number= $lang.Wrapper( 'lang:php_number' )
+    php.func= $lang.Wrapper( 'lang:php_func' )
+    php.keyword= $lang.Wrapper( 'lang:php_keyword' )
+    
+    php.content=
+    $lang.Parser( new function(){
+        
+        this[ /\b(__halt_compiler|abstract|and|array|as|break|callable|case|catch|class|clone|const|continue|declare|default|die|do|echo|else|elseif|empty|enddeclare|endfor|endforeach|endif|endswitch|endwhile|eval|exit|extends|final|for|foreach|function|global|gotoif|implements|include|include_once|instanceof|insteadof|interface|isset|list|namespace|new|or|print|private|protected|public|require|require_once|return|static|switch|throw|trait|try|unset|use|var|while|xor|__CLASS__|__DIR__|__FILE__|__FUNCTION__|__LINE__|__METHOD__|__NAMESPACE__|__TRAIT__)\b/.source ]=
+        $jam.Pipe( $lang.text, php.keyword )
+        
+        this[ /(\$)(\w+)\b/.source ]=
+        function( dollar, variable ){
+            dollar= $lang.php.dollar( dollar )
+            variable= $lang.php.variable( variable )
+            return dollar + variable
+        }
+        
+        this[ /(\w+)(?=\s*\()/.source ]=
+        php.func
+        
+        this[ /('(?:[^\n'\\]*(?:\\\\|\\[^\\]))*[^\n'\\]*')/.source ]=
+        this[ /("(?:[^\n"\\]*(?:\\\\|\\[^\\]))*[^\n"\\]*")/.source ]=
+        $jam.Pipe( $lang.text, php.string )
+        
+        this[ /((?:\d*\.)?\d(?:[eE])?)/.source ]=
+        $jam.Pipe( $lang.text, php.number )
+        
+    })
+    
+    return php
 }
-php.root= $lang.GX( 'lang:EE' )
-php.dollar= $lang.GX( 'lang:BC' )
-php.variable= $lang.GX( 'lang:BD' )
-php.string= $lang.GX( 'lang:BE' )
-php.number= $lang.GX( 'lang:BH' )
-php.func= $lang.GX( 'lang:BF' )
-php.keyword= $lang.GX( 'lang:BG' )
-php.content=
-$lang.GY( new function(){
-this[ /\b(__halt_compiler|abstract|and|array|as|break|callable|case|catch|class|clone|const|continue|declare|default|die|do|echo|else|elseif|empty|enddeclare|endfor|endforeach|endif|endswitch|endwhile|eval|exit|extends|final|for|foreach|function|global|gotoif|implements|include|include_once|instanceof|insteadof|interface|isset|list|namespace|new|or|print|private|protected|public|require|require_once|return|static|switch|throw|trait|try|unset|use|var|while|xor|__CLASS__|__DIR__|__FILE__|__FUNCTION__|__LINE__|__METHOD__|__NAMESPACE__|__TRAIT__)\b/.source ]=
-$jam.GF( $lang.S, php.keyword )
-this[ /(\$)(\w+)\b/.source ]=
-function( dollar, variable ){
-dollar= $lang.EE.dollar( dollar )
-variable= $lang.EE.variable( variable )
-return dollar + variable
-}
-this[ /(\w+)(?=\s*\()/.source ]=
-php.func
-this[ /('(?:[^\n'\\]*(?:\\\\|\\[^\\]))*[^\n'\\]*')/.source ]=
-this[ /("(?:[^\n"\\]*(?:\\\\|\\[^\\]))*[^\n"\\]*")/.source ]=
-$jam.GF( $lang.S, php.string )
-this[ /((?:\d*\.)?\d(?:[eE])?)/.source ]=
-$jam.GF( $lang.S, php.number )
-})
-return php
-}
-;$jam.EW
-(    '$lang.EF'
+
+;// lang/tags/lang_tags.jam.js
+$jam.define
+(    '$lang.tags'
 ,    new function(){
-var tags=
-function( str ){
-return tags.root( tags.content( str ) )
-}
-tags.root= $lang.GX( 'lang:EF' )
-tags.item= $lang.GX( 'lang:EG' )
-tags.content=
-$lang.GY( new function(){
-this[ /^(\s*?)([^\n\r]+)(\s*?)$/.source ]=
-function( open, text, close ){
-return open + '<a href="?gist/list/' + $jam.FZ( text ) + '">' + tags.item( text ) + '</a>' + close
-}
-})
-return tags
-}
+        
+        var tags=
+        function( str ){
+            return tags.root( tags.content( str ) )
+        }
+        
+        tags.root= $lang.Wrapper( 'lang:tags' )
+        tags.item= $lang.Wrapper( 'lang:tags_item' )
+        
+        tags.content=
+        $lang.Parser( new function(){
+        
+            this[ /^(\s*?)([^\n\r]+)(\s*?)$/.source ]=
+            function( open, text, close ){
+                return open + '<a href="?gist/list/' + $jam.htmlEscape( text ) + '">' + tags.item( text ) + '</a>' + close
+            }
+            
+        })
+        
+        return tags
+    }
 ) 
-;$lang.BI=
+
+;// lang/md/lang_md.jam.js
+$lang.md=
 new function(){
-var md=
-function( str ){
-return md.root( md.content( str ) )
-}
-md.root= $lang.GX( 'lang:BI' )
-md.header1= $lang.GX( 'lang:BZ' )
-md.header2= $lang.GX( 'lang:BY' )
-md.header3= $lang.GX( 'lang:BX' )
-md.header4= $lang.GX( 'lang:EH' )
-md.header5= $lang.GX( 'lang:EI' )
-md.header6= $lang.GX( 'lang:EJ' )
-md.headerMarker= $lang.GX( 'lang:CA' )
-md.quote= $lang.GX( 'lang:CB' )
-md.quoteMarker= $lang.GX( 'lang:CC' )
-md.quoteInline= $lang.GX( 'lang:CD' )
-md.quoteInlineMarker= $lang.GX( 'lang:CE' )
-md.image= $lang.GX( 'lang:BO' )
-md.imageHref= $lang.GX( 'lang:BP' )
-md.embed= $lang.GX( 'lang:BJ' )
-md.embedHref= $lang.GX( 'lang:BK' )
-md.link= $lang.GX( 'lang:BQ' )
-md.linkMarker= $lang.GX( 'lang:BT' )
-md.linkTitle= $lang.GX( 'lang:BR' )
-md.linkHref= $lang.GX( 'lang:BS' )
-md.author= $lang.GX( 'lang:BU' )
-md.indent= $lang.GX( 'lang:BV' )
-md.escapingMarker= $lang.GX( 'lang:CP' )
-md.emphasis= $lang.GX( 'lang:CQ' )
-md.emphasisMarker= $lang.GX( 'lang:CR' )
-md.strong= $lang.GX( 'lang:CS' )
-md.strongMarker= $lang.GX( 'lang:CT' )
-md.super= $lang.GX( 'lang:CU' )
-md.superMarker= $lang.GX( 'lang:CV' )
-md.sub= $lang.GX( 'lang:CW' )
-md.subMarker= $lang.GX( 'lang:CX' )
-md.math= $lang.GX( 'lang:CF' )
-md.remark= $lang.GX( 'lang:CY' )
-md.table= $lang.GX( 'lang:CG' )
-md.tableRow= $lang.GX( 'lang:CH' )
-md.tableCell= $lang.GX( 'lang:CJ' )
-md.tableMarker= $lang.GX( 'lang:CK' )
-md.code= $lang.GX( 'lang:CL' )
-md.codeMarker= $lang.GX( 'lang:CM' )
-md.codeLang= $lang.GX( 'lang:CN' )
-md.codeContent= $lang.GX( 'lang:CO' )
-md.html= $lang.GX( 'lang:EK' )
-md.htmlTag= $lang.GX( 'lang:EL' )
-md.htmlContent= $lang.GX( 'lang:EM' )
-md.para= $lang.GX( 'lang:BW' )
-md.inline=
-$lang.GY( new function(){
-// indentation
-// ^\s+
-this[ /^(\s+)/.source ]=
-md.indent
-// math
-//  123 
-this[ /([0-9∅‰∞∀∃∫√×±≤+−≥≠<>%])/.source ]=
-md.math
-// escaping
-// ** // ^^ __ [[ ]]
-this[ /(\*\*|\/\/|\^\^|__|\[\[|\]\]|\\\\)/.source ]=
-function( symbol ){
-return md.escapingMarker( symbol[0] ) + symbol[1]
-}
-// hyper link
-// \\title\http://example.org/\
-this[ /(\\)(.*?)(\\)((?:(?:https?|ftps?|mailto|magnet):[^\0]*?|[^:]*?(?:[\/\?].*?)?))(\\)/.source ]=
-function( open, title, middle, href, close ){
-var uri= href
-open= md.linkMarker( open )
-middle= md.linkMarker( middle )
-close= md.linkMarker( close )
-href= title ? md.linkHref( href ) : md.linkTitle( href )
-title= md.linkTitle( md.inline( title ) )
-return md.link( '<a href="' + $jam.FZ( uri ) + '">' + open + title + middle + href + close + '</a>' )
-}
-// image
-// [url]
-this[ /(\[)([^\[\]]+)(\])/.source ]=
-function( open, href, close ){
-return md.image( md.imageHref( open + href + close ) + '<a href="' + $jam.FZ( href ) + '"><object data="' + $jam.FZ( href ) + '"></object></a>' )
-}
-// emphasis
-// /some text/
-this[ /([^\s"({[]\/)/.source ]=
-$lang.S
-this[ /(\/)([^\/\s](?:[\s\S]*?[^\/\s])?)(\/)(?=[\s,.:;!?")}\]]|$)/.source ]=
-function( open, content, close ){
-open = md.emphasisMarker( open )
-close = md.emphasisMarker( close )
-content= md.inline( content )
-return md.emphasis( open + content + close )
-}
-// strong
-// *some text*
-this[ /([^\s"({[]\*)/.source ]=
-$lang.S            
-this[ /(\*)([^\*\s](?:[\s\S]*?[^\*\s])?)(\*)(?=[\s,.:;!?")}\]]|$)/.source ]=
-function( open, content, close ){
-open = md.strongMarker( open )
-close = md.strongMarker( close )
-content= md.inline( content )
-return md.strong( open + content + close )
-}
-// ^super text^
-this[ /(\^)([^\^\s](?:[\s\S]*?[^\^\s])?)(\^)(?=[\s,.:;!?")}\]√_]|$)/.source ]=
-function( open, content, close ){
-open = md.superMarker( open )
-close = md.superMarker( close )
-content= md.inline( content )
-return md.super( open + content + close )
-}
-// _sub text_
-this[ /(_)([^_\s](?:[\s\S]*?[^_\s])?)(_)(?=[\s,.:;!?")}\]\^]|$)/.source ]=
-function( open, content, close ){
-open = md.subMarker( open )
-close = md.subMarker( close )
-content= md.inline( content )
-return md.sub( open + content + close )
-}
-// "inline quote"
-// «inline quote»
-this[ /(")([^"\s](?:[\s\S]*?[^"\s])?)(")(?=[\s,.:;!?)}\]]|$)/.source ]=
-this[ /(«)([\s\S]*?)(»)/.source ]=
-function( open, content, close ){
-open = md.quoteInlineMarker( open )
-close = md.quoteInlineMarker( close )
-content= md.inline( content )
-return md.quoteInline( open + content + close )
-}
-// remark
-// (some text)
-this[ /(\()([\s\S]+?)(\))/.source ]=
-function( open, content, close ){
-content= md.inline( content )
-return md.remark( open + content + close )
-}
-})
-md.content=
-$lang.GY( new function(){
-// header
-// !!! Title
-this[ /^(!!! )(.*?)$/.source ]=
-function( marker, content ){
-return md.header1( md.headerMarker( marker ) + md.inline( content ) )
-}
-// !!  Title
-this[ /^(!!  )(.*?)$/.source ]=
-function( marker, content ){
-return md.header2( md.headerMarker( marker ) + md.inline( content ) )
-}
-// !   Title
-this[ /^(!   )(.*?)$/.source ]=
-function( marker, content ){
-return md.header3( md.headerMarker( marker ) + md.inline( content ) )
-}
-// block quote
-// >   content
-this[ /^(>   )(.*?)$/.source ]=
-function( marker, content ){
-marker = md.quoteMarker( marker )
-content= md.inline( content )
-return md.quote( marker + content )
-}
-// video
-// http://www.youtube.com/watch?v=IGfTPIVb0jQ
-// http://youtu.be/IGfTPIVb0jQ
-this[ /^(http:\/\/www\.youtube\.com\/watch\?v=)(\w+)(.*$\n?)/.source ]=
-this[ /^(http:\/\/youtu.be\/)(\w+)(.*$\n?)/.source ]=
-function( prefix, id, close ){
-var href= md.embedHref( prefix + id + close )
-var uri= 'http://www.youtube.com/embed/' + id
-var embed= md.embed( '<wc:M wc:EA=".75"><iframe class="wc_lang_md_embed-object" src="' + uri + '" allowfullscreen></iframe></wc:M>' )
-return href + embed
-}
-// image
-// http://gif1.ru/gifs/267.gif
-this[ /^((?:[\?\/\.]|https?:|ftps?:).*?)$(\n?)/.source ]=
-function( url, close ){
-var href= md.embedHref( url + close )
-url= url.replace( /\xAD/g, '' )
-var embed= md.embed( '<a href="' + $jam.FZ( url ) + '"><image src="' + $jam.FZ( url ) + '" /></a>' )
-return href + embed
-}
-// table
-// --
-// | cell 11 | cell 12
-// --
-// | cell 21 | cell 22
-this[ /((?:\n--(?:\n[| ] [^\n]*)*)+)/.source ]=
-function( content ){
-var rows= content.split( /\n--/g )
-rows.shift()
-for( var r= 0; r < rows.length; ++r ){
-var row= rows[ r ]
-var cells= row.split( /\n\| /g )
-cells.shift()
-for( var c= 0; c < cells.length; ++c ){
-var cell= cells[ c ]
-cell= cell.replace( /\n  /g, '\n' )
-cell= md.inline( cell )
-cell= cell.replace( /\n/g, '\n' + md.tableMarker( '  ' ) )
-cell= md.tableMarker( '\n| ' ) + cell 
-cells[ c ]= md.tableCell( cell )
-}
-row= cells.join( '' )
-var rowSep= '<lang:CI><wc:EN colspan="300">\n--</wc:EN></lang:CI>'
-rows[ r ]= rowSep + md.tableRow( row )
-}
-content= rows.join( '' )
-return md.table( content )
-}
-// source code
-// #lang
-//     some code
-this[ /^(\$)([\w-]+)((?:\n    [^\n]*)*)(?=\n|$)/.source ]=
-function( marker, lang, content ){
-content= content.replace( /\n    /g, '\n' )
-content= $lang( lang )( content )
-content= content.replace( /\n/g, '\n' + md.indent( '    ' ) )
-content= md.codeContent( content )
-marker= md.codeMarker( marker )
-lang= md.codeLang( lang )
-return md.code( marker + lang + content )
-}
-// simple paragraph
-this[ /^(    .*)$/.source ]=
-function( content ){
-return md.para( md.inline( content ) )
-}
-})
-return md
+
+    var md=
+    function( str ){
+        return md.root( md.content( str ) )
+    }
+
+    md.root= $lang.Wrapper( 'lang:md' )
+
+    md.header1= $lang.Wrapper( 'lang:md_header-1' )
+    md.header2= $lang.Wrapper( 'lang:md_header-2' )
+    md.header3= $lang.Wrapper( 'lang:md_header-3' )
+    md.header4= $lang.Wrapper( 'lang:md_header-4' )
+    md.header5= $lang.Wrapper( 'lang:md_header-5' )
+    md.header6= $lang.Wrapper( 'lang:md_header-6' )
+    md.headerMarker= $lang.Wrapper( 'lang:md_header-marker' )
+
+    md.quote= $lang.Wrapper( 'lang:md_quote' )
+    md.quoteMarker= $lang.Wrapper( 'lang:md_quote-marker' )
+
+    md.quoteInline= $lang.Wrapper( 'lang:md_quote-inline' )
+    md.quoteInlineMarker= $lang.Wrapper( 'lang:md_quote-inline-marker' )
+
+    md.image= $lang.Wrapper( 'lang:md_image' )
+    md.imageHref= $lang.Wrapper( 'lang:md_image-href' )
+
+    md.embed= $lang.Wrapper( 'lang:md_embed' )
+    md.embedHref= $lang.Wrapper( 'lang:md_embed-href' )
+
+    md.link= $lang.Wrapper( 'lang:md_link' )
+    md.linkMarker= $lang.Wrapper( 'lang:md_link-marker' )
+    md.linkTitle= $lang.Wrapper( 'lang:md_link-title' )
+    md.linkHref= $lang.Wrapper( 'lang:md_link-href' )
+
+    md.author= $lang.Wrapper( 'lang:md_author' )
+    md.indent= $lang.Wrapper( 'lang:md_indent' )
+
+    md.escapingMarker= $lang.Wrapper( 'lang:md_escaping-marker' )
+
+    md.emphasis= $lang.Wrapper( 'lang:md_emphasis' )
+    md.emphasisMarker= $lang.Wrapper( 'lang:md_emphasis-marker' )
+
+    md.strong= $lang.Wrapper( 'lang:md_strong' )
+    md.strongMarker= $lang.Wrapper( 'lang:md_strong-marker' )
+
+    md.super= $lang.Wrapper( 'lang:md_super' )
+    md.superMarker= $lang.Wrapper( 'lang:md_super-marker' )
+
+    md.sub= $lang.Wrapper( 'lang:md_sub' )
+    md.subMarker= $lang.Wrapper( 'lang:md_sub-marker' )
+
+    md.math= $lang.Wrapper( 'lang:md_math' )
+    md.remark= $lang.Wrapper( 'lang:md_remark' )
+
+    md.table= $lang.Wrapper( 'lang:md_table' )
+    md.tableRow= $lang.Wrapper( 'lang:md_table-row' )
+    md.tableCell= $lang.Wrapper( 'lang:md_table-cell' )
+    md.tableMarker= $lang.Wrapper( 'lang:md_table-marker' )
+
+    md.code= $lang.Wrapper( 'lang:md_code' )
+    md.codeMarker= $lang.Wrapper( 'lang:md_code-marker' )
+    md.codeLang= $lang.Wrapper( 'lang:md_code-lang' )
+    md.codeContent= $lang.Wrapper( 'lang:md_code-content' )
+
+    md.html= $lang.Wrapper( 'lang:md_html' )
+    md.htmlTag= $lang.Wrapper( 'lang:md_html-tag' )
+    md.htmlContent= $lang.Wrapper( 'lang:md_html-content' )
+
+    md.para= $lang.Wrapper( 'lang:md_para' )
+
+    md.inline=
+    $lang.Parser( new function(){
+
+        // indentation
+        // ^\s+
+        this[ /^(\s+)/.source ]=
+        md.indent
+        
+        // math
+        //  123 
+        this[ /([0-9∅‰∞∀∃∫√×±≤+−≥≠<>%])/.source ]=
+        md.math
+        
+        // escaping
+        // ** // ^^ __ [[ ]]
+        this[ /(\*\*|\/\/|\^\^|__|\[\[|\]\]|\\\\)/.source ]=
+        function( symbol ){
+            return md.escapingMarker( symbol[0] ) + symbol[1]
+        }
+    
+        // hyper link
+        // \\title\http://example.org/\
+        this[ /(\\)(.*?)(\\)((?:(?:https?|ftps?|mailto|magnet):[^\0]*?|[^:]*?(?:[\/\?].*?)?))(\\)/.source ]=
+        function( open, title, middle, href, close ){
+            var uri= href
+            open= md.linkMarker( open )
+            middle= md.linkMarker( middle )
+            close= md.linkMarker( close )
+            href= title ? md.linkHref( href ) : md.linkTitle( href )
+            title= md.linkTitle( md.inline( title ) )
+            return md.link( '<a href="' + $jam.htmlEscape( uri ) + '">' + open + title + middle + href + close + '</a>' )
+        }
+        
+        // image
+        // [url]
+        this[ /(\[)([^\[\]]+)(\])/.source ]=
+        function( open, href, close ){
+            return md.image( md.imageHref( open + href + close ) + '<a href="' + $jam.htmlEscape( href ) + '"><object data="' + $jam.htmlEscape( href ) + '"></object></a>' )
+        }
+    
+        // emphasis
+        // /some text/
+        this[ /([^\s"({[]\/)/.source ]=
+        $lang.text
+        this[ /(\/)([^\/\s](?:[\s\S]*?[^\/\s])?)(\/)(?=[\s,.:;!?")}\]]|$)/.source ]=
+        function( open, content, close ){
+            open = md.emphasisMarker( open )
+            close = md.emphasisMarker( close )
+            content= md.inline( content )
+            return md.emphasis( open + content + close )
+        }
+    
+        // strong
+        // *some text*
+        this[ /([^\s"({[]\*)/.source ]=
+        $lang.text            
+        this[ /(\*)([^\*\s](?:[\s\S]*?[^\*\s])?)(\*)(?=[\s,.:;!?")}\]]|$)/.source ]=
+        function( open, content, close ){
+            open = md.strongMarker( open )
+            close = md.strongMarker( close )
+            content= md.inline( content )
+            return md.strong( open + content + close )
+        }
+    
+        // ^super text^
+        this[ /(\^)([^\^\s](?:[\s\S]*?[^\^\s])?)(\^)(?=[\s,.:;!?")}\]√_]|$)/.source ]=
+        function( open, content, close ){
+            open = md.superMarker( open )
+            close = md.superMarker( close )
+            content= md.inline( content )
+            return md.super( open + content + close )
+        }
+    
+        // _sub text_
+        this[ /(_)([^_\s](?:[\s\S]*?[^_\s])?)(_)(?=[\s,.:;!?")}\]\^]|$)/.source ]=
+        function( open, content, close ){
+            open = md.subMarker( open )
+            close = md.subMarker( close )
+            content= md.inline( content )
+            return md.sub( open + content + close )
+        }
+    
+        // "inline quote"
+        // «inline quote»
+        this[ /(")([^"\s](?:[\s\S]*?[^"\s])?)(")(?=[\s,.:;!?)}\]]|$)/.source ]=
+        this[ /(«)([\s\S]*?)(»)/.source ]=
+        function( open, content, close ){
+            open = md.quoteInlineMarker( open )
+            close = md.quoteInlineMarker( close )
+            content= md.inline( content )
+            return md.quoteInline( open + content + close )
+        }
+    
+        // remark
+        // (some text)
+        this[ /(\()([\s\S]+?)(\))/.source ]=
+        function( open, content, close ){
+            content= md.inline( content )
+            return md.remark( open + content + close )
+        }
+
+    })
+
+    md.content=
+    $lang.Parser( new function(){
+
+        // header
+        // !!! Title
+        this[ /^(!!! )(.*?)$/.source ]=
+        function( marker, content ){
+            return md.header1( md.headerMarker( marker ) + md.inline( content ) )
+        }
+        // !!  Title
+        this[ /^(!!  )(.*?)$/.source ]=
+        function( marker, content ){
+            return md.header2( md.headerMarker( marker ) + md.inline( content ) )
+        }
+        // !   Title
+        this[ /^(!   )(.*?)$/.source ]=
+        function( marker, content ){
+            return md.header3( md.headerMarker( marker ) + md.inline( content ) )
+        }
+
+        // block quote
+        // >   content
+        this[ /^(>   )(.*?)$/.source ]=
+        function( marker, content ){
+            marker = md.quoteMarker( marker )
+            content= md.inline( content )
+            return md.quote( marker + content )
+        }
+        
+        // video
+        // http://www.youtube.com/watch?v=IGfTPIVb0jQ
+        // http://youtu.be/IGfTPIVb0jQ
+        this[ /^(http:\/\/www\.youtube\.com\/watch\?v=)(\w+)(.*$\n?)/.source ]=
+        this[ /^(http:\/\/youtu.be\/)(\w+)(.*$\n?)/.source ]=
+        function( prefix, id, close ){
+            var href= md.embedHref( prefix + id + close )
+            var uri= 'http://www.youtube.com/embed/' + id
+            var embed= md.embed( '<wc:aspect wc:aspect_ratio=".75"><iframe class="wc_lang_md_embed-object" src="' + uri + '" allowfullscreen></iframe></wc:aspect>' )
+            return href + embed
+        }
+        
+        // image
+        // http://gif1.ru/gifs/267.gif
+        this[ /^((?:[\?\/\.]|https?:|ftps?:).*?)$(\n?)/.source ]=
+        function( url, close ){
+            var href= md.embedHref( url + close )
+            url= url.replace( /\xAD/g, '' )
+            var embed= md.embed( '<a href="' + $jam.htmlEscape( url ) + '"><image src="' + $jam.htmlEscape( url ) + '" /></a>' )
+            return href + embed
+        }
+    
+        // table
+        // --
+        // | cell 11 | cell 12
+        // --
+        // | cell 21 | cell 22
+        this[ /((?:\n--(?:\n[| ] [^\n]*)*)+)/.source ]=
+        function( content ){
+            var rows= content.split( /\n--/g )
+            rows.shift()
+            for( var r= 0; r < rows.length; ++r ){
+                var row= rows[ r ]
+                var cells= row.split( /\n\| /g )
+                cells.shift()
+                for( var c= 0; c < cells.length; ++c ){
+                    var cell= cells[ c ]
+                    cell= cell.replace( /\n  /g, '\n' )
+                    cell= md.inline( cell )
+                    cell= cell.replace( /\n/g, '\n' + md.tableMarker( '  ' ) )
+                    cell= md.tableMarker( '\n| ' ) + cell 
+                    cells[ c ]= md.tableCell( cell )
+                }
+                row= cells.join( '' )
+                var rowSep= '<lang:md_table-row-sep><wc:lang-md_table-cell colspan="300">\n--</wc:lang-md_table-cell></lang:md_table-row-sep>'
+                rows[ r ]= rowSep + md.tableRow( row )
+            }
+            content= rows.join( '' )
+
+            return md.table( content )
+        }
+        
+        // source code
+        // #lang
+        //     some code
+        this[ /^(\$)([\w-]+)((?:\n    [^\n]*)*)(?=\n|$)/.source ]=
+        function( marker, lang, content ){
+            content= content.replace( /\n    /g, '\n' )
+            content= $lang( lang )( content )
+            content= content.replace( /\n/g, '\n' + md.indent( '    ' ) )
+            content= md.codeContent( content )
+            marker= md.codeMarker( marker )
+            lang= md.codeLang( lang )
+            return md.code( marker + lang + content )
+        }
+        
+        // simple paragraph
+        this[ /^(    .*)$/.source ]=
+        function( content ){
+            return md.para( md.inline( content ) )
+        }
+        
+    })
+    
+    return md
 } 
-;var DISQUS= DISQUS || new function( ){
-this.settings= {}
-this.extend= function( target, source ){
-for( var key in source ) target[ key ]= source[ key ]
+
+;// wc/disqus/disqus.jam.js
+var DISQUS= DISQUS || new function( ){
+    this.settings= {}
+    this.extend= function( target, source ){
+        for( var key in source ) target[ key ]= source[ key ]
+    }
 }
-}
-$jam.FD( 'wc:EO', function( nodeRoot ){
-nodeRoot= $jam.FM( nodeRoot )
-var script= $jam.FM.Element( 'script' ).attr( 'src', '//nin-jin.disqus.com/thread.js?url=' + $jam.GW( '//' + document.location.host + document.location.pathname ) )
-script.listen( 'load', function( ){
-console.log( DISQUS.jsonData )
-var thread= nodeRoot.html( $lang.BI( '  0 *a* b' ) )
-var postList= DISQUS.jsonData.posts
-var userList= DISQUS.jsonData.users
-for( var id in postList ){
-var post= postList[ id ]
-var user= userList[ post.user_key ]
-var message= $jam.FM.Element( 'wc:EP' )
-$jam.FM.Element( 'wc:EQ' ).text( user.display_name ).parent( message )
-$jam.FM.Element( 'wc:ER' ).text( post.raw_message ).parent( message )
-message.parent( nodeRoot )
-}
+
+$jam.Component( 'wc:disqus', function( nodeRoot ){
+    nodeRoot= $jam.Node( nodeRoot )
+    var script= $jam.Node.Element( 'script' ).attr( 'src', '//nin-jin.disqus.com/thread.js?url=' + $jam.uriEscape( '//' + document.location.host + document.location.pathname ) )
+    script.listen( 'load', function( ){
+        console.log( DISQUS.jsonData )
+
+        var thread= nodeRoot.html( $lang.md( '  0 *a* b' ) )
+        
+        var postList= DISQUS.jsonData.posts
+        var userList= DISQUS.jsonData.users
+        for( var id in postList ){
+            var post= postList[ id ]
+            var user= userList[ post.user_key ]
+            var message= $jam.Node.Element( 'wc:disqus_message' )
+            $jam.Node.Element( 'wc:disqus_author' ).text( user.display_name ).parent( message )
+            $jam.Node.Element( 'wc:disqus_content' ).text( post.raw_message ).parent( message )
+            message.parent( nodeRoot )
+        }
+    } )
+    nodeRoot.head( script )
 } )
-nodeRoot.head( script )
-} )
-;$jam.FD
-(   'wc:BL'
+;// wc/editor/wc-editor.jam.js
+$jam.Component
+(   'wc:editor'
 ,   function( nodeRoot ){
-return new function( ){
-nodeRoot= $jam.FM( nodeRoot )
-var source= $jam.FZ( nodeRoot.text() ).replace( /\r?\n/g, '<br />' )
-nodeRoot.clear()
-var nodeSource= $jam.FM.parse( '<div class=" wc_editor_content " />' )
-.html( source )
-.parent( nodeRoot )
-var sourceLast= ''
-var update= $jam.GK( 50, function( ){
-//var source= $jam.FW( nodeSource.text() ).replace( /\n?\r?$/, '\n' ).$
-var source= nodeSource.text()
-if( source === sourceLast ) return
-sourceLast= source
-source=
-$jam.FW( source )
-.process( $lang( nodeRoot.attr( 'wc:ED' ) ) )
-.replace( /  /g, '\u00A0 ' )
-.replace( /  /g, ' \u00A0' )
-//.replace( /[^\n<>](?:<[^<>]+>)*$/, '$&\n' )
-.replace( /$/, '\n' )
-.replace( /\n/g, '<br/>' )
-.$
-var nodeRange= $jam.GA().aimNodeContent( nodeSource )
-var startPoint= $jam.GA().collapse2start()
-//console.log(nodeRange.html())
-var endPoint= $jam.GA().collapse2end()
-var hasStart= nodeRange.hasRange( startPoint )
-var hasEnd= nodeRange.hasRange( endPoint )
-if( hasStart ){
-var metRange= $jam.GA()
-.equalize( 'end2start', startPoint )
-.equalize( 'start2start', nodeRange )
-var offsetStart= metRange.text().length
-}
-if( hasEnd ){
-var metRange= $jam.GA()
-.equalize( 'end2start', endPoint )
-.equalize( 'start2start', nodeRange )
-var offsetEnd= metRange.text().length
-//console.log(metRange.html(),metRange.text(), offsetEnd)
-}
-//console.log(offsetStart,offsetEnd)
-nodeSource.html( source )
-var selRange= $jam.GA()
-if( hasStart ){
-var startRange= nodeRange.clone().move( offsetStart )
-selRange.equalize( 'start2start', startRange )
-}
-if( hasEnd ){
-selRange.equalize( 'end2start', nodeRange.clone().move( offsetEnd ) )
-}
-if( hasEnd || hasEnd ){
-selRange.select()
-}
-//nodeSource.dissolveTree()
-//console.log(source.charCodeAt( source.length -1 ))
-//if( source.charAt( source.length -1 ) !== '\n' ) nodeSource.tail( $jam.FM.Text( '\n' ) )
-//if( !source ) $jam.GA().aimNode( nodeSource.head() ).collapse2end().select()
-//if( nodeSource.tail() && nodeSource.tail().name() !== 'br' ) nodeSource.tail( $jam.FM.Element( 'br' ) )
-} )
-var onEdit=
-nodeRoot.listen( '$jam.GS', update )
-var onEnter=
-nodeRoot.listen( 'keypress', function( event ){
-event= $jam.FP( event )
-if( !event.keyCode().enter ) return
-if( event.keyAccel() ) return
-event.defaultBehavior( false )
-$jam.GA().html( '<br/>' ).collapse2end().select()
-})
-var onAltSymbol=
-nodeRoot.listen( 'keydown', function( event ){
-event= $jam.FP( event )
-//console.log( event.keyCode() )
-if( !event.keyAlt() ) return
-if( event.keyShift() ){
-var symbolSet= new function( ){
-this[ '0' ]= '∅' // пустое множество
-this[ '5' ]= '‰' // промилле
-this[ '8' ]= '∞' // бесконечность
-this[ 'a' ]= '∀' // всеобщность
-this[ 'e' ]= '∃' // существование
-this[ 's' ]= '∫' // интегралл
-this[ 'v' ]= '√' // корень
-this[ 'x' ]= '×' // умножение
-this[ 'plus' ]= '±' // плюс-минус
-this[ 'comma' ]= '≤' // не больше
-this[ 'minus' ]= '−' // минус
-this[ 'period' ]= '≥' // не меньше
-this[ 'openBracket' ]= '{'
-this[ 'closeBracket' ]= '}'
-}
-} else {
-var symbolSet= new function( ){
-this[ '0' ]= '°' // градус
-this[ '3' ]= '#'
-this[ '4' ]= '$'
-this[ 'c' ]= '©' // копирайт
-this[ 's' ]= '§' // параграф
-this[ 'plus' ]= '≠' // не равно
-this[ 'comma' ]= '«' // открывающая кавычка
-this[ 'minus' ]= '–' // среднее тире
-this[ 'period' ]= '»' // закрывающая кавычка
-this[ 'tilde' ]= '\u0301' // ударение
-this[ 'openBracket' ]= '['
-this[ 'backSlash' ]= '|'
-this[ 'closeBracket' ]= ']'
-}
-}
-var symbol= symbolSet[ $jam.FO( event.keyCode() ) ]
-if( !symbol ) return
-event.defaultBehavior( false )
-$jam.GA().text( symbol ).collapse2end().select()
-})
-//var onBackspace=
-//nodeRoot.listen( 'keydown', function( event ){
-//    event= $jam.FP( event )
-//    if( event.keyCode() != 8 ) return
-//    if( event.keyAccel() ) return
-//    event.defaultBehavior( false )
-//    var fullRange= $jam.GA().aimNodeContent( nodeSource )
-//    var newOffset= fullRange.clone().equalize( 'end2start', $jam.GA() ).text().length - 1
-//    if( newOffset < 0 ) newOffset= 0
-//    var range= fullRange.clone().move( newOffset ).equalize( 'end2end', $jam.GA() )
-//    range.dropContents()
-//})
-var onTab=
-nodeRoot.listen( 'keydown', function( event ){
-event= $jam.FP( event )
-if( !event.keyCode().tab ) return
-if( event.keyAccel() ) return
-event.defaultBehavior( false )
-$jam.GA().text( '    ' ).collapse2end().select()
-})
-var onLeave=
-nodeSource.listen( 'blur', function( event ){
-$jam.FP().type( '$jam.GQ' ).scream( nodeRoot )
-})
-var onActivate=
-nodeRoot.listen( 'mousedown', function( event ){
-event= $jam.FP( event )
-if( !event.keyMeta() ) return
-nodeRoot.attr( 'wc:BM', true )
-nodeSource.editable( true )
-})
-var onDeactivate=
-nodeRoot.listen( 'keydown', function( event ){
-event= $jam.FP( event )
-if( !event.keyCode().escape ) return
-nodeSource.editable( false )
-nodeRoot.attr( 'wc:BM', false )
-event.defaultBehavior( false )
-})
-this.destroy= function( ){
-onEdit.sleep()
-onLeave.sleep()
-}
-$jam.EY( 0, update )
-nodeRoot.attr( 'wc:CZ', true )
-}
-}
+        return new function( ){
+            nodeRoot= $jam.Node( nodeRoot )
+
+            var source= $jam.htmlEscape( nodeRoot.text() ).replace( /\r?\n/g, '<br />' )
+
+            nodeRoot.clear()
+            var nodeSource= $jam.Node.parse( '<div class=" wc_editor_content " />' )
+            .html( source )
+            .parent( nodeRoot )
+            
+            var sourceLast= ''
+            var update= $jam.Throttler( 50, function( ){
+                //var source= $jam.String( nodeSource.text() ).replace( /\n?\r?$/, '\n' ).$
+                var source= nodeSource.text()
+                if( source === sourceLast ) return
+                sourceLast= source
+                
+                source=
+                $jam.String( source )
+                .process( $lang( nodeRoot.attr( 'wc:editor_hlight' ) ) )
+                .replace( /  /g, '\u00A0 ' )
+                .replace( /  /g, ' \u00A0' )
+                //.replace( /[^\n<>](?:<[^<>]+>)*$/, '$&\n' )
+                .replace( /$/, '\n' )
+                .replace( /\n/g, '<br/>' )
+                .$
+                
+                var nodeRange= $jam.DomRange().aimNodeContent( nodeSource )
+                var startPoint= $jam.DomRange().collapse2start()
+                //console.log(nodeRange.html())
+                var endPoint= $jam.DomRange().collapse2end()
+                var hasStart= nodeRange.hasRange( startPoint )
+                var hasEnd= nodeRange.hasRange( endPoint )
+                if( hasStart ){
+                    var metRange= $jam.DomRange()
+                    .equalize( 'end2start', startPoint )
+                    .equalize( 'start2start', nodeRange )
+                    var offsetStart= metRange.text().length
+                }
+                if( hasEnd ){
+                    var metRange= $jam.DomRange()
+                    .equalize( 'end2start', endPoint )
+                    .equalize( 'start2start', nodeRange )
+                    var offsetEnd= metRange.text().length
+                    //console.log(metRange.html(),metRange.text(), offsetEnd)
+                }
+                //console.log(offsetStart,offsetEnd)
+                nodeSource.html( source )
+                var selRange= $jam.DomRange()
+                if( hasStart ){
+                    var startRange= nodeRange.clone().move( offsetStart )
+                    selRange.equalize( 'start2start', startRange )
+                }
+                if( hasEnd ){
+                    selRange.equalize( 'end2start', nodeRange.clone().move( offsetEnd ) )
+                }
+                if( hasEnd || hasEnd ){
+                    selRange.select()
+                }
+                
+                //nodeSource.dissolveTree()
+                //console.log(source.charCodeAt( source.length -1 ))
+                //if( source.charAt( source.length -1 ) !== '\n' ) nodeSource.tail( $jam.Node.Text( '\n' ) )
+                //if( !source ) $jam.DomRange().aimNode( nodeSource.head() ).collapse2end().select()
+                //if( nodeSource.tail() && nodeSource.tail().name() !== 'br' ) nodeSource.tail( $jam.Node.Element( 'br' ) )
+            } )
+            
+            var onEdit=
+            nodeRoot.listen( '$jam.eventEdit', update )
+            
+            var onEnter=
+            nodeRoot.listen( 'keypress', function( event ){
+                event= $jam.Event( event )
+                if( !event.keyCode().enter ) return
+                if( event.keyAccel() ) return
+                event.defaultBehavior( false )
+                $jam.DomRange().html( '<br/>' ).collapse2end().select()
+            })
+            
+            var onAltSymbol=
+            nodeRoot.listen( 'keydown', function( event ){
+                event= $jam.Event( event )
+                //console.log( event.keyCode() )
+                if( !event.keyAlt() ) return
+                
+                if( event.keyShift() ){
+                    var symbolSet= new function( ){
+                        this[ '0' ]= '∅' // пустое множество
+                        this[ '5' ]= '‰' // промилле
+                        this[ '8' ]= '∞' // бесконечность
+                        this[ 'a' ]= '∀' // всеобщность
+                        this[ 'e' ]= '∃' // существование
+                        this[ 's' ]= '∫' // интегралл
+                        this[ 'v' ]= '√' // корень
+                        this[ 'x' ]= '×' // умножение
+                        this[ 'plus' ]= '±' // плюс-минус
+                        this[ 'comma' ]= '≤' // не больше
+                        this[ 'minus' ]= '−' // минус
+                        this[ 'period' ]= '≥' // не меньше
+                        this[ 'openBracket' ]= '{'
+                        this[ 'closeBracket' ]= '}'
+                    }
+                } else {
+                    var symbolSet= new function( ){
+                        this[ '0' ]= '°' // градус
+                        this[ '3' ]= '#'
+                        this[ '4' ]= '$'
+                        this[ 'c' ]= '©' // копирайт
+                        this[ 's' ]= '§' // параграф
+                        this[ 'plus' ]= '≠' // не равно
+                        this[ 'comma' ]= '«' // открывающая кавычка
+                        this[ 'minus' ]= '–' // среднее тире
+                        this[ 'period' ]= '»' // закрывающая кавычка
+                        this[ 'tilde' ]= '\u0301' // ударение
+                        this[ 'openBracket' ]= '['
+                        this[ 'backSlash' ]= '|'
+                        this[ 'closeBracket' ]= ']'
+                    }
+                }
+                
+                var symbol= symbolSet[ $jam.keyCode( event.keyCode() ) ]
+                if( !symbol ) return
+                
+                event.defaultBehavior( false )
+                $jam.DomRange().text( symbol ).collapse2end().select()
+            })
+            
+            //var onBackspace=
+            //nodeRoot.listen( 'keydown', function( event ){
+            //    event= $jam.Event( event )
+            //    if( event.keyCode() != 8 ) return
+            //    if( event.keyAccel() ) return
+            //    event.defaultBehavior( false )
+            //    var fullRange= $jam.DomRange().aimNodeContent( nodeSource )
+            //    var newOffset= fullRange.clone().equalize( 'end2start', $jam.DomRange() ).text().length - 1
+            //    if( newOffset < 0 ) newOffset= 0
+            //    var range= fullRange.clone().move( newOffset ).equalize( 'end2end', $jam.DomRange() )
+            //    range.dropContents()
+            //})
+            
+            var onTab=
+            nodeRoot.listen( 'keydown', function( event ){
+                event= $jam.Event( event )
+                if( !event.keyCode().tab ) return
+                if( event.keyAccel() ) return
+                event.defaultBehavior( false )
+                $jam.DomRange().text( '    ' ).collapse2end().select()
+            })
+            
+            var onLeave=
+            nodeSource.listen( 'blur', function( event ){
+                $jam.Event().type( '$jam.eventCommit' ).scream( nodeRoot )
+            })
+            
+            var onActivate=
+            nodeRoot.listen( 'mousedown', function( event ){
+                event= $jam.Event( event )
+                if( !event.keyMeta() ) return
+                nodeRoot.attr( 'wc:editor_active', true )
+                nodeSource.editable( true )
+            })
+            
+            var onDeactivate=
+            nodeRoot.listen( 'keydown', function( event ){
+                event= $jam.Event( event )
+                if( !event.keyCode().escape ) return
+                nodeSource.editable( false )
+                nodeRoot.attr( 'wc:editor_active', false )
+                event.defaultBehavior( false )
+            })
+            
+            this.destroy= function( ){
+                onEdit.sleep()
+                onLeave.sleep()
+            }
+            
+            $jam.schedule( 0, update )
+            nodeRoot.attr( 'wc:editor_inited', true )
+        }
+    }
 )
-;$jam.FD
-(   'wc:DB'
+
+;// wc/hlight/wc-hlight.jam.js
+$jam.Component
+(   'wc:hlight'
 ,   function( nodeRoot ){
-return new function( ){
-nodeRoot= $jam.FM( nodeRoot )
-var hlight= $lang( nodeRoot.state( 'lang' ) )
-var source= $jam.FW( nodeRoot.text() ).minimizeIndent().trim( /[\r\n]/ ).$
-nodeRoot
-.html( hlight( source ) )
-}
-}
+        return new function( ){
+            nodeRoot= $jam.Node( nodeRoot )
+
+            var hlight= $lang( nodeRoot.state( 'lang' ) )
+            var source= $jam.String( nodeRoot.text() ).minimizeIndent().trim( /[\r\n]/ ).$
+
+            nodeRoot
+            .html( hlight( source ) )
+            
+        }
+    }
 )
-;$jam.FD
-(   'wc:DF'
+
+;// wc/js-bench/wc_js-bench.jam.js
+$jam.Component
+(   'wc:js-bench_list'
 ,   new function( ){
-return function( nodeRoot ){
-nodeRoot= $jam.FM( nodeRoot )
-var nodeHeader=
-$jam.FM.parse( '<wc:DG title="ctrl + enter" />' )
-.tail( $jam.FM.parse( '<wc:DJ>Run ►' ) )
-.tail( $jam.FM.parse( '<wc:DI>inner (µs)' ) )
-.tail( $jam.FM.parse( '<wc:DI>outer (µs)' ) )
-nodeRoot.head( nodeHeader )
-//var nodeControls= $jam.FM.Element( 'wc:DC' ).parent( nodeRoot )
-//var nodeClone= $jam.FM.parse( '<wc:DD title="ctrl+shift+enter">clone' ).parent( nodeControls )
-//var nodeDelete= $jam.FM.parse( '<wc:DE>delete' ).parent( nodeControls )
-var refresh=
-function( ){
-var benchList= nodeRoot.childList( 'wc:DH' )
-for( var i= 0; i < benchList.length(); ++i ){
-$jam.FP()
-.type( '$jam.GQ' )
-.scream( benchList.get( i ) )
-}
-}
-var onClick=
-nodeHeader.listen( 'click', refresh )
-return new function( ){
-this.destroy=
-function( ){
-onClick.sleep()
-}
-}
-}
-}
+        return function( nodeRoot ){
+            nodeRoot= $jam.Node( nodeRoot )
+            
+            var nodeHeader=
+            $jam.Node.parse( '<wc:js-bench_header title="ctrl + enter" />' )
+            .tail( $jam.Node.parse( '<wc:js-bench_runner>Run ►' ) )
+            .tail( $jam.Node.parse( '<wc:js-bench_column>inner (µs)' ) )
+            .tail( $jam.Node.parse( '<wc:js-bench_column>outer (µs)' ) )
+            
+            nodeRoot.head( nodeHeader )
+
+            //var nodeControls= $jam.Node.Element( 'wc:hontrol' ).parent( nodeRoot )
+            //var nodeClone= $jam.Node.parse( '<wc:hontrol_clone title="ctrl+shift+enter">clone' ).parent( nodeControls )
+            //var nodeDelete= $jam.Node.parse( '<wc:hontrol_delete>delete' ).parent( nodeControls )
+
+            var refresh=
+            function( ){
+                var benchList= nodeRoot.childList( 'wc:js-bench' )
+                for( var i= 0; i < benchList.length(); ++i ){
+                    $jam.Event()
+                    .type( '$jam.eventCommit' )
+                    .scream( benchList.get( i ) )
+                }
+            }
+
+            var onClick=
+            nodeHeader.listen( 'click', refresh )
+            
+            return new function( ){
+                this.destroy=
+                function( ){
+                    onClick.sleep()
+                }
+            }
+
+        }
+    }
 )
-$jam.FD
-(   'wc:DH'
+
+$jam.Component
+(   'wc:js-bench'
 ,   new function( ){
-var queue=
-$jam.GH()
-.latency( 100 )
-var parser= /^([\s\S]*?)_bench\.begin\(\)([\s\S]*)_bench\.end\(\)([\s\S]*)$/
-return function( nodeRoot ){
-nodeRoot= $jam.FM( nodeRoot )
-var source= $jam.FW( nodeRoot.text() ).minimizeIndent().trim( /[\r\n]/ ).$
-nodeRoot
-.clear()
-var nodeSource=
-$jam.FM.parse( '<wc:DK><wc:BL wc:ED="js">' + $jam.FZ( source ) )
-.parent( nodeRoot )
-var nodeInner=
-$jam.FM.parse( '<wc:DL class=" source=inner " />' )
-.parent( nodeRoot )
-var nodeOuter=
-$jam.FM.parse( '<wc:DL class=" source=outer " />' )
-.parent( nodeRoot )
-nodeRoot.surround( $jam.FM.Fragment() ) // for chrome 12
-var calc= $jam.GJ( function( source ){
-var startCompile= new Date
-var proc= new Function( '', source )
-var endCompile= new Date
-var startExec= new Date
-proc()
-var endExec= new Date
-return new function( ){
-this.compile= endCompile.getTime() - startCompile.getTime()
-this.exec= endExec.getTime() - startExec.getTime()
-}
-})
-var format= function( time ){
-return time.toFixed( 3 )
-}
-var run=
-function( ){
-var source= nodeSource.text()
-var matches= parser.exec( source )
-if( matches ){
-var prefix= matches[1]
-var sourceInner= matches[2] + ';'
-var postfix= matches[3] + ';'
-} else {
-var prefix= ''
-var sourceInner= source + ';'
-var postfix= ''
-}
-var count= 1
-var sourceOuter= prefix + postfix
-if( sourceOuter ){
-do {
-sourceOuter+= sourceOuter
-var time= calc( sourceOuter )
-if( !time ) break
-var timeOuter= time
-count*= 2
-if( timeOuter.compile > 256 ) break
-if( timeOuter.exec > 256 ) break
-} while( true )
-if( !timeOuter ) timeOuter= {}
-timeOuter.compile= timeOuter.compile * 1000 / count
-timeOuter.exec= timeOuter.exec * 1000 / count
-} else {
-timeOuter= { compile: 0, exec: 0 }
-}
-nodeOuter
-.text( format( timeOuter.exec ) )
-.attr( 'title', 'compile: ' + format( timeOuter.compile ) )
-var count= 1
-do {
-sourceInner+= sourceInner
-var time= calc( prefix + sourceInner + postfix )
-if( !time ) break
-var timeInner= time
-count*= 2
-if( timeInner.compile > 256 ) break
-if( timeInner.exec > 256 ) break
-} while( true )
-if( !timeInner ) timeInner= {}
-timeInner.compile= ( timeInner.compile * 1000 - timeOuter.compile ) / count
-timeInner.exec= ( timeInner.exec * 1000 - timeOuter.exec ) / count
-nodeInner
-.text( format( timeInner.exec ) )
-.attr( 'title', 'compile: ' + format( timeInner.compile ) )
-nodeRoot.state( 'wait', 'false' )
-}
-var schedule=
-function( ){
-if( nodeRoot.state( 'wait' ) === 'true' ) return 
-queue.add( run )
-nodeRoot.state( 'wait', 'true' )
-}
-var clone=
-function( ){
-var node=
-$jam.FM.Element( 'wc:DH' )
-.text( nodeSource.text() )
-nodeRoot.prev( node )
-}
-var onCommit=
-nodeRoot.listen( '$jam.GQ', schedule )
-var onClone=
-nodeRoot.listen( '$jam.GP', clone )
-return new function( ){
-this.destroy=
-function( ){
-onCommit.sleep()
-onClone.sleep()
-}
-}
-}
-}
+    
+        var queue=
+        $jam.TaskQueue()
+        .latency( 100 )
+    
+        var parser= /^([\s\S]*?)_bench\.begin\(\)([\s\S]*)_bench\.end\(\)([\s\S]*)$/
+    
+        return function( nodeRoot ){
+
+            nodeRoot= $jam.Node( nodeRoot )
+            var source= $jam.String( nodeRoot.text() ).minimizeIndent().trim( /[\r\n]/ ).$
+
+            nodeRoot
+            .clear()
+            
+            var nodeSource=
+            $jam.Node.parse( '<wc:js-bench_source><wc:editor wc:editor_hlight="js">' + $jam.htmlEscape( source ) )
+            .parent( nodeRoot )
+            
+            var nodeInner=
+            $jam.Node.parse( '<wc:js-bench_result class=" source=inner " />' )
+            .parent( nodeRoot )
+
+            var nodeOuter=
+            $jam.Node.parse( '<wc:js-bench_result class=" source=outer " />' )
+            .parent( nodeRoot )
+            
+            nodeRoot.surround( $jam.Node.Fragment() ) // for chrome 12
+            
+            var calc= $jam.Thread( function( source ){
+                var startCompile= new Date
+                    var proc= new Function( '', source )
+                var endCompile= new Date
+                var startExec= new Date
+                    proc()
+                var endExec= new Date
+                return new function( ){
+                    this.compile= endCompile.getTime() - startCompile.getTime()
+                    this.exec= endExec.getTime() - startExec.getTime()
+                }
+            })
+
+            var format= function( time ){
+                return time.toFixed( 3 )
+            }
+
+            var run=
+            function( ){
+                var source= nodeSource.text()
+                var matches= parser.exec( source )
+                if( matches ){
+                    var prefix= matches[1]
+                    var sourceInner= matches[2] + ';'
+                    var postfix= matches[3] + ';'
+                } else {
+                    var prefix= ''
+                    var sourceInner= source + ';'
+                    var postfix= ''
+                }
+
+                var count= 1
+                var sourceOuter= prefix + postfix
+                if( sourceOuter ){
+                    do {
+                        sourceOuter+= sourceOuter
+
+                        var time= calc( sourceOuter )
+                        if( !time ) break
+                        var timeOuter= time
+                        count*= 2
+
+                        if( timeOuter.compile > 256 ) break
+                        if( timeOuter.exec > 256 ) break
+                    } while( true )
+
+                    if( !timeOuter ) timeOuter= {}
+                    timeOuter.compile= timeOuter.compile * 1000 / count
+                    timeOuter.exec= timeOuter.exec * 1000 / count
+                } else {
+                    timeOuter= { compile: 0, exec: 0 }
+                }
+                
+                nodeOuter
+                .text( format( timeOuter.exec ) )
+                .attr( 'title', 'compile: ' + format( timeOuter.compile ) )
+
+                var count= 1
+                do {
+                    sourceInner+= sourceInner
+
+                    var time= calc( prefix + sourceInner + postfix )
+                    if( !time ) break
+                    var timeInner= time
+                    count*= 2
+
+                    if( timeInner.compile > 256 ) break
+                    if( timeInner.exec > 256 ) break
+                } while( true )
+                
+                if( !timeInner ) timeInner= {}
+                timeInner.compile= ( timeInner.compile * 1000 - timeOuter.compile ) / count
+                timeInner.exec= ( timeInner.exec * 1000 - timeOuter.exec ) / count
+                
+                nodeInner
+                .text( format( timeInner.exec ) )
+                .attr( 'title', 'compile: ' + format( timeInner.compile ) )
+
+                nodeRoot.state( 'wait', 'false' )
+            }
+            
+            var schedule=
+            function( ){
+                if( nodeRoot.state( 'wait' ) === 'true' ) return 
+                queue.add( run )
+                nodeRoot.state( 'wait', 'true' )
+            }
+            
+            var clone=
+            function( ){
+                var node=
+                $jam.Node.Element( 'wc:js-bench' )
+                .text( nodeSource.text() )
+                nodeRoot.prev( node )
+            }
+            
+            var onCommit=
+            nodeRoot.listen( '$jam.eventCommit', schedule )
+            
+            var onClone=
+            nodeRoot.listen( '$jam.eventClone', clone )
+            
+            return new function( ){
+                this.destroy=
+                function( ){
+                    onCommit.sleep()
+                    onClone.sleep()
+                }
+            }
+
+        }
+    }
 )
-;$jam.FD
-(   'wc:B'
+
+;// wc/js-test/wc_js-test.jam.js
+$jam.Component
+(   'wc:js-test'
 ,   function( nodeRoot ){
-return new function( ){
-nodeRoot= $jam.FM( nodeRoot )
-var exec= $jam.GJ( function( ){
-var source= nodeSource.text()
-var proc= new Function( '_test', source )
-proc( _test )
-return true
-})
-var source= $jam.FW( nodeRoot.text() ).minimizeIndent().trim( /[\n\r]/ ).$
-nodeRoot.clear()
-var nodeSource0= $jam.FM.Element( 'wc:DN' ).parent( nodeRoot )
-var nodeSource= $jam.FM.parse( '<wc:BL wc:ED="js" />' ).text( source ).parent( nodeSource0 )
-var nodeControls= $jam.FM.Element( 'wc:DC' ).parent( nodeRoot )
-var nodeClone= $jam.FM.parse( '<wc:DD title="ctrl+shift+enter">clone' ).parent( nodeControls )
-var nodeDelete= $jam.FM.parse( '<wc:DE>delete' ).parent( nodeControls )
-var _test= {}
-var checkDone= function( ){
-if( passed() !== 'wait' ) throw new Error( 'Test already done' )
-}
-_test.ok=
-$jam.FF
-(   function( ){
-checkDone()
-if( passed() === 'wait' ) passed( true )
-}
-,   function( val ){
-checkDone()
-passed( Boolean( val ) )
-printValue( val )
-if( !val ) throw new Error( 'Result is empty' )
-}
-,   function( a, b ){
-checkDone()
-passed( a === b )
-printValue( a )
-if( a !== b ){
-printValue( b )
-throw new Error( 'Results is not equal' )
-}
-}
+        return new function( ){
+            nodeRoot= $jam.Node( nodeRoot )
+            
+            var exec= $jam.Thread( function( ){
+                var source= nodeSource.text()
+                var proc= new Function( '_test', source )
+                proc( _test )
+                return true
+            })
+            
+            var source= $jam.String( nodeRoot.text() ).minimizeIndent().trim( /[\n\r]/ ).$
+        
+            nodeRoot.clear()
+            var nodeSource0= $jam.Node.Element( 'wc:js-test_source' ).parent( nodeRoot )
+            var nodeSource= $jam.Node.parse( '<wc:editor wc:editor_hlight="js" />' ).text( source ).parent( nodeSource0 )
+            var nodeControls= $jam.Node.Element( 'wc:hontrol' ).parent( nodeRoot )
+            var nodeClone= $jam.Node.parse( '<wc:hontrol_clone title="ctrl+shift+enter">clone' ).parent( nodeControls )
+            var nodeDelete= $jam.Node.parse( '<wc:hontrol_delete>delete' ).parent( nodeControls )
+
+            var _test= {}
+            
+            var checkDone= function( ){
+                if( passed() !== 'wait' ) throw new Error( 'Test already done' )
+            }
+            
+            _test.ok=
+            $jam.Poly
+            (   function( ){
+                    checkDone()
+                    if( passed() === 'wait' ) passed( true )
+                }
+            ,   function( val ){
+                    checkDone()
+                    passed( Boolean( val ) )
+                    printValue( val )
+                    if( !val ) throw new Error( 'Result is empty' )
+                }
+            ,   function( a, b ){
+                    checkDone()
+                    passed( a === b )
+                    printValue( a )
+                    if( a !== b ){
+                        printValue( b )
+                        throw new Error( 'Results is not equal' )
+                    }
+                }
+            )
+
+            _test.not=
+            $jam.Poly
+            (   function( ){
+                    checkDone()
+                    passed( false )
+                    throw new Error( 'Test fails' )
+                }
+            ,   function( val ){
+                    checkDone()
+                    printValue( val )
+                    passed( !val )
+                    if( val ) throw new Error( 'Result is not empty' )
+                }
+            ,   function( a, b ){
+                    checkDone()
+                    printValue( a )
+                    printValue( b )
+                    passed( a !== b )
+                    if( a == b ) throw new Error( 'Results is equal' )
+                }
+            )
+            
+            var stop
+            
+            var noMoreWait= function( ){
+                if( passed() !== 'wait' ) return
+                passed( false )
+                print( 'Timeout!' )
+                stop= null
+                throw new Error( 'Timeout!' )
+            }
+            
+            _test.deadline=
+            $jam.Poly
+            (   null
+            ,   function( ms ){
+                    if( stop ) throw new Error( 'Deadline redeclaration' )
+                    stop= $jam.schedule( ms, noMoreWait )
+                }
+            )
+        
+            var passed=
+            $jam.Poly
+            (   function( ){
+                    return nodeRoot.state( 'passed' )
+                }
+            ,   function( val ){
+                    nodeRoot.state( 'passed', val )
+                }
+            )
+            
+            var print=
+            function( val ){
+                var node= $jam.Node.Element( 'wc:js-test_result' )
+                node.text( val )
+                nodeRoot.tail( node )
+            }
+            
+            var printValue=
+            function( val ){
+                if( typeof val === 'function' ){
+                    if( !val.hasOwnProperty( 'toString' ) ){
+                        print( 'Function: [object Function]' )
+                        return
+                    }
+                }
+                print( $jam.classOf( val ) + ': ' + val )
+            }
+            
+            var run=
+            function( ){
+                var results= nodeRoot.childList( 'wc:js-test_result' )
+                for( var i= 0; i < results.length(); ++i ){
+                    results.get(i).parent( null )
+                }
+                passed( 'wait' )
+                stop= null
+                if( !exec() ) passed( false )
+                if(( !stop )&&( passed() === 'wait' )) passed( false )
+            }
+            
+            var clone=
+            function( ){
+                run()
+                var node=
+                $jam.Node.Element( 'wc:js-test' )
+                .text( nodeSource.text() )
+                nodeRoot.prev( node )
+            }
+            
+            var del=
+            function( ){
+                nodeRoot.parent( null )
+            }
+            
+            run()
+
+            var onCommit=
+            nodeRoot.listen( '$jam.eventCommit', run )
+            
+            var onClone=
+            nodeRoot.listen( '$jam.eventClone', clone )
+            
+            var onClone=
+            nodeRoot.listen( '$jam.eventDelete', del )
+            
+            var onCloneClick=
+            nodeClone.listen( 'click', function( event ){
+                $jam.Event().type( '$jam.eventClone' ).scream( event.target() )
+            })
+            
+            var onDeleteClick=
+            nodeDelete.listen( 'click', function( event ){
+                $jam.Event().type( '$jam.eventDelete' ).scream( event.target() )
+            })
+            
+            this.destroy=
+            function( ){
+                onCommit.sleep()
+                onClone.sleep()
+                onCloneClick.sleep()
+                onDeleteClick.sleep()
+                if( stop ) stop()
+                _test.ok= _test.not= $jam.Value()
+            }
+            
+        }
+    }
 )
-_test.not=
-$jam.FF
-(   function( ){
-checkDone()
-passed( false )
-throw new Error( 'Test fails' )
-}
-,   function( val ){
-checkDone()
-printValue( val )
-passed( !val )
-if( val ) throw new Error( 'Result is not empty' )
-}
-,   function( a, b ){
-checkDone()
-printValue( a )
-printValue( b )
-passed( a !== b )
-if( a == b ) throw new Error( 'Results is equal' )
-}
-)
-var stop
-var noMoreWait= function( ){
-if( passed() !== 'wait' ) return
-passed( false )
-print( 'Timeout!' )
-stop= null
-throw new Error( 'Timeout!' )
-}
-_test.deadline=
-$jam.FF
-(   null
-,   function( ms ){
-if( stop ) throw new Error( 'Deadline redeclaration' )
-stop= $jam.EY( ms, noMoreWait )
-}
-)
-var passed=
-$jam.FF
-(   function( ){
-return nodeRoot.state( 'passed' )
-}
-,   function( val ){
-nodeRoot.state( 'passed', val )
-}
-)
-var print=
-function( val ){
-var node= $jam.FM.Element( 'wc:DO' )
-node.text( val )
-nodeRoot.tail( node )
-}
-var printValue=
-function( val ){
-if( typeof val === 'function' ){
-if( !val.hasOwnProperty( 'toString' ) ){
-print( 'Function: [object Function]' )
-return
-}
-}
-print( $jam.FJ( val ) + ': ' + val )
-}
-var run=
-function( ){
-var results= nodeRoot.childList( 'wc:DO' )
-for( var i= 0; i < results.length(); ++i ){
-results.get(i).parent( null )
-}
-passed( 'wait' )
-stop= null
-if( !exec() ) passed( false )
-if(( !stop )&&( passed() === 'wait' )) passed( false )
-}
-var clone=
-function( ){
-run()
-var node=
-$jam.FM.Element( 'wc:B' )
-.text( nodeSource.text() )
-nodeRoot.prev( node )
-}
-var del=
-function( ){
-nodeRoot.parent( null )
-}
-run()
-var onCommit=
-nodeRoot.listen( '$jam.GQ', run )
-var onClone=
-nodeRoot.listen( '$jam.GP', clone )
-var onClone=
-nodeRoot.listen( '$jam.GR', del )
-var onCloneClick=
-nodeClone.listen( 'click', function( event ){
-$jam.FP().type( '$jam.GP' ).scream( event.target() )
-})
-var onDeleteClick=
-nodeDelete.listen( 'click', function( event ){
-$jam.FP().type( '$jam.GR' ).scream( event.target() )
-})
-this.destroy=
-function( ){
-onCommit.sleep()
-onClone.sleep()
-onCloneClick.sleep()
-onDeleteClick.sleep()
-if( stop ) stop()
-_test.ok= _test.not= $jam.EU()
-}
-}
-}
-)
-;$jam.FD
-(   'wc:DQ'
+
+;// wc/net-bridge/wc_net-bridge.jam.js
+$jam.Component
+(   'wc:net-bridge'
 ,   function( nodeRoot ){
-nodeRoot= $jam.FM( nodeRoot )
-nodeRoot.listen
-(   '$jam.GS'
-,   function( ){
-var text= $jam.FI( nodeRoot.html() )
-nodeRoot.state( 'modified', text !== textLast )
-}
+        nodeRoot= $jam.Node( nodeRoot )
+        nodeRoot.listen
+        (   '$jam.eventEdit'
+        ,   function( ){
+                var text= $jam.html2text( nodeRoot.html() )
+                nodeRoot.state( 'modified', text !== textLast )
+            }
+        )
+        
+        nodeRoot.listen
+        (   '$jam.eventEdit'
+        ,   $jam.Throttler
+            (   5000
+            ,   save
+            )
+        )
+        
+        nodeRoot.listen
+        (   '$jam.eventCommit'
+        ,   save
+        )
+        
+        var textLast= $jam.html2text( nodeRoot.html() )
+        function save( ){
+            var text= $jam.html2text( nodeRoot.html() )
+            if( text === textLast ) return
+            
+            var xhr= new XMLHttpRequest
+            xhr.open( text ? 'PUT' : 'DELETE', nodeRoot.attr( 'wc:net-bridge_resource' ) )
+            xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' )
+            xhr.send( nodeRoot.attr( 'wc:net-bridge_field' ) + '=' + encodeURIComponent( text ) )
+            textLast= text
+            nodeRoot.state( 'modified', false )
+        }
+        
+        return new function( ){
+        }
+    }
 )
-nodeRoot.listen
-(   '$jam.GS'
-,   $jam.GK
-(   5000
-,   save
-)
-)
-nodeRoot.listen
-(   '$jam.GQ'
-,   save
-)
-var textLast= $jam.FI( nodeRoot.html() )
-function save( ){
-var text= $jam.FI( nodeRoot.html() )
-if( text === textLast ) return
-var xhr= new XMLHttpRequest
-xhr.open( text ? 'PUT' : 'DELETE', nodeRoot.attr( 'wc:ES' ) )
-xhr.setRequestHeader( 'Content-Type', 'application/x-www-form-urlencoded' )
-xhr.send( nodeRoot.attr( 'wc:ET' ) + '=' + encodeURIComponent( text ) )
-textLast= text
-nodeRoot.state( 'modified', false )
-}
-return new function( ){
-}
-}
-)
-;$jam.FA( 'https://github.com/nin-jin/wc' )
-;$jam.FD
-(   'wc:DU'
+
+;// wc/ns/wc-ns.jam.js
+$jam.htmlize( 'https://github.com/nin-jin/wc' )
+
+;// wc/preview/wc_preview.jam.js
+$jam.Component
+(   'wc:preview'
 ,   function( nodeRoot ){
-nodeRoot=
-$jam.FM( nodeRoot )
-var nodeLink=
-nodeRoot.childList( 'a' ).get( 0 )
-var nodeFrame=
-nodeRoot.childList( 'iframe' ).get( 0 )
-if( !nodeFrame ) nodeFrame= $jam.FM.Element( 'iframe' ).parent( nodeRoot )
-nodeFrame.attr( 'src', nodeLink.attr( 'href' ) )
-var opened=
-$jam.FF
-(   function(){
-return nodeRoot.state( 'opened' ) != 'false'
-}
-,   function( val ){
-nodeRoot.state( 'opened', val )
-return opened
-}
+        nodeRoot=
+        $jam.Node( nodeRoot )
+        
+        var nodeLink=
+        nodeRoot.childList( 'a' ).get( 0 )
+        
+        var nodeFrame=
+        nodeRoot.childList( 'iframe' ).get( 0 )
+        
+        if( !nodeFrame ) nodeFrame= $jam.Node.Element( 'iframe' ).parent( nodeRoot )
+        
+        nodeFrame.attr( 'src', nodeLink.attr( 'href' ) )
+        
+        var opened=
+        $jam.Poly
+        (   function(){
+                return nodeRoot.state( 'opened' ) != 'false'
+            }
+        ,   function( val ){
+                nodeRoot.state( 'opened', val )
+                return opened
+            }
+        )
+        
+        nodeLink.listen( 'click', function( event ){
+            if( event.button() !== 0 ) return
+            opened( !opened() )
+            event.defaultBehavior( false )
+        })
+        
+    }
 )
-nodeLink.listen( 'click', function( event ){
-if( event.button() !== 0 ) return
-opened( !opened() )
-event.defaultBehavior( false )
-})
-}
-)
-;$jam.FA( 'https://github.com/nin-jin/doc' )
+
+;// doc/doc/doc.jam.js
+$jam.htmlize( 'https://github.com/nin-jin/doc' )
+

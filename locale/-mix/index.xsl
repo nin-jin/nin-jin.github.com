@@ -1,1 +1,19 @@
-<xsl:stylesheet xmlns="http://www.w3.org/1999/xhtml" xmlns:locale="https://github.com/nin-jin/locale" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"><xsl:output method="html"></xsl:output><xsl:template match=" @* | node() "><xsl:copy><xsl:apply-templates select=" @* "></xsl:apply-templates><xsl:apply-templates select=" node() "></xsl:apply-templates></xsl:copy></xsl:template><xsl:template match=" processing-instruction() "></xsl:template><xsl:param name="locale:lang" select=" / * / @xml:lang "></xsl:param><xsl:param name="locale:path" select=" concat( '../-mix/index.locale=', $locale:lang, '.xml' ) "></xsl:param></xsl:stylesheet>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/1999/xhtml" version="1.0" xmlns:locale="https://github.com/nin-jin/locale"><!-- so/XStyle/so_XStyle_Base.xsl -->
+
+    <xsl:output method="html"/>
+    
+    <xsl:template match=" @* | node() ">
+        <xsl:copy>
+            <xsl:apply-templates select=" @* "/>
+            <xsl:apply-templates select=" node() "/>
+        </xsl:copy>
+    </xsl:template>
+
+    <xsl:template match=" processing-instruction() "/>
+
+<!-- locale/locale/locale.xsl -->
+
+    <xsl:param name="locale:lang" select=" / * / @xml:lang "/>
+    <xsl:param name="locale:path" select=" concat( '../-mix/index.locale=', $locale:lang, '.xml' ) "/>
+
+</xsl:stylesheet>
