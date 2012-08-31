@@ -5,9 +5,9 @@
     xmlns:doc="https://github.com/nin-jin/doc"
     >
 
-    <h1>$html2text</h1>
+    <h1>$jam.html2text</h1>
     <wc:js-test>
-        _test.ok( $jam$.$html2text( '&lt;a&gt;a&lt;br&gt;b\nc' ), 'a\nb\nc' )
+        _test.ok( $jam.html2text( '&lt;a&gt;a&lt;br&gt;b\nc' ), 'a\nb\nc' )
     </wc:js-test>
 
 </doc:root>

@@ -11,10 +11,10 @@
 
     <wc:demo>
     <![CDATA[
-        <wc:sidebar class=" align=left ">
+        <wc:sidebar wc:sidebar_align="left">
             Левая панель
         </wc:sidebar>
-        <wc:sidebar class=" align=right ">
+        <wc:sidebar wc:sidebar_align="right">
             Правая панель
         </wc:sidebar>
         <wc:paper>

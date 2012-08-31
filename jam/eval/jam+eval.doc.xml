@@ -5,14 +5,14 @@
     xmlns:doc="https://github.com/nin-jin/doc"
     >
 
-    <h1>$eval</h1>
+    <h1>$jam.eval</h1>
 
     <p>Исполняет переданный в качестве строки код в глобальном контексте в отдельном синхронном потоке.</p>
 
     <p>
-        <wc:js-test> _test.ok( $jam$.$eval ) </wc:js-test>
-        <wc:js-test> _test.ok( $jam$.$eval( '1+2' ), 3 ) </wc:js-test>
-        <wc:js-test> _test.ok( $jam$.$eval( '(!)' ), void 0 ) </wc:js-test>
+        <wc:js-test> _test.ok( $jam.eval ) </wc:js-test>
+        <wc:js-test> _test.ok( $jam.eval( '1+2' ), 3 ) </wc:js-test>
+        <wc:js-test> _test.ok( $jam.eval( '(!)' ), void 0 ) </wc:js-test>
     </p>
 
 </doc:root>

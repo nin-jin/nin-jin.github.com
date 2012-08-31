@@ -8,6 +8,6 @@
     <h1>wc</h1>
     <p>Набор виджетов, из которых как из конструктора можно собирать страницы.</p>
 
-    <wc:js-test> _test.ok( $wc$ ) </wc:js-test>
+    <wc:js-test> _test.ok( $wc ) </wc:js-test>
 
 </doc:root>

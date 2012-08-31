@@ -5,7 +5,7 @@
     xmlns:doc="https://github.com/nin-jin/doc"
     >
 
-    <h1>$eventURIChanged</h1>
+    <h1>$jam.eventURIChanged</h1>
 
     <p>Событие, которое возникает на документе, когда меняется его адресс.</p>
 

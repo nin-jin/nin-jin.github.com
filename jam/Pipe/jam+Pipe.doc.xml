@@ -5,14 +5,14 @@
     xmlns:doc="https://github.com/nin-jin/doc"
     >
 
-    <h1>$Pipe</h1>
+    <h1>$jam.Pipe</h1>
     <p>Выстраивает переданные ей функции в один трубопровод, где результат исполнения предыдущей подаётся на вход следующей.</p>
 
-    <wc:js-test> _test.ok( $jam$.$Pipe ) </wc:js-test>
-    <wc:js-test> _test.ok( $jam$.$Pipe() ) </wc:js-test>
-    <wc:js-test> _test.ok( $jam$.$Pipe()( 123 ), 123 ) </wc:js-test>
-    <wc:js-test> _test.ok( $jam$.$Pipe( Math.abs ), Math.abs ) </wc:js-test>
-    <wc:js-test> _test.ok( $jam$.$Pipe( Math.abs )( -5 ), 5 ) </wc:js-test>
-    <wc:js-test> _test.ok( $jam$.$Pipe( parseInt, Math.abs )( '-5px' ), 5 ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.Pipe ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.Pipe() ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.Pipe()( 123 ), 123 ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.Pipe( Math.abs ), Math.abs ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.Pipe( Math.abs )( -5 ), 5 ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.Pipe( parseInt, Math.abs )( '-5px' ), 5 ) </wc:js-test>
     
 </doc:root>

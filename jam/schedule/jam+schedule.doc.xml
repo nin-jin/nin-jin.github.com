@@ -5,14 +5,14 @@
     xmlns:doc="https://github.com/nin-jin/doc"
     >
     
-    <h1>$schedule</h1>
+    <h1>$jam.schedule</h1>
 
     <p>Устанавливает выполнение функции через заданное время. Возвращает функцию, которая отменяет это действие.</p>
 
-    <wc:js-test> _test.ok( $jam$.$schedule ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.schedule ) </wc:js-test>
     <wc:js-test>
         _test.deadline( 50 )
-        $jam$.$schedule( 10, function( ){
+        $jam.schedule( 10, function( ){
             _test.ok( )
         })
     </wc:js-test>

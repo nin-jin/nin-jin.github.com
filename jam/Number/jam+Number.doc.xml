@@ -5,23 +5,23 @@
     xmlns:doc="https://github.com/nin-jin/doc"
     >
 
-    <h1>$Number</h1>
+    <h1>$jam.Number</h1>
     <p>Создаёт обёртку для чисел.</p>
 
-    <wc:js-test> _test.ok( $jam$.$Number ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.Number ) </wc:js-test>
     <wc:js-test>
-        _test.ok( $jam$.$Number( 123 ) )
+        _test.ok( $jam.Number( 123 ) )
     </wc:js-test>
     <wc:js-test>
-        var numb= $jam$.$Number( 123 )
-        _test.ok( $jam$.$Number( numb ), numb )
+        var numb= $jam.Number( 123 )
+        _test.ok( $jam.Number( numb ), numb )
     </wc:js-test>
     <wc:js-test>
-        var numb= $jam$.$Number( 123 )
+        var numb= $jam.Number( 123 )
         _test.ok( numb.$, 123 )
     </wc:js-test>
     <wc:js-test>
-        var numb= $jam$.$Number( 123 )
+        var numb= $jam.Number( 123 )
         _test.ok( +numb, 123 )
     </wc:js-test>
 

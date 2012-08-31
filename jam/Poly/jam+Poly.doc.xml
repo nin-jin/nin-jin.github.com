@@ -5,15 +5,15 @@
     xmlns:doc="https://github.com/nin-jin/doc"
     >
     
-    <h1>$Poly</h1>
+    <h1>$jam.Poly</h1>
 
     <p>Создаёт полиморфную функцию из переданных в параметрах функций. Первая будет вызвана если параметров не передано, вторая, если передан 1 и так далее. Если будет передано неправильное число параметров, то выпадет исключение.</p>
 
-    <wc:js-test> _test.ok( $jam$.$Poly ) </wc:js-test>
-    <wc:js-test> _test.ok( $jam$.$Poly() ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.Poly ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.Poly() ) </wc:js-test>
     <wc:js-test>
         var poly=
-        $jam$.$Poly
+        $jam.Poly
         (   function(){
                 return 123
             }
@@ -23,7 +23,7 @@
     </wc:js-test>
     <wc:js-test>
         var poly=
-        $jam$.$Poly
+        $jam.Poly
         (   function(){
                 return 123
             }
@@ -33,7 +33,7 @@
     </wc:js-test>
     <wc:js-test>
         var poly=
-        $jam$.$Poly
+        $jam.Poly
         (   null
         ,   Math.abs
         ,   Math.pow
@@ -42,7 +42,7 @@
     </wc:js-test>
     <wc:js-test>
         var poly=
-        $jam$.$Poly
+        $jam.Poly
         (   null
         ,   Math.abs
         ,   Math.pow

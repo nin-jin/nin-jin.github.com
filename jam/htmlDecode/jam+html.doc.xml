@@ -5,10 +5,10 @@
     xmlns:doc="https://github.com/nin-jin/doc"
     >
 
-    <h1>$htmlDecode</h1>
+    <h1>$jam.htmlDecode</h1>
 
     <wc:js-test>
-        _test.ok( $jam$.$htmlDecode( '&amp;gt;' ), '&gt;' )
+        _test.ok( $jam.htmlDecode( '&amp;gt;' ), '&gt;' )
     </wc:js-test>
 
 </doc:root>

@@ -5,21 +5,10 @@
     xmlns:doc="https://github.com/nin-jin/doc"
     >
 
-    <h1>$support</h1>
+    <h1>$jam.support</h1>
     <p>Позволяет определить какие фичи поддерживает среда исполнения.</p>
 
-    <wc:js-test> _test.ok( $jam$.$support ) </wc:js-test>
-    <wc:js-test>
-        _test.ok( $jam$.$support.htmlModel() )
-    </wc:js-test>
-    <wc:js-test>
-        _test.ok( $jam$.$support.eventModel() )
-    </wc:js-test>
-    <wc:js-test>
-        _test.ok( $jam$.$support.selectionModel() )
-    </wc:js-test>
-    <wc:js-test>
-        _test.ok( String( $jam$.$support.vml() ) )
-    </wc:js-test>
+    <wc:js-test> _test.ok( $jam.support ) </wc:js-test>
+    
 
 </doc:root>

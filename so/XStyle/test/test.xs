@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xstyle>
     <?include ./test-inc.xs ?>
     <?match- MATCH/XPATH \ MODE_NAME ?>

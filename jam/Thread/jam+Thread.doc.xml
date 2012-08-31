@@ -5,24 +5,24 @@
     xmlns:doc="https://github.com/nin-jin/doc"
     >
 
-    <h1>$Thread</h1>
+    <h1>$jam.Thread</h1>
     <p>Создаёт обёртку вокруг функции, которая выполняет её в отдельном, но синхронном потоке.</p>
 
-    <wc:js-test> _test.ok( $jam$.$Thread ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.Thread ) </wc:js-test>
     <wc:js-test>
-        var thread= $jam$.$Thread(function(){
+        var thread= $jam.Thread(function(){
             return 123
         })
         _test.ok( thread(), 123 )
     </wc:js-test>
     <wc:js-test>
-        var thread= $jam$.$Thread(function(){
+        var thread= $jam.Thread(function(){
             throw new Error( 'sample error' )
         })
         _test.ok( thread(), void 0 )
     </wc:js-test>
     <wc:js-test>
-        var fact= $jam$.$Thread(function( n ){
+        var fact= $jam.Thread(function( n ){
             if (!( n > 1 )) return 1;
             return n * fact( n - 1 );
         });

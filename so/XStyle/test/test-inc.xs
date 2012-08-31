@@ -6,6 +6,7 @@
     <?attr-set- NAME \ ATTRIBUTE SETS ?>
         <?attr ATTR/NAME \ VALUE/XPATH ?>
         <?attr- ATTR/NAME ?>
+            ATTR/VALUE
         <?attr. ?>
     <?attr-set.?>
 </xstyle>

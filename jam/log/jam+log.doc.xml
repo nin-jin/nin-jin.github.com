@@ -5,16 +5,16 @@
     xmlns:doc="https://github.com/nin-jin/doc"
     >
 
-    <h1>$log</h1>
+    <h1>$jam.log</h1>
     <p>Логгирует переданные значения в консоль</p>
 
-    <wc:js-test> _test.ok( $jam$.$log ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.log ) </wc:js-test>
     <wc:js-test>
-        $jam$.$log( 'sample log' )
+        $jam.log( 'sample log' )
         _test.ok()
     </wc:js-test>
     <wc:js-test>
-        $jam$.$log( 'two', 'sample logs' )
+        $jam.log( 'two', 'sample logs' )
         _test.ok()
     </wc:js-test>
 

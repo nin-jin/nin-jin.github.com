@@ -5,15 +5,15 @@
     xmlns:doc="https://github.com/nin-jin/doc"
     >
 
-    <h1>$domReady</h1>
+    <h1>$jam.domReady</h1>
 
     <p>Определяет скачан ли документ полностью или ещё нет. Метод then позволяет выполнить переданную ему функцию только когда документ будет полностью загружен (если он уже загружен - она будет вызвана немедленно).</p>
 
     <p>
         <wc:js-test>
             _test.deadline( 1000 )
-            $jam$.$domReady.then( function(){
-                _test.ok( $jam$.$domReady() )
+            $jam.domReady.then( function(){
+                _test.ok( $jam.domReady() )
             })
         </wc:js-test>
     </p>

@@ -5,25 +5,25 @@
     xmlns:doc="https://github.com/nin-jin/doc"
     >
 
-    <h1>$Class</h1>
+    <h1>$jam.Class</h1>
 
     <p>Создаёт класс - функцию, создающую объекты. В качестве параметра принимает функцию-инициализатор, которой передаёт свежесозданный класс и его прототип. У каждого класса есть метод create являющийся фабрикой и вызываемый при инстанцировании класса. Сам класс следовательно тоже является фабрикой. Инстанцирование его через new - создаёт неинициализированный инстанс, что используется для реализации наследования без проксирующих классов.</p>
 
-    <wc:js-test> _test.ok( $jam$.$Class ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.Class ) </wc:js-test>
     <wc:js-test>
         var ClassInner
-        var Class= $jam$.$Class(function( klass ){
+        var Class= $jam.Class(function( klass ){
             ClassInner= klass
         })
         _test.ok( Class, ClassInner )
     </wc:js-test>
     <wc:js-test>
-        var Class= $jam$.$Class(function( klass ){ })
+        var Class= $jam.Class(function( klass ){ })
         _test.ok( Class() instanceof Class )
     </wc:js-test>
     <wc:js-test>
         var obj= {}
-        var Class= $jam$.$Class(function( klass ){
+        var Class= $jam.Class(function( klass ){
             klass.create= function(){
                 return obj
             }
@@ -32,7 +32,7 @@
     </wc:js-test>
     <wc:js-test>
         var obj1= {}
-        var Class= $jam$.$Class(function( klass ){
+        var Class= $jam.Class(function( klass ){
             klass.create= function(){
                 return obj1
             }
@@ -41,7 +41,7 @@
         _test.ok( obj2 instanceof Class )
     </wc:js-test>
     <wc:js-test>
-        var Class= $jam$.$Class(function( klass ){
+        var Class= $jam.Class(function( klass ){
             klass.prototype.method= function(){
                 return obj1
             }

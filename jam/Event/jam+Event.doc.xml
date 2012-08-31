@@ -5,86 +5,78 @@
     xmlns:doc="https://github.com/nin-jin/doc"
     >
 
-    <h1>$Event</h1>
+    <h1>$jam.Event</h1>
 
     <p>Обёртка для объектов-событий предоставляющая кроссбраузерный апи к ним. При вызове без параметров создаёт новый объект события, который можно настроить через специальные методы.</p>
 
     <wc:js-test>
-        with( $jam$ ){
-            var node1= $Node( $jam$.$doc() )
-            var node2= $Node( $jam$.$doc().body )
-    
-            var obs=
-            $Observer()
-            .node( node1 )
-            .eventName( 'click' )
-            .handler( function( event ){
-                _test.ok( event.type(), 'click' )
-            })
-            .listen()
-            
-            $Event().type( 'click' ).scream( node2 )
-            obs.sleep()
-        }
+        var node1= $jam.Node( $jam.doc() )
+        var node2= $jam.Node( $jam.doc().body )
+
+        var obs=
+        $jam.Observer()
+        .node( node1 )
+        .eventName( 'click' )
+        .handler( function( event ){
+            _test.ok( event.type(), 'click' )
+        })
+        .listen()
+        
+        $jam.Event().type( 'click' ).scream( node2 )
+        obs.sleep()
     </wc:js-test>
     <wc:js-test>
-        with( $jam$ ){
-            var node= $Node( $jam$.$doc().body )
-            var catched= false
-    
-            var obs=
-            $Observer()
-            .node( node )
-            .eventName( 'click' )
-            .handler( function( ev ){
-                catched= true
-            })
-            .listen()
-    
-            var event= $Event().type( 'click' )
-            obs.sleep()
-            event.scream( node )
-            _test.ok( catched, false )
-        }
+        var node= $jam.Node( $jam.doc().body )
+        var catched= false
+
+        var obs=
+        $jam.Observer()
+        .node( node )
+        .eventName( 'click' )
+        .handler( function( ev ){
+            catched= true
+        })
+        .listen()
+
+        var event= $jam.Event().type( 'click' )
+        obs.sleep()
+        event.scream( node )
+        _test.ok( catched, false )
     </wc:js-test>
 
     <wc:js-test>
-        with( $jam$ ){
-            var node1= $Node( $jam$.$doc() )
-            var node2= $Node( $jam$.$doc().body )
-    
-            var obs=
-            $Observer()
-            .node( node1 )
-            .eventName( '$jam$.$Event._test_' )
-            .handler( function( event ){
-                _test.ok( event.type(), '$jam$.$Event._test_' )
-            })
-            .listen()
-            
-            $Event().type( '$jam$.$Event._test_' ).scream( node2 )
-            obs.sleep()
-        }
+        var node1= $jam.Node( $jam.doc() )
+        var node2= $jam.Node( $jam.doc().body )
+
+        var obs=
+        $jam.Observer()
+        .node( node1 )
+        .eventName( '$jam.Event._test_' )
+        .handler( function( event ){
+            _test.ok( event.type(), '$jam.Event._test_' )
+        })
+        .listen()
+        
+        $jam.Event().type( '$jam.Event._test_' ).scream( node2 )
+        obs.sleep()
     </wc:js-test>
     <wc:js-test>
-        with( $jam$ ){
-            var node= $Node( $jam$.$doc().body )
-            var catched= false
-    
-            var obs=
-            $Observer()
-            .node( node )
-            .eventName( '$jam$.$Event._test_' )
-            .handler( function( ev ){
-                catched= true
-            })
-            .listen()
-    
-            var event= $Event().type( '$jam$.$Event._test_' )
-            obs.sleep()
-            event.scream( node )
-            _test.ok( catched, false )
-        }
+        var node= $jam.Node( $jam.doc().body )
+        var catched= false
+
+        var obs=
+        $jam.Observer()
+        .node( node )
+        .eventName( '$jam.Event._test_' )
+        .handler( function( ev ){
+            catched= true
+        })
+        .listen()
+
+        var event= $jam.Event().type( '$jam.Event._test_' )
+        obs.sleep()
+        event.scream( node )
+        _test.ok( catched, false )
     </wc:js-test>
 
 </doc:root>

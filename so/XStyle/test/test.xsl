@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
     
 <!--from ./test-inc.xs-->
@@ -8,6 +8,7 @@
     <?attr-set- NAME \ ATTRIBUTE SETS ?>
         <?attr ATTR/NAME \ VALUE/XPATH ?>
         <xsl:attribute name="ATTR/NAME">
+            ATTR/VALUE
         </xsl:attribute>
     <?attr-set.?>
 <!--/from ./test-inc.xs-->

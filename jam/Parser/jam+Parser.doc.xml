@@ -5,15 +5,15 @@
     xmlns:doc="https://github.com/nin-jin/doc"
     >
 
-    <h1>$Parser</h1>
+    <h1>$jam.Parser</h1>
 
     <p>Создаёт функцию-парсер. На вход принимает карту соответствия лексем фабрикам. В качестве параметров фабрикам передаются захваченные круглыми скобками подстроки. "" - дефолтная лексема, которая матчится на всё, на что не сматчились остальные. Парсер принимает на вход строку и возвращает массив полученных от фабрик значений.</p>
 
-    <wc:js-test> _test.ok( $jam$.$Parser ) </wc:js-test>
-    <wc:js-test> _test.ok( $jam$.$Parser({ }) ) </wc:js-test>
-    <wc:js-test> _test.ok( $jam$.$Parser({ })( '123' ) ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.Parser ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.Parser({ }) ) </wc:js-test>
+    <wc:js-test> _test.ok( $jam.Parser({ })( '123' ) ) </wc:js-test>
     <wc:js-test>
-        var parse= $jam$.$Parser( new function(){
+        var parse= $jam.Parser( new function(){
             this[ /\d/.source ]=
             function( ){
                 return '#'
@@ -22,17 +22,17 @@
         _test.ok( parse( 'a12bc' ).join(''), 'a##bc' )
     </wc:js-test>
     <wc:js-test>
-        var parse= $jam$.$Parser( new function(){
+        var parse= $jam.Parser( new function(){
             this[ /([a-zA-Z])/.source ]=
             function( letter ){
                 return letter
             }
-            this[ '' ]= $jam$.$Value( '' )
+            this[ '' ]= $jam.Value( '' )
         })
         _test.ok( parse( 'a12bc' ).join(''), 'abc' )
     </wc:js-test> 
     <wc:js-test>
-        var parse= $jam$.$Parser( new function(){
+        var parse= $jam.Parser( new function(){
             this[ /(_(\w+))/.source ]=
             function( underword, word ){
                 return word

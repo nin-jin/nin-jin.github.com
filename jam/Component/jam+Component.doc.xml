@@ -5,24 +5,23 @@
     xmlns:doc="https://github.com/nin-jin/doc"
     >
 
-    <h1>$Component</h1>
+    <h1>$jam.Component</h1>
     <p>Создаёт компоненту, которая инстанцирует виджеты при появлении в доме элементов с определённым именем, а при удалении элементов - разрушает виджеты. Принимает на вход два параметра - имя тэга (может быть звёздочка) и фабрику виджетов (ей будет передан элемент). </p>
     
     <wc:js-test>
         _test.deadline( 500 )
-        with( $jam$ )
-        $Component
+        $jam.Component
         (   'wc:component-test'
         ,   function( nodeRoot ){
-                _test.ok( $Node( nodeRoot ).text() )
+                _test.ok( $jam.Node( nodeRoot ).text() )
             }
         )
     </wc:js-test>
     
     <wc:js-test>
         _test.deadline( 500 )
-        with( $jam$ )
-        var comp= $Component
+        with( $jam )
+        var comp= $jam.Component
         (   'wc:component-test'
         ,   function( nodeRoot ){
             }

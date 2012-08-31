@@ -2,10 +2,10 @@
 
 header( 'content-type:text/xml' );
 
-require_once( '../xstyle.php' );
+require_once( '../../../so/autoload/so_autoload.php' );
 
-$xstyle= new XStyle;
-$xstyle->xsPath= 'test.xs';
-$xsl= $xstyle->compile()->xsl;
+$xstyle= new so_XStyle;
+$xstyle->pathXS= __DIR__ . '/test.xs';
+$xsl= $xstyle->sync()->docXSL;
 
-echo $xsl->saveXML();
+echo $xsl;

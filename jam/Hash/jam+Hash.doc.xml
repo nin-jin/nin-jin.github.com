@@ -5,31 +5,31 @@
     xmlns:doc="https://github.com/nin-jin/doc"
     >
 
-    <h1>$Hash</h1>
+    <h1>$jam.Hash</h1>
 
     <p>Создаёт хэш-таблицу. Если в параметрах передать объект и префикс - будет использовать его для хранения данных.</p>
 
     <p>
-        <wc:js-test> _test.ok( $jam$.$Hash ) </wc:js-test>
-        <wc:js-test> _test.not( $jam$.$Hash().has( 'foo' ) ) </wc:js-test>
-        <wc:js-test> _test.not( $jam$.$Hash().has( 'hasOwnProperty' ) ) </wc:js-test>
+        <wc:js-test> _test.ok( $jam.Hash ) </wc:js-test>
+        <wc:js-test> _test.not( $jam.Hash().has( 'foo' ) ) </wc:js-test>
+        <wc:js-test> _test.not( $jam.Hash().has( 'hasOwnProperty' ) ) </wc:js-test>
         <wc:js-test>
-            var hash= $jam$.$Hash()
+            var hash= $jam.Hash()
             hash.put( 'foo', 'bar' )
             _test.ok( hash.has( 'foo' ) )
         </wc:js-test>
         <wc:js-test>
-            var hash= $jam$.$Hash()
+            var hash= $jam.Hash()
             hash.put( 'foo', 'bar' )
             _test.ok( hash.get( 'foo' ), 'bar' )
         </wc:js-test>
         <wc:js-test>
-            var hash= $jam$.$Hash({ prefix: 'foo:', obj: { 'foo:bar': 123 } })
+            var hash= $jam.Hash({ prefix: 'foo:', obj: { 'foo:bar': 123 } })
             _test.ok( hash.has( 'bar' ) )
         </wc:js-test>
         <wc:js-test>
-            var hash= $jam$.$Hash({ prefix: '', obj: $jam$ })
-            _test.ok( hash.has( '$Hash' ) )
+            var hash= $jam.Hash({ prefix: '', obj: $jam })
+            _test.ok( hash.has( 'Hash' ) )
         </wc:js-test>
     </p>
 

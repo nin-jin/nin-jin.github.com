@@ -5,7 +5,7 @@
     xmlns:doc="https://github.com/nin-jin/doc"
     >
 
-    <h1>$eventDelete</h1>
+    <h1>$jam.eventDelete</h1>
 
     <p>Событие, которое возникает, когда пользователь хочет удалить какой-то объект.</p>
 

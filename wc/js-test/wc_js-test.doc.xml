@@ -25,7 +25,7 @@
             <wc:js-test> _test.ok( this, window ) </wc:js-test>
             <wc:js-test>
                 _test.deadline( 100 )
-                $jam$.$schedule
+                $jam.schedule
                 (   50
                 ,   function(){
                         _test.ok( true )
@@ -62,19 +62,19 @@
             </wc:js-test>
             <wc:js-test>
                 _test.deadline( 100 )
-                $jam$.$schedule( 50, function(){
+                $jam.schedule( 50, function(){
                     _test.ok( false )
                 })
             </wc:js-test>
             <wc:js-test>
                 _test.deadline( 50 )
-                $jam$.$schedule( 100, function(){
+                $jam.schedule( 100, function(){
                     _test.ok( true )
                 })
             </wc:js-test>
             <wc:js-test>
                 _test.deadline( 100 )
-                $jam$.$schedule( 50, function(){
+                $jam.schedule( 50, function(){
                     throw 321
                 })
             </wc:js-test>

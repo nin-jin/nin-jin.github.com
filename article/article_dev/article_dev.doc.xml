@@ -73,7 +73,7 @@
     ]]>
     </wc:demo>
     
-    <p>Как видите, переданное значение выводится рядом с указанием его типа, определяемого с помощью <a href="../../jam/classOf/jam+classOf.doc.xml">$jam$.$classOf</a>.</p>
+    <p>Как видите, переданное значение выводится рядом с указанием его типа, определяемого с помощью <a href="../../jam/classOf/jam+classOf.doc.xml">$jam.classOf</a>.</p>
     
     <p>Если же функциям передавать 2 параметра, то <code>ok</code> будет сравнивать их на равенство, а <code>not</code> - на неравенство, при этом оба переданных параметра будут выведены следом (кроме случая, где ожидается совпадение и оно действительно происходит):</p>
 
@@ -107,14 +107,14 @@
             </wc:js-test>
             <wc:js-test>
                 _test.deadline( 100 )
-                $jam$.$schedule( 50, _test.ok )
+                $jam.schedule( 50, _test.ok )
             </wc:js-test>
             <wc:js-test>
                 _test.deadline( 50 )
-                $jam$.$schedule( 100, _test.ok )
+                $jam.schedule( 100, _test.ok )
             </wc:js-test>
             <wc:js-test>
-                $jam$.$schedule( 50, _test.ok )
+                $jam.schedule( 50, _test.ok )
             </wc:js-test>
         </wc:spacer>
     ]]>

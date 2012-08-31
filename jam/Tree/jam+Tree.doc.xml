@@ -5,51 +5,51 @@
     xmlns:doc="https://github.com/nin-jin/doc"
     >
 
-    <h1>$Tree</h1>
+    <h1>$jam.Tree</h1>
 
     <wc:js-test>
-        with( $jam$ ){
-            var parse= $Tree.Parser()
+        with( $jam ){
+            var parse= $jam.Tree.Parser()
             var tr= parse( 'a=1' )
             _test.ok( tr.$[0].name, 'a' )
         }
     </wc:js-test>
 
     <wc:js-test>
-        with( $jam$ ){
-            var parse= $Tree.Parser()
+        with( $jam ){
+            var parse= $jam.Tree.Parser()
             var tr= parse( 'a=1' )
             _test.ok( tr.$[0].content[0], '1' )
         }
     </wc:js-test>
 
     <wc:js-test>
-        with( $jam$ ){
-            var parse= $Tree.Parser()
+        with( $jam ){
+            var parse= $jam.Tree.Parser()
             var tr= parse( 'a_b=1' )
             _test.ok( tr.$[0].content[0].name, 'b' )
         }
     </wc:js-test>
 
     <wc:js-test>
-        with( $jam$ ){
-            var parse= $Tree.Parser()
+        with( $jam ){
+            var parse= $jam.Tree.Parser()
             var tr= parse( 'a_b=1' )
             _test.ok( tr.$[0].content[0].content[0], '1' )
         }
     </wc:js-test>
 
     <wc:js-test>
-        with( $jam$ ){
-            var parse= $Tree.Parser()
+        with( $jam ){
+            var parse= $jam.Tree.Parser()
             var tr= parse( 'a_;+b=1' )
             _test.ok( tr.$[0].content[0].content[0], '1' )
         }
     </wc:js-test>
 
     <wc:js-test>
-        with( $jam$ ){
-            var parse= $Tree.Parser()
+        with( $jam ){
+            var parse= $jam.Tree.Parser()
             var tr= parse( 'a_;b_;+c=1' )
 $log(JSON.stringify(tr.$))
             _test.ok( tr.$[0].content[0].content[1], '1' )
