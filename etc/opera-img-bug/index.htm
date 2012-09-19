@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Opera bug: images are loaded from xml loaded by XMLHttpRequest</title>
+        <style>
+            body {
+                white-space: pre;
+                font: 14px/1 monospace;
+            }
+        </style>
+    </head>
+    <body>
+        <script type="text/javascript">
+            var channel= new XMLHttpRequest();
+            channel.open( "GET", 'index.xml', false );
+            channel.send( null );
+            document.body.textContent= [ 'index.htm:', document.documentElement.outerHTML, '', 'index.xml:',  channel.responseText ].join( '\n' );
+        </script>
+    </body>
+</html>

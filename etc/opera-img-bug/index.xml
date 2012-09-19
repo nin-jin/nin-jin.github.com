@@ -1,0 +1,26 @@
+<xml>
+    <img
+        xmlns="http://www.w3.org/1999/xhtml"
+        src="http://img.yandex.net/i/www/turkey/logo.png"
+    />
+    <img
+        xmlns="http://www.w3.org/1999/xhtml"
+        onerror="alert('1: alert from xml! yeahh!')"
+        src="//yandex.st/lego/_/X31pO5JJJKEifJ7sfvuf3mGeD_8.png"
+    />
+    <img
+        xmlns="http://www.w3.org/1999/xhtml"
+        onload="alert('2: alert from xml! yeahh!')"
+        src="http://img.yandex.net/i/www/logo-com-alpha.png"
+    />
+    <img
+        xmlns="http://www.w3.org/1999/xhtml"
+        alt=""
+        onerror="alert('3: xml alert! yeahh!')"
+        src="https://yandex.st/lego/_/w3fZdbIEslxR_9CQRR-ezRNUZ_Q.png1"
+    />
+    <img
+        onerror="alert('4: xml alert! yeahh!')"
+        src="https://yandex.st/lego/_/w3fZdbIEslxR_9CQRR-ezRNUZ_Q.png1"
+    />
+</xml>

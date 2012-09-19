@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>yate-vs-xslt</title>
+    <script>
+        var starts= {}
+        var ends= {}
+        function time( key ){
+            starts[ key ]= Date.now();
+        }
+        function timeEnd( key ){
+            ends[ key ]= Date.now();
+        }
+        (function() {
+            var timeouts = [];
+            var messageName = "zero-timeout-message";
+    
+            // Like setTimeout, but only takes a function argument.  There's
+            // no time argument (always zero) and no arguments (you have to
+            // use a closure).
+            function setZeroTimeout(fn) {
+                timeouts.push(fn);
+                window.postMessage(messageName, "*");
+            }
+    
+            function handleMessage(event) {
+                if (event.source == window && event.data == messageName) {
+                    event.stopPropagation();
+                    if (timeouts.length > 0) {
+                        var fn = timeouts.shift();
+                        fn();
+                    }
+                }
+            }
+    
+            window.addEventListener("message", handleMessage, true);
+    
+            // Add the one thing we want added to the window object.
+            window.setZeroTimeout = setZeroTimeout;
+        })();
+    </script>
+
+    <script>
+        time( 'yate - init' );
+    </script>
+    <script type="text/javascript" src="yate-runtime.js"></script>
+    <script type="text/javascript" src="template.js"></script>
+    <script>
+        timeEnd( 'yate - init' );
+        time( 'xslt - init' );
+    </script>
+    <script type="text/javascript" src="xslt-runtime.js"></script>
+    <script>
+        timeEnd( 'xslt - init' );
+    </script>
+    <style>
+        .stat {
+            border-collapse: collapse;
+            font: 12px/2 monospace;
+        }
+        .stat td {
+            border: 1px solid steelblue;
+            vertical-align: middle;
+            padding: .2em;
+            white-space: nowrap;
+        }
+        .stat-bar {
+            display: inline-block;
+            background: steelblue;
+            height: 2em;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+<div id="statistic"></div>
+<div id="result"></div>
+
+<script>
+    var resultNode= document.getElementById( 'result' )
+    
+    time( 'json - load' )
+        var json= JSON.parse( load( 'data.json' ).responseText )
+    timeEnd( 'json - load' )
+    
+    time( 'xml - load' )
+        var xml= load( 'data.xml' ).responseXML
+    timeEnd( 'xml - load' )
+    
+    // заполняем дом старыми данными и заодно прогреваем кэши
+    resultNode.innerHTML= yr.run( 'main', json )
+    var result= proc.transformToDocument( xml ).body.outerHTML
+    
+    time( 'json+yate - transform+parse' )
+        resultNode.innerHTML= yr.run( 'main', json )
+    timeEnd( 'json+yate - transform+parse' )
+    
+    time( 'xml+xslt - transform+append' )
+        resultNode.appendChild( proc.transformToFragment( xml, document ) )
+    timeEnd( 'xml+xslt - transform+append' )
+    
+    time( 'xml+xslt - transform+parse' )
+        resultNode.innerHTML= proc.transformToDocument( xml ).body.outerHTML
+    timeEnd( 'xml+xslt - transform+parse' )
+    
+    time( 'parse' );
+        resultNode.innerHTML= result;
+    timeEnd( 'parse' );
+    
+    time( 'render' );
+    setZeroTimeout(function(){
+        timeEnd( 'render' );
+        var ranges= {}
+        for( var key in ends ){
+            ranges[ key ]= ends[ key ] - starts[ key ];
+        }
+        var statistic= []
+        for( var key in ranges ){
+            var range= ends[ key ] - ( starts[ key ] || 0 );
+            statistic.push( '<tr><td>' + key + '</td><td>' + ranges[ key ] + 'ms</td><td><span class=" stat-bar " style=" width: ' + ranges[ key ] * 10 + 'px "></span></td></tr>' )
+        }
+        document.getElementById( 'statistic' ).innerHTML= '<table class="stat">' + statistic.join( '' ) + '</table>'
+    })
+    
+</script>
+
+</body>
+</html>
