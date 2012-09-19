@@ -131,7 +131,7 @@
 <xsl:template match="item" mode="toolbar">
     <a href="#compose" class="b-toolbar__item b-toolbar__item_{ @icon } daria-action" action="{ @action }">
         <xsl:if test="@url">
-            <xsl:attribute name="href" select="@url"/>
+            <xsl:attribute name="href"><xsl:value-of select="@url"/></xsl:attribute>
         </xsl:if>
         <img src="&static;/lego/blocks/b-ico/b-ico.gif" class="b-ico b-ico_{ @icon }"/>
         <span class="b-toolbar__item__label"><xsl:value-of select="@name"/></span>
@@ -449,7 +449,7 @@
             <xsl:if test="new"> b-messages__message_unread</xsl:if>
         </xsl:attribute>
         <xsl:if test="$is-thread">
-            <xsl:attribute name="count" select="count"/>
+            <xsl:attribute name="count"><xsl:value-of select="count"/></xsl:attribute>
             <a href="{ $href }" class="b-messages__thread-count daria-action" action="thread.toggle">
                 <img class="b-ico b-ico_closed" alt="" src="&static;/lego/blocks/b-ico/b-ico.gif"/>
             </a>
