@@ -120,6 +120,12 @@
             var range= ends[ key ] - ( starts[ key ] || 0 );
             statistic.push( '<tr><td>' + key + '</td><td>' + ranges[ key ] + 'ms</td><td><span class=" stat-bar " style=" width: ' + ranges[ key ] * 10 + 'px "></span></td></tr>' )
         }
+        statistic.push( '<tr><td>json size</td><td>54KB</td><td><span class=" stat-bar " style=" width: 540px "></span></td></tr>' )
+        statistic.push( '<tr><td>xml size</td><td>42KB</td><td><span class=" stat-bar " style=" width: 420px "></span></td></tr>' )
+        statistic.push( '<tr><td>yate runtime size</td><td>24KB</td><td><span class=" stat-bar " style=" width: 240px "></span></td></tr>' )
+        statistic.push( '<tr><td>xslt runtime size</td><td>1KB</td><td><span class=" stat-bar " style=" width: 10px "></span></td></tr>' )
+        statistic.push( '<tr><td>yate template size</td><td>42KB</td><td><span class=" stat-bar " style=" width: 420px "></span></td></tr>' )
+        statistic.push( '<tr><td>xslt template size</td><td>25KB</td><td><span class=" stat-bar " style=" width: 250px "></span></td></tr>' )
         document.getElementById( 'statistic' ).innerHTML= '<table class="stat">' + statistic.join( '' ) + '</table>'
     })
     
