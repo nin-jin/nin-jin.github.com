@@ -97,6 +97,7 @@
     timeEnd( 'json+yate - transform+parse' )
     
     time( 'xml+xslt - transform+append' )
+        resultNode.textContent= ''
         resultNode.appendChild( proc.transformToFragment( xml, document ) )
     timeEnd( 'xml+xslt - transform+append' )
     
