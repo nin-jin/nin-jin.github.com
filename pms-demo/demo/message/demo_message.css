@@ -1,0 +1,11 @@
+#demo_message {
+    white-space: pre-wrap;
+    text-align: left;
+    padding: 1em;
+    border: 1px solid white;
+    display: inline-block;
+    background: black;
+    color: #0a0;
+    font: 16px/1.5 monospace;
+    box-shadow: 2px 2px 4px rgba( 0, 0, 0, .5 );
+}

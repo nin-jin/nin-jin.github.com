@@ -1,0 +1,9 @@
+{
+    "jq/jq": [
+        "jq/jq",
+        "demo/init"
+    ],
+    "demo/init": [
+        "demo/init"
+    ]
+}
