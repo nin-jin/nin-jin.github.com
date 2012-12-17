@@ -1,0 +1,47 @@
+<?xml-stylesheet href="../../doc/-mix/dev.xsl" type="text/xsl" ?>
+<doc_root
+    doc_title="$jin_wrapper"
+    >
+
+    <p>Примесь, релизующая поведение оборачивания значения в экземпляр класса. Проверяет не является ли значение уже экземпляром и не трогает его, если так и есть. </p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_wrapper )
+        </script>
+        <script type="wc_test">
+            var Node= $jin_class( function( Node, node ){
+                $jin_wrapper.scheme( Node, node )
+            } )
+            test.ok( Node( document ) )
+        </script>
+        <script type="wc_test">
+            var Node= $jin_class( function( Node, node ){
+                $jin_wrapper.scheme( Node, node )
+            } )
+            test.ok( Node( document ).$, document )
+        </script>
+        <script type="wc_test">
+            var Node= $jin_class( function( Node, node ){
+                $jin_wrapper.scheme( Node, node )
+            } )
+            
+            var node= Node( document )
+            
+            test.ok( Node( node ), node )
+        </script>
+        <script type="wc_test">
+            var Int= $jin_class( function( Int, int ){
+            
+                var make= Int.make
+                Int.make= function( value ){
+                    return make.call( this, parseInt( value ) )
+                }
+                
+                $jin_wrapper.scheme( Int, int )
+            } )
+            
+            test.ok( Int( '1.2.3' ).$, 1 )
+        </script>
+    </p>
+    
+</doc_root>

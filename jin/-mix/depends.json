@@ -1,0 +1,84 @@
+{
+    "jin/method": [
+        "jin/method",
+        "jin/class"
+    ],
+    "jin/class": [
+        "jin/class",
+        "jin/mixin",
+        "jin/nodeListener",
+        "jin/test"
+    ],
+    "jin/mixin": [
+        "jin/mixin",
+        "jin/wrapper",
+        "jin/event",
+        "jin/eventProof",
+        "jin/registry"
+    ],
+    "jin/wrapper": [
+        "jin/wrapper",
+        "jin/event"
+    ],
+    "jin/nodeListener": [
+        "jin/nodeListener",
+        "jin/event",
+        "jin/onChange",
+        "jin/onElemAdd",
+        "jin/onElemDrop",
+        "jin/onInput"
+    ],
+    "jin/unwrap": [
+        "jin/unwrap",
+        "jin/event"
+    ],
+    "jin/event": [
+        "jin/event",
+        "jin/eventProof",
+        "jin/onChange",
+        "jin/onClick",
+        "jin/onElemAdd",
+        "jin/onElemDrop",
+        "jin/onError",
+        "jin/onInput",
+        "jin/onPress"
+    ],
+    "jin/eventProof": [
+        "jin/eventProof"
+    ],
+    "jin/makeId": [
+        "jin/makeId",
+        "jin/thread"
+    ],
+    "jin/onChange": [
+        "jin/onChange"
+    ],
+    "jin/onClick": [
+        "jin/onClick"
+    ],
+    "jin/onElemAdd": [
+        "jin/onElemAdd"
+    ],
+    "jin/onElemDrop": [
+        "jin/onElemDrop"
+    ],
+    "jin/onError": [
+        "jin/onError"
+    ],
+    "jin/onInput": [
+        "jin/onInput"
+    ],
+    "jin/onPress": [
+        "jin/onPress"
+    ],
+    "jin/registry": [
+        "jin/registry"
+    ],
+    "jin/thread": [
+        "jin/thread",
+        "jin/test"
+    ],
+    "jin/test": [
+        "jin/test"
+    ]
+}

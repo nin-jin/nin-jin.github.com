@@ -1,0 +1,45 @@
+<?xml-stylesheet href="../../doc/-mix/dev.xsl" type="text/xsl" ?>
+<doc_root
+    doc_title="$jin_mixin"
+    >
+
+    <p>Создаёт класс, к которому автоматически примешивается переданная в параметре схема. </p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_mixin )
+        </script>
+        <script type="wc_test">
+            var ManClass= $jin_mixin( function( Man, man ){
+                man.name= 'Bob'
+            })
+            
+            var Boy= ManClass( function( Boy, boy ){
+                boy.toString= function( boy ){
+                    return boy.name
+                }
+            })
+            
+            test.ok( Boy().name, 'Bob' )
+        </script>
+    </p>
+    
+    <p>Тем не менее этот класс можно примешивать также как и любые другие классы. </p>
+    <p>
+        <script type="wc_test">
+            var ManClass= $jin_mixin( function( Man, man ){
+                man.name= 'Bob'
+            })
+            
+            var Boy= $jin_class( function( Boy, boy ){
+                ManClass.scheme( Boy, boy )
+                
+                boy.toString= function( boy ){
+                    return boy.name
+                }
+            })
+            
+            test.ok( Boy().name, 'Bob' )
+        </script>
+    </p>
+    
+</doc_root>

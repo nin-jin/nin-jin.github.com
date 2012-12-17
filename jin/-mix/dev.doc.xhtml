@@ -1,0 +1,843 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="../../doc/-mix/release.xsl" type="text/xsl"?>
+<doc_list><doc_root doc_title="$jin_method" doc_link="../method/jin_method.doc.xhtml?MF5YJ2">
+
+    <p>Трансформирует функцию в метод, который передаёт свой this в функцию в качестве первого аргумента.</p>
+
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_method )
+        </script>
+        <script type="wc_test">
+            var func= function( obj, a ){ return [ obj.field, a ] }
+            var method= $jin_method( func )
+            test.ok( method.call, func )
+        </script>
+        <script type="wc_test">
+            var func= function( obj, a ){ return [ obj.field, a ] }
+            var obj=
+            {   field: 7
+            ,   method: $jin_method( func )
+            }
+            test.ok( obj.method( 3 ).join(), func( obj, 3 ).join() )
+        </script>
+    </p>
+
+    <p>Если передать что-то отличное от функции, то вернёт это значение без изменений.</p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_method( 123 ), 123 )
+        </script>
+    </p>
+    
+</doc_root><doc_root doc_title="$jin_class" doc_link="../class/jin_class.doc.xhtml?MF5YJ2">
+
+    <p>Создаёт фабрику объектов на основе функции инициализации. </p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_class )
+        </script>
+        <script type="wc_test">
+            var Man= $jin_class( function( ){ } )
+            test.ok( Man )
+        </script>
+        <script type="wc_test">
+            var Man= $jin_class( function( ){ } )
+            test.ok( Man() )
+        </script>
+    </p>
+    
+    <p>В функцию инициализации передаётся два объекта: объект класса и прототип объектов. </p>
+    <p>
+        <script type="wc_test">
+            var Man= $jin_class( function( Man, man ){
+                Man.title= 'Superman'
+            } )
+            test.ok( Man.title, 'Superman' )
+        </script>
+        <script type="wc_test">
+            var Man= $jin_class( function( Man, man ){
+                man.name= 'Bob'
+            } )
+            test.ok( Man().name, 'Bob' )
+        </script>
+    </p>
+
+    <p>Методы объявляются как функции, первым аргументом принимающие объект. В конце инициализации класса все такие функции преобразуются в методы с помощью <a wc_link="true" href="../method/jin_method.doc.xhtml">$jin_method</a>. Имейте ввиду, что "this" при их исполнении будет указывать куда попало, зато не надо будет сохранять его в переменную, чтобы передать в замыкание.</p>
+    <p>
+        <script type="wc_test">
+            var Man= $jin_class( function( Man, man ){
+                man.name= 'Bob'
+                man.makeMessage= function( man, message ){
+                    return man.name + ': ' + message
+                }
+            } )
+            test.ok( Man().makeMessage( 'hi!' ), 'Bob: hi!' )
+        </script>
+        <script type="wc_test">
+            var Man= $jin_class( function( Man, man ){
+                man.getThis= function( man ){
+                    return this
+                }
+            } )
+            
+            var man= Man()
+            test.not( man.getThis(), man )
+        </script>
+        <script type="wc_test">
+            test.timeout= 10
+            
+            var Man= $jin_class( function( Man, man ){
+                man.name= 'Bob'
+                man.testName= function( man ){
+                    setTimeout( function( ){
+                        test.ok( man.name, 'Bob' ).done()
+                    }, 0 )
+                }
+            } )
+            
+            Man().testName()
+        </script>
+    </p>
+
+    <p>Создание объектов возможно как с помощью ключевого слова new (тогда создаётся неинициализированный объект), так и простым вызовом как функции (тогда создание объекта будет делегировано статическому методу "make", который при необходимости создаёт объект и производит его инициализацию методом "init" - оба метода существуют изначально и могут быть перегружены). </p>
+    <p>
+        <script type="wc_test">
+            var Man= $jin_class( function( ){ } )
+            test.ok( ( new Man ) instanceof Man )
+        </script>
+        <script type="wc_test">
+            var Man= $jin_class( function( ){ } )
+            test.ok( Man() instanceof Man )
+        </script>
+        <script type="wc_test">
+            var Man= $jin_class( function( Man, man ){
+                man.name= null
+                
+                man.init= function( man, name ){
+                    man.name= name
+                }
+            } )
+            
+            test.ok( Man( 'Bob' ).name, 'Bob' )
+        </script>
+        <script type="wc_test">
+            var Man= $jin_class( function( Man, man ){
+                man.name= 'Bob'
+                
+                man.init= function( man ){
+                    man.name= 'Jim'
+                }
+            } )
+            
+            test.ok( ( new Man ).name, 'Bob' )
+        </script>
+        <script type="wc_test">
+            var Man= $jin_class( function( Man, man ){
+                Man.make= function( ){
+                    return 123
+                }
+            } )
+            test.ok( Man(), 123 )
+        </script>
+    </p>
+    
+    <p>Для наследования используется концепция "примесей". Функция инициализации сохраняется в качестве статического метода "scheme" и может быть вызвана внутри другой функции инициализации. </p>
+    <p>
+        <script type="wc_test">
+            var Coord= $jin_class( function( Coord, coord ){
+                coord.x= 0
+                coord.y= 0
+            } )
+            
+            var Point= $jin_class( function( Point, point ){
+                Coord.scheme( Point, point )
+                
+                point.toString= function( point ){
+                    return '[' + [ point.x, point.y ] + ']'
+                }
+            } )
+            
+            test.ok( Point().toString(), '[0,0]' )
+        </script>
+    </p>
+    
+    <p>Перед перегрузкой метода можно сохранить предыдущую версию в локальную переменную и вызвать её когда потребуется. Имейте ввиду, что это будет функция ещё не обработанная с помощью $jam_method.</p>
+    <p>
+        <script type="wc_test">
+            var Singleton= $jin_class( function( Singleton, ston ){
+                var instance= null
+                
+                var make= Singleton.make
+                Singleton.make= function( ){
+                    if( instance ) return instance
+                    
+                    return instance= make.apply( this, arguments )
+                }
+            } )
+            
+            var API= $jin_class( function( API, api ){
+                Singleton.scheme( API, api )
+                
+                api.name= null
+                
+                api.init= function( api, name ){
+                    api.name= name
+                }
+            } )
+            
+            test.ok( API( 'foo' ).name, API( 'bar' ).name, 'foo' )
+        </script>
+    </p>
+    
+    <p>Сравним скорость с иными реализациями.</p>
+    <wc_bench_list>
+        <script type="wc_bench">
+            var Man= $jin_class( function( Man, man ){
+                man.name= null
+                man.init= function( man, name ){
+                    man.name= name
+                }
+                man.getName= function( man ){
+                    return man.name
+                }
+                man.setName= function( man, name ){
+                    man.name= name
+                    return man
+                }
+            } )
+            
+            _bench.begin()
+                Man( 'Bob' ).getName()
+            _bench.end()
+        </script>
+        <script type="wc_bench">
+            var Man= function( name ){
+                this.name= name
+            }
+            Man.prototype.man= null
+            Man.prototype.getName= function( ){
+                return this.name
+            }
+            Man.prototype.setName= function( name ){
+                this.name= name
+                return this
+            }
+            
+            _bench.begin()
+                ( new Man( 'Bob' ) ).getName()
+            _bench.end()
+        </script>
+    </wc_bench_list>
+    
+</doc_root><doc_root doc_title="$jin_mixin" doc_link="../mixin/jin_mixin.doc.xhtml?MF5YJ2">
+
+    <p>Создаёт класс, к которому автоматически примешивается переданная в параметре схема. </p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_mixin )
+        </script>
+        <script type="wc_test">
+            var ManClass= $jin_mixin( function( Man, man ){
+                man.name= 'Bob'
+            })
+            
+            var Boy= ManClass( function( Boy, boy ){
+                boy.toString= function( boy ){
+                    return boy.name
+                }
+            })
+            
+            test.ok( Boy().name, 'Bob' )
+        </script>
+    </p>
+    
+    <p>Тем не менее этот класс можно примешивать также как и любые другие классы. </p>
+    <p>
+        <script type="wc_test">
+            var ManClass= $jin_mixin( function( Man, man ){
+                man.name= 'Bob'
+            })
+            
+            var Boy= $jin_class( function( Boy, boy ){
+                ManClass.scheme( Boy, boy )
+                
+                boy.toString= function( boy ){
+                    return boy.name
+                }
+            })
+            
+            test.ok( Boy().name, 'Bob' )
+        </script>
+    </p>
+    
+</doc_root><doc_root doc_title="$jin_wrapper" doc_link="../wrapper/jin_wrapper.doc.xhtml?MF5YJ2">
+
+    <p>Примесь, релизующая поведение оборачивания значения в экземпляр класса. Проверяет не является ли значение уже экземпляром и не трогает его, если так и есть. </p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_wrapper )
+        </script>
+        <script type="wc_test">
+            var Node= $jin_class( function( Node, node ){
+                $jin_wrapper.scheme( Node, node )
+            } )
+            test.ok( Node( document ) )
+        </script>
+        <script type="wc_test">
+            var Node= $jin_class( function( Node, node ){
+                $jin_wrapper.scheme( Node, node )
+            } )
+            test.ok( Node( document ).$, document )
+        </script>
+        <script type="wc_test">
+            var Node= $jin_class( function( Node, node ){
+                $jin_wrapper.scheme( Node, node )
+            } )
+            
+            var node= Node( document )
+            
+            test.ok( Node( node ), node )
+        </script>
+        <script type="wc_test">
+            var Int= $jin_class( function( Int, int ){
+            
+                var make= Int.make
+                Int.make= function( value ){
+                    return make.call( this, parseInt( value ) )
+                }
+                
+                $jin_wrapper.scheme( Int, int )
+            } )
+            
+            test.ok( Int( '1.2.3' ).$, 1 )
+        </script>
+    </p>
+    
+</doc_root><doc_root doc_title="$jin_event" doc_link="../event/jin_event.doc.xhtml?MF5YJ2">
+
+    <p>Примесь, позволяющая классу выступать в качестве события. </p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_event )
+        </script>
+        <script type="wc_test">
+            $jin_event_test= $jin_event( function( onTest1, event ){
+                onTest1.type= '$jin_event_test'
+                onTest1.bubbles= true
+            } )
+            
+            test.ok( $jin_event_test )
+        </script>
+        <script type="wc_test">
+            var done= false
+            var listener= $jin_event_test.listen( document, function( event ){
+                done= true
+            })
+            
+            $jin_event_test().scream( document )
+            
+            listener.destroy()
+            
+            test.ok( done )
+        </script>
+        <script type="wc_test">
+            var body= document.getElementsByTagName( 'body' )[ 0 ]
+            
+            var listener= $jin_event_test.listen( document, function( event ){
+                test.ok( event.target(), body )
+            })
+            
+            $jin_event_test().scream( body )
+            
+            listener.destroy()
+        </script>
+    </p>
+    
+</doc_root><doc_root doc_title="$jin_eventProof" doc_link="../eventProof/jin_eventProof.doc.xhtml?MF5YJ2">
+
+    <p>Примесь события кидающего исключени в качестве поведения по умолчанию. Используется, когда нужно гарантировать, что запущенное событие будет обработано.</p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_eventProof )
+        </script>
+        <script type="wc_test">
+            var onTest1= $jin_eventProof( function( onTest1, event ){
+                onTest1.type= '$jin_event_test_1'
+            } )
+            
+            try {
+                onTest1().scream( document )
+            } catch( error ){
+                test.ok( error )
+            }
+        </script>
+        <script type="wc_test">
+            var onTest2= $jin_eventProof( function( onTest2, event ){
+                onTest2.type= '$jin_event_test_2'
+            } )
+            
+            var listener= onTest2.listen( document, function( event ){
+                event.catched( true )
+            })
+            
+            onTest2().scream( document )
+            
+            listener.destroy()
+            
+            test.ok()
+        </script>
+        <script type="wc_test">
+            var onTest1= $jin_eventProof( function( onTest1, event ){
+                onTest1.type= '$jin_event_test_3'
+            } )
+            
+            var listener= onTest1.listen( document, function( event ){
+                event.catched( true )
+            })
+            
+            listener.destroy()
+            
+            try {
+                onTest1().scream( document )
+            } catch( error ){
+                test.ok( error )
+            }
+        </script>
+    </p>
+    
+</doc_root><doc_root doc_title="$jin_makeId" doc_link="../makeId/jin_makeId.doc.xhtml?MF5YJ2">
+
+    <p>Функция генерирующая уникльный идентификатор на основе переданного ей префикса. </p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_makeId )
+        </script>
+        <script type="wc_test">
+            test.not( $jin_makeId(), $jin_makeId() )
+        </script>
+    </p>
+    
+</doc_root><doc_root doc_title="$jin_onChange" doc_link="../onChange/jin_onChange.doc.xhtml?MF5YJ2">
+
+    <p>Событие возникающее, когда меняется часть поддерева (в том числе и атрибуты). </p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_onChange )
+        </script>
+    </p>
+    <p>
+        <script type="wc_test">
+            var node= document.createElement( 'jin_onChange_test' )
+            document.getElementsByTagName( 'body' )[0].appendChild( node )
+            
+            var result
+            var listener= $jin_onChange.listen( node, function( event ){
+                result= ( event.target() === node )
+            })
+            
+            node.setAttribute( 'jin_onChange_test0', 'hello' )
+            
+            listener.destroy()
+            node.parentNode.removeChild( node )
+            
+            test.ok( result )
+        </script>
+        <script type="wc_test">
+            var parent= document.createElement( 'jin_onChange_test1' )
+            var child= document.createElement( 'jin_onChange_test2' )
+            
+            parent.appendChild( child )
+            document.getElementsByTagName( 'body' )[0].appendChild( parent )
+            
+            var result
+            var listener= $jin_onChange.listen( parent, function( event ){
+                result= ( event.target() === child )
+            })
+            
+            child.innerHTML= 'hello'
+            
+            listener.destroy()
+            parent.parentNode.removeChild( parent )
+            
+            test.ok( result )
+        </script>
+    </p>
+    
+</doc_root><doc_root doc_title="$jin_onElemAdd" doc_link="../onElemAdd/jin_onElemAdd.doc.xhtml?MF5YJ2">
+
+    <p>Событие возникающее, когда в поддерево заданного элемента добавляются новые элементы. </p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_onElemAdd )
+        </script>
+    </p>
+    <p>
+        <script type="wc_test">
+        <![CDATA[
+            var node= document.createElement( 'jin_onElemAdd_test' )
+            document.getElementsByTagName( 'body' )[0].appendChild( node )
+            
+            var result= []
+            var listener=
+            $jin_onElemAdd.listen( node, test.callback( function( event ){
+                result.push( event.target().localName )
+            } ) )
+            
+            node.innerHTML+= 'foo'
+            node.innerHTML+= '<?jin_onElemAdd_test0?>'
+            node.innerHTML+= '<!--hello-->'
+            node.innerHTML+= '<jin_onElemAdd_test1>world</jin_onElemAdd_test1>'
+            node.innerHTML+= '<jin_onElemAdd_test2><jin_onElemAdd_test3></jin_onElemAdd_test3></jin_onElemAdd_test2>'
+            
+            listener.destroy()
+            node.parentNode.removeChild( node )
+            
+            test.ok( result.join( ',' ), 'jin_onelemadd_test1,jin_onelemadd_test1,jin_onelemadd_test2,jin_onelemadd_test3' )
+        ]]>
+        </script>
+    </p>
+    
+</doc_root><doc_root doc_title="$jin_onElemDrop" doc_link="../onElemDrop/jin_onElemDrop.doc.xhtml?MF5YJ2">
+
+    <p>Событие возникающее, когда в поддерево заданного элемента добавляются новые элементы. </p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_onElemDrop )
+        </script>
+    </p>
+    <p>
+        <script type="wc_test">
+        <![CDATA[
+            test.timeout= 0
+            
+            var node= document.createElement( 'jin_onElemDrop_test' )
+            document.getElementsByTagName( 'body' )[0].appendChild( node )
+            
+            var listener=
+            $jin_onElemDrop.listen( node, test.callback( function( event ){
+                test.ok( event.target().localName ).done()
+            } ) )
+            
+            node.innerHTML= '<jin_onElemDrop_test2><jin_onElemDrop_test3></jin_onElemDrop_test3></jin_onElemDrop_test2>'
+            node.parentNode.removeChild( node )
+            listener.destroy()
+            
+        ]]>
+        </script>
+    </p>
+    
+</doc_root><doc_root doc_title="$jin_onInput" doc_link="../onInput/jin_onInput.doc.xhtml?MF5YJ2">
+
+    <p>Событие возникающее в случае пользовательского ввода. </p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_onInput )
+        </script>
+        <script type="wc_test">
+            var node= document.createElement( 'input' )
+            document.getElementsByTagName( 'body' )[0].appendChild( node )
+            
+            var result
+            var listener= $jin_onInput.listen( node, function( event ){
+                result= ( event.target() === node )
+            })
+            
+            node.setAttribute( 'value', 'hello' )
+            
+            listener.destroy()
+            node.parentNode.removeChild( node )
+            
+            test.ok( result )
+        </script>
+        <script type="wc_test">
+            var parent= document.createElement( 'jin_onInput_test1' )
+            var child= document.createElement( 'jin_onInput_test2' )
+            child.contentEditable= true
+            
+            parent.appendChild( child )
+            document.getElementsByTagName( 'body' )[0].appendChild( parent )
+            
+            var result
+            var listener= $jin_onInput.listen( parent, function( event ){
+                result= ( event.target() === child )
+            })
+            
+            child.innerHTML= 'hello'
+            
+            listener.destroy()
+            parent.parentNode.removeChild( parent )
+            
+            test.ok( result )
+        </script>
+    </p>
+    
+</doc_root><doc_root doc_title="$jin_registry" doc_link="../registry/jin_registry.doc.xhtml?MF5YJ2">
+
+    <p>Примесь, которая реализует кеширование экземпляров класса по первому переданному параметру. </p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_registry )
+        </script>
+        <script type="wc_test">
+            var Man= $jin_class( function( Man, man ){
+                $jin_registry.scheme( Man, man )
+            } )
+            test.ok( Man( 1 ), Man( 1 ) )
+        </script>
+        <script type="wc_test">
+            var Man= $jin_class( function( Man, man ){
+                $jin_registry.scheme( Man, man )
+            } )
+            test.not( Man( 1 ), Man( 2 ) )
+        </script>
+    </p>
+    
+    <p>Может быть использована вместо $jin_class при определении класса - тогда будет создан класс с уже примешанным $jin_registry.</p>
+    <p>
+        <script type="wc_test">
+            var Man= $jin_registry( function( ){ } )
+            test.ok( Man( 1 ), Man( 1 ) )
+        </script>
+        <script type="wc_test">
+            var Man= $jin_registry( function( ){ } )
+            test.not( Man( 1 ), Man( 2 ) )
+        </script>
+    </p>
+    
+</doc_root><doc_root doc_title="$jin_thread" doc_link="../thread/jin_thread.doc.xhtml?MF5YJ2">
+
+    <p>Создаёт обёртку вокруг функции, которая выполняет её в отдельном, но синхронном потоке.</p>
+
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_thread )
+        </script>
+        <script type="wc_test">
+            var thread= $jin_thread(function(){
+                return 123
+            })
+            test.ok( thread(), 123 )
+        </script>
+        <script type="wc_test">
+            var thread= $jin_thread(function(){
+                throw new Error( 'sample error' )
+            })
+            test.ok( thread(), void 0 )
+        </script>
+        <script type="wc_test">
+            var fact= $jin_thread(function( n ){
+                if (!( n &gt; 1 )) return 1;
+                return n * fact( n - 1 );
+            });
+            test.ok( fact(5), 120 )
+        </script>
+    </p>
+
+</doc_root><doc_root doc_title="$jin_test" doc_link="../test/jin_test.doc.xhtml?MF5YJ2">
+
+    <p>Тестирует код на наличие ошибок. Результат можно узнать заглянув в поле "passed". </p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_test )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' ')
+            test.ok( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' .. ')
+            test.not( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' (void 0)() ')
+            test.not( testo.passed )
+        </script>
+    </p>
+
+    <p>Возникающие в процессе работы ошибки логируются в массиве "errors". </p>
+    <p>
+        <script type="wc_test">
+            var testo= $jin_test(' (void 0)() ')
+            test.ok( testo.errors[0] )
+        </script>
+    </p>
+
+    <p>Кроме исходного кода в виде строки можно передать функцию, которая принимает параметром инстанс теста. Разумеется в этом случае обработка синтаксических ошибок будет уже на вашей совести. </p>
+    <p>
+        <script type="wc_test">
+            var testo= $jin_test( function( testo ){
+                testo.passed
+            } )
+            test.ok( testo.passed )
+        </script>
+    </p>
+
+    <p>Предоставляет исполняемому коду инстанс теста в качестве переменной "test". Он имеет два метода - ok и not. Вызванные без параметров они объявляют тест пройденным и проваленным соответственно. </p>
+    <p>
+        <script type="wc_test">
+            var testo= $jin_test(' test.ok() ')
+            test.ok( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' test.not() ')
+            test.not( testo.passed )
+        </script>
+    </p>
+
+    <p>Если в "test.ok" или "test.not" передать одно значение, то тест будет пройден только если оно истинное и ложное соответственно.</p>
+    <p>
+        <script type="wc_test">
+            var testo= $jin_test(' test.ok( 1 ) ')
+            test.ok( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' test.ok( 0 ) ')
+            test.not( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' test.not( 0 ) ')
+            test.ok( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' test.not( 1 ) ')
+            test.not( testo.passed )
+        </script>
+    </p>
+    
+    <p>Если в "test.ok" или "test.not" передать два параметра, то тест будет пройден только если они равны или не равны соответственно. Сравнение строгое.</p>
+    <p>
+        <script type="wc_test">
+            var testo= $jin_test(' test.ok( 1, 1 ) ')
+            test.ok( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' test.ok( 1, 2 ) ')
+            test.not( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' test.not( 2, 1 ) ')
+            test.ok( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' test.not( 2, 2 ) ')
+            test.not( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' test.ok( {}, {} ) ')
+            test.not( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' test.ok( 0 / 0, Number.NaN ) ')
+            test.ok( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' test.ok( 1 / 0, Number.POSITIVE_INFINITY ) ')
+            test.ok( testo.passed )
+        </script>
+    </p>
+    
+    <p>Чтобы сделать тест асинхронным нужно задать таймаут в миллисекундах до истечения которого тест по любому должен завершиться. Кроме того, по окончании всех асинхронных операций следует вызвать метод "done". Имейте ввиду, что асинхронные тесты стартуют последовательно, не дожидаясь завершения других асинхронных тестов.</p>
+    <p>
+        <script type="wc_test">
+            test.timeout= 100
+            
+            var testo= $jin_test(' test.timeout= 50 ')
+            
+            test.not( testo.passed ).done()
+        </script>
+        <script type="wc_test">
+            test.timeout= 100
+            
+            var testo= $jin_test(' test.timeout= 50 ')
+            
+            setTimeout( function( ){
+                test.not( testo.passed ).done()
+            }, 75 )
+        </script>
+        <script type="wc_test">
+            test.timeout= 100
+            
+            var testo= $jin_test(' test.timeout= 50; test.done() ')
+            
+            test.ok( testo.passed ).done()
+        </script>
+        <script type="wc_test">
+            test.timeout= 100
+            
+            var testo= $jin_test( function( testo ){
+                testo.timeout= 50
+                setTimeout( function( ){
+                    testo.done()
+                }, 25 )
+            } )
+            
+            setTimeout( function( ){
+                test.ok( testo.passed ).done()
+            }, 75 )
+        </script>
+        <script type="wc_test">
+            test.timeout= 100
+            
+            var testo= $jin_test( function( testo ){
+                testo.timeout= 25
+                setTimeout( function( ){
+                    testo.done()
+                }, 50 )
+            } )
+            
+            setTimeout( function( ){
+                test.not( testo.passed ).done()
+            }, 75 )
+        </script>
+    </p>
+    
+    <p>Чтобы ловить ошибки и в коллбэках, вызываемых асинхронно, стоит заворачивать их в "test.callback".</p>
+    <p>
+        <script type="wc_test">
+            test.timeout= 100
+            
+            var testo= $jin_test( function( testo ){
+                testo.timeout= 50
+                setTimeout( function( ){
+                    (void 0)()
+                }, 25 )
+            } )
+            
+            setTimeout( function( ){
+                test.ok( testo.errors[0].message, 'timeout(50)' ).done()
+            }, 75 )
+        </script>
+        <script type="wc_test">
+            test.timeout= 100
+            
+            var testo= $jin_test( function( testo ){
+                testo.timeout= 50
+                setTimeout( testo.callback( function( ){
+                    (void 0)()
+                } ), 25 )
+            } )
+            
+            setTimeout( function( ){
+                test.not( testo.errors[0].message, 'timeout(50)' ).done()
+            }, 75 )
+        </script>
+    </p>
+    
+    <p>Для отслеживания завершения асинхронного теста можно передать вторым параметром колбэк-функцию.</p>
+    <p>
+        <script type="wc_test">
+            test.timeout= 50
+            
+            var testo= $jin_test( function( testo ){
+                testo.timeout= 100
+                setTimeout( function( ){
+                    testo.done()
+                }, 25 )
+            }, function( testo ){
+                test.ok( testo.passed ).done()
+            } )
+        </script>
+    </p>
+    
+</doc_root></doc_list>

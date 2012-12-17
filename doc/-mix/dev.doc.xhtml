@@ -1,0 +1,1990 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="../../doc/-mix/release.xsl" type="text/xsl"?>
+<doc_list><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/jam/jam.doc.xhtml?MEM2FY">
+
+    <h1>$jam</h1>
+    <p>Яваскриптовый фреймворк, отличительной особенностью которого является высокая степень модульности, но отсутствие необходимости в явном указании зависимостей - необходимые модули подключаются автоматически, но статически. Принцип прост: если в jam-файле встречается токен начинающийся с доллара, то подключается одноимённый модуль. js-файлы никак не обрабатываются и о зависимостях в них нужно следить самостоятельно.</p>
+    <p>Другой немаловажный принцип - невмешательство в чужой код. Каждый пакет определяет модули в своём пространстве имён, которое может наследовать модули от другого. При этом можно переопределять любые модулипредка, но эти изменения коснутся только текущего пакета.</p>
+
+    <wc_js-test> _test.ok( $jam ) </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/define/jam+define.doc.xhtml?MEM2FY">
+
+    <h1>$jam.define</h1>
+    <p>Регистрирует новый модуль. Громко ругается, если такой модуль уже есть.</p>
+
+    <p>
+        <wc_js-test> _test.ok( $jam.define ) </wc_js-test>
+    </p>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/Class/jam+Class.doc.xhtml?MEM2FX">
+
+    <h1>$jam.Class</h1>
+
+    <p>Создаёт класс - функцию, создающую объекты. В качестве параметра принимает функцию-инициализатор, которой передаёт свежесозданный класс и его прототип. У каждого класса есть метод create являющийся фабрикой и вызываемый при инстанцировании класса. Сам класс следовательно тоже является фабрикой. Инстанцирование его через new - создаёт неинициализированный инстанс, что используется для реализации наследования без проксирующих классов.</p>
+
+    <wc_js-test> _test.ok( $jam.Class ) </wc_js-test>
+    <wc_js-test>
+        var ClassInner
+        var Class= $jam.Class(function( klass ){
+            ClassInner= klass
+        })
+        _test.ok( Class, ClassInner )
+    </wc_js-test>
+    <wc_js-test>
+        var Class= $jam.Class(function( klass ){ })
+        _test.ok( Class() instanceof Class )
+    </wc_js-test>
+    <wc_js-test>
+        var obj= {}
+        var Class= $jam.Class(function( klass ){
+            klass.create= function(){
+                return obj
+            }
+        })
+        _test.ok( Class(), obj )
+    </wc_js-test>
+    <wc_js-test>
+        var obj1= {}
+        var Class= $jam.Class(function( klass ){
+            klass.create= function(){
+                return obj1
+            }
+        })
+        var obj2= new Class
+        _test.ok( obj2 instanceof Class )
+    </wc_js-test>
+    <wc_js-test>
+        var Class= $jam.Class(function( klass ){
+            klass.prototype.method= function(){
+                return obj1
+            }
+        })
+        var obj1= new Class
+        var obj2= Class()
+        _test.ok( obj1.method, obj2.method )
+    </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/Poly/jam+Poly.doc.xhtml?MEM2FY">
+    
+    <h1>$jam.Poly</h1>
+
+    <p>Создаёт полиморфную функцию из переданных в параметрах функций. Первая будет вызвана если параметров не передано, вторая, если передан 1 и так далее. Если будет передано неправильное число параметров, то выпадет исключение.</p>
+
+    <wc_js-test> _test.ok( $jam.Poly ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.Poly() ) </wc_js-test>
+    <wc_js-test>
+        var poly=
+        $jam.Poly
+        (   function(){
+                return 123
+            }
+        ,   Math.abs
+        )
+        _test.ok( poly(), 123 )
+    </wc_js-test>
+    <wc_js-test>
+        var poly=
+        $jam.Poly
+        (   function(){
+                return 123
+            }
+        ,   Math.abs
+        )
+        _test.ok( poly( -5 ), 5 )
+    </wc_js-test>
+    <wc_js-test>
+        var poly=
+        $jam.Poly
+        (   null
+        ,   Math.abs
+        ,   Math.pow
+        )
+        _test.ok( poly( -5 ), 5 )
+    </wc_js-test>
+    <wc_js-test>
+        var poly=
+        $jam.Poly
+        (   null
+        ,   Math.abs
+        ,   Math.pow
+        )
+        _test.ok( poly( -2, 3 ), -8 )
+    </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/Hash/jam+Hash.doc.xhtml?MEM2FX">
+
+    <h1>$jam.Hash</h1>
+
+    <p>Создаёт хэш-таблицу. Если в параметрах передать объект и префикс - будет использовать его для хранения данных.</p>
+
+    <p>
+        <wc_js-test> _test.ok( $jam.Hash ) </wc_js-test>
+        <wc_js-test> _test.not( $jam.Hash().has( 'foo' ) ) </wc_js-test>
+        <wc_js-test> _test.not( $jam.Hash().has( 'hasOwnProperty' ) ) </wc_js-test>
+        <wc_js-test>
+            var hash= $jam.Hash()
+            hash.put( 'foo', 'bar' )
+            _test.ok( hash.has( 'foo' ) )
+        </wc_js-test>
+        <wc_js-test>
+            var hash= $jam.Hash()
+            hash.put( 'foo', 'bar' )
+            _test.ok( hash.get( 'foo' ), 'bar' )
+        </wc_js-test>
+        <wc_js-test>
+            var hash= $jam.Hash({ prefix: 'foo:', obj: { 'foo:bar': 123 } })
+            _test.ok( hash.has( 'bar' ) )
+        </wc_js-test>
+        <wc_js-test>
+            var hash= $jam.Hash({ prefix: '', obj: $jam })
+            _test.ok( hash.has( 'Hash' ) )
+        </wc_js-test>
+    </p>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/Cached/jam+Cached.doc.xhtml?MEM2FX">
+
+    <h1>$jam.Cached</h1>
+
+    <p>Враппер, кэширующий результат исполнения функции по первому параметру приведённому к строке.</p>
+
+    <wc_js-test> _test.ok( $jam.Cached ) </wc_js-test>
+    <wc_js-test>
+        var rnd= $jam.Cached( Math.random )
+        _test.ok( rnd( 100 ), rnd( 100 ) )
+    </wc_js-test>
+    <wc_js-test>
+        var rnd= $jam.Cached( Math.random )
+        _test.not( rnd( 100 ), rnd( 101 ) )
+    </wc_js-test>
+    <wc_js-test>
+        var rnd= $jam.Cached( Math.random )
+        _test.ok( rnd( 100, 1 ), rnd( 100, 2 ) )
+    </wc_js-test>
+    <wc_js-test>
+        var rnd= $jam.Cached( Math.random )
+        _test.not( rnd( 100, 1 ), rnd( 101, 1 ) )
+    </wc_js-test>
+    <wc_js-test>
+        _test.not( $jam.Cached(Math.random)( 100 ), $jam.Cached( Math.random )( 100 ) )
+    </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/schedule/jam+schedule.doc.xhtml?MEM2FY">
+    
+    <h1>$jam.schedule</h1>
+
+    <p>Устанавливает выполнение функции через заданное время. Возвращает функцию, которая отменяет это действие.</p>
+
+    <wc_js-test> _test.ok( $jam.schedule ) </wc_js-test>
+    <wc_js-test>
+        _test.deadline( 50 )
+        $jam.schedule( 10, function( ){
+            _test.ok( )
+        })
+    </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/Obj/jam+Obj.doc.xhtml?MEM2FX">
+
+    <h1>$jam.Obj</h1>
+    <p>Создаёт обёртку предоставляющую базовый интерфейс работы с объектами.</p>
+
+    <wc_js-test> _test.ok( $jam.Obj ) </wc_js-test>
+    <wc_js-test>
+        var obj= $jam.Obj( {} )
+        _test.ok( $jam.Obj( obj ), obj )
+    </wc_js-test>
+    <wc_js-test>
+        var obj= {}
+        _test.ok( $jam.Obj( obj ).$, obj )
+    </wc_js-test>
+    <wc_js-test>
+        var obj= $jam.Obj( {} )
+        _test.ok( obj.has( 'foo' ), false )
+    </wc_js-test>
+    <wc_js-test>
+        var obj= $jam.Obj( { foo: 'bar' } )
+        _test.ok( obj.has( 'foo' ), true )
+    </wc_js-test>
+    <wc_js-test>
+        var obj= $jam.Obj( {} )
+        _test.ok( obj.get( 'foo' ), void 0 )
+    </wc_js-test>
+    <wc_js-test>
+        var obj= $jam.Obj( { foo: 'bar' } )
+        _test.ok( obj.get( 'foo' ), 'bar' )
+    </wc_js-test>
+    <wc_js-test>
+        var obj= $jam.Obj( {} )
+        obj.put( 'foo', 'bar' )
+        _test.ok( obj.$.foo, 'bar' )
+    </wc_js-test>
+    <wc_js-test>
+        var obj= $jam.Obj( {} )
+        obj.init( function( obj ){
+            obj.foo= 'bar'
+        })
+        _test.ok( obj.get( 'foo' ), 'bar' )
+    </wc_js-test>
+    <wc_js-test>
+        var obj= $jam.Obj( {} )
+        obj.define( 'foo', 'bar' )
+        _test.ok( obj.get( 'foo' ), 'bar' )
+    </wc_js-test>
+    <wc_js-test>
+        var obj= $jam.Obj( { foo: void 0 } )
+        try {
+            obj.define( 'foo', 'bar' )
+        } catch( e ){
+            return _test.ok( e )
+        }
+    </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/Value/jam+Value.doc.xhtml?MEM2FY">
+
+    <h1>$jam.Value</h1>
+    <p>Создаёт функцию, которая просто возвращает заданное значение.</p>
+
+    <wc_js-test> _test.ok( $jam.Value ) </wc_js-test>
+    <wc_js-test>
+        var val= $jam.Value( 123 )
+        _test.ok( val(), 123 )
+    </wc_js-test>
+    <wc_js-test>
+        var val1= $jam.Value( 123 )
+        var val2= $jam.Value( val1 )
+        _test.ok( val2(), val1 )
+    </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/domReady/jam+domReady.doc.xhtml?MEM2FY">
+
+    <h1>$jam.domReady</h1>
+
+    <p>Определяет скачан ли документ полностью или ещё нет. Метод then позволяет выполнить переданную ему функцию только когда документ будет полностью загружен (если он уже загружен - она будет вызвана немедленно).</p>
+
+    <p>
+        <wc_js-test>
+            _test.deadline( 1000 )
+            $jam.domReady.then( function(){
+                _test.ok( $jam.domReady() )
+            })
+        </wc_js-test>
+    </p>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/select/jam+select.doc.xhtml?MET4JO">
+    
+    <h1>$jam.select</h1>
+
+    <p>Выбирает из объекта переданным вторым параметром значение соответствующее ключу переданному первым.</p>
+
+    <wc_js-test> _test.ok( $jam.select ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.select( 1, [ 2, 3 ] ), 3 ) </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/support/jam+support.doc.xhtml?MEM2FY">
+
+    <h1>$jam.support</h1>
+    <p>Позволяет определить какие фичи поддерживает среда исполнения.</p>
+
+    <wc_js-test> _test.ok( $jam.support ) </wc_js-test>
+    
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/Component/jam+Component.doc.xhtml?MEM2FX">
+
+    <h1>$jam.Component</h1>
+    <p>Создаёт компоненту, которая инстанцирует виджеты при появлении в доме элементов с определённым именем, а при удалении элементов - разрушает виджеты. Принимает на вход два параметра - имя тэга (может быть звёздочка) и фабрику виджетов (ей будет передан элемент). </p>
+    
+    <wc_js-test>
+        _test.deadline( 500 )
+        $jam.Component
+        (   'wc_component-test'
+        ,   function( nodeRoot ){
+                _test.ok( $jam.Node( nodeRoot ).text() )
+            }
+        )
+    </wc_js-test>
+    
+    <wc_js-test>
+        _test.deadline( 500 )
+        with( $jam )
+        var comp= $jam.Component
+        (   'wc_component-test'
+        ,   function( nodeRoot ){
+            }
+        )
+        _test.ok( comp )
+    </wc_js-test>
+    
+    <wc_demo>
+    <![CDATA[
+        <wc_component-test> test </wc_component-test>
+    ]]>
+    </wc_demo>
+    
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/Concater/jam+Concater.doc.xhtml?MEM2FX">
+
+    <h1>$jam.Concater</h1>
+
+    <p>Принимает на вход разделитель и возвращает функцию, которая через него соединяет элементы передаваемого ей на вход массива.</p>
+
+    <p>
+        <wc_js-test> _test.ok( $jam.Concater ) </wc_js-test>
+        <wc_js-test> _test.ok( $jam.Concater() ) </wc_js-test>
+        <wc_js-test> _test.ok( $jam.Concater()( [ 1, 2 ] ), '12' ) </wc_js-test>
+        <wc_js-test> _test.ok( $jam.Concater( '+' )( [ 1, 2 ] ), '1+2' ) </wc_js-test>
+    </p>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/selection/jam+selection.doc.xhtml?MEM2FY">
+    
+    <h1>$jam.selection</h1>
+
+    <p>Возврачает объект выделения.</p>
+
+    <wc_js-test> _test.ok( $jam.selection ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.selection() ) </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/htmlDecode/jam+html.doc.xhtml?MEM2FY">
+
+    <h1>$jam.htmlDecode</h1>
+
+    <wc_js-test>
+        _test.ok( $jam.htmlDecode( '&amp;gt;' ), '&gt;' )
+    </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/html2text/jam+html2text.doc.xhtml?MEM2FY">
+
+    <h1>$jam.html2text</h1>
+    <wc_js-test>
+        _test.ok( $jam.html2text( '&lt;a&gt;a&lt;br&gt;b\nc' ), 'a\nb\nc' )
+    </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/htmlEscape/jam+htmlEscape.doc.xhtml?MEM2FY">
+
+    <h1>$jam.htmlEscape</h1>
+
+    <wc_js-test>
+        _test.ok( $jam.htmlEscape( '&gt;' ), '&amp;gt;' )
+    </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/classOf/jam+classOf.doc.xhtml?MEM2FY">
+
+    <h1>$jam.classOf</h1>
+    <p>Возвращает встроенное имя класса объекта. Для дом-узлов и прочих не перечисленных ниже типов объектов значения могут отличаться в зависимости от браузера.</p>
+
+    <wc_js-test> _test.ok( $jam.classOf(), 'Undefined' ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.classOf( void 0 ), 'Undefined' ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.classOf( null ), 'Null' ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.classOf( false ), 'Boolean' ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.classOf( new Boolean( true ) ), 'Boolean' ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.classOf( 0 ), 'Number' ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.classOf( 0/0 ), 'Number' ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.classOf( 1/0 ), 'Number' ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.classOf( new Number( 0 ) ), 'Number' ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.classOf( '' ), 'String' ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.classOf( new String( '' ) ), 'String' ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.classOf( [] ), 'Array' ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.classOf( {} ), 'Object' ) </wc_js-test>
+    <wc_js-test>
+        var val=
+        {   toString: function( ){
+                return 'xxx'
+            }
+        }
+        _test.ok( $jam.classOf( val ), 'Object' )
+    </wc_js-test>
+    <wc_js-test>
+        var val=
+        {   valueOf: function( ){
+                return 777
+            }
+        }
+        _test.ok( $jam.classOf( val ), 'Object' )
+    </wc_js-test>
+    <wc_js-test> _test.ok( $jam.classOf( this ), 'Global' ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.classOf( $jam.classOf ), 'Function' ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.classOf( /a/ ), 'RegExp' ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.classOf( new Date ), 'Date' ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.classOf( new Error ), 'Error' ) </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/Event/jam+Event.doc.xhtml?MEM2FX">
+
+    <h1>$jam.Event</h1>
+
+    <p>Обёртка для объектов-событий предоставляющая кроссбраузерный апи к ним. При вызове без параметров создаёт новый объект события, который можно настроить через специальные методы.</p>
+
+    <wc_js-test>
+        var node1= $jam.Node( document )
+        var node2= $jam.Node( document.body )
+
+        var obs=
+        $jam.Observer()
+        .node( node1 )
+        .eventName( 'click' )
+        .handler( function( event ){
+            _test.ok( event.type(), 'click' )
+        })
+        .listen()
+        
+        $jam.Event().type( 'click' ).scream( node2 )
+        obs.sleep()
+    </wc_js-test>
+    <wc_js-test>
+        var node= $jam.Node( document.body )
+        var catched= false
+
+        var obs=
+        $jam.Observer()
+        .node( node )
+        .eventName( 'click' )
+        .handler( function( ev ){
+            catched= true
+        })
+        .listen()
+
+        var event= $jam.Event().type( 'click' )
+        obs.sleep()
+        event.scream( node )
+        _test.ok( catched, false )
+    </wc_js-test>
+
+    <wc_js-test>
+        var node1= $jam.Node( document )
+        var node2= $jam.Node( document.body )
+
+        var obs=
+        $jam.Observer()
+        .node( node1 )
+        .eventName( '$jam.Event._test_' )
+        .handler( function( event ){
+            _test.ok( event.type(), '$jam.Event._test_' )
+        })
+        .listen()
+        
+        $jam.Event().type( '$jam.Event._test_' ).scream( node2 )
+        obs.sleep()
+    </wc_js-test>
+    <wc_js-test>
+        var node= $jam.Node( document.body )
+        var catched= false
+
+        var obs=
+        $jam.Observer()
+        .node( node )
+        .eventName( '$jam.Event._test_' )
+        .handler( function( ev ){
+            catched= true
+        })
+        .listen()
+
+        var event= $jam.Event().type( '$jam.Event._test_' )
+        obs.sleep()
+        event.scream( node )
+        _test.ok( catched, false )
+    </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/Node/jam+Node.doc.xhtml?MEM2FX">
+
+    <h1>$jam.Node</h1>
+    <p>Создаёт обёртку для дом-узла.</p>
+
+    <wc_js-test> _test.ok( $jam.Node ) </wc_js-test>
+    <wc_js-test>
+        var node= $jam.Node.Element( 'xxx' )
+        _test.ok( node.name(), 'xxx' )
+    </wc_js-test>
+    <wc_js-test>
+        var node= $jam.Node.Element( 'xxx' )
+        _test.ok( node.parent(), null )
+    </wc_js-test>
+    <wc_js-test>
+        var node1= $jam.Node.Element( 'xxx' )
+        var node2= $jam.Node.Element( 'yyy' )
+        node2.parent( node1 )
+        _test.ok( node2.parent().$, node1.$ )
+    </wc_js-test>
+    <wc_js-test>
+        var node1= $jam.Node.Element( 'xxx' )
+        var node2= $jam.Node.Element( 'yyy' )
+        var node3= $jam.Node.Element( 'zzz' )
+        node2.parent( node1 )
+        node2.next( node3 )
+        _test.ok( node3.prev().$, node2.$ )
+    </wc_js-test>
+    <wc_js-test>
+        var node1= $jam.Node.Element( 'xxx' )
+        var node2= $jam.Node.Element( 'yyy' )
+        var node3= $jam.Node.Element( 'zzz' )
+        node2.parent( node1 )
+        node2.next( node3 )
+        _test.ok( node2.parent().$, node1.$ )
+    </wc_js-test>
+    <wc_js-test>
+        var node1= $jam.Node.Element( 'xxx' )
+        var node2= $jam.Node.Element( 'yyy' )
+        var node3= $jam.Node.Element( 'zzz' )
+        node2.parent( node1 )
+        node2.prev( node3 )
+        _test.ok( node3.next().$, node2.$ )
+    </wc_js-test>
+    <wc_js-test>
+        var node1= $jam.Node.Element( 'xxx' )
+        var node2= $jam.Node.Element( 'yyy' )
+        var node3= $jam.Node.Element( 'zzz' )
+        node2.parent( node1 )
+        node2.prev( node3 )
+        _test.ok( node2.parent().$, node1.$ )
+    </wc_js-test>
+    <wc_js-test>
+        var node1= $jam.Node.Element( 'xxx' )
+        var node2= $jam.Node.Element( 'yyy' )
+        var node3= $jam.Node.Element( 'zzz' )
+        node2.parent( node1 )
+        node3.parent( node1 )
+        _test.ok( node2.next().$, node3.$ )
+    </wc_js-test>
+    <wc_js-test>
+        var node1= $jam.Node.Element( 'xxx' )
+        var node2= $jam.Node.Element( 'yyy' )
+        var node3= $jam.Node.Element( 'zzz' )
+        node2.parent( node1 )
+        node3.parent( node1 )
+        _test.ok( node1.childList().length(), 2 )
+    </wc_js-test>
+    <wc_js-test>
+        var node1= $jam.Node.Element( 'xxx' )
+        var node2= $jam.Node.Element( 'yyy' )
+        var node3= $jam.Node.Element( 'zzz' )
+        node2.parent( node1 )
+        node3.parent( node1 )
+        _test.ok( node1.childList( 'zzz' ).length(), 1 )
+    </wc_js-test>
+    <wc_js-test>
+        var node1= $jam.Node.Element( 'xxx' )
+        var node2= $jam.Node.Element( 'yyy' )
+        var node3= $jam.Node.Element( 'zzz' )
+        node2.parent( node1 )
+        node3.parent( node1 )
+        _test.ok( node1.childList( 'zzz' ).get(0).$, node3.$ )
+    </wc_js-test>
+    <wc_js-test>
+        var node1= $jam.Node.Element( 'xxx' )
+        var node2= $jam.Node.Element( 'yyy' )
+        var node3= $jam.Node.Element( 'zzz' )
+        node2.parent( node1 )
+        node3.parent( node1 )
+        node1.clear()
+        _test.ok( node1.childList().length(), 0 )
+    </wc_js-test>
+    <wc_js-test>
+        var node= $jam.Node.Element( 'xxx' )
+        var source= '&lt;a&gt;1&lt;/a&gt;&lt;b&gt;2&lt;/b&gt;'
+        node.html( source )
+        _test.ok( node.html(), source )
+    </wc_js-test>
+    <wc_js-test>
+        var node= $jam.Node.Element( 'xxx' )
+        var source= '&lt;a&gt;1&lt;/a&gt;&lt;b&gt;2&lt;/b&gt;'
+        node.text( source )
+        _test.ok( node.text(), source )
+    </wc_js-test>
+    <wc_js-test>
+        var node= $jam.Node.Element( 'xxx' )
+        var source= '&lt;a&gt;1&lt;/a&gt;&lt;b&gt;2&lt;/b&gt;'
+        node.html( source )
+        _test.ok( node.text(), '12' )
+    </wc_js-test>
+    <wc_js-test>
+        var node1= $jam.Node.Element( 'xxx' )
+        var node2= $jam.Node.Element( 'yyy' )
+        var node3= $jam.Node.Element( 'zzz' )
+        node2.parent( node1 )
+        node3.parent( node1 )
+        _test.ok( node1.head().$, node2.$ )
+    </wc_js-test>
+    <wc_js-test>
+        var node1= $jam.Node.Element( 'xxx' )
+        var node2= $jam.Node.Element( 'yyy' )
+        var node3= $jam.Node.Element( 'zzz' )
+        node2.parent( node1 )
+        node3.parent( node1 )
+        _test.ok( node1.tail().$, node3.$ )
+    </wc_js-test>
+    <wc_js-test>
+        var node= $jam.Node.Element( 'xxx' )
+        node.attr( 'foo', 'bar' )
+        _test.ok( node.attr( 'foo' ), 'bar' )
+    </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/DomRange/jam+DomRange.doc.xhtml?MEM2FX">
+
+    <h1>$jam.DomRange</h1>
+
+    <p>Обёртка для текстовых диапазонов. Если вызвана без параметров, то в качестве текстового диапазона берётся текущее выделение на странице.</p>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/Lazy/jam+Lazy.doc.xhtml?MEM2FX">
+
+    <h1>$jam.Lazy</h1>
+    <p>Создаёт ленивую функцию. Принимает на вход фабрику, которую использует для создания актуальной функции при первом вызове.</p>
+
+    <wc_js-test> _test.ok( $jam.Lazy ) </wc_js-test>
+    <wc_js-test>
+        var lazy= $jam.Lazy( function(){
+            return function( a, b ){
+                return b
+            }
+        })
+        _test.ok( lazy( 1, 2 ), 2 )
+    </wc_js-test>
+    <wc_js-test>
+        var lazy= $jam.Lazy( function(){
+            var a= Math.random()
+            return $jam.Value( a )
+        })
+        _test.ok( lazy(), lazy() )
+    </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/RegExp/jam+RegExp.doc.xhtml?MEM2FY">
+
+    <h1>$jam.RegExp</h1>
+    <p>Создаёт обёртку для регулярных выражений.</p>
+
+    <wc_js-test> _test.ok( $jam.RegExp ) </wc_js-test>
+    <wc_js-test>
+        _test.ok( $jam.RegExp( 'foo' ) )
+    </wc_js-test>
+    <wc_js-test>
+        var re= $jam.RegExp( '1((2)3)' )
+        _test.ok( re.count(), 2 )
+    </wc_js-test>
+    <wc_js-test>
+        _test.ok( $jam.RegExp.escape( '{[(' ), '\\{\\[\\(' )
+    </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/Lexer/jam+Lexer.doc.xhtml?MEM2FX">
+
+    <h1>$jam.Lexer</h1>
+
+    <p>Создаёт конкурентный регулярный лексический анализатор текста. На вход принимает карту лексем, которые соревнуются друг с другом за право первыми совпасть с подстрокой. текст не подошедший ни одной лексеме считается подошедшим лексеме "". Возвращаемый лексер - фактически генератор, который имет метод next() для перехода к следующей подстроке, поле name с именем совпавшей лексемы, поле found содержащее совпавший текст и поле chunks в которое попадает массив захваченных круглыми скобками (в регулярке) подстрок.</p>
+
+    <wc_js-test> _test.ok( $jam.Lexer ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.Lexer({ }) ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.Lexer({ })( '123' ) ) </wc_js-test>
+    <wc_js-test>
+        var lexer= $jam.Lexer({ digit: /\d/ })
+        var res= ''
+        for( var i= lexer( 'a12bc' ); i.next().found; ){
+            res+= i.name ? '#' : i.found
+        }
+        _test.ok( res, 'a##bc' )
+    </wc_js-test>
+    <wc_js-test>
+        var lexer= $jam.Lexer({ letter: /([a-zA-Z])/ })
+        var res= ''
+        for( var i= lexer( 'a12bc' ); i.next().found; ){
+            if( i.name ) res+= i.found
+        }
+        _test.ok( res, 'abc' )
+    </wc_js-test> 
+    <wc_js-test>
+        var lexer= $jam.Lexer(new function(){
+            this.underword= /(_(\w+))/
+            this.word= /(\w)(\w*)/
+        })
+        var res= ''
+        for( var i= lexer( '[_ab,c_d]' ); i.next().found; ){
+            switch( i.name ){
+                case 'underword': res+= i.chunks[ 1 ]; break;
+                case 'word': res+= i.chunks[ 0 ].toUpperCase() + i.chunks[ 1 ]; break;
+                default: res+= i.found
+            }
+        }
+        _test.ok( res, '[ab,C_d]' )
+    </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/Number/jam+Number.doc.xhtml?MEM2FX">
+
+    <h1>$jam.Number</h1>
+    <p>Создаёт обёртку для чисел.</p>
+
+    <wc_js-test> _test.ok( $jam.Number ) </wc_js-test>
+    <wc_js-test>
+        _test.ok( $jam.Number( 123 ) )
+    </wc_js-test>
+    <wc_js-test>
+        var numb= $jam.Number( 123 )
+        _test.ok( $jam.Number( numb ), numb )
+    </wc_js-test>
+    <wc_js-test>
+        var numb= $jam.Number( 123 )
+        _test.ok( numb.$, 123 )
+    </wc_js-test>
+    <wc_js-test>
+        var numb= $jam.Number( 123 )
+        _test.ok( +numb, 123 )
+    </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/Pipe/jam+Pipe.doc.xhtml?MEM2FX">
+
+    <h1>$jam.Pipe</h1>
+    <p>Выстраивает переданные ей функции в один трубопровод, где результат исполнения предыдущей подаётся на вход следующей.</p>
+
+    <wc_js-test> _test.ok( $jam.Pipe ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.Pipe() ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.Pipe()( 123 ), 123 ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.Pipe( Math.abs ), Math.abs ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.Pipe( Math.abs )( -5 ), 5 ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.Pipe( parseInt, Math.abs )( '-5px' ), 5 ) </wc_js-test>
+    
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/Parser/jam+Parser.doc.xhtml?MENI8U">
+
+    <h1>$jam.Parser</h1>
+
+    <p>Создаёт функцию-парсер. На вход принимает карту соответствия лексем фабрикам. В качестве параметров фабрикам передаются захваченные круглыми скобками подстроки. "" - дефолтная лексема, которая матчится на всё, на что не сматчились остальные. Парсер принимает на вход строку и возвращает массив полученных от фабрик значений.</p>
+
+    <wc_js-test> _test.ok( $jam.Parser ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.Parser({ }) ) </wc_js-test>
+    <wc_js-test> _test.ok( $jam.Parser({ })( '123' ) ) </wc_js-test>
+    <wc_js-test>
+        var parse= $jam.Parser( new function(){
+            this[ /\d/.source ]=
+            function( ){
+                return '#'
+            }
+        })
+        _test.ok( parse( 'a12bc' ).join(''), 'a##bc' )
+    </wc_js-test>
+    <wc_js-test>
+        var parse= $jam.Parser( new function(){
+            this[ /([a-zA-Z])/.source ]=
+            function( letter ){
+                return letter
+            }
+            this[ '' ]= $jam.Value( '' )
+        })
+        _test.ok( parse( 'a12bc' ).join(''), 'abc' )
+    </wc_js-test> 
+    <wc_js-test>
+        var parse= $jam.Parser( new function(){
+            this[ /(_(\w+))/.source ]=
+            function( underword, word ){
+                return word
+            }
+            this[ /(\w)(\w*)/.source ]=
+            function( first, tail ){
+                return first.toUpperCase() + tail
+            }
+        })
+        _test.ok( parse( '[_ab,c_d]' ).join(''), '[ab,C_d]' )
+    </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/String/jam+String.doc.xhtml?MEM2FY">
+
+    <h1>$jam.String</h1>
+    <p>Создаёт обёртку для строк.</p>
+
+    <wc_js-test> _test.ok( $jam.String ) </wc_js-test>
+    <wc_js-test>
+        _test.ok( $jam.String( 'foo' ) )
+    </wc_js-test>
+    <wc_js-test>
+        var str= $jam.String( 'foo' )
+        _test.ok( $jam.String( str ), str )
+    </wc_js-test>
+    <wc_js-test>
+        var str= $jam.String( 'foo' )
+        _test.ok( str.$, 'foo' )
+    </wc_js-test>
+    <wc_js-test>
+        var str= $jam.String( 'foo' )
+        _test.ok( str + 'bar', 'foobar' )
+    </wc_js-test>
+    <wc_js-test>
+        var str= $jam.String()
+        _test.ok( str.$, '' )
+    </wc_js-test>
+    <wc_js-test>
+        _test.ok( $jam.String( 'foo' ).length(), 3 )
+    </wc_js-test>
+    <wc_js-test>
+        var str= $jam.String( '    foo\n    bar' )
+        str.incIndent()
+        _test.ok( str.$, '        foo\n        bar' )
+    </wc_js-test>
+    <wc_js-test>
+        var str= $jam.String( '        foo\n        bar' )
+        str.decIndent()
+        _test.ok( str.$, '    foo\n    bar' )
+    </wc_js-test>
+    <wc_js-test>
+        var str= $jam.String( '        foo\n            bar' )
+        str.minimizeIndent()
+        _test.ok( str.$, 'foo\n    bar' )
+    </wc_js-test>
+    <wc_js-test>
+        var str= $jam.String( '\t\t' )
+        str.normilizeSpaces()
+        _test.ok( str.$, '        ' )
+    </wc_js-test>
+    <wc_js-test>
+        var str= $jam.String( '\t abc\n' )
+        str.trim()
+        _test.ok( str.$, 'abc' )
+    </wc_js-test>
+    <wc_js-test>
+        var str= $jam.String( 'abacabcba' )
+        str.trim( /ab?/ )
+        _test.ok( str.$, 'cabcb' )
+    </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/TemplateFactory/jam+TemplateFactory.doc.xhtml?MEM2FY">
+
+    <h1>$jam.TemplateFactory</h1>
+    <p>Фабрика по производству шаблонизаторов.</p>
+
+    <wc_js-test> _test.ok( $jam.TemplateFactory ) </wc_js-test>
+    <wc_js-test>
+        var Template= $jam.TemplateFactory()
+        var template= Template( 'a{0}b' )
+        _test.ok( String( template ), 'a{0}b' )
+    </wc_js-test>
+    <wc_js-test>
+        var Template= $jam.TemplateFactory()
+        var template= Template( 'a{0}b' ).fill([1])
+        _test.ok( String( template ), 'a1b' )
+    </wc_js-test>
+    <wc_js-test>
+        var Template= $jam.TemplateFactory()
+        var template= Template( 'a{0}{1}b' ).fill([1, 2])
+        _test.ok( String( template ), 'a12b' )
+    </wc_js-test>
+    <wc_js-test>
+        var Template= $jam.TemplateFactory()
+        var template= Template( 'a{{0}}{1}b' ).fill( [1, 2] )
+        _test.ok( String( template ), 'a{0}2b' )
+    </wc_js-test>
+    <wc_js-test>
+        var Template= $jam.TemplateFactory({ tokens: '[]' })
+        var template= Template( 'a[0]b' ).fill( [1] )
+        _test.ok( String( template ), 'a1b' )
+    </wc_js-test>
+    <wc_js-test>
+        var Selector= $jam.TemplateFactory.Selector( function( str ){
+            return '(' + str + ')'
+        })
+        var Template= $jam.TemplateFactory({ Selector: Selector })
+        var template= Template( 'a{0}b' ).fill( [1] )
+        _test.ok( String( template ), 'a(1)b' )
+    </wc_js-test>
+    <wc_js-test>
+        var encoder= function( str ){
+            return '(' + str + ')'
+        }
+        var Template= $jam.TemplateFactory({ encoder: encoder })
+        var template= Template( 'a{0}b' ).fill( [1] )
+        _test.ok( String( template ), 'a(1)b' )
+    </wc_js-test>
+    <wc_js-test>
+        var Selector= function( str, key ){
+            return key.toUpperCase()
+        }
+        var Template= $jam.TemplateFactory({ Selector: Selector })
+        var template= Template( 'a{b}c' )
+        _test.ok( String( template ), 'aBc' )
+    </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/Throttler/jam+Throttler.doc.xhtml?MEM2FY">
+
+    <h1>$jam.Throttler</h1>
+    <p>Обёртка для функции, для выполнения её не чаще заданного числа миллисекунд. Вызов произойдёт через заданное время после первого вызова, но с параметрами от последнего на текущий момент вызова.</p>
+
+    <wc_js-test> _test.ok( $jam.Throttler ) </wc_js-test>
+    <wc_js-test>
+        _test.deadline( 200 )
+        var count= 0
+        var func= $jam.Throttler( 50, function( ){
+            ++count
+        })
+        func()
+        func()
+        $jam.schedule( 10, function( ){
+            func()
+        })
+        $jam.schedule( 100, function( ){
+            _test.ok( count, 1 )
+        })
+    </wc_js-test>
+    <wc_js-test>
+        _test.deadline( 200 )
+        var func= $jam.Throttler( 50, function( arg ){
+            _test.ok( arg, 3 )
+        })
+        func( 1 )
+        func( 2 )
+        $jam.schedule( 10, function( ){
+            func( 3 )
+        })
+    </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/Transformer/jam+Transformer.doc.xhtml?MEM2FY">
+
+    <h1>$jam.Trasformer</h1>
+
+    <wc_js-test>
+        _test.ok( $jam.Transformer )
+    </wc_js-test>
+    
+    <wc_js-test>
+        var transformer= $jam.Transformer( new function( ){
+            this.userinfo= '<p>{name:username} {birthday:date}</p>'
+            this.username= '<srong>{.}</srong>'
+            this.date= ' <small>{.}</small>'
+        } )
+        _test.ok(  )
+    </wc_js-test>
+    
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/Tree/jam+Tree.doc.xhtml?MEM2FY">
+
+    <h1>$jam.Tree</h1>
+
+    <wc_js-test>
+        with( $jam ){
+            var parse= $jam.Tree.Parser()
+            var tr= parse( 'a=1' )
+            _test.ok( tr.$[0].name, 'a' )
+        }
+    </wc_js-test>
+
+    <wc_js-test>
+        with( $jam ){
+            var parse= $jam.Tree.Parser()
+            var tr= parse( 'a=1' )
+            _test.ok( tr.$[0].content[0], '1' )
+        }
+    </wc_js-test>
+
+    <wc_js-test>
+        with( $jam ){
+            var parse= $jam.Tree.Parser()
+            var tr= parse( 'a_b=1' )
+            _test.ok( tr.$[0].content[0].name, 'b' )
+        }
+    </wc_js-test>
+
+    <wc_js-test>
+        with( $jam ){
+            var parse= $jam.Tree.Parser()
+            var tr= parse( 'a_b=1' )
+            _test.ok( tr.$[0].content[0].content[0], '1' )
+        }
+    </wc_js-test>
+
+    <wc_js-test>
+        with( $jam ){
+            var parse= $jam.Tree.Parser()
+            var tr= parse( 'a_;+b=1' )
+            _test.ok( tr.$[0].content[0].content[0], '1' )
+        }
+    </wc_js-test>
+
+    <wc_js-test>
+        with( $jam ){
+            var parse= $jam.Tree.Parser()
+            var tr= parse( 'a_;b_;+c=1' )
+$log(JSON.stringify(tr.$))
+            _test.ok( tr.$[0].content[0].content[1], '1' )
+        }
+    </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/body/jam+body.doc.xhtml?MEM2FY">
+
+    <h1>$jam.body</h1>
+
+    <p>Возвращает элемент body.</p>
+
+    <p>
+        <wc_js-test> _test.ok( $jam.body ) </wc_js-test>
+        <wc_js-test> _test.ok( $jam.body(), this.document.body ) </wc_js-test>
+    </p>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" doc_link="../../jam/domx/jam+domx.doc.xhtml?MEM2FY">
+
+    <h1>$jam.domx</h1>
+    <p>Обёртка вокруг XML документа.</p>
+
+    <wc_js-test>
+    <![CDATA[
+        with( $jam ){
+            var str= '<xxx/>'
+            _test.ok( $jam.domx.parse( str ).toString(), str )
+        }
+    ]]>
+    </wc_js-test>
+
+    <wc_js-test>
+    <![CDATA[
+        with( $jam ){
+            var xml= $jam.domx.parse( '<xxx />' )
+            var xsl= $jam.domx.parse( '<stylesheet version="1.0" xmlns="http://www.w3.org/1999/XSL/Transform"><template match="xxx"><yyy xmlns="y"/></template></stylesheet>' )
+            var res= $jam.domx.parse( '<yyy xmlns="y" />' )
+            _test.ok( xml.transform( xsl ).toString(), res.toString() )
+        }
+    ]]>
+    </wc_js-test>
+
+</doc_root><doc_root doc_title="$jin_makeId" doc_link="../../jin/makeId/jin_makeId.doc.xhtml?MF5YJ2">
+
+    <p>Функция генерирующая уникльный идентификатор на основе переданного ей префикса. </p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_makeId )
+        </script>
+        <script type="wc_test">
+            test.not( $jin_makeId(), $jin_makeId() )
+        </script>
+    </p>
+    
+</doc_root><doc_root doc_title="$jin_thread" doc_link="../../jin/thread/jin_thread.doc.xhtml?MF5YJ2">
+
+    <p>Создаёт обёртку вокруг функции, которая выполняет её в отдельном, но синхронном потоке.</p>
+
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_thread )
+        </script>
+        <script type="wc_test">
+            var thread= $jin_thread(function(){
+                return 123
+            })
+            test.ok( thread(), 123 )
+        </script>
+        <script type="wc_test">
+            var thread= $jin_thread(function(){
+                throw new Error( 'sample error' )
+            })
+            test.ok( thread(), void 0 )
+        </script>
+        <script type="wc_test">
+            var fact= $jin_thread(function( n ){
+                if (!( n &gt; 1 )) return 1;
+                return n * fact( n - 1 );
+            });
+            test.ok( fact(5), 120 )
+        </script>
+    </p>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/eval/jam+eval.doc.xhtml?MEM2FY">
+
+    <h1>$jam.eval</h1>
+
+    <p>Исполняет переданный в качестве строки код в глобальном контексте в отдельном синхронном потоке.</p>
+
+    <p>
+        <wc_js-test> _test.ok( $jam.eval ) </wc_js-test>
+        <wc_js-test> _test.ok( $jam.eval( '1+2' ), 3 ) </wc_js-test>
+        <wc_js-test> _test.ok( $jam.eval( '(!)' ), void 0 ) </wc_js-test>
+    </p>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/eventClone/jam+eventClone.doc.xhtml?MEM2FY">
+
+    <h1>$jam.eventClone</h1>
+
+    <p>Событие, которое возникает на элементе, если на ходясь в нём нажать ctrl+shit+enter. Означает, что пользователь клонировать текущий редактируемый объект.</p>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/eventCommit/jam+eventCommit.doc.xhtml?MEM2FY">
+
+    <h1>$jam.eventCommit</h1>
+
+    <p>Событие, которое возникает на элементе, если на ходясь в нём нажать ctrl+enter. Означает, что пользователь закончил редактирование и можно как-то обрабатывать результат.</p>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/eventDelete/jam+eventDelete.doc.xhtml?MEM2FY">
+
+    <h1>$jam.eventDelete</h1>
+
+    <p>Событие, которое возникает, когда пользователь хочет удалить какой-то объект.</p>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/eventEdit/jam+eventEdit.doc.xhtml?MEM2FY">
+
+    <h1>$jam.eventEdit</h1>
+
+    <p>Событие, которое возникает на элементе, когда его содержимое редактируется пользователем. Событие троттлится, чтобы вызываться не слишком часто. Содержимое при этом не обязательно действительно меняется.</p>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/eventURIChanged/jam+eventURIChanged.doc.xhtml?MEM2FY">
+
+    <h1>$jam.eventURIChanged</h1>
+
+    <p>Событие, которое возникает на документе, когда меняется его адресс.</p>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../jam/log/jam+log.doc.xhtml?MEM2FY">
+
+    <h1>$jam.log</h1>
+    <p>Логгирует переданные значения в консоль</p>
+
+    <wc_js-test> _test.ok( $jam.log ) </wc_js-test>
+    <wc_js-test>
+        $jam.log( 'sample log' )
+        _test.ok()
+    </wc_js-test>
+    <wc_js-test>
+        $jam.log( 'two', 'sample logs' )
+        _test.ok()
+    </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../wc/wc/wc.doc.xhtml?MEM2FZ">
+
+    <h1>wc</h1>
+    <p>Набор виджетов, из которых как из конструктора можно собирать страницы.</p>
+
+    <wc_js-test> _test.ok( $wc ) </wc_js-test>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../wc/binom/wc-binom.doc.xhtml?MEM2FZ">
+
+    <h1>wc_binom</h1>
+
+    <p>
+        <wc_demo>
+        <![CDATA[
+            <wc_spacer>
+                <p>Иногда ширина страницы бывает слишком большой для узкого контента. </p>
+                <wc_binom>
+                    <wc_binom-left>
+                        <p>В таких случаях не лишним будет разбить страницу на несколько колонок.</p>
+                    </wc_binom-left>
+                    <wc_binom-right>
+                        <p>Колонки занимают всю доступную ширину, и между ними вставляется вертикальная линия.</p>
+                    </wc_binom-right>
+                </wc_binom>
+                <p>Последующий текст</p>
+            </wc_spacer>
+        ]]>
+        </wc_demo>
+    </p>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../wc/button/wc-button.doc.xhtml?MEM2FZ">
+
+    <h1>wc_button</h1>
+
+    <p>
+        <wc_demo>
+        <![CDATA[
+            <wc_spacer>
+                <wc_button><button>
+                    Вам нравятся эти Гламурные Кнопочки с закруглёнными краями и градиентным фоном?
+                </button></wc_button>
+                <wc_button><button onclick=" alert( 'Ваше мнение очень ценно для нас!' ) ">
+                    Да
+                </button></wc_button>
+                <wc_button><button onclick=" alert( 'Данная кнопка временно не работает. Попробуйте нажать её позже..' ) ">
+                    Нет
+                </button></wc_button>
+                <wc_button><button onclick=" alert( 'Воздержание вредно для здоровья!' ) ">
+                    Воздерживаюсь
+                </button></wc_button>
+            </wc_spacer>
+        ]]>
+        </wc_demo>
+    </p>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../wc/demo/wc-demo.doc.xhtml?MEM2FZ">
+
+    <h1>wc_demo</h1>
+
+    <p>Демонстрирует html-код и позволяет тут же посмотреть его результат.</p>
+    
+    <wc_demo>
+    <![CDATA[
+        <wc_spacer>
+            <wc_demo>
+                &lt;a
+                    id="_wc-demo_test_1_"
+                    href="http://ya.ru/"
+                    onclick=" alert( 'Спасибо!' ) "
+                    style=" color: red "
+                    >
+                    Нажми меня
+                &lt;/a&gt;
+                &lt;script&gt;
+                    document.getElementById( '_wc-demo_test_1_' ).innerHTML+= '!'
+                &lt;/script&gt;
+            </wc_demo>
+        </wc_spacer>
+    ]]>
+    </wc_demo>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../wc/desktop/wc-desktop.doc.xhtml?MEM2FZ">
+
+    <h1>wc_desktop</h1>
+
+    <wc_demo>
+    <![CDATA[
+        <wc_desktop>
+            <wc_spacer>
+                Виджет предназначен для рисования серой подложки, растянутой на всю доступную область.
+            </wc_spacer>
+        </wc_desktop>
+    ]]>
+    </wc_demo>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../wc/editor/wc_editor.doc.xhtml?MEM2FZ">
+
+    <h1>wc_editor</h1>
+    
+    <p>Встраиваемый редактор с поддержкой подсветки синтаксиса.</p>
+
+    <wc_demo>
+    <![CDATA[
+        <wc_editor class=" hlight=js " >
+            var Test= function( ){
+                this.foo= "b/a/r"
+                /* var \*/
+            }
+            return new Test
+        </wc_editor>
+    ]]>
+    </wc_demo>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../wc/footer/wc-footer.doc.xhtml?MEM2FZ">
+
+    <h1>wc_footer</h1>
+
+    <wc_demo>
+    <![CDATA[
+        <wc_spacer>
+            Рисует некоторую область, отрезанную от контента до неё.
+        </wc_spacer>
+        <wc_footer>
+            Содержимое области считается не особо важным.
+        </wc_footer>
+    ]]></wc_demo>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../wc/hlight/wc-hlight.doc.xhtml?MEM2FZ">
+
+    <h1>wc_hlight</h1>
+    
+    <p>Виджет для подсветки синтаксиса в возможностью редактирования</p>
+
+    <wc_demo>
+    <![CDATA[
+        <wc_hlight wc_hlight_lang="js" >
+            var Test= function( ){
+                this.foo= "b/a/r"
+                /* var \*/
+            }
+            return new Test
+        </wc_hlight>
+    ]]>
+    </wc_demo>
+
+    <wc_demo>
+    <![CDATA[
+        <wc_hlight class=" lang=css editable=true " >
+            wc_hlight#wc-hlight.lang\=css:after:hover {
+                color: blue;
+                /* border: none */
+                font-family: 'Arial', sans-serif;
+            }
+        </wc_hlight>
+    ]]>
+    </wc_demo>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../wc/js-bench/wc_js-bench.doc.xhtml?MEM2FZ">
+
+    <h1>wc_js-bench</h1>
+    
+    <p>Виджет для сравнения скорости работы различных алгоритмов. Автоматически подбирает число итераций, чтобы с одной стороны была достаточная точность, а с другой - измерение не занимало слишком много времени. Возвращает результат в микросекундах. В коде вы можете использовать специальные конструкции <code>_bench.begin()</code> и <code>_bench.end()</code>, чтобы разделить его на два: внутренний и внешний. В этом случае убет отдельно измерена скорость работы внешнего кода и отдельно внутреннего. При наведении на результат показывается время компиляции. Код можно редактировать. Чтобы запустить егё пересчёт достаточно нажать <code>ctrl+enter</code>.</p>
+
+    <p>
+        <wc_demo>
+        <![CDATA[
+            <wc_spacer>
+                <wc_js-bench_list>
+                    <wc_js-bench>
+                        new function( ){ }
+                    </wc_js-bench>
+                    <wc_js-bench>
+                        { }
+                    </wc_js-bench>
+                </wc_js-bench_list>
+            </wc_spacer>
+        ]]>
+        </wc_demo>
+    </p>
+
+    <p>
+        <wc_demo>
+        <![CDATA[
+            <wc_spacer>
+                <wc_js-bench_list>
+                    <wc_js-bench>
+                        with({ a: 1 }){
+                            _bench.begin()
+                                a= 2
+                            _bench.end()
+                        }
+                    </wc_js-bench>
+                    <wc_js-bench>
+                        var obj= { a: 1 }
+                        _bench.begin()
+                            obj.a= 2
+                        _bench.end()
+                    </wc_js-bench>
+                </wc_js-bench_list>
+            </wc_spacer>
+        ]]>
+        </wc_demo>
+    </p>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../wc/js-test/wc_js-test.doc.xhtml?MEM2FZ">
+
+    <h1>wc_js-test</h1>
+
+    <p>Виджет для тестирования яваскрипт кода. Берёт своё текстовое содержимое и исполняет в отдельном потоке. Если результат исполнения ложный или было брошено исключение, то краснеет. Иначе - зеленеет. Попутно, производит подсветку кода. В следующих тестах зелёным подсвечиваются только выражения возвращающие истину.</p>
+
+    <h2>Позитивные тесты</h2>
+    <wc_demo>
+    <![CDATA[
+        <wc_spacer>
+            <wc_js-test>
+                _test.ok()
+            </wc_js-test>
+            <wc_js-test>
+                _test.ok( true )
+            </wc_js-test>
+            <wc_js-test>
+                _test.ok( false, false )
+            </wc_js-test>
+            <wc_js-test> _test.ok( this, window ) </wc_js-test>
+            <wc_js-test>
+                _test.deadline( 100 )
+                $jam.schedule
+                (   50
+                ,   function(){
+                        _test.ok( true )
+                    }
+                )
+            </wc_js-test>
+        </wc_spacer>
+    ]]>
+    </wc_demo>
+    
+    <h2>Негативные тесты</h2>
+    <wc_demo>
+    <![CDATA[
+        <wc_spacer>
+            <wc_js-test> throw new Error( 'sample error' ) </wc_js-test>
+            <wc_js-test> true= false </wc_js-test>
+            <wc_js-test> (!) </wc_js-test>
+            <wc_js-test>
+                _test.ok( void 0 )
+            </wc_js-test>
+            <wc_js-test>
+                _test.ok( true, 'true' )
+            </wc_js-test>
+            <wc_js-test>
+                return
+                _test.ok()
+            </wc_js-test>
+            <wc_js-test>
+                var val
+            </wc_js-test>
+            <wc_js-test>
+                _test.deadline( 100 )
+                var val
+            </wc_js-test>
+            <wc_js-test>
+                _test.deadline( 100 )
+                $jam.schedule( 50, function(){
+                    _test.ok( false )
+                })
+            </wc_js-test>
+            <wc_js-test>
+                _test.deadline( 50 )
+                $jam.schedule( 100, function(){
+                    _test.ok( true )
+                })
+            </wc_js-test>
+            <wc_js-test>
+                _test.deadline( 100 )
+                $jam.schedule( 50, function(){
+                    throw 321
+                })
+            </wc_js-test>
+            <wc_js-test>
+                _test.deadline( 50 )
+                _test.deadline( 100 )
+                _test.ok()
+            </wc_js-test>
+        </wc_spacer>
+    ]]>
+    </wc_demo>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../wc/paper/wc-paper.doc.xhtml?MEM2FZ">
+
+    <h1>wc_paper</h1>
+
+    <wc_demo>
+    <![CDATA[
+        <wc_spacer>
+            <wc_paper>
+                <wc_spacer>
+                    Рисует лист бумаги в качестве подложки.
+                </wc_spacer>
+            </wc_paper>
+        </wc_spacer>
+    ]]>
+    </wc_demo>
+
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../wc/sidebar/wc-sidebar.doc.xhtml?MEM2FZ">
+
+    <h1>wc_sidebar</h1>
+
+    <p>Рисует боковую панель. Она может располагаться как слева, так и справа.</p>
+
+    <wc_demo>
+    <![CDATA[
+        <wc_sidebar wc_sidebar_align="left">
+            Левая панель
+        </wc_sidebar>
+        <wc_sidebar wc_sidebar_align="right">
+            Правая панель
+        </wc_sidebar>
+        <wc_paper>
+            <wc_spacer>
+                Основной контент
+            </wc_spacer>
+        </wc_paper>
+    ]]>
+    </wc_demo>
+    
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../wc/spacer/wc-spacer.doc.xhtml?MEM2FZ">
+
+    <h1>wc_spacer</h1>
+
+    <p>Задаёт контенту небольшой отступ, величина которого зависит от ширины доступной области.</p>
+
+    <wc_demo>
+    <![CDATA[
+        <wc_spacer>
+            Это позволяет комфортно просмотривать страницу как на больших мониторах, так и на маленьких.
+        </wc_spacer>
+    ]]>
+    </wc_demo>
+
+</doc_root><doc_root doc_title="$jin_method" doc_link="../../jin/method/jin_method.doc.xhtml?MF5YJ2">
+
+    <p>Трансформирует функцию в метод, который передаёт свой this в функцию в качестве первого аргумента.</p>
+
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_method )
+        </script>
+        <script type="wc_test">
+            var func= function( obj, a ){ return [ obj.field, a ] }
+            var method= $jin_method( func )
+            test.ok( method.call, func )
+        </script>
+        <script type="wc_test">
+            var func= function( obj, a ){ return [ obj.field, a ] }
+            var obj=
+            {   field: 7
+            ,   method: $jin_method( func )
+            }
+            test.ok( obj.method( 3 ).join(), func( obj, 3 ).join() )
+        </script>
+    </p>
+
+    <p>Если передать что-то отличное от функции, то вернёт это значение без изменений.</p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_method( 123 ), 123 )
+        </script>
+    </p>
+    
+</doc_root><doc_root doc_title="$jin_class" doc_link="../../jin/class/jin_class.doc.xhtml?MF5YJ2">
+
+    <p>Создаёт фабрику объектов на основе функции инициализации. </p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_class )
+        </script>
+        <script type="wc_test">
+            var Man= $jin_class( function( ){ } )
+            test.ok( Man )
+        </script>
+        <script type="wc_test">
+            var Man= $jin_class( function( ){ } )
+            test.ok( Man() )
+        </script>
+    </p>
+    
+    <p>В функцию инициализации передаётся два объекта: объект класса и прототип объектов. </p>
+    <p>
+        <script type="wc_test">
+            var Man= $jin_class( function( Man, man ){
+                Man.title= 'Superman'
+            } )
+            test.ok( Man.title, 'Superman' )
+        </script>
+        <script type="wc_test">
+            var Man= $jin_class( function( Man, man ){
+                man.name= 'Bob'
+            } )
+            test.ok( Man().name, 'Bob' )
+        </script>
+    </p>
+
+    <p>Методы объявляются как функции, первым аргументом принимающие объект. В конце инициализации класса все такие функции преобразуются в методы с помощью <a wc_link="true" href="../method/jin_method.doc.xhtml">$jin_method</a>. Имейте ввиду, что "this" при их исполнении будет указывать куда попало, зато не надо будет сохранять его в переменную, чтобы передать в замыкание.</p>
+    <p>
+        <script type="wc_test">
+            var Man= $jin_class( function( Man, man ){
+                man.name= 'Bob'
+                man.makeMessage= function( man, message ){
+                    return man.name + ': ' + message
+                }
+            } )
+            test.ok( Man().makeMessage( 'hi!' ), 'Bob: hi!' )
+        </script>
+        <script type="wc_test">
+            var Man= $jin_class( function( Man, man ){
+                man.getThis= function( man ){
+                    return this
+                }
+            } )
+            
+            var man= Man()
+            test.not( man.getThis(), man )
+        </script>
+        <script type="wc_test">
+            test.timeout= 10
+            
+            var Man= $jin_class( function( Man, man ){
+                man.name= 'Bob'
+                man.testName= function( man ){
+                    setTimeout( function( ){
+                        test.ok( man.name, 'Bob' ).done()
+                    }, 0 )
+                }
+            } )
+            
+            Man().testName()
+        </script>
+    </p>
+
+    <p>Создание объектов возможно как с помощью ключевого слова new (тогда создаётся неинициализированный объект), так и простым вызовом как функции (тогда создание объекта будет делегировано статическому методу "make", который при необходимости создаёт объект и производит его инициализацию методом "init" - оба метода существуют изначально и могут быть перегружены). </p>
+    <p>
+        <script type="wc_test">
+            var Man= $jin_class( function( ){ } )
+            test.ok( ( new Man ) instanceof Man )
+        </script>
+        <script type="wc_test">
+            var Man= $jin_class( function( ){ } )
+            test.ok( Man() instanceof Man )
+        </script>
+        <script type="wc_test">
+            var Man= $jin_class( function( Man, man ){
+                man.name= null
+                
+                man.init= function( man, name ){
+                    man.name= name
+                }
+            } )
+            
+            test.ok( Man( 'Bob' ).name, 'Bob' )
+        </script>
+        <script type="wc_test">
+            var Man= $jin_class( function( Man, man ){
+                man.name= 'Bob'
+                
+                man.init= function( man ){
+                    man.name= 'Jim'
+                }
+            } )
+            
+            test.ok( ( new Man ).name, 'Bob' )
+        </script>
+        <script type="wc_test">
+            var Man= $jin_class( function( Man, man ){
+                Man.make= function( ){
+                    return 123
+                }
+            } )
+            test.ok( Man(), 123 )
+        </script>
+    </p>
+    
+    <p>Для наследования используется концепция "примесей". Функция инициализации сохраняется в качестве статического метода "scheme" и может быть вызвана внутри другой функции инициализации. </p>
+    <p>
+        <script type="wc_test">
+            var Coord= $jin_class( function( Coord, coord ){
+                coord.x= 0
+                coord.y= 0
+            } )
+            
+            var Point= $jin_class( function( Point, point ){
+                Coord.scheme( Point, point )
+                
+                point.toString= function( point ){
+                    return '[' + [ point.x, point.y ] + ']'
+                }
+            } )
+            
+            test.ok( Point().toString(), '[0,0]' )
+        </script>
+    </p>
+    
+    <p>Перед перегрузкой метода можно сохранить предыдущую версию в локальную переменную и вызвать её когда потребуется. Имейте ввиду, что это будет функция ещё не обработанная с помощью $jam_method.</p>
+    <p>
+        <script type="wc_test">
+            var Singleton= $jin_class( function( Singleton, ston ){
+                var instance= null
+                
+                var make= Singleton.make
+                Singleton.make= function( ){
+                    if( instance ) return instance
+                    
+                    return instance= make.apply( this, arguments )
+                }
+            } )
+            
+            var API= $jin_class( function( API, api ){
+                Singleton.scheme( API, api )
+                
+                api.name= null
+                
+                api.init= function( api, name ){
+                    api.name= name
+                }
+            } )
+            
+            test.ok( API( 'foo' ).name, API( 'bar' ).name, 'foo' )
+        </script>
+    </p>
+    
+    <p>Сравним скорость с иными реализациями.</p>
+    <wc_bench_list>
+        <script type="wc_bench">
+            var Man= $jin_class( function( Man, man ){
+                man.name= null
+                man.init= function( man, name ){
+                    man.name= name
+                }
+                man.getName= function( man ){
+                    return man.name
+                }
+                man.setName= function( man, name ){
+                    man.name= name
+                    return man
+                }
+            } )
+            
+            _bench.begin()
+                Man( 'Bob' ).getName()
+            _bench.end()
+        </script>
+        <script type="wc_bench">
+            var Man= function( name ){
+                this.name= name
+            }
+            Man.prototype.man= null
+            Man.prototype.getName= function( ){
+                return this.name
+            }
+            Man.prototype.setName= function( name ){
+                this.name= name
+                return this
+            }
+            
+            _bench.begin()
+                ( new Man( 'Bob' ) ).getName()
+            _bench.end()
+        </script>
+    </wc_bench_list>
+    
+</doc_root><doc_root doc_title="$jin_test" doc_link="../../jin/test/jin_test.doc.xhtml?MF5YJ2">
+
+    <p>Тестирует код на наличие ошибок. Результат можно узнать заглянув в поле "passed". </p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_test )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' ')
+            test.ok( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' .. ')
+            test.not( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' (void 0)() ')
+            test.not( testo.passed )
+        </script>
+    </p>
+
+    <p>Возникающие в процессе работы ошибки логируются в массиве "errors". </p>
+    <p>
+        <script type="wc_test">
+            var testo= $jin_test(' (void 0)() ')
+            test.ok( testo.errors[0] )
+        </script>
+    </p>
+
+    <p>Кроме исходного кода в виде строки можно передать функцию, которая принимает параметром инстанс теста. Разумеется в этом случае обработка синтаксических ошибок будет уже на вашей совести. </p>
+    <p>
+        <script type="wc_test">
+            var testo= $jin_test( function( testo ){
+                testo.passed
+            } )
+            test.ok( testo.passed )
+        </script>
+    </p>
+
+    <p>Предоставляет исполняемому коду инстанс теста в качестве переменной "test". Он имеет два метода - ok и not. Вызванные без параметров они объявляют тест пройденным и проваленным соответственно. </p>
+    <p>
+        <script type="wc_test">
+            var testo= $jin_test(' test.ok() ')
+            test.ok( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' test.not() ')
+            test.not( testo.passed )
+        </script>
+    </p>
+
+    <p>Если в "test.ok" или "test.not" передать одно значение, то тест будет пройден только если оно истинное и ложное соответственно.</p>
+    <p>
+        <script type="wc_test">
+            var testo= $jin_test(' test.ok( 1 ) ')
+            test.ok( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' test.ok( 0 ) ')
+            test.not( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' test.not( 0 ) ')
+            test.ok( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' test.not( 1 ) ')
+            test.not( testo.passed )
+        </script>
+    </p>
+    
+    <p>Если в "test.ok" или "test.not" передать два параметра, то тест будет пройден только если они равны или не равны соответственно. Сравнение строгое.</p>
+    <p>
+        <script type="wc_test">
+            var testo= $jin_test(' test.ok( 1, 1 ) ')
+            test.ok( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' test.ok( 1, 2 ) ')
+            test.not( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' test.not( 2, 1 ) ')
+            test.ok( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' test.not( 2, 2 ) ')
+            test.not( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' test.ok( {}, {} ) ')
+            test.not( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' test.ok( 0 / 0, Number.NaN ) ')
+            test.ok( testo.passed )
+        </script>
+        <script type="wc_test">
+            var testo= $jin_test(' test.ok( 1 / 0, Number.POSITIVE_INFINITY ) ')
+            test.ok( testo.passed )
+        </script>
+    </p>
+    
+    <p>Чтобы сделать тест асинхронным нужно задать таймаут в миллисекундах до истечения которого тест по любому должен завершиться. Кроме того, по окончании всех асинхронных операций следует вызвать метод "done". Имейте ввиду, что асинхронные тесты стартуют последовательно, не дожидаясь завершения других асинхронных тестов.</p>
+    <p>
+        <script type="wc_test">
+            test.timeout= 100
+            
+            var testo= $jin_test(' test.timeout= 50 ')
+            
+            test.not( testo.passed ).done()
+        </script>
+        <script type="wc_test">
+            test.timeout= 100
+            
+            var testo= $jin_test(' test.timeout= 50 ')
+            
+            setTimeout( function( ){
+                test.not( testo.passed ).done()
+            }, 75 )
+        </script>
+        <script type="wc_test">
+            test.timeout= 100
+            
+            var testo= $jin_test(' test.timeout= 50; test.done() ')
+            
+            test.ok( testo.passed ).done()
+        </script>
+        <script type="wc_test">
+            test.timeout= 100
+            
+            var testo= $jin_test( function( testo ){
+                testo.timeout= 50
+                setTimeout( function( ){
+                    testo.done()
+                }, 25 )
+            } )
+            
+            setTimeout( function( ){
+                test.ok( testo.passed ).done()
+            }, 75 )
+        </script>
+        <script type="wc_test">
+            test.timeout= 100
+            
+            var testo= $jin_test( function( testo ){
+                testo.timeout= 25
+                setTimeout( function( ){
+                    testo.done()
+                }, 50 )
+            } )
+            
+            setTimeout( function( ){
+                test.not( testo.passed ).done()
+            }, 75 )
+        </script>
+    </p>
+    
+    <p>Чтобы ловить ошибки и в коллбэках, вызываемых асинхронно, стоит заворачивать их в "test.callback".</p>
+    <p>
+        <script type="wc_test">
+            test.timeout= 100
+            
+            var testo= $jin_test( function( testo ){
+                testo.timeout= 50
+                setTimeout( function( ){
+                    (void 0)()
+                }, 25 )
+            } )
+            
+            setTimeout( function( ){
+                test.ok( testo.errors[0].message, 'timeout(50)' ).done()
+            }, 75 )
+        </script>
+        <script type="wc_test">
+            test.timeout= 100
+            
+            var testo= $jin_test( function( testo ){
+                testo.timeout= 50
+                setTimeout( testo.callback( function( ){
+                    (void 0)()
+                } ), 25 )
+            } )
+            
+            setTimeout( function( ){
+                test.not( testo.errors[0].message, 'timeout(50)' ).done()
+            }, 75 )
+        </script>
+    </p>
+    
+    <p>Для отслеживания завершения асинхронного теста можно передать вторым параметром колбэк-функцию.</p>
+    <p>
+        <script type="wc_test">
+            test.timeout= 50
+            
+            var testo= $jin_test( function( testo ){
+                testo.timeout= 100
+                setTimeout( function( ){
+                    testo.done()
+                }, 25 )
+            }, function( testo ){
+                test.ok( testo.passed ).done()
+            } )
+        </script>
+    </p>
+    
+</doc_root><doc_root xmlns="http://www.w3.org/1999/xhtml" doc_link="../../wc/test/wc_test.doc.xhtml?MEM2FZ">
+
+    <h1>wc_js-test</h1>
+
+    <p>Виджет для тестирования яваскрипт кода. Берёт своё текстовое содержимое и исполняет в отдельном потоке. Если результат исполнения ложный или было брошено исключение, то краснеет. Иначе - зеленеет. Попутно, производит подсветку кода. В следующих тестах зелёным подсвечиваются только выражения возвращающие истину.</p>
+
+    <h2>Позитивные тесты</h2>
+    <wc_demo>
+    <![CDATA[
+        <wc_spacer>
+            <wc_js-test>
+                _test.ok()
+            </wc_js-test>
+            <wc_js-test>
+                _test.ok( true )
+            </wc_js-test>
+            <wc_js-test>
+                _test.ok( false, false )
+            </wc_js-test>
+            <wc_js-test> _test.ok( this, window ) </wc_js-test>
+            <wc_js-test>
+                _test.deadline( 100 )
+                $jam.schedule
+                (   50
+                ,   function(){
+                        _test.ok( true )
+                    }
+                )
+            </wc_js-test>
+        </wc_spacer>
+    ]]>
+    </wc_demo>
+    
+    <h2>Негативные тесты</h2>
+    <wc_demo>
+    <![CDATA[
+        <wc_spacer>
+            <wc_js-test> throw new Error( 'sample error' ) </wc_js-test>
+            <wc_js-test> true= false </wc_js-test>
+            <wc_js-test> (!) </wc_js-test>
+            <wc_js-test>
+                _test.ok( void 0 )
+            </wc_js-test>
+            <wc_js-test>
+                _test.ok( true, 'true' )
+            </wc_js-test>
+            <wc_js-test>
+                return
+                _test.ok()
+            </wc_js-test>
+            <wc_js-test>
+                var val
+            </wc_js-test>
+            <wc_js-test>
+                _test.deadline( 100 )
+                var val
+            </wc_js-test>
+            <wc_js-test>
+                _test.deadline( 100 )
+                $jam.schedule( 50, function(){
+                    _test.ok( false )
+                })
+            </wc_js-test>
+            <wc_js-test>
+                _test.deadline( 50 )
+                $jam.schedule( 100, function(){
+                    _test.ok( true )
+                })
+            </wc_js-test>
+            <wc_js-test>
+                _test.deadline( 100 )
+                $jam.schedule( 50, function(){
+                    throw 321
+                })
+            </wc_js-test>
+            <wc_js-test>
+                _test.deadline( 50 )
+                _test.deadline( 100 )
+                _test.ok()
+            </wc_js-test>
+        </wc_spacer>
+    ]]>
+    </wc_demo>
+
+</doc_root></doc_list>

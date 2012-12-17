@@ -1,0 +1,833 @@
+{
+    "jam/jam": [
+        "jam/jam",
+        "jam/define",
+        "jam/Class",
+        "jam/Poly",
+        "jam/Hash",
+        "jam/Cached",
+        "jam/schedule",
+        "jam/Obj",
+        "jam/Clock",
+        "jam/Value",
+        "jam/domReady",
+        "jam/select",
+        "jam/support",
+        "jam/Component",
+        "jam/Concater",
+        "jam/selection",
+        "jam/htmlEntities",
+        "jam/htmlDecode",
+        "jam/html2text",
+        "jam/htmlEscape",
+        "jam/classOf",
+        "jam/Hiqus",
+        "jam/NodeList",
+        "jam/raw",
+        "jam/keyCode",
+        "jam/Event",
+        "jam/Observer",
+        "jam/Node",
+        "jam/DomRange",
+        "jam/Lazy",
+        "jam/RegExp",
+        "jam/Lexer",
+        "jam/Number",
+        "jam/Pipe",
+        "jam/Parser",
+        "jam/String",
+        "jam/TaskQueue",
+        "jam/TemplateFactory",
+        "jam/Throttler",
+        "jam/Transformer",
+        "jam/Tree",
+        "jam/body",
+        "jam/currentScript",
+        "jam/domx",
+        "jam/eval",
+        "jam/eventClone",
+        "jam/eventCommit",
+        "jam/eventDelete",
+        "jam/eventEdit",
+        "jam/eventScroll",
+        "jam/eventURIChanged",
+        "jam/http",
+        "jam/log",
+        "jam/uriEscape",
+        "doc/doc"
+    ],
+    "jam/define": [
+        "jam/define",
+        "jam/Poly",
+        "jam/Hash",
+        "jam/Cached",
+        "jam/schedule",
+        "jam/Clock",
+        "jam/domReady",
+        "jam/select",
+        "jam/support",
+        "jam/Component",
+        "jam/Concater",
+        "jam/selection",
+        "jam/htmlEntities",
+        "jam/htmlDecode",
+        "jam/html2text",
+        "jam/htmlEscape",
+        "jam/classOf",
+        "jam/Hiqus",
+        "jam/NodeList",
+        "jam/raw",
+        "jam/Observer",
+        "jam/Node",
+        "jam/DomRange",
+        "jam/Lazy",
+        "jam/RegExp",
+        "jam/Lexer",
+        "jam/Number",
+        "jam/Pipe",
+        "jam/Parser",
+        "jam/String",
+        "jam/TaskQueue",
+        "jam/TemplateFactory",
+        "jam/Throttler",
+        "jam/Transformer",
+        "jam/Tree",
+        "jam/body",
+        "jam/domx",
+        "jam/eval",
+        "jam/eventClone",
+        "jam/eventCommit",
+        "jam/eventDelete",
+        "jam/eventEdit",
+        "jam/eventScroll",
+        "jam/eventURIChanged",
+        "jam/log",
+        "jam/uriEscape",
+        "lang/tags",
+        "doc/doc"
+    ],
+    "jam/Class": [
+        "jam/Class",
+        "jam/Hash",
+        "jam/Obj",
+        "jam/Clock",
+        "jam/Hiqus",
+        "jam/NodeList",
+        "jam/raw",
+        "jam/Event",
+        "jam/Observer",
+        "jam/Node",
+        "jam/DomRange",
+        "jam/RegExp",
+        "jam/Lexer",
+        "jam/Number",
+        "jam/String",
+        "jam/TaskQueue",
+        "jam/TemplateFactory",
+        "jam/Tree",
+        "jam/domx",
+        "jam/http",
+        "doc/doc"
+    ],
+    "jam/Poly": [
+        "jam/Poly",
+        "jam/Hash",
+        "jam/Clock",
+        "jam/Hiqus",
+        "jam/Event",
+        "jam/Observer",
+        "jam/Node",
+        "jam/DomRange",
+        "jam/String",
+        "jam/TaskQueue",
+        "jam/TemplateFactory",
+        "wc/js-test",
+        "wc/preview",
+        "wc/test",
+        "doc/doc"
+    ],
+    "jam/Hash": [
+        "jam/Hash",
+        "jam/Cached",
+        "doc/doc"
+    ],
+    "jam/Cached": [
+        "jam/Cached",
+        "doc/doc"
+    ],
+    "jam/schedule": [
+        "jam/schedule",
+        "jam/Clock",
+        "jam/domReady",
+        "jam/Component",
+        "jam/Throttler",
+        "wc/editor",
+        "wc/js-test",
+        "doc/doc"
+    ],
+    "jam/Obj": [
+        "jam/Obj",
+        "jam/Clock",
+        "jam/TaskQueue",
+        "doc/doc"
+    ],
+    "jam/Clock": [
+        "jam/Clock",
+        "jam/TaskQueue",
+        "doc/doc"
+    ],
+    "jam/Value": [
+        "jam/Value",
+        "jam/support",
+        "jam/Component",
+        "jam/Lazy",
+        "jam/TemplateFactory",
+        "jam/Transformer",
+        "jam/eventCommit",
+        "wc/js-test",
+        "wc/test",
+        "doc/doc"
+    ],
+    "jam/domReady": [
+        "jam/domReady",
+        "jam/Component",
+        "doc/doc"
+    ],
+    "jam/select": [
+        "jam/select",
+        "jam/support",
+        "doc/doc"
+    ],
+    "jam/support": [
+        "jam/support",
+        "jam/Component",
+        "jam/domx",
+        "doc/doc"
+    ],
+    "jam/Component": [
+        "jam/Component",
+        "wc/aspect",
+        "wc/demo",
+        "wc/disqus",
+        "wc/editor",
+        "wc/field",
+        "wc/form",
+        "wc/hlight",
+        "wc/js-bench",
+        "wc/js-test",
+        "wc/net-bridge",
+        "wc/preview",
+        "wc/test",
+        "wc/yasearchresult",
+        "doc/doc"
+    ],
+    "jam/Concater": [
+        "jam/Concater",
+        "lang/Parser",
+        "doc/doc"
+    ],
+    "jam/selection": [
+        "jam/selection",
+        "jam/DomRange",
+        "doc/doc"
+    ],
+    "jam/htmlEntities": [
+        "jam/htmlEntities",
+        "jam/htmlDecode",
+        "doc/doc"
+    ],
+    "jam/htmlDecode": [
+        "jam/htmlDecode",
+        "jam/html2text",
+        "doc/doc"
+    ],
+    "jam/html2text": [
+        "jam/html2text",
+        "jam/Node",
+        "jam/DomRange",
+        "lang/lang",
+        "lang/css",
+        "lang/pcre",
+        "lang/js",
+        "lang/sgml",
+        "lang/php",
+        "lang/tags",
+        "lang/md",
+        "wc/editor",
+        "wc/field",
+        "wc/net-bridge",
+        "doc/doc"
+    ],
+    "jam/htmlEscape": [
+        "jam/htmlEscape",
+        "jam/DomRange",
+        "lang/lang",
+        "lang/tags",
+        "lang/md",
+        "wc/editor",
+        "wc/js-bench",
+        "doc/doc"
+    ],
+    "jam/classOf": [
+        "jam/classOf",
+        "jam/Hiqus",
+        "wc/js-test",
+        "wc/test",
+        "doc/doc"
+    ],
+    "jam/Hiqus": [
+        "jam/Hiqus",
+        "jam/Node",
+        "doc/doc"
+    ],
+    "jam/Node": [
+        "jam/NodeList",
+        "jam/Node",
+        "jam/DomRange",
+        "jam/eventClone",
+        "jam/eventCommit",
+        "jam/eventDelete",
+        "jam/eventEdit",
+        "jam/eventScroll",
+        "wc/aspect",
+        "wc/demo",
+        "wc/disqus",
+        "wc/editor",
+        "wc/field",
+        "wc/form",
+        "wc/hlight",
+        "wc/js-bench",
+        "wc/js-test",
+        "wc/net-bridge",
+        "wc/preview",
+        "wc/test",
+        "wc/yasearchresult",
+        "doc/doc"
+    ],
+    "jam/NodeList": [
+        "jam/NodeList",
+        "jam/Node",
+        "doc/doc"
+    ],
+    "jam/raw": [
+        "jam/raw",
+        "jam/Event",
+        "jam/Observer",
+        "jam/Node",
+        "jam/DomRange",
+        "jam/String",
+        "jam/domx",
+        "doc/doc"
+    ],
+    "jam/keyCode": [
+        "jam/keyCode",
+        "jam/Event",
+        "wc/editor",
+        "doc/doc"
+    ],
+    "jam/Event": [
+        "jam/Event",
+        "jam/Observer",
+        "jam/eventClone",
+        "jam/eventCommit",
+        "jam/eventDelete",
+        "jam/eventEdit",
+        "jam/eventScroll",
+        "jam/eventURIChanged",
+        "wc/editor",
+        "wc/js-bench",
+        "wc/js-test",
+        "wc/test",
+        "doc/doc"
+    ],
+    "jam/Observer": [
+        "jam/Observer",
+        "jam/Node",
+        "wc/yasearchresult",
+        "doc/doc"
+    ],
+    "jam/DomRange": [
+        "jam/DomRange",
+        "wc/editor",
+        "doc/doc"
+    ],
+    "jam/Lazy": [
+        "jam/Lazy",
+        "jam/TemplateFactory",
+        "wc/js-test",
+        "wc/test",
+        "doc/doc"
+    ],
+    "jam/RegExp": [
+        "jam/RegExp",
+        "jam/Lexer",
+        "jam/TemplateFactory",
+        "jam/Tree",
+        "doc/doc"
+    ],
+    "jam/Lexer": [
+        "jam/Lexer",
+        "jam/Parser",
+        "doc/doc"
+    ],
+    "jam/Number": [
+        "jam/Number",
+        "doc/doc"
+    ],
+    "jam/Pipe": [
+        "jam/Pipe",
+        "jam/Parser",
+        "jam/TemplateFactory",
+        "lang/Parser",
+        "lang/css",
+        "lang/pcre",
+        "lang/js",
+        "lang/sgml",
+        "lang/php",
+        "doc/doc"
+    ],
+    "jam/Parser": [
+        "jam/Parser",
+        "jam/TemplateFactory",
+        "lang/Parser",
+        "doc/doc"
+    ],
+    "jam/String": [
+        "jam/String",
+        "jam/domx",
+        "wc/demo",
+        "wc/editor",
+        "wc/hlight",
+        "wc/js-bench",
+        "wc/js-test",
+        "wc/test",
+        "doc/doc"
+    ],
+    "jam/TaskQueue": [
+        "jam/TaskQueue",
+        "wc/js-bench",
+        "doc/doc"
+    ],
+    "jam/TemplateFactory": [
+        "jam/TemplateFactory",
+        "jam/Transformer",
+        "doc/doc"
+    ],
+    "jam/Throttler": [
+        "jam/Throttler",
+        "jam/eventEdit",
+        "wc/editor",
+        "wc/js-test",
+        "wc/net-bridge",
+        "wc/test",
+        "doc/doc"
+    ],
+    "jam/Transformer": [
+        "jam/Transformer",
+        "doc/doc"
+    ],
+    "jam/Tree": [
+        "jam/Tree",
+        "doc/doc"
+    ],
+    "jam/body": [
+        "jam/body",
+        "wc/js-test",
+        "wc/test",
+        "doc/doc"
+    ],
+    "jam/currentScript": [
+        "jam/currentScript",
+        "wc/form",
+        "doc/doc"
+    ],
+    "jam/domx": [
+        "jam/domx",
+        "jam/http",
+        "wc/editor",
+        "wc/form",
+        "doc/doc"
+    ],
+    "jin/makeId": [
+        "jin/makeId",
+        "jin/thread"
+    ],
+    "jin/thread": [
+        "jin/thread",
+        "jam/eval",
+        "wc/demo",
+        "wc/js-bench",
+        "wc/js-test",
+        "jin/test"
+    ],
+    "jam/eval": [
+        "jam/eval",
+        "wc/demo",
+        "doc/doc"
+    ],
+    "jam/eventClone": [
+        "jam/eventClone",
+        "wc/js-bench",
+        "wc/js-test",
+        "wc/test",
+        "doc/doc"
+    ],
+    "jam/eventCommit": [
+        "jam/eventCommit",
+        "wc/demo",
+        "wc/editor",
+        "wc/form",
+        "wc/js-bench",
+        "wc/js-test",
+        "wc/net-bridge",
+        "wc/test",
+        "doc/doc"
+    ],
+    "jam/eventDelete": [
+        "jam/eventDelete",
+        "wc/js-test",
+        "wc/test",
+        "doc/doc"
+    ],
+    "jam/eventEdit": [
+        "jam/eventEdit",
+        "wc/editor",
+        "wc/field",
+        "wc/net-bridge",
+        "doc/doc"
+    ],
+    "jam/eventScroll": [
+        "jam/eventScroll",
+        "doc/doc"
+    ],
+    "jam/eventURIChanged": [
+        "jam/eventURIChanged",
+        "wc/yasearchresult",
+        "doc/doc"
+    ],
+    "jam/http": [
+        "jam/http",
+        "wc/editor",
+        "wc/form",
+        "doc/doc"
+    ],
+    "jam/log": [
+        "jam/log",
+        "doc/doc"
+    ],
+    "jam/uriEscape": [
+        "jam/uriEscape",
+        "wc/disqus",
+        "doc/doc"
+    ],
+    "wc/wc": [
+        "wc/aspect",
+        "wc/demo",
+        "wc/disqus",
+        "wc/editor",
+        "wc/field",
+        "wc/form",
+        "wc/hlight",
+        "wc/js-bench",
+        "wc/js-test",
+        "wc/net-bridge",
+        "wc/preview",
+        "wc/test",
+        "wc/yasearchresult",
+        "doc/doc"
+    ],
+    "wc/aspect": [
+        "wc/aspect",
+        "lang/md",
+        "doc/doc"
+    ],
+    "lang/lang": [
+        "lang/lang",
+        "lang/Wrapper",
+        "lang/Parser",
+        "lang/css",
+        "lang/pcre",
+        "lang/js",
+        "lang/sgml",
+        "lang/html",
+        "lang/htm",
+        "lang/jsm",
+        "lang/php",
+        "lang/tags",
+        "lang/xml",
+        "lang/xbl",
+        "lang/xsl",
+        "lang/xs",
+        "lang/xul",
+        "lang/md",
+        "wc/editor",
+        "wc/hlight"
+    ],
+    "lang/text": [
+        "lang/lang",
+        "lang/Parser",
+        "lang/css",
+        "lang/pcre",
+        "lang/js",
+        "lang/sgml",
+        "lang/php",
+        "lang/md",
+        "wc/editor",
+        "wc/hlight"
+    ],
+    "lang/Wrapper": [
+        "lang/Wrapper",
+        "lang/css",
+        "lang/pcre",
+        "lang/js",
+        "lang/sgml",
+        "lang/php",
+        "lang/tags",
+        "lang/md",
+        "wc/editor",
+        "wc/hlight"
+    ],
+    "lang/Parser": [
+        "lang/Parser",
+        "lang/css",
+        "lang/pcre",
+        "lang/js",
+        "lang/sgml",
+        "lang/php",
+        "lang/tags",
+        "lang/md",
+        "wc/editor",
+        "wc/hlight"
+    ],
+    "lang/css": [
+        "lang/css",
+        "lang/sgml",
+        "lang/md",
+        "wc/editor",
+        "wc/hlight"
+    ],
+    "lang/pcre": [
+        "lang/pcre",
+        "lang/js",
+        "lang/md",
+        "wc/editor",
+        "wc/hlight"
+    ],
+    "lang/js": [
+        "lang/js",
+        "lang/sgml",
+        "lang/jsm",
+        "lang/md",
+        "wc/editor",
+        "wc/hlight",
+        "wc/js-test",
+        "wc/test"
+    ],
+    "lang/sgml": [
+        "lang/sgml",
+        "wc/demo",
+        "lang/html",
+        "lang/xml",
+        "lang/xul",
+        "lang/md",
+        "wc/editor",
+        "wc/hlight"
+    ],
+    "wc/demo": [
+        "wc/demo",
+        "doc/doc"
+    ],
+    "lang/html": [
+        "lang/html",
+        "lang/htm",
+        "lang/md",
+        "wc/editor",
+        "wc/hlight"
+    ],
+    "lang/htm": [
+        "lang/htm",
+        "lang/md",
+        "wc/editor",
+        "wc/hlight"
+    ],
+    "lang/jsm": [
+        "lang/jsm",
+        "lang/md",
+        "wc/editor",
+        "wc/hlight"
+    ],
+    "lang/php": [
+        "lang/php",
+        "lang/md",
+        "wc/editor",
+        "wc/hlight"
+    ],
+    "lang/tags": [
+        "lang/tags",
+        "lang/md",
+        "wc/editor",
+        "wc/hlight"
+    ],
+    "lang/xml": [
+        "lang/xml",
+        "lang/xbl",
+        "lang/xsl",
+        "lang/md",
+        "wc/editor",
+        "wc/hlight"
+    ],
+    "lang/xbl": [
+        "lang/xbl",
+        "lang/md",
+        "wc/editor",
+        "wc/hlight"
+    ],
+    "lang/xsl": [
+        "lang/xsl",
+        "lang/xs",
+        "lang/md",
+        "wc/editor",
+        "wc/hlight"
+    ],
+    "lang/xs": [
+        "lang/xs",
+        "lang/md",
+        "wc/editor",
+        "wc/hlight"
+    ],
+    "lang/xul": [
+        "lang/xul",
+        "lang/md",
+        "wc/editor",
+        "wc/hlight"
+    ],
+    "lang/md": [
+        "lang/md",
+        "wc/disqus",
+        "wc/editor",
+        "wc/hlight"
+    ],
+    "wc/disqus": [
+        "wc/disqus",
+        "doc/doc"
+    ],
+    "wc/editor": [
+        "wc/editor",
+        "doc/doc"
+    ],
+    "wc/field": [
+        "wc/field",
+        "doc/doc"
+    ],
+    "wc/form": [
+        "wc/form",
+        "doc/doc"
+    ],
+    "wc/hlight": [
+        "wc/hlight",
+        "doc/doc"
+    ],
+    "wc/js-bench": [
+        "wc/js-bench",
+        "doc/doc"
+    ],
+    "wc/js-test": [
+        "wc/js-test",
+        "doc/doc"
+    ],
+    "wc/net-bridge": [
+        "wc/net-bridge",
+        "doc/doc"
+    ],
+    "wc/preview": [
+        "wc/preview",
+        "doc/doc"
+    ],
+    "jin/method": [
+        "jin/method",
+        "jin/class"
+    ],
+    "jin/class": [
+        "jin/class",
+        "jin/test"
+    ],
+    "jin/test": [
+        "jin/test",
+        "wc/test"
+    ],
+    "wc/test": [
+        "wc/test",
+        "doc/doc"
+    ],
+    "wc/yasearchresult": [
+        "wc/yasearchresult",
+        "doc/doc"
+    ],
+    "wc/article": [
+        "doc/doc",
+        "doc/list",
+        "doc/root"
+    ],
+    "wc/binom": [
+        "doc/doc"
+    ],
+    "wc/button": [
+        "doc/doc"
+    ],
+    "wc/desktop": [
+        "doc/doc",
+        "doc/list",
+        "doc/root"
+    ],
+    "wc/error": [
+        "doc/doc"
+    ],
+    "wc/footer": [
+        "doc/doc",
+        "doc/list",
+        "doc/root"
+    ],
+    "wc/hontrol": [
+        "doc/doc"
+    ],
+    "wc/link": [
+        "doc/doc",
+        "doc/list",
+        "doc/root"
+    ],
+    "wc/logo": [
+        "doc/doc"
+    ],
+    "wc/paper": [
+        "doc/doc",
+        "doc/list",
+        "doc/root"
+    ],
+    "wc/path": [
+        "doc/doc"
+    ],
+    "wc/pop-tool": [
+        "doc/doc"
+    ],
+    "wc/reset": [
+        "doc/doc",
+        "doc/list",
+        "doc/root"
+    ],
+    "wc/sidebar": [
+        "doc/doc",
+        "doc/list"
+    ],
+    "wc/spacer": [
+        "doc/doc",
+        "doc/list",
+        "doc/root"
+    ],
+    "wc/terminal": [
+        "doc/doc"
+    ],
+    "wc/vmenu": [
+        "doc/doc",
+        "doc/list"
+    ]
+}
