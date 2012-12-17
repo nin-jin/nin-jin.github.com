@@ -1,0 +1,56 @@
+<?xml-stylesheet href="../../doc/-mix/dev.xsl" type="text/xsl" ?>
+<doc_root
+    doc_title="$jin_eventProof"
+    >
+
+    <p>Примесь события кидающего исключени в качестве поведения по умолчанию. Используется, когда нужно гарантировать, что запущенное событие будет обработано.</p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_eventProof )
+        </script>
+        <script type="wc_test">
+            var onTest1= $jin_eventProof( function( onTest1, event ){
+                onTest1.type= '$jin_event_test_1'
+            } )
+            
+            try {
+                onTest1().scream( document )
+            } catch( error ){
+                test.ok( error )
+            }
+        </script>
+        <script type="wc_test">
+            var onTest2= $jin_eventProof( function( onTest2, event ){
+                onTest2.type= '$jin_event_test_2'
+            } )
+            
+            var listener= onTest2.listen( document, function( event ){
+                event.catched( true )
+            })
+            
+            onTest2().scream( document )
+            
+            listener.destroy()
+            
+            test.ok()
+        </script>
+        <script type="wc_test">
+            var onTest1= $jin_eventProof( function( onTest1, event ){
+                onTest1.type= '$jin_event_test_3'
+            } )
+            
+            var listener= onTest1.listen( document, function( event ){
+                event.catched( true )
+            })
+            
+            listener.destroy()
+            
+            try {
+                onTest1().scream( document )
+            } catch( error ){
+                test.ok( error )
+            }
+        </script>
+    </p>
+    
+</doc_root>

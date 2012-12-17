@@ -1,0 +1,49 @@
+<?xml-stylesheet href="../../doc/-mix/dev.xsl" type="text/xsl" ?>
+<doc_root
+    doc_title="$jin_onInput"
+    >
+
+    <p>Событие возникающее в случае пользовательского ввода. </p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_onInput )
+        </script>
+        <script type="wc_test">
+            var node= document.createElement( 'input' )
+            document.getElementsByTagName( 'body' )[0].appendChild( node )
+            
+            var result
+            var listener= $jin_onInput.listen( node, function( event ){
+                result= ( event.target() === node )
+            })
+            
+            node.setAttribute( 'value', 'hello' )
+            
+            listener.destroy()
+            node.parentNode.removeChild( node )
+            
+            test.ok( result )
+        </script>
+        <script type="wc_test">
+            var parent= document.createElement( 'jin_onInput_test1' )
+            var child= document.createElement( 'jin_onInput_test2' )
+            child.contentEditable= true
+            
+            parent.appendChild( child )
+            document.getElementsByTagName( 'body' )[0].appendChild( parent )
+            
+            var result
+            var listener= $jin_onInput.listen( parent, function( event ){
+                result= ( event.target() === child )
+            })
+            
+            child.innerHTML= 'hello'
+            
+            listener.destroy()
+            parent.parentNode.removeChild( parent )
+            
+            test.ok( result )
+        </script>
+    </p>
+    
+</doc_root>

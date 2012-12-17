@@ -1,0 +1,50 @@
+<?xml-stylesheet href="../../doc/-mix/dev.xsl" type="text/xsl" ?>
+<doc_root
+    doc_title="$jin_onChange"
+    >
+
+    <p>Событие возникающее, когда меняется часть поддерева (в том числе и атрибуты). </p>
+    <p>
+        <script type="wc_test">
+            test.ok( $jin_onChange )
+        </script>
+    </p>
+    <p>
+        <script type="wc_test">
+            var node= document.createElement( 'jin_onChange_test' )
+            document.getElementsByTagName( 'body' )[0].appendChild( node )
+            
+            var result
+            var listener= $jin_onChange.listen( node, function( event ){
+                result= ( event.target() === node )
+            })
+            
+            node.setAttribute( 'jin_onChange_test0', 'hello' )
+            
+            listener.destroy()
+            node.parentNode.removeChild( node )
+            
+            test.ok( result )
+        </script>
+        <script type="wc_test">
+            var parent= document.createElement( 'jin_onChange_test1' )
+            var child= document.createElement( 'jin_onChange_test2' )
+            
+            parent.appendChild( child )
+            document.getElementsByTagName( 'body' )[0].appendChild( parent )
+            
+            var result
+            var listener= $jin_onChange.listen( parent, function( event ){
+                result= ( event.target() === child )
+            })
+            
+            child.innerHTML= 'hello'
+            
+            listener.destroy()
+            parent.parentNode.removeChild( parent )
+            
+            test.ok( result )
+        </script>
+    </p>
+    
+</doc_root>
