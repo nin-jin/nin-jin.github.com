@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:html="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <head>
+        <style>
+            html, body {
+                margin; 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+            }
+            .jin_pane {
+                width: 100%;
+                height: 100%;
+            }
+            .jin_planet_orbit {
+                stroke: steelblue;
+                fill: none;
+                stroke-width: 1;
+            }
+            .jin_planet_place:hover .jin_planet_orbit {
+                stroke-width: 2;
+            }
+            .jin_planet {
+                cursor: pointer;
+            }
+            .jin_planet_aura {
+                stroke: steelblue;
+                fill: black;
+                stroke-width: 2;
+                display: none;
+            }
+            .jin_planet_place:hover .jin_planet_aura {
+                display: block;
+            }
+            .jin_planet_hint {
+                fill: steelblue;
+                stroke-width: 1;
+                display: none;
+            }
+            .jin_planet_hint_border {
+                fill: #123;
+                stroke: steelblue;
+                stroke-width: 2;
+            }
+            .jin_planet_place:hover .jin_planet_hint {
+                display: block;
+            }
+            .jin_planet_menu {
+                fill: white;
+                font-family: 'Verdana', sans-serif;
+            }
+            .jin_planet_name {
+                font-size: 10pt;
+                fill: lime;
+            }
+            .jin_planet_owner {
+                font-size: 8pt;
+            }
+            .jin_planet_alliance {
+                font-size: 8pt;
+            }
+        </style>
+        <script>
+            
+        </script>
+    </head>
+    <body style="background:url('space.png')">
+        <svg class="jin_pane" version="1.1" externalResourcesRequired="true" viewBox="0 0 1000 1000">
+            <g class="jin_system" transform="translate(500,500)">
+                <image class="jin_star" width="232" height="232" xlink:href="sun.png" transform="translate(-116,-116)" />
+                <g class="jin_planet_place">
+                    <path class="jin_planet_orbit" d="m0,-250 a250,250 0 1,1 0,500 a 250,250 0 1,1 0,-500" id="jin_planet_orbit_1" />
+                    <g class="jin_planet">
+                        <g class="jin_planet_hint" transform="translate(10,0)">
+                            <rect class="jin_planet_hint_border" width="150" height="75" rx="3"></rect>
+                            <g class="jin_planet_menu" transform="translate(0,20)">
+                                <text class="jin_planet_name" text-anchor="middle" transform="translate(75,0)">Земля</text>
+                                <text class="jin_planet_owner" text-anchor="middle" transform="translate(75,20)">Чёрного Властелина</text>
+                                <text class="jin_planet_alliance" text-anchor="middle" transform="translate(75,40)">из Анонимусов</text>
+                            </g>
+                        </g>
+                        <circle class="jin_planet_aura" r="20" />
+                        <image class="jin_planet_ground" width="40" height="40" transform="translate(-20,-20)" xlink:href="planet1.png" />
+                        <animateMotion dur="40s" type="rotate" repeatCount="indefinite">
+                            <mpath xlink:href="#jin_planet_orbit_1"/>
+                        </animateMotion>
+                    </g>
+                </g>
+                <g class="jin_planet_place">
+                    <path class="jin_planet_orbit" d="m0,-230 a230,230 0 1,1 0,460 a 230,230 0 1,1 0,-460" id="jin_planet_orbit_2" />
+                    <g class="jin_planet">
+                        <g class="jin_planet_hint" transform="translate(10,0)">
+                            <rect class="jin_planet_hint_border" width="150" height="75" rx="3"></rect>
+                            <g class="jin_planet_menu" transform="translate(0,20)">
+                                <text class="jin_planet_name" text-anchor="middle" transform="translate(75,0)">Юпитер</text>
+                                <text class="jin_planet_owner" text-anchor="middle" transform="translate(75,20)">Брюса Всемогущего</text>
+                                <text class="jin_planet_alliance" text-anchor="middle" transform="translate(75,40)">из Богов</text>
+                            </g>
+                        </g>
+                        <circle class="jin_planet_aura" r="20" />
+                        <image class="jin_planet_ground" width="40" height="40" transform="translate(-20,-20)" xlink:href="planet2.png" />
+                        <animateMotion dur="30s" type="rotate" repeatCount="indefinite">
+                            <mpath xlink:href="#jin_planet_orbit_2"/>
+                        </animateMotion>
+                    </g>
+                </g>
+            </g>
+        </svg>
+    </body>
+</html>
