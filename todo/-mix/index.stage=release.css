@@ -1,0 +1,193 @@
+/* ../../jin/sample/jin_sample.css?=HOIJYBO8 */
+[jin_sample_list] {
+    display: none
+}
+/* ../../jin/task/jin_task_view_item.css?=HOOM195S */
+[jin_task_view_item] {
+    display: block;
+    background: #fcfcfc;
+    font: 15px/1 'Segoe UI', sans-serif;
+    white-space: nowrap;
+    cursor: pointer;
+    position: relative;
+}
+
+[jin_task_view_item]:nth-child(even) {
+    background: #f6f6f6;
+}
+
+[jin_task_view_item]:hover {
+    background: #def;
+}
+
+[jin_task_view_item][jin_task_view_item_current="true"] {
+    background: steelblue;
+    color: snow;
+}
+
+[jin_task_view_item_link] {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+[jin_task_view_item_title] {
+    display: block;
+    padding: 1.5%;
+    position: relative;
+    min-height: 1em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+[jin_task_view_item_title]:empty:before {
+    color: gray;
+    font-style: italic;
+    content: attr( jin_task_view_item_title_default );
+    position: absolute;
+}
+
+[jin_task_view_item][jin_task_view_item_current="true"] [jin_task_view_item_title]:empty:before {
+    color: inherit;
+}
+
+/* ../../jin/task/jin_task_view_details.css?=HOOSUO1C */
+[jin_task_view_details] {
+    /*padding: 2% 2%;*/
+    background: #fcfcfc;
+    min-height: 1em;
+    /*overflow: hidden;*/
+}
+
+[jin_task_view_details_title] {
+    font: 21px/27px 'Segoe UI', sans-serif;
+    padding: 2% 3%;
+    border-radius: 2px;
+    /*margin: 2%;*/
+	position: relative;
+}
+
+[jin_task_view_details_title]:empty:before {
+    color: gray;
+    font-style: italic;
+    content: 'empty title';
+    position: absolute;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	width: 94%;
+}
+
+[jin_task_view_details_title]:empty:after {
+    content: '\A0';
+    width: 0;
+    display: inline-block;
+}
+
+[jin_task_view_details_title]:focus {
+    outline: none;
+    position: relative;
+    box-shadow: 0 0 4px steelblue;
+    background: white;
+}
+
+[jin_task_view_details_description] {
+    font: 15px/25px 'Segoe UI', sans-serif;
+    padding: 2% 3%;
+    margin-top: -2%;
+    /*margin: 2%;*/
+	position: relative;
+}
+
+[jin_task_view_details_description]:empty:before {
+    color: gray;
+    font-style: italic;
+    content: 'empty description';
+    position: absolute;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	width: 94%;
+}
+
+[jin_task_view_details_description]:empty:after {
+    content: '\A0';
+    width: 0;
+    display: inline-block;
+}
+
+[jin_task_view_details_description]:focus {
+    outline: none;
+    position: relative;
+    box-shadow: 0 0 4px steelblue;
+    background: white;
+}
+
+[jin_task_view_details_description][visible="false"] {
+    display: none;
+}
+
+/* ../../jin/todo/jin_todo_vew.css?=HOOO6TLK */
+[jin_todo_view] {
+    background: #ccc url("../http:/hyoo.ru/wc/desktop/wc-desktop_light.png") left top no-repeat;
+    position: relative;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    /*padding: 1%;*/
+	padding: 2%;
+    width: 100%;
+    height: 100%;
+    display: -moz-flex;
+    display: flex;
+    -moz-flex-direction: column;
+    flex-direction: column;
+    -moz-justify-content: center;
+    justify-content: center;
+    -moz-align-items: stretch;
+    align-items: stretch;
+    -moz-align-content: flex-start;
+    align-content: flex-start;
+}
+
+[jin_todo_view_title] {
+    text-align: center;
+    font: 24px/1 'Segoe UI', sans-serif;
+    margin: 2% 2%;
+    -moz-flex: 0 0 100%;
+    flex: 0 0 100%;
+}
+
+[jin_todo_view_resizer] {
+	padding: 1%;
+	cursor: ns-resize;
+}
+
+[jin_todo_view_panel] {
+    /*-moz-flex: 1 1 20em;*/
+    /*flex: 1 1 20em;*/
+    /*max-width: 40em;*/
+    /*margin: 2%;*/
+    box-shadow: 0 0 6px rgba( 0, 0, 0, .5 );
+    overflow: auto;
+	height: 100%;
+	width: 100%;
+	background: #fcfcfc;
+}
+
+[jin_todo_view_details] {
+    /*-moz-flex: 1 1 40em;*/
+    /*flex: 1 1 40em;*/
+}
+
+@media ( min-width: 40em ) {
+	
+	[jin_todo_view] {
+		-moz-flex-direction: row;
+		flex-direction: row;
+	}
+	
+	[jin_todo_view_resizer] {
+		cursor: ew-resize;
+	}
+
+}
+
