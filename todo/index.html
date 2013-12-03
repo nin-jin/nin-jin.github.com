@@ -17,7 +17,7 @@
     <section jin_todo_view
 		jin_sample_events="$jin.dnd.onOver=onResizeMove $jin.dnd.onEnter=onResizeMove"
 		>
-		<section jin_todo_view_panel jin_todo_view_details
+		<section jin_todo_view_panel
 			jin_sample_props="style.flexShrink=shrinkDetails"
 			>
 			{details}
@@ -26,15 +26,23 @@
 			jin_sample_events="$jin.dnd.onStart=onResizeStart"
 			>
 		</div>
-		<section jin_todo_view_panel jin_todo_view_list
+		<section jin_todo_view_panel
 			jin_sample_props="style.flexShrink=shrinkList"
 			>
-			{items}
+			<div jin_todo_view_toolbar>
+				<div jin_todo_view_addTask
+					tabindex="0"
+					jin_sample_events="$jin_dom_event_onClick=onAddTask"
+					>
+					Добавить
+				</div>
+			</div>
+			<div jin_todo_view_list_pane>{items}</div>
 		</section>
     </section>
     
     <div jin_task_view_item jin_task_view_item_current="{current}">
-        <a jin_task_view_item_link href="{uri}">
+        <a jin_task_view_item_link href="{uri}" tabindex="0">
             <div jin_task_view_item_title jin_task_view_item_title_default="{uri}">{title}</div>
         </a>
     </div>

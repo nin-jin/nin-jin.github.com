@@ -1,7 +1,7 @@
-;//../../jin/jin.jam.js?=HNVHU2C8
+;//../../jin/jin.jam.js?=HOPSL9XS
 this.$jin = new function $jin( ){ }
 
-;//../../jin/value/jin-value.jam.js?=HNVHU340
+;//../../jin/value/jin-value.jam.js?=HOPSL9XS
 this.$jin.value = function $jin_value( value ){
     
     var func = function $jin_value_instance( ){
@@ -13,10 +13,10 @@ this.$jin.value = function $jin_value( value ){
     return func
 }
 
-;//../../jin/root/jin_root.jam.js?=HNVHU2C8
+;//../../jin/root/jin_root.jam.js?=HOPSL9XS
 this.$jin.root = $jin.value( this )
 
-;//../../jin/glob/jin_glob.jam.js?=HNVHU2C8
+;//../../jin/glob/jin_glob.jam.js?=HOPSL9XS
 this.$jin.glob = function $jin_glob( name, value ){
     var keyList = name.split( '_' )
     var current = $jin.root()
@@ -44,7 +44,7 @@ this.$jin.glob = function $jin_glob( name, value ){
     return value
 }
 
-;//../../jin/func/jin_func.jam.js?=HNVHU2C8
+;//../../jin/func/jin_func.jam.js?=HOPSL9XS
 this.$jin.func = {}
 
 this.$jin.func.make = function $jin_func_make( name ){
@@ -61,7 +61,7 @@ this.$jin.func.name = function $jin_func_name( func, name ){
     || func.toString().match( /^\s*function\s*([$\w]*)\s*\(/ )[ 1 ]
 }
 
-;//../../jin/method/jin_method.jam.js?=HOOGSDS0
+;//../../jin/method/jin_method.jam.js?=HOPT3Y08
 this.$jin.method = function $jin_method( ){ // arguments: resolveName*, func
     var resolveList = [].slice.call( arguments )
     var func = resolveList.pop()
@@ -152,7 +152,7 @@ this.$jin.method.merge = function $jin_method_merge( left, right, name ){
     return func
 }
 
-;//../../jin/trait/jin_trait.jam.js?=HOIJYBO8
+;//../../jin/trait/jin_trait.jam.js?=HOPT3X8G
 this.$jin.trait = function $jin_trait( name ){
     
     var trait = $jin.glob( name )
@@ -178,7 +178,7 @@ this.$jin.trait.make = function $jin_trait_make( name ){
     return trait
 }
 
-;//../../jin/mixin/jin_mixin.jam.js?=HOIJYBO8
+;//../../jin/mixin/jin_mixin.jam.js?=HOPT3X8G
 this.$jin.mixin = function( ){ // arguments: sourceName+, targetName
     var trait = $jin.mixin.object.apply( this, arguments )
     
@@ -216,7 +216,7 @@ this.$jin.mixin.object = function( ){ // arguments: sourceName+, targetName
     return target
 }
 
-;//../../jin/property/jin_property.jam.js?=HOIKIR0G
+;//../../jin/property/jin_property.jam.js?=HOPT3X8G
 this.$jin.property = function $jin_property( ){ // arguments: resolveName*, filter
     var resolveList = [].slice.call( arguments )
     var filter = resolveList.pop()
@@ -257,7 +257,7 @@ this.$jin.property.define = function $jin_property_define( ){ // arguments: reso
     return $jin.method.define( name, property )
 }
 
-;//../../jin/klass/jin_klass.jam.js?=HOIJYBO8
+;//../../jin/klass/jin_klass.jam.js?=HOPT3Y08
 $jin.klass = function $jin_klass( ){ // arguments: sourceName*, targetName
     var name = arguments[ arguments.length - 1 ]
     $jin.mixin( '$jin_klass', name )
@@ -325,7 +325,7 @@ $jin.method( function $jin_klass__method( name ){
     return hash[ '_' + name ] = method
 } )
 
-;//../../jin/registry/jin_registry.jam.js?=HOOGCLVK
+;//../../jin/registry/jin_registry.jam.js?=HOPT3X8G
 $jin.property.define( '$jin_registry_storage', Object )
     
 $jin.property.define( '$jin_registry__id', String )
@@ -355,7 +355,7 @@ $jin.method( '$jin_klass__toString', function $jin_registry__toString( ){
     return this.id()
 } )    
 
-;//../../jin/alias/jin_alias.jam.js?=HNVHU2C8
+;//../../jin/alias/jin_alias.jam.js?=HOPSL9XS
 this.$jin.alias = function $jin_alias( ){ // arguments: resolveName*, name, aliasedName
     var resolveList = [].slice.call( arguments )
     var aliasedName = String( resolveList.pop() )
@@ -370,40 +370,67 @@ this.$jin.alias = function $jin_alias( ){ // arguments: resolveName*, name, alia
     return $jin.method.apply( $jin, resolveList.concat([ alias ]) )
 }
 
-;//../../jin/defer/jin_defer.env=web.jam.js?=HOK55SVK
+;//../../jin/schedule/jin_schedule.jam.js?=HOPSL9XS
+$jin.method( function $jin_schedule( delay, handler ){
+    var id = setTimeout( handler, delay )
+    return { destroy: function( ){
+        clearTimeout( id )
+    } }
+} )
+;//../../jin/defer/jin_defer.env=web.jam.js?=HOQ26QO0
 $jin.method( function $jin_defer( func ){
     $jin.defer.queue.push( func )
-    if( $jin.defer.queue.length < 2 ){
-		if( window.postMessage ) window.postMessage( '$jin.defer', document.location.href )
-		else window.setTimeout( $jin.defer.check, 0 )
-	}
+    if( !$jin.defer.scheduled ) $jin.defer.schedule()
     return { destroy: function(){
         var index = $jin.defer.queue.indexOf( func )
-        if( index ) $jin.defer.queue.splice( index, 1 )
+        if( ~index ) $jin.defer.queue.splice( index, 1 )
     }}
 } )
 
 $jin.defer.queue = []
+$jin.defer.scheduled = false
+
+$jin.method( function $jin_defer_schedule( ){
+	if( window.addEventListener ) window.postMessage( '$jin.defer', document.location.href )
+	else $jin.schedule( 0, $jin.defer.check )
+	$jin.defer.scheduled = true
+} )
 
 $jin.method( function $jin_defer_check( event ){
-	
-	if( typeof event === 'object' ){
-		if( event.source !== window ) return
+	if( event ){
+		if( event.source.constructor !== window.constructor ) return
 		if( event.data !== '$jin.defer' ) return
-		event.stopPropagation();
 	}
-    
+	
 	var queue = $jin.defer.queue
 	$jin.defer.queue = []
-    queue.forEach(function( handler ){
+    
+	queue.forEach(function( handler ){
 		handler()
 	})
+	
+	if( $jin.defer.queue.length ) $jin.defer.check()
+	
+	$jin.defer.scheduled = false
+	
+	if( event && event.stopPropagation ) event.stopPropagation()
+    return false
 } )
 
 if( window.addEventListener ) window.addEventListener( 'message', $jin.defer.check, true )
-else window.attachEvent( 'onmessage', $jin.defer.check )
 
-;//../../jin/atom/jin_atom.jam.js?=HOLNAHNK
+$jin.method( function $jin_defer_callback( func ){
+	return function $jin_defer_callback_instance(){
+		$jin.defer.scheduled = true
+		try {
+			return func.apply( this, arguments )
+		} finally {
+			$jin.defer.check()
+		}
+	}
+} )
+
+;//../../jin/atom/jin_atom.jam.js?=HOPWCQHC
 $jin.klass( '$jin_atom' )
 
 $jin.glob( '$jin_atom_slaves', [] )
@@ -546,7 +573,7 @@ $jin.method( '$jin_klass__destroy', function $jin_atom__destroy( ){
     return this.$jin_klass__destroy()
 } )
 
-;//../../jin/prop/jin_prop.jam.js?=HOMEC1HS
+;//../../jin/prop/jin_prop.jam.js?=HOPT3X8G
 $jin.method( function $jin_prop( config ){
     
     var name = config.name
@@ -615,7 +642,7 @@ $jin.method( function $jin_prop_hash( config ){
     return $jin.method( prop )
 })
 
-;//../../jin/state/jin_state.jam.js?=HNVHU340
+;//../../jin/state/jin_state.jam.js?=HOPSL9XS
 //$jin.prop.hash({ handler:  function $jin_state_item( key, value ){
 //    
 //    if( arguments.length < 2 ) return
@@ -634,7 +661,7 @@ $jin.method( function $jin_prop_hash( config ){
 //    
 //} } )
 
-;//../../jin/wrapper/jin_wrapper.jam.js?=HOIJYBO8
+;//../../jin/wrapper/jin_wrapper.jam.js?=HOPT3X8G
 $jin.wrapper = function $jin_wrapper( ){ // arguments: sourceName*, targetName
     $jin.mixin.apply( this, arguments )
     
@@ -656,10 +683,10 @@ $jin.method( '$jin_klass__init', function $jin_wrapper__init( obj ){
     return this
 } )
 
-;//../../jin/env/jin_env.jam.js?=HNVHU2C8
+;//../../jin/env/jin_env.jam.js?=HOPSL9XS
 this.$jin.env = $jin.value( function(){ return this }() )
 
-;//../../jin/event/jin_event.jam.js?=HNXKTHCO
+;//../../jin/event/jin_event.jam.js?=HOPSL9XS
 $jin.klass( '$jin_event' )
 
 $jin.property( function $jin_event_type( ){
@@ -684,7 +711,7 @@ $jin.method( function $jin_event__scream( crier ){
     return this
 } )
 
-;//../../jin/support/jin_support.env=web.jam.js?=HNVHU340
+;//../../jin/support/jin_support.env=web.jam.js?=HOPSL9XS
 $jin.property( function $jin_support_xmlModel( ){
     return ( window.DOMParser && window.XMLSerializer && window.XSLTProcessor ) ? 'w3c' : 'ms'
 } )
@@ -705,7 +732,7 @@ $jin.property( function $jin_support_vml( ){
     return /*@cc_on!@*/ false
 } )
 
-;//../../jin/vector/jin_vector.jam.js?=HNYAIW60
+;//../../jin/vector/jin_vector.jam.js?=HOPSL9XS
 $jin.klass( '$jin_wrapper', '$jin_vector' )
 
 $jin.method( function $jin_vector__x( val ){
@@ -726,7 +753,7 @@ $jin.method( function $jin_vector__z( val ){
 	return this
 } )
 
-;//../../jin/dom/event/jin_dom_event.env=web.jam.js?=HOORMVNC
+;//../../jin/dom/event/jin_dom_event.env=web.jam.js?=HOPT43EO
 $jin.klass( '$jin_wrapper', '$jin_event', '$jin_dom_event' )
 
 $jin.property( '$jin_dom_event_bubbles', Boolean )
@@ -860,7 +887,14 @@ $jin.method( function $jin_dom_event__offset( ){
     return $jin.vector([ this.nativeEvent().offsetX, this.nativeEvent().offsetX ])
 } )
 
-;//../../jin/dom/event/jin_dom_event_onInput.env=web.jam.js?=HOORA634
+;//../../jin/dom/event/jin_dom_event_onClick.env=web.jam.js?=HOQ5S75S
+$jin.klass( '$jin_dom_event', '$jin_dom_event_onClick' )
+
+$jin.method( '$jin_event_type', function $jin_dom_event_onClick_type( ){
+    return 'click'
+} )
+
+;//../../jin/dom/event/jin_dom_event_onInput.env=web.jam.js?=HOPT43EO
 $jin.klass( '$jin_dom_event', '$jin_dom_event_onInput' )
 
 $jin.method( '$jin_event_type', function $jin_dom_event_onInput_type( ){
@@ -875,7 +909,14 @@ $jin.method( '$jin_event_type', function $jin_dom_event_onInput_type( ){
 //	return this.$jin_dom_event_listen( crier, handler )
 //} )
 
-;//../../jin/listener/jin_listener.jam.js?=HNVHU2C8
+;//../../jin/dom/event/jin_dom_event_onScroll.env=web.jam.js?=HOPTSZ8O
+$jin.klass( '$jin_dom_event', '$jin_dom_event_onScroll' )
+
+$jin.method( '$jin_event_type', function $jin_dom_event_onScroll_type( ){
+    return 'scroll'
+} )
+
+;//../../jin/listener/jin_listener.jam.js?=HOPSL9XS
 $jin.klass( '$jin_listener' )
 
 $jin.property.define( '$jin_listener__crier', null )
@@ -892,7 +933,7 @@ $jin.method( '$jin_klass__destroy',  function $jin_listener__destroy( ){
     this.$jin_klass__destroy()
 } )
 
-;//../../jin/dom/jin_dom.jam.js?=HOPF1VN4
+;//../../jin/dom/jin_dom.jam.js?=HOPT43EO
 $jin.klass( '$jin_wrapper', '$jin_dom' )
 
 $jin.method( '$jin_wrapper_exec', function $jin_dom_exec( node ){
@@ -1186,7 +1227,7 @@ $jin.method( function $jin_dom__flexShrink( value ){
 } )
 
 
-;//../../jin/dom/jin_dom.env=web.jam.js?=HNXAUUUW
+;//../../jin/dom/jin_dom.env=web.jam.js?=HOPSL9XS
 $jin.method( function $jin_dom__html( html ){
     if( arguments.length ){
         this.nativeNode().innerHTML = html
@@ -1276,7 +1317,7 @@ if( $jin.support.eventModel() === 'ms' ){
     
 }
 
-;//../../jin/state/local/jin_state_local.env=web.jam.js?=HOIJYBO8
+;//../../jin/state/local/jin_state_local.env=web.jam.js?=HOPT3X8G
 $jin.klass( '$jin_state_local' )
 
 $jin.prop(
@@ -1334,7 +1375,7 @@ $jin.prop.hash(
     }
 } )
 
-;//../../jin/model/jin_model.jam.js?=HOOH4PG8
+;//../../jin/model/jin_model.jam.js?=HOPT3X8G
 $jin.klass( '$jin_registry', '$jin_model_klass' )
 
 $jin.method( function $jin_model_klass__state( ){
@@ -1411,7 +1452,7 @@ $jin.method( function $jin_model_list( config ){
     
 } )
 
-;//../../jin/sample/jin_sample.jam.js?=HOPF45FK
+;//../../jin/sample/jin_sample.jam.js?=HOPT3X8G
 $jin.prop.hash(
 {   name: '$jin_sample'
 ,   pull: function $jin_sample_pull( id ){
@@ -1579,7 +1620,7 @@ $jin.method( function $jin_sample_make( proto )
     
 } )
 
-;//../../jin/view/jin_view.env=web.jam.js?=HOOT19OW
+;//../../jin/view/jin_view.env=web.jam.js?=HOPT3X8G
 $jin.klass( '$jin_registry', '$jin_dom', '$jin_view' )
 
 $jin.method( function $jin_view__state( ){
@@ -1603,7 +1644,7 @@ $jin.property( '$jin_registry__toString', '$jin_dom__toString', '$jin_dom_ms__to
 	return this.$jin_registry__toString()
 } )
 
-;//../../jin/task/jin_task.jam.js?=HOL7MC8O
+;//../../jin/task/jin_task.jam.js?=HOQSYQDC
 $jin.klass( '$jin_model_klass', '$jin_task' )
 
 $jin.model.prop({ name: '$jin_task__title' })
@@ -1614,16 +1655,25 @@ $jin.method( function $jin_task__viewDetails( ){
     return $jin.task.view.details
 } )
 
-$jin.method( function $jin_task__viewItem( ){
-    return $jin.task.view.item
+$jin.method( function $jin_task__viewItem( id ){
+    return $jin.task.view.item( id ).task( this )
+} )
+
+$jin.method( function $jin_task__number( ){
+    return Number( this.id() )
 } )
 
 
-;//../../jin/task/jin_task_view_item.jam.js?=HOL7MC8O
+;//../../jin/task/jin_task_view_item.jam.js?=HOQV5EXK
 $jin.klass( '$jin_view', '$jin_task_view_item' )
 
 $jin.property.define( '$jin_task_view_item__list', null )
-$jin.property.define( '$jin_task_view_item__task', null )
+
+$jin.prop(
+{   name: '$jin_task_view_item__task'
+,   pull: function(){}
+,   put: $jin.task
+} )
 
 $jin.prop(
 {   name: '$jin_task_view_item__title'
@@ -1646,7 +1696,7 @@ $jin.prop(
     }
 } )
 
-;//../../jin/task/jin_task_view_details.jam.js?=HOORFJRC
+;//../../jin/task/jin_task_view_details.jam.js?=HOPT3X8G
 $jin.klass( '$jin_view', '$jin_task_view_details' )
 
 $jin.prop(
@@ -1708,7 +1758,7 @@ $jin.method( function $jin_task_view_details__onChangeDescription( event ){
 	this.task().description( event.target().text() )
 } )
 
-;//../../jin/uri/jin_uri.jam.js?=HNVHU340
+;//../../jin/uri/jin_uri.jam.js?=HOPSL9XS
 $jin.klass( '$jin_uri' )
 
 $jin.property( function $jin_uri_chunkSep( sep ){
@@ -1861,7 +1911,7 @@ $jin.method( function $jin_uri_parse( string ){
     return this( config )
 } )
 
-;//../../jin/state/url/jin_state_url.env=web.jam.js?=HOL7MC8O
+;//../../jin/state/url/jin_state_url.env=web.jam.js?=HOQV44MW
 $jin.klass( '$jin_state_url' )
 
 $jin.prop(
@@ -1897,11 +1947,16 @@ $jin.prop.hash(
         return ( val == null ) ? null : val
     }
 ,   put: function( key, value ){
-        throw new Error( 'Not implemented yet' )
+        var hash = this.hash()
+        
+        if( value == null ) delete hash[ key ]
+        else hash[ key ] = value
+        
+        document.location = $jin.uri({ query: hash }).toString().replace( '?', '#' )
     }
 } )
 
-;//../../jin/doc/jin_doc.jam.js?=HOIJYBO8
+;//../../jin/doc/jin_doc.jam.js?=HOPT43EO
 $jin.klass( '$jin_dom', '$jin_doc' )
 
 $jin.method( '$jin_dom_exec', function $jin_doc_exec( node ){
@@ -1912,7 +1967,7 @@ $jin.method( function $jin_doc__findById( id ){
 	return $jin.dom( this.nativeNode().getElementById( id ) )
 } )
 
-;//../../jin/dnd/jin_dnd_event.env=web.jam.js?=HNXKT1X4
+;//../../jin/dnd/jin_dnd_event.env=web.jam.js?=HOPSL9XS
 $jin.klass( '$jin_dom_event', '$jin_dnd_event' )
 
 $jin.method( function $jin_dnd_event__view( dom, x, y ){
@@ -1932,49 +1987,49 @@ $jin.method( function $jin_dnd_event__view( dom, x, y ){
 	return this
 } )
 
-;//../../jin/dnd/jin_dnd_onEnd.env=web.jam.js?=HNXKT1X4
+;//../../jin/dnd/jin_dnd_onEnd.env=web.jam.js?=HOPSL9XS
 $jin.klass( '$jin_dom_event', '$jin_dnd_onEnd' )
 
 $jin.method( '$jin_event_type', function $jin_dnd_onEnd_type( ){
     return 'dragleave'
 } )
 
-;//../../jin/dnd/jin_dnd_onDrag.env=web.jam.js?=HNYQPL0O
+;//../../jin/dnd/jin_dnd_onDrag.env=web.jam.js?=HOPSL9XS
 $jin.klass( '$jin_dom_event', '$jin_dnd_onDrag' )
 
 $jin.method( '$jin_event_type', function $jin_dnd_onDrag_type( ){
     return 'drag'
 } )
 
-;//../../jin/dnd/jin_dnd_onDrop.env=web.jam.js?=HNXKT1X4
+;//../../jin/dnd/jin_dnd_onDrop.env=web.jam.js?=HOPSL9XS
 $jin.klass( '$jin_dnd_event', '$jin_dnd_onDrop' )
 
 $jin.method( '$jin_event_type', function $jin_dnd_onDrop_type( ){
     return 'drop'
 } )
 
-;//../../jin/dnd/jin_dnd_onOver.env=web.jam.js?=HNXKT2OW
+;//../../jin/dnd/jin_dnd_onOver.env=web.jam.js?=HOPSL9XS
 $jin.klass( '$jin_dom_event', '$jin_dnd_onOver' )
 
 $jin.method( '$jin_event_type', function $jin_dnd_onOver_type( ){
     return 'dragover'
 } )
 
-;//../../jin/dnd/jin_dnd_onEnter.env=web.jam.js?=HNYQP06O
+;//../../jin/dnd/jin_dnd_onEnter.env=web.jam.js?=HOPSL9XS
 $jin.klass( '$jin_dom_event', '$jin_dnd_onEnter' )
 
 $jin.method( '$jin_event_type', function $jin_dnd_onEnter_type( ){
     return 'dragenter'
 } )
 
-;//../../jin/dnd/jin_dnd_onLeave.env=web.jam.js?=HNXKT2OW
+;//../../jin/dnd/jin_dnd_onLeave.env=web.jam.js?=HOPSL9XS
 $jin.klass( '$jin_dom_event', '$jin_dnd_onLeave' )
 
 $jin.method( '$jin_event_type', function $jin_dnd_onLeave_type( ){
     return 'dragleave'
 } )
 
-;//../../jin/dnd/jin_dnd_onStart.env=web.jam.js?=HOONKC6O
+;//../../jin/dnd/jin_dnd_onStart.env=web.jam.js?=HOPT43EO
 $jin.klass( '$jin_dnd_event', '$jin_dnd_onStart' )
 
 $jin.method( '$jin_event_type', function $jin_dnd_onStart_type( ){
@@ -1999,7 +2054,7 @@ $jin.method( '$jin_dom_event_listen', function $jin_dnd_onStart_listen( crier, h
 	}}
 } )
 
-;//../../jin/todo/jin_todo.jam.js?=HOL7MC8O
+;//../../jin/todo/jin_todo.jam.js?=HOQV5ZRK
 $jin.klass( '$jin_model_klass', '$jin_todo' )
 
 $jin.method( function $jin_todo__view( ){
@@ -2011,6 +2066,9 @@ $jin.prop(
 ,   pull: function( ){
         return $jin.task( $jin.state.url.item( 'task' ) || 1 )
     }
+,   put: function( task ){
+        $jin.state.url.item( 'task', task )
+    }
 })
 
 $jin.model.list(
@@ -2020,7 +2078,7 @@ $jin.model.list(
 } )
 
 
-;//../../jin/todo/jin_todo_view.jam.js?=HOOQXJM0
+;//../../jin/todo/jin_todo_view.jam.js?=HOQSYV00
 $jin.klass( '$jin_view', '$jin_todo_view' )
 
 $jin.property.define( '$jin_todo_view__todo', $jin.todo )
@@ -2040,13 +2098,14 @@ $jin.prop(
 ,   pull: function( oldItems ){
         
 		var todo = this.todo()
-        var models = todo.list()
+        var models = todo.list().slice()
+		models.sort( function( a, b ){
+			if( a.number() > b.number() ) return -1
+			else return 1
+		})
 		
         var newItems = models.map( function( item, index ){
-			var view = item.viewItem()( this.id() + ';' + 'item=' + index )
-			view.task( item )
-			view.list( todo )
-            return view
+			return item.viewItem( this.id() + ';' + 'item=' + index ).list( todo )
         }.bind( this ) )
 		
         return newItems
@@ -2092,3 +2151,16 @@ $jin.method( function $jin_todo_view__onResizeMove( event ){
 	
 	event.catched( true )
 } )
+
+$jin.method( function $jin_todo_view__onAddTask( event ){
+	var list = this.todo().list()
+	var last
+	list.forEach( function( task ){
+		if( !last ) last = task
+		if( task.number() > last.number() ) last = task
+	} )
+	
+	var task = $jin.task( 1 + last.number() )
+	this.todo().listAdd([ task ]).task( task )
+} )
+
