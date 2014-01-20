@@ -1,61 +1,48 @@
-/* ../../jin/sample/jin_sample.css?=HOPT3X8G */
-[jin_sample_list] {
+/* ../../jin/sample/jin_sample.css?=HQ7W9YK0 */
+[jin-sample-list] {
     display: none
 }
-/* ../../jin/task/jin_task_view_item.css?=HOQV58RC */
-[jin_task_view_item] {
-    display: block;
+/* ../../jin/todo/intro/jin_todo_intro.css?=HQAK82JS */
+[jin-todo-intro] {
     background: #fcfcfc;
-    font: 15px/1 'Segoe UI', sans-serif;
-    white-space: nowrap;
-    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    display: -moz-flex;
+    display: flex;
+    -moz-flex-direction: column;
+    flex-direction: column;
+}
+
+[jin-todo-intro-title] {
+    font: 21px/27px 'Segoe UI', sans-serif;
+    padding: 2% 3%;
+    border-radius: 2px;
+    /*margin: 2%;*/
+	position: relative;
+}
+
+[jin-todo-intro-description] {
+    font: 15px/25px 'Segoe UI', sans-serif;
+    padding: 2% 3%;
+    margin-top: -2%;
+    /*margin: 2%;*/
     position: relative;
+    overflow: auto;
+    -moz-flex: 1;
+    flex: 1;
 }
 
-[jin_task_view_item]:nth-child(even) {
-    background: #f6f6f6;
-}
-
-[jin_task_view_item]:hover {
-    background: #def;
-}
-
-[jin_task_view_item][jin_task_view_item_current="true"] {
-    background: steelblue;
-    color: snow;
-}
-
-[jin_task_view_item_link] {
-    color: inherit;
-    text-decoration: inherit;
-    display: block;
-}
-[jin_task_view_item_link]:focus {
-    outline: none;
-}
-
-[jin_task_view_item_title] {
-    display: block;
+/* ../../jin/todo/noitems/jin_todo_noitems.css?=HQC6L9AO */
+[jin-todo-noitems] {
     padding: 1.5%;
-    position: relative;
-    min-height: 1em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-[jin_task_view_item_title]:empty:before {
     color: gray;
     font-style: italic;
-    content: attr( jin_task_view_item_title_default );
-    position: absolute;
+	background: #fcfcfc;
+	position: relative;
 }
 
-[jin_task_view_item][jin_task_view_item_current="true"] [jin_task_view_item_title]:empty:before {
-    color: inherit;
-}
-
-/* ../../jin/task/jin_task_view_details.css?=HOQV511K */
-[jin_task_view_details] {
+/* ../../jin/task/view/details/jin_task_view_details.css?=HQAIW25K */
+[jin-task-view-details] {
     /*padding: 2% 2%;*/
     background: #fcfcfc;
     min-height: 1em;
@@ -68,7 +55,7 @@
     flex-direction: column;
 }
 
-[jin_task_view_details_title] {
+[jin-task-view-details-title] {
     font: 21px/27px 'Segoe UI', sans-serif;
     padding: 2% 3%;
     border-radius: 2px;
@@ -76,7 +63,7 @@
 	position: relative;
 }
 
-[jin_task_view_details_title]:empty:before {
+[jin-task-view-details-title]:empty:before {
     color: gray;
     font-style: italic;
     content: 'empty title';
@@ -87,20 +74,20 @@
 	width: 94%;
 }
 
-[jin_task_view_details_title]:empty:after {
+[jin-task-view-details-title]:empty:after {
     content: '\A0';
     width: 0;
     display: inline-block;
 }
 
-[jin_task_view_details_title]:focus {
+[jin-task-view-details-title]:focus {
     outline: none;
     position: relative;
     box-shadow: 0 0 4px steelblue;
     background: white;
 }
 
-[jin_task_view_details_description] {
+[jin-task-view-details-description] {
     font: 15px/25px 'Segoe UI', sans-serif;
     padding: 2% 3%;
     margin-top: -2%;
@@ -111,7 +98,7 @@
     flex: 1;
 }
 
-[jin_task_view_details_description]:empty:before {
+[jin-task-view-details-description]:empty:before {
     color: gray;
     font-style: italic;
     content: 'empty description';
@@ -122,26 +109,92 @@
 	width: 94%;
 }
 
-[jin_task_view_details_description]:empty:after {
+[jin-task-view-details-description]:empty:after {
     content: '\A0';
     width: 0;
     display: inline-block;
 }
 
-[jin_task_view_details_description]:focus {
+[jin-task-view-details-description]:focus {
     outline: none;
     position: relative;
     box-shadow: 0 0 4px steelblue;
     background: white;
 }
 
-[jin_task_view_details_description][visible="false"] {
+[jin-task-view-details-description][visible="false"] {
     display: none;
 }
 
-/* ../../jin/todo/jin_todo_vew.css?=HOQV26F4 */
-[jin_todo_view] {
-    background: #ccc url("../http:/hyoo.ru/wc/desktop/wc-desktop_light.png") left top no-repeat;
+/* ../../jin/task/view/item/jin_task_view_item.css?=HQNGJ3AG */
+[jin-task-view-item] {
+    display: block;
+    background: #fcfcfc;
+    font: 15px/1 'Segoe UI', sans-serif;
+    white-space: nowrap;
+    cursor: pointer;
+    position: relative;
+}
+
+[jin-task-view-item]:nth-child(even) {
+    background: #f6f6f6;
+}
+
+[jin-task-view-item]:hover {
+    background: #def;
+}
+
+[jin-task-view-item][jin-task-view-item-current="true"] {
+    background: steelblue;
+    color: snow;
+}
+
+[jin-task-view-item-link] {
+    color: inherit;
+    text-decoration: inherit;
+    display: block;
+}
+[jin-task-view-item-link]:focus {
+    outline: none;
+}
+
+[jin-task-view-item-title] {
+    display: block;
+    padding: 1.5%;
+    position: relative;
+    min-height: 1em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+[jin-task-view-item-title]:empty:before {
+    color: gray;
+    font-style: italic;
+    content: attr( jin-task-view-item-title-default );
+    position: absolute;
+}
+
+[jin-task-view-item][jin-task-view-item-current="true"] [jin-task-view-item-title]:empty:before {
+    color: inherit;
+}
+
+[jin-task-view-item-dropper] {
+	padding: .25em .4em;
+	float: right;
+	display: none;
+}
+
+[jin-task-view-item-dropper]:hover {
+	background: lightsteelblue;
+}
+
+[jin-task-view-item]:hover [jin-task-view-item-dropper] {
+	display: block;
+}
+
+/* ../../jin/todo/view/jin_todo_vew.css?=HQAJCQGO */
+[jin-todo-view] {
+    background: #ccc /*url("../view/http:/hyoo.ru/wc/desktop/wc-desktop_light.png") left top no-repeat*/;
     position: relative;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -161,7 +214,7 @@
     align-content: flex-start;
 }
 
-[jin_todo_view_title] {
+[jin-todo-view-title] {
     text-align: center;
     font: 24px/1 'Segoe UI', sans-serif;
     margin: 2% 2%;
@@ -169,12 +222,12 @@
     flex: 0 0 100%;
 }
 
-[jin_todo_view_resizer] {
+[jin-todo-view-resizer] {
 	padding: 1%;
 	cursor: ns-resize;
 }
 
-[jin_todo_view_panel] {
+[jin-todo-view-panel] {
 	height: 100%;
 	width: 100%;
 	background: #fcfcfc;
@@ -186,7 +239,7 @@
 	position: relative;
 }
 
-[jin_todo_view_toolbar] {
+[jin-todo-view-toolbar] {
 	position: absolute;
 	margin-top: -1.6em;
     font: 15px/1 'Segoe UI Semibold', 'Segoe UI', sans-serif;
@@ -197,8 +250,9 @@
 	justify-content: center;
 }
 
-[jin_todo_view_addTask] {
-	margin-top: 1.5em;
+[jin-todo-view-create],
+[jin-todo-view-clear] {
+	margin: 1.5em .25em 0;
 	cursor: pointer;
 	padding: .25em .5em;
     box-shadow: 0 0 3px rgba( 0, 0, 0, .5 );
@@ -207,17 +261,19 @@
 	border-bottom: 1px solid #ccc;
 }
 
-[jin_todo_view_addTask]:hover {
+[jin-todo-view-create]:hover,
+[jin-todo-view-clear]:hover {
 	background: white;
     box-shadow: 0 0 6px rgba( 0, 0, 0, .5 );
 }
 
-[jin_todo_view_toolbar]:hover [jin_todo_view_addTask] {
+[jin-todo-view-toolbar]:hover [jin-todo-view-create],
+[jin-todo-view-toolbar]:hover [jin-todo-view-clear] {
 	margin-top: 0;
 	transition: margin-top .1s .1s;
 }
 
-[jin_todo_view_list_pane] {
+[jin-todo-view-list-pane] {
 	height: 100%;
 	width: 100%;
 	overflow: auto;
@@ -225,12 +281,12 @@
 
 @media ( min-width: 40em ) {
 	
-	[jin_todo_view] {
+	[jin-todo-view] {
 		-moz-flex-direction: row;
 		flex-direction: row;
 	}
 	
-	[jin_todo_view_resizer] {
+	[jin-todo-view-resizer] {
 		cursor: ew-resize;
 	}
 

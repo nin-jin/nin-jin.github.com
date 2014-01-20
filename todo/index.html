@@ -1,82 +1,35 @@
 <!doctype html>
-<meta charset="utf-8" />
-
-<link href="-mix/index.stage=release.css" rel="stylesheet" />
-
-<style>
-    html, body {
-        padding: 0;
-        margin: 0;
-        width: 100%;
-        height: 100%;
-    }
-</style>
-
-<div jin_sample_list>
-    
-    <section jin_todo_view
-		jin_sample_events="$jin.dnd.onOver=onResizeMove $jin.dnd.onEnter=onResizeMove"
-		>
-		<section jin_todo_view_panel
-			jin_sample_props="style.flexShrink=shrinkDetails"
-			>
-			{details}
-		</section>
-		<div jin_todo_view_resizer
-			jin_sample_events="$jin.dnd.onStart=onResizeStart"
-			>
-		</div>
-		<section jin_todo_view_panel
-			jin_sample_props="style.flexShrink=shrinkList"
-			>
-			<div jin_todo_view_toolbar>
-				<div jin_todo_view_addTask
-					tabindex="0"
-					jin_sample_events="$jin_dom_event_onClick=onAddTask"
-					>
-					Добавить
-				</div>
-			</div>
-			<div jin_todo_view_list_pane>{items}</div>
-		</section>
-    </section>
-    
-    <div jin_task_view_item jin_task_view_item_current="{current}">
-        <a jin_task_view_item_link href="{uri}" tabindex="0">
-            <div jin_task_view_item_title jin_task_view_item_title_default="{uri}">{title}</div>
-        </a>
-    </div>
-    
-    <div jin_task_view_details>
-        <div
-			jin_task_view_details_title
-			contenteditable="{editableTitle}"
-			jin_sample_events="$jin.dom.event.onInput=onChangeTitle"
-			>
-			{title}
-		</div>
-        <div
-			jin_task_view_details_description
-			contenteditable="{editableDescription}"
-			visible="{visibleDescription}"
-			jin_sample_events="$jin.dom.event.onInput=onChangeDescription"
-			>
-			{description}
-		</div>
-    </div>
-    
-</div>
-
-<script src="-mix/index.env=web.stage=release.js"></script>
-<script>
-    var startTime = Date.now()
-    
-    $jin.todo.view( 'todo' ).todo( $jin.todo( 'main' ) ).parent( document.body )
-    
-    $jin.atom( function( oldValue ){
-		var task = $jin.todo('main').task()
-        return document.title = task.title() || document.location.search + document.location.hash
-    }).update()
-    
-    console.log('time', Date.now()-startTime)
-</script>
+<head>
+	<meta charset="utf-8" />
+	
+	<link href="-mix/index.stage=release.css" rel="stylesheet" />
+	
+	<style>
+		html, body {
+			padding: 0;
+			margin: 0;
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+	
+</head>
+<body>
+	
+	<script src="-mix/index.env=web.stage=release.js"></script>
+	<script src="-mix/todo.env=web.stage=release.sample.html.js"></script>
+	
+	<script>
+		var startTime = Date.now()
+		
+		$jin.todo( 'main' ).view( 'main' ).sample().parent( document.body )
+		
+		$jin.atom( function( oldValue ){
+			var task = $jin.todo('main').task()
+			return document.title = task.title() || document.location.search + document.location.hash
+		}).update()
+		
+		console.log('time', Date.now()-startTime)
+	</script>
+	
+</body>
