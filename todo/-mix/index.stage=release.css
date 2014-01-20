@@ -126,7 +126,7 @@
     display: none;
 }
 
-/* ../../jin/task/view/item/jin_task_view_item.css?=HQNGJ3AG */
+/* ../../jin/task/view/item/jin_task_view_item.css?=HQNH1YAW */
 [jin-task-view-item] {
     display: block;
     background: #fcfcfc;
@@ -179,7 +179,7 @@
 }
 
 [jin-task-view-item-dropper] {
-	padding: .25em .4em;
+	padding: 1.5% 1.5%;
 	float: right;
 	display: none;
 }
