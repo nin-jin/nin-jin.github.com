@@ -2478,7 +2478,7 @@ $jin.atom.prop.hash( '$jin.state.url.item',
     }
 } )
 
-;//../../jin/slide/show/jin-slide-show.env=web.jam.js?=HRGQBXDC
+;//../../jin/slide/show/jin-slide-show.env=web.jam.js?=HRGQP4OG
 $jin.klass({ '$jin.slide.show': [ '$jin.view' ] })
 
 $jin.property({ '$jin.slide.show..stack': null })
@@ -2495,8 +2495,8 @@ $jin.atom.prop({ '$jin.slide.show..resizeCount': {
 $jin.atom.prop({ '$jin.slide.show..zoom': {
 	pull: function( ){
 		this.resizeCount()
-		var size = Math.min( document.documentElement.clientWidth, document.documentElement.clientHeight )
-		var next = size / 320
+		var size = document.documentElement.clientWidth + document.documentElement.clientHeight
+		var next = size / 1024
 		return next
 	}
 }})
