@@ -1223,6 +1223,13 @@ $jin.method( '$jin.event.type', '$jin.dom.event.onChange.type', function( ){
     return 'change'
 } )
 
+;//../../jin/dom/event/jin_dom_event_onResize.env=web.jam.js?=HRGPTU4W
+$jin.klass({ '$jin.dom.event.onResize': [ '$jin.dom.event' ] })
+
+$jin.method( '$jin.event.type', '$jin.dom.event.onResize.type', function( ){
+    return 'resize'
+} )
+
 ;//../../jin/dom/event/jin_dom_event_onScroll.env=web.jam.js?=HRDP1XWW
 $jin.klass({ '$jin.dom.event.onScroll': [ '$jin.dom.event' ] })
 
@@ -2471,14 +2478,26 @@ $jin.atom.prop.hash( '$jin.state.url.item',
     }
 } )
 
-;//../../jin/slide/show/jin-slide-show.jam.js?=HRFE6ZKG
+;//../../jin/slide/show/jin-slide-show.env=web.jam.js?=HRGQBXDC
 $jin.klass({ '$jin.slide.show': [ '$jin.view' ] })
 
 $jin.property({ '$jin.slide.show..stack': null })
 
+$jin.atom.prop({ '$jin.slide.show..resizeCount': {
+	pull: function( ){
+		$jin.dom.event.onResize.listen( window, function(){
+			this.resizeCount( this.resizeCount() + 1 )
+		}.bind( this ) )
+		return 0
+	}
+}})
+
 $jin.atom.prop({ '$jin.slide.show..zoom': {
 	pull: function( ){
-		return 3;
+		this.resizeCount()
+		var size = Math.min( document.documentElement.clientWidth, document.documentElement.clientHeight )
+		var next = size / 320
+		return next
 	}
 }})
 
@@ -2538,11 +2557,3 @@ $jin.method({ '$jin.slide.show..onPress': function( event ){
 	
 	event.catched( true )
 }})
-
-;//../../jin/slide/stack/jin-slide-stack.jam.js?=HRF570RC
-$jin.klass({ '$jin.slide.stack': [ ] })
-
-$jin.method({ '$jin.slide.stack..view': function( id ){
-	return $jin.slide.show( id ).stack( this )
-}})
-

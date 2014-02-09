@@ -64,6 +64,7 @@ void function( modules ){
 "../../dom/event/jin_dom_event_onPress.env=web.jam.js",
 "../../dom/event/jin_dom_event_onWheel.env=web.jam.js",
 "../../dom/event/jin_dom_event_onChange.env=web.jam.js",
+"../../dom/event/jin_dom_event_onResize.env=web.jam.js",
 "../../dom/event/jin_dom_event_onScroll.env=web.jam.js",
 "../../dom/event/jin_dom_event_onDoubleClick.env=web.jam.js",
 "../../dom/selection/jin-dom-selection.jam.js",
@@ -76,6 +77,5 @@ void function( modules ){
 "../../view/jin_view.env=web.jam.js",
 "../../uri/jin_uri.jam.js",
 "../../state/url/jin_state_url.env=web.jam.js",
-"../show/jin-slide-show.jam.js",
-"../stack/jin-slide-stack.jam.js",
+"../show/jin-slide-show.env=web.jam.js",
  null ])
