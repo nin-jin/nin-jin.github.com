@@ -1,0 +1,91 @@
+<!doctype html>
+<head>
+	<meta charset="utf-8" />
+	
+	<link href="-mix/index.stage=release.css" rel="stylesheet" />
+	
+	<style>
+		html, body {
+			padding: 0;
+			margin: 0;
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+	
+</head>
+<body>
+	
+	<script src="-mix/index.env=web.stage=release.js"></script>
+	<script src="-mix/slide.env=web.stage=release.sample.html.js"></script>
+	
+	<div jin-slide-demo="" jin-slide-show-page="0">
+		<div jin-slide-show-paper="">
+			<div jin-slide-show-header="">
+				<div jin-slide-show-title="">$jin.slide</div>
+			</div>
+			<div jin-slide-show-content="">
+				<div jin-slide-show-description="">
+					Это –  простейшее html5+css3 слайдшоу с адаптивным дизайном. Является демонстрацией работы модулей $jin.atom, $jin.sample, $jin.view и собственно $jin.slide. Для простоты тут тут не обеспечивалась поддержка движков, отличных от WebKit.
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div jin-slide-demo="" jin-slide-show-page="1">
+		<div jin-slide-show-paper="">
+			<div jin-slide-show-header="">
+				<div jin-slide-show-title="">$jin.atom</div>
+			</div>
+			<div jin-slide-show-content="">
+				<div jin-slide-show-description="">
+					Это – компактная реализация frp, где вы описываете так называемые атомы. Атомы – это сущности, которые хранят в себе одно конкретное значение, следят за тем, от значения каких атомов оно зависит и поддерживают его в актуальном состоянии.
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div jin-slide-demo="" jin-slide-show-page="2">
+		<div jin-slide-show-paper="">
+			<div jin-slide-show-header="">
+				<div jin-slide-show-title="">$jin.sample</div>
+			</div>
+			<div jin-slide-show-content="">
+				<div jin-slide-show-description="">
+					Это – что-то типа шаблонизатора, но без логических конструкций. Сэмплы – просто html-код в котором расставлены плейсхолдеры. При этом плейсхолдеры являются атомами, а значит постоянно поддерживают свою актуальность. Значения плейсхолдеров вычисляются из вьюшки, путём вызова одноименного метода. Значениями могут быть как просто строки, так и целые массивы вьюшек или просто дом-узлов.
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div jin-slide-demo="" jin-slide-show-page="3">
+		<div jin-slide-show-paper="">
+			<div jin-slide-show-header="">
+				<div jin-slide-show-title="">$jin.view</div>
+			</div>
+			<div jin-slide-show-content="">
+				<div jin-slide-show-description="">
+					Это – базовый клас для вьюшек. Содержит несколько полезных методов по созданию сэмплов. У одной вьюшки может быть несколько разноименных семплов – все они дергают её методы. Так что будьте осторожны с циклическими зависимостями!
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div jin-slide-demo="" jin-slide-show-page="4">
+		<div jin-slide-show-paper="">
+			<div jin-slide-show-header="">
+				<div jin-slide-show-title="">Реклама</div>
+			</div>
+			<div jin-slide-show-content="">
+				<div jin-slide-show-description="">
+					Найти эти и многие другие модули вы можете в пакете <a href="https://github.com/nin-jin/pms-jin">$jin</a>.
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<script>
+		$jin.slide.show( 'jin-slide-demo' ).element().parent( document.body )
+	</script>
+	
+</body>

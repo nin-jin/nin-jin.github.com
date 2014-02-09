@@ -1,0 +1,1 @@
+$jin.sample.strings( '<div jin-slide-show="{id}"\n	jin-sample-props="\n		style.zoom=zoom\n	"\n	jin-sample-events="\n		$jin.dom.event.onWheel=onWheel\n		$jin.dom.event.onPress=onPress\n	"\n	tabindex="0"\n	>\n	{currentPage}\n</div>\n' )
