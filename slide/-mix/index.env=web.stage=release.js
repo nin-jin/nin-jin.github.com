@@ -475,7 +475,7 @@ $jin.makeId = function( prefix ){
 
 $jin.makeId.seeds = {}
 
-;//../../jin/atom/jin-atom.jam.js?=HRDP1X54
+;//../../jin/atom/jin-atom.jam.js?=HRHEFPC8
 $jin.klass({ '$jin.atom': [] })
 
 $jin.atom.slaves = []
@@ -521,6 +521,7 @@ $jin.method( '$jin.klass..init', '$jin.atom..init', function $jin_atom__init( co
 	if( config.pull ) this._pull = config.pull
 	if( config.push ) this._push = config.push
 	if( config.merge ) this._merge = config.merge
+	this._value = config.value
 	this._context = config.context
 })
 
@@ -721,7 +722,7 @@ $jin.property({ '$jin.atom.logging.log': function( ){
 	return []
 }})
 
-;//../../jin/atom/prop/jin-atom-prop.jam.js?=HRDP1X54
+;//../../jin/atom/prop/jin-atom-prop.jam.js?=HRHECEIG
 $jin.definer({ '$jin.atom.prop': function( path, config ){
     
 	var pull = config.pull
@@ -763,6 +764,7 @@ $jin.definer({ '$jin.atom.prop': function( path, config ){
 		,	pull: pull
 		,	push: push
 		,	merge: merge
+		,	value: config.value
 		} )
     }
 
@@ -2478,7 +2480,7 @@ $jin.atom.prop.hash( '$jin.state.url.item',
     }
 } )
 
-;//../../jin/slide/show/jin-slide-show.env=web.jam.js?=HRGQP4OG
+;//../../jin/slide/show/jin-slide-show.env=web.jam.js?=HRHBLDP4
 $jin.klass({ '$jin.slide.show': [ '$jin.view' ] })
 
 $jin.property({ '$jin.slide.show..stack': null })

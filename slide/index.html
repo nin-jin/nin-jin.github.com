@@ -19,66 +19,192 @@
 	<script src="-mix/index.env=web.stage=release.js"></script>
 	<script src="-mix/slide.env=web.stage=release.sample.html.js"></script>
 	
-	<div jin-slide-demo="" jin-slide-show-page="0">
+	<div jin-slide-demo="" jin-slide-show-page="name">
+		<div jin-slide-show-paper="">
+			<div jin-slide-show-title="">$jin.atom</div>
+		</div>
+	</div>
+	
+	<div jin-slide-demo="" jin-slide-show-page="contents">
 		<div jin-slide-show-paper="">
 			<div jin-slide-show-header="">
-				<div jin-slide-show-title="">$jin.slide</div>
+				<div jin-slide-show-title="">Фичи</div>
 			</div>
 			<div jin-slide-show-content="">
 				<div jin-slide-show-description="">
-					Это –  простейшее html5+css3 слайдшоу с адаптивным дизайном. Является демонстрацией работы модулей $jin.atom, $jin.sample, $jin.view и собственно $jin.slide. Для простоты тут тут не обеспечивалась поддержка движков, отличных от WebKit.
+					<ol>
+						<li><a href="#page=2">Автоматическое отслеживание зависимостей</a></li>
+						<li><a href="#page=5">Отложенное послойное обновление значений</a></li>
+					</ol>
 				</div>
 			</div>
 		</div>
 	</div>
 	
-	<div jin-slide-demo="" jin-slide-show-page="1">
+	<div jin-slide-demo="" jin-slide-show-page="deps-ko">
 		<div jin-slide-show-paper="">
 			<div jin-slide-show-header="">
-				<div jin-slide-show-title="">$jin.atom</div>
+				<div jin-slide-show-title="">Отслеживание зависимостей</div>
 			</div>
 			<div jin-slide-show-content="">
-				<div jin-slide-show-description="">
-					Это – компактная реализация frp, где вы описываете так называемые атомы. Атомы – это сущности, которые хранят в себе одно конкретное значение, следят за тем, от значения каких атомов оно зависит и поддерживают его в актуальном состоянии.
+				<div jin-slide-show-figure="">
+    				<div jin-slide-show-figure-descr="">KnockOut</div>
+					<pre>
+<font color="steelblue">function</font> AppViewModel( ){
+    <font color="steelblue">this</font>.firstName = ko.observable( <font color="green">'Bert'</font> )
+    <font color="steelblue">this</font>.lastName = ko.observable( <font color="green">'Bertington'</font> )
+    <font color="steelblue">this</font>.fullName = ko.computed( <font color="steelblue">function</font>( ){
+        <font color="steelblue">return</font> <font color="steelblue">this</font>.firstName() + <font color="green">' '</font> + <font color="steelblue">this</font>.lastName()
+    }, <font color="steelblue">this</font> )
+}
+					</pre>
 				</div>
 			</div>
 		</div>
 	</div>
 	
-	<div jin-slide-demo="" jin-slide-show-page="2">
+	<div jin-slide-demo="" jin-slide-show-page="deps-angular">
 		<div jin-slide-show-paper="">
 			<div jin-slide-show-header="">
-				<div jin-slide-show-title="">$jin.sample</div>
+				<div jin-slide-show-title="">Отслеживание зависимостей</div>
 			</div>
 			<div jin-slide-show-content="">
-				<div jin-slide-show-description="">
-					Это – что-то типа шаблонизатора, но без логических конструкций. Сэмплы – просто html-код в котором расставлены плейсхолдеры. При этом плейсхолдеры являются атомами, а значит постоянно поддерживают свою актуальность. Значения плейсхолдеров вычисляются из вьюшки, путём вызова одноименного метода. Значениями могут быть как просто строки, так и целые массивы вьюшек или просто дом-узлов.
+				<div jin-slide-show-figure="">
+    				<div jin-slide-show-figure-descr="">AngularJS</div>
+					<pre>
+<font color="steelblue">function</font> AppViewModel( <font color="navy">$scope</font> ){
+    <font color="navy">$scope.firstName</font> = <font color="green">'Bert'</font>
+    <font color="navy">$scope.lastName</font> = <font color="green">'Bertington'</font>
+    <font color="navy">$scope.remaining</font> = function( ){
+        <font color="steelblue">return</font> <font color="navy">$scope.firstName</font> + <font color="green">' '</font> + <font color="navy">$scope.lastName</font>
+    }
+}
+					</pre>
 				</div>
 			</div>
 		</div>
 	</div>
 	
-	<div jin-slide-demo="" jin-slide-show-page="3">
+	<div jin-slide-demo="" jin-slide-show-page="deps-atom">
 		<div jin-slide-show-paper="">
 			<div jin-slide-show-header="">
-				<div jin-slide-show-title="">$jin.view</div>
+				<div jin-slide-show-title="">Отслеживание зависимостей</div>
 			</div>
 			<div jin-slide-show-content="">
-				<div jin-slide-show-description="">
-					Это – базовый клас для вьюшек. Содержит несколько полезных методов по созданию сэмплов. У одной вьюшки может быть несколько разноименных семплов – все они дергают её методы. Так что будьте осторожны с циклическими зависимостями!
+				<div jin-slide-show-figure="">
+    				<div jin-slide-show-figure-descr="">$jin.atom</div>
+					<pre>
+<font color="navy">$foo.app.view</font> = <font color="steelblue">function</font>( ){ }
+
+<font color="navy">$jin.atom.prop</font>(
+{   <font color="green">'$foo.app.view..firstName'</font>: { value: <font color="green">'Bert'</font> }
+,   <font color="green">'$foo.app.view..lastName'</font>: { value: <font color="green">'Bertington'</font> } })
+,   <font color="green">'$foo.app.view..fullName'</font>: {
+        pull: <font color="steelblue">function</font>( ){
+            <font color="steelblue">return</font> <font color="steelblue">this</font>.firstName() + <font color="green">' '</font> + <font color="steelblue">this</font>.lastName()
+        }
+    }
+})
+                    </pre>
 				</div>
 			</div>
 		</div>
 	</div>
-	
+    
 	<div jin-slide-demo="" jin-slide-show-page="4">
 		<div jin-slide-show-paper="">
 			<div jin-slide-show-header="">
-				<div jin-slide-show-title="">Реклама</div>
+				<div jin-slide-show-title="">Распространение обновлений</div>
+			</div>
+			<div jin-slide-show-content="">
+				<div jin-slide-show-figure="">
+					<svg width="150px" height="150px" viewBox="50 50 300 300" preserveAspectRatio="xMidYMid">
+						
+						<line x1="100" y1="300" x2="100" y2="100" stroke="black" stroke-width="2" />
+						<line x1="200" y1="300" x2="200" y2="200" stroke="black" stroke-width="2" />
+						<line x1="200" y1="200" x2="100" y2="100" stroke="black" stroke-width="2" />
+						<line x1="200" y1="200" x2="200" y2="100" stroke="black" stroke-width="2" />
+						<line x1="200" y1="300" x2="300" y2="200" stroke="black" stroke-width="2" />
+						<line x1="300" y1="300" x2="300" y2="200" stroke="black" stroke-width="2" />
+						<line x1="300" y1="200" x2="200" y2="100" stroke="black" stroke-width="2" />
+						
+						<circle cx="100" cy="300" r="20" stroke="black" stroke-width="2" fill="red" />
+						<circle cx="200" cy="300" r="20" stroke="black" stroke-width="2" fill="green" />
+						<circle cx="300" cy="300" r="20" stroke="black" stroke-width="2" fill="blue" />
+						
+						<circle cx="200" cy="200" r="20" stroke="black" stroke-width="2" fill="green" />
+						<circle cx="295" cy="200" r="20" stroke="black" stroke-width="2" fill="green" />
+						<circle cx="305" cy="200" r="20" stroke="black" stroke-width="2" fill="blue" />
+						
+						<circle cx="95" cy="100" r="20" stroke="black" stroke-width="2" fill="red" />
+						<circle cx="105" cy="100" r="20" stroke="black" stroke-width="2" fill="green" />
+						<circle cx="190" cy="100" r="20" stroke="black" stroke-width="2" fill="green" />
+						<circle cx="200" cy="100" r="20" stroke="black" stroke-width="2" fill="green" />
+						<circle cx="210" cy="100" r="20" stroke="black" stroke-width="2" fill="blue" />
+					</svg>
+					<div jin-slide-show-figure-descr="">KnockOut</div>
+					<div jin-slide-show-figure-descr="">2x recalc</div>
+				</div>
+				<div jin-slide-show-figure="">
+					<svg width="150px" height="150px" viewBox="50 50 300 300" preserveAspectRatio="xMidYMid">
+						<line x1="100" y1="300" x2="100" y2="100" stroke="black" stroke-width="2" />
+						<line x1="200" y1="300" x2="200" y2="200" stroke="black" stroke-width="2" />
+						<line x1="200" y1="200" x2="100" y2="100" stroke="black" stroke-width="2" />
+						<line x1="200" y1="200" x2="200" y2="100" stroke="black" stroke-width="2" />
+						<line x1="200" y1="300" x2="300" y2="200" stroke="black" stroke-width="2" />
+						<line x1="300" y1="300" x2="300" y2="200" stroke="black" stroke-width="2" />
+						<line x1="300" y1="200" x2="200" y2="100" stroke="black" stroke-width="2" />
+						
+						<circle cx="100" cy="300" r="20" stroke="black" stroke-width="2" fill="red" />
+						<circle cx="200" cy="300" r="20" stroke="black" stroke-width="2" fill="red" />
+						<circle cx="300" cy="300" r="20" stroke="black" stroke-width="2" fill="red" />
+						
+						<circle cx="200" cy="200" r="20" stroke="black" stroke-width="2" fill="green" />
+						<circle cx="300" cy="200" r="20" stroke="black" stroke-width="2" fill="green" />
+						
+						<circle cx="100" cy="100" r="20" stroke="black" stroke-width="2" fill="blue" />
+						<circle cx="200" cy="100" r="20" stroke="black" stroke-width="2" fill="blue" />
+					</svg>
+					<div jin-slide-show-figure-descr="">$jin.atom</div>
+				</div>
+				<div jin-slide-show-figure="">
+					<svg width="150px" height="150px" viewBox="50 50 300 300" preserveAspectRatio="xMidYMid">
+						
+						<line x1="100" y1="300" x2="100" y2="100" stroke="black" stroke-width="2" />
+						<line x1="200" y1="300" x2="200" y2="200" stroke="black" stroke-width="2" />
+						<line x1="200" y1="200" x2="100" y2="100" stroke="black" stroke-width="2" />
+						<line x1="200" y1="200" x2="200" y2="100" stroke="black" stroke-width="2" />
+						<line x1="200" y1="300" x2="300" y2="200" stroke="black" stroke-width="2" />
+						<line x1="300" y1="300" x2="300" y2="200" stroke="black" stroke-width="2" />
+						<line x1="300" y1="200" x2="200" y2="100" stroke="black" stroke-width="2" />
+						
+						<circle cx="100" cy="300" r="20" stroke="black" stroke-width="2" fill="yellow" />
+						<circle cx="200" cy="300" r="20" stroke="black" stroke-width="2" fill="yellow" />
+						<circle cx="300" cy="300" r="20" stroke="black" stroke-width="2" fill="yellow" />
+						
+						<circle cx="200" cy="200" r="20" stroke="black" stroke-width="2" fill="yellow" />
+						<circle cx="300" cy="200" r="20" stroke="black" stroke-width="2" fill="yellow" />
+						
+						<circle cx="100" cy="100" r="20" stroke="black" stroke-width="2" fill="yellow" />
+						<circle cx="200" cy="100" r="20" stroke="black" stroke-width="2" fill="yellow" />
+					</svg>
+					<div jin-slide-show-figure-descr="">AngularJS</div>
+					<div jin-slide-show-figure-descr="">4x digest</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div jin-slide-demo="" jin-slide-show-page="links">
+		<div jin-slide-show-paper="">
+			<div jin-slide-show-header="">
+				<div jin-slide-show-title="">Сcылки</div>
 			</div>
 			<div jin-slide-show-content="">
 				<div jin-slide-show-description="">
-					Найти эти и многие другие модули вы можете в пакете <a href="https://github.com/nin-jin/pms-jin">$jin</a>.
+                    <a href="http://hyoo.ru/?article=%D0%90%D1%82%D0%BE%D0%BC%D1%8B+%D0%BD%D0%B0+JS;author=Jin">$jin.atom</a>
+                    <a href="http://knockoutjs.com/">KnockOut</a>
+                    <a href="http://angularjs.org/">AngularJS</a>
 				</div>
 			</div>
 		</div>
