@@ -1,4 +1,4 @@
-;//../../jin/jin.jam.js?=HRF563KW
+;//../../jin/jin.jam.js?=HRHVGOGW
 this.$jin = {}
 
 ;//../../jin/value/jin-value.jam.js?=HP6SVV48
@@ -105,7 +105,7 @@ this.$jin.func.name = function( func, name ){
     || func.toString().match( /^\s*function\s*([$\w]*)\s*\(/ )[ 1 ]
 }
 
-;//../../jin/method/jin_method.jam.js?=HRDP3WWG
+;//../../jin/method/jin_method.jam.js?=HRHW4CBK
 $jin.definer({ '$jin.method': function( ){ // arguments: resolveName*, path, func
     var resolveList = [].slice.call( arguments )
     var func = resolveList.pop()
@@ -375,7 +375,7 @@ $jin.method( '$jin.klass..method', function( name ){
     return hash[ '_' + name ] = method
 } )
 
-;//../../jin/registry/jin_registry.jam.js?=HRDP3WWG
+;//../../jin/registry/jin_registry.jam.js?=HRHW4CBK
 $jin.property.hash( '$jin.registry.storage', {} )
 
 $jin.property( '$jin.registry..id', String )
@@ -417,7 +417,7 @@ $jin.method( '$jin.schedule', function( delay, handler ){
     } }
 } )
 
-;//../../jin/defer/jin_defer.env=web.jam.js?=HRDP3WWG
+;//../../jin/defer/jin_defer.env=web.jam.js?=HRHW4CBK
 $jin.defer = function( func ){
     $jin.defer.queue.push( func )
     if( !$jin.defer.scheduled ) $jin.defer.schedule()
@@ -475,7 +475,7 @@ $jin.makeId = function( prefix ){
 
 $jin.makeId.seeds = {}
 
-;//../../jin/atom/jin-atom.jam.js?=HRHEFPC8
+;//../../jin/atom/jin-atom.jam.js?=HRIRSWI8
 $jin.klass({ '$jin.atom': [] })
 
 $jin.atom.slaves = []
@@ -561,8 +561,11 @@ $jin.method({ '$jin.atom..pull': function( skipUnScheduling  ){
 	try {
 		var newValue = this._pull ? this._pull.call( this._context, this._value ) : this._value
 	} finally {
-		if( $jin.atom.slaves[0] !== this ) throw new Error( 'Atom is not on top of stack' )
-		$jin.atom.slaves.shift()
+		var stack = $jin.atom.slaves
+		while( stack.length ){
+			var top = stack.shift()
+			if( top === this ) break
+		}
 	}
 
 	for( var masterId in oldMasters ){
@@ -722,7 +725,7 @@ $jin.property({ '$jin.atom.logging.log': function( ){
 	return []
 }})
 
-;//../../jin/atom/prop/jin-atom-prop.jam.js?=HRHECEIG
+;//../../jin/atom/prop/jin-atom-prop.jam.js?=HRHVEGZS
 $jin.definer({ '$jin.atom.prop': function( path, config ){
     
 	var pull = config.pull
@@ -1204,14 +1207,14 @@ $jin.method( '$jin.event.type', '$jin.dom.event.onInput.type', function( ){
 //	return this.$jin.dom.event.listen( crier, handler )
 //} )
 
-;//../../jin/dom/event/jin_dom_event_onPress.env=web.jam.js?=HRFBOUYW
+;//../../jin/dom/event/jin_dom_event_onPress.env=web.jam.js?=HRHVECD4
 $jin.klass({ '$jin.dom.event.onPress': [ '$jin.dom.event' ] })
 
 $jin.method( '$jin.event.type', '$jin.dom.event.onPress.type', function( ){
     return 'keydown'
 } )
 
-;//../../jin/dom/event/jin_dom_event_onWheel.env=web.jam.js?=HRF9FLTC
+;//../../jin/dom/event/jin_dom_event_onWheel.env=web.jam.js?=HRHVECD4
 $jin.klass({ '$jin.dom.event.onWheel': [ '$jin.dom.event' ] })
 
 $jin.method( '$jin.event.type', '$jin.dom.event.onWheel.type', function( ){
@@ -1225,7 +1228,7 @@ $jin.method( '$jin.event.type', '$jin.dom.event.onChange.type', function( ){
     return 'change'
 } )
 
-;//../../jin/dom/event/jin_dom_event_onResize.env=web.jam.js?=HRGPTU4W
+;//../../jin/dom/event/jin_dom_event_onResize.env=web.jam.js?=HRHVECD4
 $jin.klass({ '$jin.dom.event.onResize': [ '$jin.dom.event' ] })
 
 $jin.method( '$jin.event.type', '$jin.dom.event.onResize.type', function( ){
@@ -1455,7 +1458,7 @@ $jin.method({ '$jin.dom.range..move': function( offset ){
 	return this
 }})
 
-;//../../jin/dom/jin_dom.jam.js?=HRFB1IOW
+;//../../jin/dom/jin_dom.jam.js?=HRHW4CBK
 $jin.klass({ '$jin.dom': [ '$jin.wrapper' ] })
 
 $jin.method( '$jin.wrapper.exec', '$jin.dom.exec', function( node ){
@@ -1973,7 +1976,7 @@ $jin.atom.prop.hash( '$jin.state.local.item',
     }
 } )
 
-;//../../jin/sample/jin_sample.jam.js?=HRFB0J74
+;//../../jin/sample/jin_sample.jam.js?=HRI7NSC8
 $jin.klass({ '$jin.sample': [ '$jin.dom' ] })
 $jin.klass({ '$jin.sample.proto': [ '$jin.registry' ] })
 
@@ -2002,16 +2005,26 @@ $jin.property({ '$jin.sample.proto..rules': function( ){
 	
 	function collect( node ){
 		
-		var attrs = node.attributes
+		var attrs = [].slice.call( node.attributes )
 		if( attrs ){
 			for( var i = 0; i < attrs.length; ++i ){
 				var attr = attrs[ i ]
 				
-				var found = /^\{(\w+)\}$/g.exec( attr.nodeValue )
-				if( !found ) continue
-				var key = found[1]
-				
-				rules.push({ key: key, path: path.slice(), attrName: attr.nodeName })
+				var nameFound = /^(on)(\w+)$/.exec( attr.nodeName )
+				if( nameFound ){
+					var type = nameFound[1]
+					var name = nameFound[2]
+					
+					node.removeAttribute( attr.nodeName )
+					
+					rules.push({ key: attr.nodeValue, path: path.slice(), eventName: name })
+				} else {
+					var found = /^\{(\w+)\}$/g.exec( attr.nodeValue )
+					if( !found ) continue
+					var key = found[1]
+					
+					rules.push({ key: key, path: path.slice(), attrName: attr.nodeName })
+				}
 			}
 			
 			var props = node.getAttribute( 'jin-sample-props' )
@@ -2136,6 +2149,18 @@ $jin.method({ '$jin.sample..rules': function( rules ){
 					return current[ rule.fieldName ] = next
 				}
 			})
+		} else if( rule.eventName ){
+			var listener = $jin.dom( current ).listen( rule.eventName, function eventHandler( event ){
+				var view = sample.view()
+				if( !view ) return
+				
+				var handler = view[ rule.key ]
+				if( !handler ) throw new Error( 'View handler in not defined (' + rule.key + ')' )
+				
+				handler.call( view, $jin.dom.event( event ) )
+			})
+			sample.entangle( listener )
+			return
 		} else if( rule.event ){
 			var listener = rule.event.listen( current, function eventHandler( event ){
 				var view = sample.view()
@@ -2234,7 +2259,7 @@ $jin.method({ '$jin.sample..rules': function( rules ){
 	return this
 }})
 
-;//../../jin/view/jin_view.env=web.jam.js?=HRDP3WWG
+;//../../jin/view/jin_view.env=web.jam.js?=HRHW4CBK
 $jin.klass({ '$jin.view': [ '$jin.registry' ] })
 
 $jin.method( '$jin.view..state', function( ){
@@ -2480,7 +2505,7 @@ $jin.atom.prop.hash( '$jin.state.url.item',
     }
 } )
 
-;//../../jin/slide/show/jin-slide-show.env=web.jam.js?=HRHBLDP4
+;//../../jin/slide/show/jin-slide-show.env=web.jam.js?=HRI5OS0G
 $jin.klass({ '$jin.slide.show': [ '$jin.view' ] })
 
 $jin.property({ '$jin.slide.show..stack': null })
@@ -2503,7 +2528,7 @@ $jin.atom.prop({ '$jin.slide.show..zoom': {
 	}
 }})
 
-$jin.atom.prop({ '$jin.slide.show..pageNodes': {
+$jin.atom.prop({ '$jin.slide.show..pageNodeList': {
 	pull: function( ){
 		var nodes = $jin.doc().cssSelect( '[' + this.id() + ']' )
 		nodes.forEach( function( node ){
@@ -2513,24 +2538,41 @@ $jin.atom.prop({ '$jin.slide.show..pageNodes': {
 	}
 }})
 
-$jin.atom.prop({ '$jin.slide.show..pageNumber': {
+$jin.atom.prop({ '$jin.slide.show..pageNodeMap': {
+	pull: function( ){
+		var map = {}
+		this.pageNodeList().forEach( function( node ){
+			map[ node.attr( 'jin-slide-show-page' ) ] = node
+		} )
+		return map
+	}
+}})
+
+$jin.atom.prop({ '$jin.slide.show..pageNodeCurrent': {
 	pull: function( prev ){
-		var next = Number( $jin.state.url.item( 'page' ) ) || 0
-		return Math.min( next, this.pageNodes().length - 1 )
+		var id = $jin.state.url.item( 'slide' )
+		return this.pageNodeMap()[ id ] || this.pageNodeList()[ 0 ]
 	},
 	put: function( next, prev ){
-		if(( next >= 0 )&&( next < this.pageNodes().length )){
-			$jin.state.url.item( 'page', next )
+		if( !next ) return prev
+		
+		$jin.state.url.item( 'slide', next.attr( 'jin-slide-show-page' ) )
+		return next
+	}
+}})
+
+$jin.atom.prop({ '$jin.slide.show..pageNumber': {
+	pull: function( prev ){
+		return this.pageNodeList().indexOf( this.pageNodeCurrent() )
+	},
+	put: function( next, prev ){
+		var nodes = this.pageNodeList()
+		if(( next >= 0 )&&( next < nodes.length )){
+			this.pageNodeCurrent( nodes[ next ] )
 			return next
 		} else {
 			return prev
 		}
-	}
-}})
-
-$jin.atom.prop({ '$jin.slide.show..currentPage': {
-	pull: function( ){
-		return this.pageNodes()[ this.pageNumber() ]
 	}
 }})
 

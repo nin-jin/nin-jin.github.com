@@ -2,7 +2,7 @@
 [jin-sample-list] {
     display: none
 }
-/* ../../jin/slide/show/jin-slide-show.css?=HRHD56YG */
+/* ../../jin/slide/show/jin-slide-show.css?=HRITEJCO */
 [jin-slide-show] {
     font: 1em/1.25 'Cambria', serif;
 	color: black;
@@ -85,6 +85,15 @@
 	list-style-position: inside;
 	padding: 0;
 	margin: 0;
+}
+
+[jin-slide-show-description] a {
+	text-decoration: none;
+	color: steelblue;
+}
+
+[jin-slide-show-description] a:hover {
+	text-decoration: underline;
 }
 
 [jin-slide-show-figure] {
