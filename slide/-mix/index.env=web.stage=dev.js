@@ -77,5 +77,5 @@ void function( modules ){
 "../../view/jin_view.env=web.jam.js",
 "../../uri/jin_uri.jam.js",
 "../../state/url/jin_state_url.env=web.jam.js",
-"../show/jin-slide-show.env=web.jam.js",
+"../jin-slide.env=web.jam.js",
  null ])
