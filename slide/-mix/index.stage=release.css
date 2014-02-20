@@ -1,8 +1,8 @@
-/* ../../jin/sample/jin_sample.css?=HRKKZP2O */
+/* ../../jin/sample/jin_sample.css?=HRUSTW7K */
 [jin-sample-list] {
     display: none
 }
-/* ../../jin/slide/jin-slide.css?=HRS7K4KW */
+/* ../../jin/slide/jin-slide.css?=HRVQDH7C */
 [jin-slide] {
     font: 1em/1.25 'Cambria', serif;
 	color: black;
@@ -71,6 +71,11 @@
 }
 
 [jin-slide-page] pre {
+	margin: 0;
+	padding: .5em;
+}
+
+[jin-slide-page] p {
 	margin: 0;
 	padding: .5em;
 }
