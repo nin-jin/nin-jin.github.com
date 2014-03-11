@@ -1,0 +1,56 @@
+/* ../../jin/sample/jin_sample.css?=HSN8TMCG */
+[jin-sample-list] {
+    display: none
+}
+/* ../../jin/plotter/jin-plotter.css?=HSN91YI0 */
+[jin-plotter] {
+	display: block;
+	max-width: 100%;
+	max-height: 100%;
+}
+
+/* ../../jin/trade/jin-trade.css?=HSN91YI0 */
+[jin-trade] {
+	width: 100%;
+	height: 100%;
+	background: #eee;
+	box-sizing: border-box;
+	display: flex;
+	padding: 2%;
+}
+
+[jin-trade-graph] {
+	flex: 1 1 auto;
+	background: white;
+	box-shadow: 0 0 6px rgba( 0, 0, 0, .5 );
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font: 20px/1 'Segoe UI', sans-serif;
+}
+
+[jin-trade-controls] {
+	margin-left: 2%;
+	flex: 0 0 auto;
+}
+
+[jin-trade-field] {
+	display: block;
+	white-space: nowrap;
+	font: 20px/1.5 'Segoe UI', sans-serif;
+	text-align: right;
+}
+
+[jin-trade-field]:before {
+	content: attr( jin-trade-field ) ":";
+}
+
+[jin-trade-legend] {
+	display: flex;
+	flex-direction: column;
+}
+
+/* ../../jin/trade/jin-trade-legend-item.css?=HSN91YI0 */
+[jin-trade-legend-item] {
+	font: 20px/1.5 'Segoe UI', sans-serif;
+}
