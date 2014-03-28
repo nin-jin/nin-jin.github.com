@@ -30,12 +30,8 @@ this.$jin.trait = function( name ){
 
 this.$jin.trait.make = function( name ){
     
-    var trait = function( args ){
-        if( this instanceof trait ){
-            return this.init.apply( this, args || [] )
-        } else {
-            return trait.exec.apply( trait, arguments )
-        }
+    var trait = function( ){
+		return trait.exec.apply( trait, arguments )
     }
 
     trait.displayName = name
@@ -335,8 +331,17 @@ $jin.definer({ '$jin.klass': function( path, mixins ){
     return $jin.mixin( path, mixins )
 }})
 
+$jin.property( '$jin.klass.klass', function( ){
+	var klass = function Klass( ){ }
+	klass.prototype = this.prototype
+	return klass
+})
+
 $jin.method( '$jin.klass.exec', function( ){
-	return new this( arguments )
+	var klass = this.klass()
+	var obj = new klass
+	obj.init.apply( obj, arguments )
+	return obj
 } )
 
 $jin.property( '$jin.klass.descendantClasses', function( ){ // TODO: use atoms!
@@ -1012,6 +1017,23 @@ $jin.property({ '$jin.atom.logging.log': function( ){
 	return []
 }})
 
+;// ../../atom/jin-atom-hash.jam.js
+//$jin.klass({ '$jin.atom.hash': [] })
+//
+//$jin.method({ '$jin.atom..init': function jin_atom__init( config ){
+//	this['$jin.klass..init']
+//	this._id = $jin.makeId( '$jin.atom' )
+//	this._config = config
+//	this._value = config.value
+//	this._error = config.error
+//	this._slaves = {}
+//	this._masters = {}
+//	this._slice = 0
+//	this._pulled = false
+//	this._slavesCount = 0
+//	this._scheduled = false
+//}})
+
 ;// ../../atom/prop/jin-atom-prop.jam.js
 $jin.definer({ '$jin.atom.prop': function( path, config ){
     
@@ -1567,7 +1589,7 @@ $jin.method({ '$jin.doc.exec': function( node ){
 	var doc = node[ '$jin.doc' ]
 	if( doc ) return doc
 	
-	return node[ '$jin.doc' ] = this['$jin.dom.exec']( node )
+	return node[ '$jin.doc' ] = this['$jin.wrapper.exec']( node )
 }})
 
 $jin.method({ '$jin.doc..findById': function( id ){
@@ -1766,21 +1788,21 @@ $jin.method({ '$jin.dom.range..move': function( offset ){
 ;// ../../dom/jin_dom.jam.js
 $jin.klass({ '$jin.dom': [ '$jin.wrapper' ] })
 
-$jin.method( '$jin.wrapper.exec', '$jin.dom.exec', function( node ){
-    if( node instanceof this ) return node
-    
-    //var name = String( this )
-    //var obj = node[ name ]
-    //if( obj && ( obj instanceof this ) ) return obj
-    
-    var obj = new this([ node ])
-    
-    //try {
-    //    obj.nativeNode()[ name ] = this
-    //} catch( e ){}
-    
-    return obj
-} )
+//$jin.method( '$jin.wrapper.exec', '$jin.wrapper.exec', function( node ){
+//    if( node instanceof this ) return node
+//    
+//    //var name = String( this )
+//    //var obj = node[ name ]
+//    //if( obj && ( obj instanceof this ) ) return obj
+//    
+//    var obj = new this([ node ])
+//    
+//    //try {
+//    //    obj.nativeNode()[ name ] = this
+//    //} catch( e ){}
+//    
+//    return obj
+//} )
 
 $jin.method( '$jin.dom.env', function( ){
     return $jin.env()
@@ -2313,7 +2335,7 @@ $jin.method({ '$jin.sample.exec': function( type ){
 		var proto = $jin.sample.proto( type )
 		proto.rules()
 		var node = proto.nativeNode().cloneNode( true )
-		sample = this[ '$jin.dom.exec' ]( node ).proto( proto )
+		sample = this[ '$jin.wrapper.exec' ]( node ).proto( proto )
 	}
 	
 	return sample
@@ -2392,7 +2414,7 @@ $jin.property({ '$jin.sample..proto': function( proto ){
 			{	name: '$jin.sample:' + protoId + '/' + rule.path.join( '/' ) + '/' + rule.fieldName + '=' + rule.key
 			,	pull: pull
 			,	push: function fieldPush( next, prev ){
-					if( next === void 0 ) return
+					if( next == null ) return
 					//if( current[ rule.fieldName ] == next ) return
 					current[ rule.fieldName ] = next
 				}
