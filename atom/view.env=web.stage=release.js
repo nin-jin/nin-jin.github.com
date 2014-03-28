@@ -2393,10 +2393,8 @@ $jin.property({ '$jin.sample..proto': function( proto ){
 			,	pull: pull
 			,	push: function fieldPush( next, prev ){
 					if( next === void 0 ) return
-					if( current[ rule.fieldName ] == next ) return
-					try {
-						current[ rule.fieldName ] = next
-					} catch( error ){}
+					//if( current[ rule.fieldName ] == next ) return
+					current[ rule.fieldName ] = next
 				}
 			})
 			if( /^(value|checked)$/i.test( rule.fieldName ) && /^(select|input|textarea)$/i.test( current.nodeName ) ){
