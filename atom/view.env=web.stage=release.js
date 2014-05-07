@@ -30,7 +30,7 @@ this.$jin.trait = function( name ){
 
 this.$jin.trait.make = function( name ){
     
-    var trait = function( ){
+    var trait = function jin_trait_instance( ){
 		return trait.exec.apply( trait, arguments )
     }
 
@@ -73,9 +73,9 @@ $jin.definer = function( path, definer ){
 	var wrapper = function( defines, arg ){
 		if( arguments.length > 1 ){
 			if( defines == null ) return function( path ){
-				definer( path, arg )
+				return definer( path, arg )
 			}
-			definer.apply( null, arguments )
+			return definer.apply( null, arguments )
 		} else {
 			if( typeof defines === 'function' ) defines = new defines
 			for( var path in defines ){
@@ -234,6 +234,7 @@ $jin.definer({ '$jin.mixin.object': function( targetPath, sourcePathList ){
         
         for( var key in source ){
             var func = source[ key ]
+			if( key.charAt(0) === '_' ) continue
 			if( typeof func === 'function' ){
 				if( !func.displayName ) func.displayName = sourcePath + '.' + key
 			} else {
@@ -249,6 +250,14 @@ $jin.definer({ '$jin.mixin.object': function( targetPath, sourcePathList ){
     })
     
     return target
+}})
+
+;// ../../konst/jin-konst.jam.js
+$jin.definer({ '$jin.konst': function( path, gen ){
+	$jin.method( path, function jin_konst_wrapper(){
+		var key = '_' + path
+		return this[ key ] || ( this[ key ] = gen.call( this ) )
+	})
 }})
 
 ;// ../../property/jin_property.jam.js
@@ -328,11 +337,12 @@ $jin.definer({ '$jin.property.hash': function( path, config ){
 ;// ../../klass/jin_klass.jam.js
 $jin.definer({ '$jin.klass': function( path, mixins ){
     mixins.unshift( '$jin.klass' )
-    return $jin.mixin( path, mixins )
+    var klass = $jin.mixin( path, mixins )
+	return klass
 }})
 
-$jin.property( '$jin.klass.klass', function( ){
-	var klass = function Klass( ){ }
+$jin.konst( '$jin.klass.klass', function( ){
+	var klass = function Instance( ){ }
 	klass.prototype = this.prototype
 	return klass
 })
@@ -470,6 +480,8 @@ $jin.property.hash( '$jin.registry.storage', {} )
  * Otherwise creats new one.
  */
 $jin.method( '$jin.klass.exec', '$jin.registry.exec', function( id ){
+	if( !arguments.length ) return this['$jin.klass.exec']()
+	
 	if( id instanceof this ) return id
 	id = String( id )
 	
@@ -646,6 +658,11 @@ $jin.method({ '$jin.log.error' : function( error ){
 	error.jin_log_isLogged = true
 }})
 
+$jin.method({ '$jin.log.error.ignore' : function( error ){
+	error.jin_log_isLogged = true
+	return error
+}})
+
 ;// ../../schedule/jin_schedule.jam.js
 $jin.method( '$jin.schedule', function( delay, handler ){
     var id = setTimeout( $jin.defer.callback( handler ), delay )
@@ -659,7 +676,7 @@ $jin.error({ '$jin.atom.wait': [] })
 
 $jin.klass({ '$jin.atom': [] })
 
-$jin.atom.slaves = []
+$jin.atom.current = null
 $jin.atom.scheduled = []
 $jin.atom._deferred = null
 
@@ -669,19 +686,20 @@ $jin.glob( '$jin.atom.._error', void 0 )
 $jin.glob( '$jin.atom.._slice', 0 )
 $jin.glob( '$jin.atom.._pulled', false )
 $jin.glob( '$jin.atom.._slavesCount', 0 )
-$jin.glob( '$jin.atom.._scheduled', false )
+$jin.glob( '$jin.atom.._isScheduled', false )
 
 $jin.method({ '$jin.atom.induce': function( ){
-	var scheduled = $jin.atom.scheduled
+	var scheduled = this.scheduled
 
 	scheduled: for( var i = 0; i < scheduled.length; ++i ){
 		var queue = scheduled[i]
 		if( !queue ) continue
 		scheduled[i] = null
 		
-		for( var atomId in queue ){
-			var atom = queue[ atomId ]
+		for( var j = 0; j < queue.length; ++j ){
+			var atom = queue[ j ]
 			if( !atom ) continue
+			if( !atom._isScheduled ) continue
 			
 			atom.pull()
 			
@@ -689,38 +707,37 @@ $jin.method({ '$jin.atom.induce': function( ){
 		}
 	}
 
-	$jin.atom._deferred = null
+	this._deferred = null
 }})
 
 $jin.method({ '$jin.atom.schedule': function( ){
 	if( this._deferred ) return
 
-	this._deferred = $jin.defer( this.induce )
+	this._deferred = $jin.defer( this.induce.bind( this ) )
 }})
 
 $jin.method({ '$jin.atom.bound': function( handler ){
-	var slaves = $jin.atom.slaves
-	$jin.atom.slaves = []
-	try {
-		handler()
-	} finally {
-		$jin.atom.slaves = slaves
-	}
+	var slave = this.current
+	this.current = null
+	handler()
+	this.current = slave
 	return this
 }})
 
 $jin.method({ '$jin.atom..init': function jin_atom__init( config ){
-	this['$jin.klass..init']
+	'$jin.klass..init'
 	this._id = $jin.makeId( '$jin.atom' )
 	this._config = config
 	this._value = config.value
 	this._error = config.error
 	this._slaves = {}
 	this._masters = {}
-	this._slice = 0
-	this._pulled = false
-	this._slavesCount = 0
-	this._scheduled = false
+}})
+
+$jin.method({ '$jin.atom..destroy': function( ){
+	this.disleadAll()
+	this.disobeyAll()
+	return this['$jin.klass..destroy']()
 }})
 
 $jin.method({ '$jin.atom..id': function( ){
@@ -728,17 +745,19 @@ $jin.method({ '$jin.atom..id': function( ){
 }})
 
 $jin.method({ '$jin.atom..get': function( ){
-	if( this._config.pull && ( this._scheduled || ( this._value === void 0 ) ) ) this.pull()
+	var value = this._value
+	if( this._config.pull && ( this._isScheduled || ( value === void 0 ) ) ) value = this.pull()
 
-	var slave = $jin.atom.slaves[0]
+	var slave = this.constructor.current
 	if( slave ){
+		if( slave === this ) throw new Error( 'Circular dependency of atoms!' )
 		slave.obey( this )
 		this.lead( slave )
 	}
 	
 	if( this._error ) throw this._error
 	
-	return this._value
+	return value
 }})
 
 $jin.method({ '$jin.atom..valueOf': function( ){
@@ -749,13 +768,7 @@ $jin.method({ '$jin.atom..pull': function( ){
 	var config = this._config
 	if( !config.pull ) return this._value
 
-	if( this._scheduled ){
-		this._scheduled = false
-		var queue = $jin.atom.scheduled[ this._slice ]
-		if( queue ){
-			queue[ this._id ] = null
-		}
-	}
+	this._isScheduled = false
 	
 	this._error = void 0
 	
@@ -763,20 +776,16 @@ $jin.method({ '$jin.atom..pull': function( ){
 	this._masters = {}
 	this._slice = 0
 	
-	if( $jin.atom.slaves.indexOf( this ) >= 0 ) throw new Error( 'Recursive atom' )
-	$jin.atom.slaves.unshift( this )
+	var prevCurrent = this.constructor.current
+	this.constructor.current = this
 	try {
 		var value = config.pull.call( config.context, this._value )
+		this.constructor.current = null
 		this.put( value )
 	} catch( error ){
 		this.fail( error )
-	} finally {
-		var stack = $jin.atom.slaves
-		while( stack.length ){
-			var top = stack.shift()
-			if( top === this ) break
-		}
 	}
+	this.constructor.current = prevCurrent
 	
 	this._pulled = true
 	
@@ -789,19 +798,22 @@ $jin.method({ '$jin.atom..pull': function( ){
 }})
 
 $jin.method({ '$jin.atom..put': function( next ){
+	var slave = this.constructor.current
+	this.constructor.current = null
+	
 	var config = this._config
 	var merge = config.merge
 	if( merge ){
 		var context = config.context
 		var prev = this._value
-		$jin.atom.bound( function jin_atom_mergeBound( ){
-			next = merge.call( context, next, prev )
-		})
+		next = merge.call( context, next, prev )
 	}
 	
 	this.value( next )
 	this._error = void 0
 	this._pulled = false
+	
+	this.constructor.current = slave
 	
 	return this
 }})
@@ -817,11 +829,16 @@ $jin.method({ '$jin.atom..mutate': function( mutator ){
 	var prev = this._value
 	var atom = this
 	
-	$jin.atom.bound( function mutate( ){
+	this.constructor.bound( function mutate( ){
 		atom.put( mutator.call( context, prev ) )
 	})
 	
 	return this
+}})
+
+$jin.method({ '$jin.atom..error': function( next ){
+	if( arguments.length ) throw new Error( 'Property (error) is read only, use (fail) method' )
+	return this._error
 }})
 
 $jin.method({ '$jin.atom..value': function( next ){
@@ -840,20 +857,16 @@ $jin.method({ '$jin.atom..value': function( next ){
 	if( error ){
 		var fail = config.fail
 		if( fail ){
-			$jin.atom.bound( function jin_atom_failBound( ){
-				fail.call( context, error, prev )
-			})
+			fail.call( context, error, prev )
 		} else if( !this._slavesCount ){
-			if(!( error instanceof $jin.atom.wait )){
+			if(!( error instanceof this.constructor.wait )){
 				$jin.log.error( error )
 			}
 		}
 	} else {
 		var push = config.push
 		if( push ){
-			$jin.atom.bound( function jin_atom_pushBound( ){
-				push.call( context, next, prev )
-			})
+			push.call( context, next, prev )
 		}
 	}
 
@@ -871,7 +884,7 @@ $jin.method({ '$jin.atom..slice': function( ){
 }})
 
 $jin.method({ '$jin.atom..notify': function( ){
-	var slaveExclude = $jin.atom.slaves[0]
+	var slaveExclude = this.constructor.current
 	
 	var slaves = this._slaves
 	for( var id in slaves ){
@@ -880,28 +893,29 @@ $jin.method({ '$jin.atom..notify': function( ){
 		if( !slave ) continue
 		if( slave === slaveExclude ) continue
 		
-		slave.update()
+		slave.update( this )
 	}
 
 	return this
 }})
 
 $jin.method({ '$jin.atom..update': function( ){
+	if( this._isScheduled ) return
+	
 	var slice = this._slice
 
-	var queue = $jin.atom.scheduled[ slice ]
-	if( !queue ) queue = $jin.atom.scheduled[ slice ] = {}
+	var queue = this.constructor.scheduled[ slice ]
+	if( !queue ) queue = this.constructor.scheduled[ slice ] = []
 
-	queue[ this._id ] = this
-	this._scheduled = true
+	queue.push( this )
+	this._isScheduled = true
 
-	$jin.atom.schedule()
+	this.constructor.schedule()
 
 	return this
 }})
 
 $jin.method({ '$jin.atom..lead': function( slave ){
-	if( slave === this ) throw new Error( 'Self leading atom' )
 	var id = slave.id()
 	
 	var slaves = this._slaves
@@ -914,7 +928,6 @@ $jin.method({ '$jin.atom..lead': function( slave ){
 }})
 
 $jin.method({ '$jin.atom..obey': function( master ){
-	if( master === this ) throw new Error( 'Self obey atom' )
 	var id = master.id()
 	
 	this._masters[ id ] = master
@@ -950,7 +963,10 @@ $jin.method({ '$jin.atom..disleadAll': function( ){
 	this._slaves = {}
 	this._slavesCount = 0
 	for( var id in slaves ){
-		slaves[ id ].disobey( this )
+		var slave = slaves[ id ]
+		if( !slave ) continue
+		
+		slave.disobey( this )
 	}
 	this.reap()
 }})
@@ -959,7 +975,10 @@ $jin.method({ '$jin.atom..disobeyAll': function( ){
 	var masters = this._masters
 	this._masters = {}
 	for( var id in masters ){
-		masters[ id ].dislead( this )
+		var master = masters[ id ]
+		if( !master ) continue
+		
+		master.dislead( this )
 	}
 	this._slice = 0
 }})
@@ -979,16 +998,7 @@ $jin.method({ '$jin.atom..reap': function( ){
 	return this
 }})
 
-$jin.method({ '$jin.atom..destroy': function( ){
-	this.disleadAll()
-	this.disobeyAll()
-	if( this._scheduled ){
-		var queue = $jin.atom.scheduled[ this._slice ]
-		queue[ this._id ] = null
-	}
-	return this['$jin.klass..destroy']()
-}})
-
+;// ../../atom/jin-atom_logs.jam.js
 $jin.method({ '$jin.atom.enableLogs': function( ){
 	$jin.mixin({ '$jin.atom': [ '$jin.atom.logging' ] })
 }})
@@ -1017,22 +1027,56 @@ $jin.property({ '$jin.atom.logging.log': function( ){
 	return []
 }})
 
-;// ../../atom/jin-atom-hash.jam.js
-//$jin.klass({ '$jin.atom.hash': [] })
-//
-//$jin.method({ '$jin.atom..init': function jin_atom__init( config ){
-//	this['$jin.klass..init']
-//	this._id = $jin.makeId( '$jin.atom' )
-//	this._config = config
-//	this._value = config.value
-//	this._error = config.error
-//	this._slaves = {}
-//	this._masters = {}
-//	this._slice = 0
-//	this._pulled = false
-//	this._slavesCount = 0
-//	this._scheduled = false
-//}})
+;// ../../atom/jin-atom_promise.jam.js
+$jin.method({ '$jin.atom..then': function( done, fail ){
+	if( this._error ){
+		if( fail ) fail( this._error )
+		return this
+	}
+	
+	if( this._value ){
+		done( this._value )
+		return this
+	}
+	
+	var self = this
+	var listener = {
+		id: $jin.value( $jin.makeId( $jin.func.name( done ) ) ),
+		update: function( ){
+			self.dislead( listener )
+			
+			var error = self.error()
+			if( error !== void 0 ) return fail && fail( error )
+			
+			var value = self.value()
+			if( value !== void 0 ) return done( value )
+		}
+	}
+	this.lead( listener )
+	
+	return this
+}})
+
+$jin.method({ '$jin.atom..catch': function( fail ){
+	if( this._error ){
+		fail( this._error )
+		return this
+	}
+	
+	var self = this
+	var listener = {
+		id: $jin.value( $jin.makeId( $jin.func.name( fail ) ) ),
+		update: function( ){
+			self.dislead( listener )
+			
+			var error = self.error()
+			if( error !== void 0 ) return fail( error )
+		}
+	}
+	this.lead( listener )
+	
+	return this
+}})
 
 ;// ../../atom/prop/jin-atom-prop.jam.js
 $jin.definer({ '$jin.atom.prop': function( path, config ){
@@ -1070,7 +1114,7 @@ $jin.definer({ '$jin.atom.prop': function( path, config ){
         
         if( atom ) return atom
         
-        return this[ fieldName ] = $jin.atom(
+        return this[ fieldName ] = new $jin.atom(
 		{	name: path /*+ ':' + this.id()*/
 		,	context: this
 		,	pull: pull
@@ -1092,6 +1136,19 @@ $jin.definer({ '$jin.atom.prop': function( path, config ){
 }})
 
 $jin.definer({ '$jin.atom.prop.list': function( path, config ){
+	if( !config.merge ) config.merge = function( next, prev ){
+		if( !prev || !next ) return next
+		
+		if( next.length !== prev.length ) return next
+		
+		for( var i = 0; i < next.length; ++i ){
+			if( next[ i ] === prev[ i ] ) continue
+			return next
+		}
+		
+		return prev
+	}
+	
 	$jin.atom.prop( path, config )
 	
 	var propName = path.replace( /([$\w]*\.)+/, '' )
@@ -1168,7 +1225,7 @@ $jin.definer({ '$jin.atom.prop.hash': function( path, config ){
         var atom = atomHash[ key ]
         if( atom ) return atom
         
-        return atomHash[ key ] = $jin.atom(
+        return atomHash[ key ] = new $jin.atom(
 		{	name: path/* + ':' + this.id()*/
 		,	context: context
 		,	pull: pull && function( prev ){
@@ -1658,7 +1715,7 @@ $jin.method({ '$jin.dom.range..clear': function( ){
 }})
 
 $jin.method({ '$jin.dom.range..html': function( html ){
-	if( !html ) return $jin.dom( this.nativeRange().cloneContents() ).toString()
+	if( !arguments.length ) return $jin.dom( this.nativeRange().cloneContents() ).toString()
 	
 	var node = $jin.dom( html )
 	this.replace( node )
@@ -1667,7 +1724,7 @@ $jin.method({ '$jin.dom.range..html': function( html ){
 }})
 
 $jin.method({ '$jin.dom.range..text': function( text ){
-	if( !text ) return $jin.dom.html2text( this.html() )
+	if( !arguments.length ) return $jin.dom.html2text( this.html() )
 	
 	this.html( $jin.dom.escape( text ) )
 	
@@ -1784,6 +1841,240 @@ $jin.method({ '$jin.dom.range..move': function( offset ){
 	
 	return this
 }})
+
+;// ../../identical/jin_identical.jam.js
+$jin.identical = function( a, b ){
+    if(( typeof a === 'number' )&&( typeof b === 'number' )){
+        return String( a ) === String( b )
+    }
+    
+    return ( a === b )
+}
+
+;// ../../thread/jin_thread.env=web.jam.js
+$jin.method( '$jin.thread', function( proc ){
+    return function $jin_thread_wrapper( ){
+        var self= this
+        var args= arguments
+        var res
+        
+        var id= $jin.makeId( '$jin.thread' )
+        var launcher = function $jin_thread_launcher( event ){
+            res= proc.apply( self, args )
+        }
+        
+		if( $jin.support.eventModel() === 'w3c' ){
+			window.addEventListener( id, launcher, false )
+				var event= document.createEvent( 'Event' )
+				event.initEvent( id, false, false )
+				window.dispatchEvent( event )
+			window.removeEventListener( id, launcher, false )
+		} else {
+			try {
+				launcher()
+			} catch( error ){
+				$jin.log.error( error )
+			}
+		}
+        
+        return res
+    }
+} )
+
+;// ../../mock/jin_mock.jam.js
+$jin.klass({ '$jin.mock': [] })
+
+$jin.property( '$jin.mock..path', String )
+$jin.property( '$jin.mock..ownerPath', function(){
+	return this.path().replace( /\.[^.]*$/, '' )
+} )
+$jin.property( '$jin.mock..fieldName', function(){
+	return this.path().replace( /^.*\./, '' )
+} )
+
+$jin.property( '$jin.mock..value', null )
+$jin.property( '$jin.mock..backupValue', null )
+$jin.property( '$jin.mock..backupOwner', null )
+
+$jin.property( '$jin.mock..mocking', function( mocking ){
+    var fieldName = this.fieldName()
+    if( mocking ){
+		var owner =  $jin.trait( this.ownerPath() )
+		this.backupOwner( owner )
+        this.backupValue( owner[ fieldName ] )
+        owner[ fieldName ] = this.value()
+    } else {
+		var owner = this.backupOwner()
+        owner[ fieldName ] = this.backupValue()
+        this.backupOwner( null )
+        this.backupValue( null )
+    }
+    return mocking
+} )
+
+$jin.method( '$jin.klass..destroy', '$jin.mock..destroy', function( ){
+    this.mocking( false )
+    this['$jin.klass..destroy']()
+} )
+
+;// ../../test/jin_test.jam.js
+$jin.klass({ '$jin.test': [] })
+
+$jin.property( '$jin.test.completeList', Array )
+$jin.property( '$jin.test.pendingList', Array )
+$jin.property( '$jin.test.running', Array )
+$jin.property( '$jin.test.timer', null )
+
+$jin.method( '$jin.test.next', function( next ){
+	if( arguments.length ) this.pendingList().push( next )
+	
+	clearTimeout( this.timer() )
+	this.timer( setTimeout( function( ){
+	    var next = this.pendingList()[0]
+		if( next ) next.run()
+	}.bind( this ), 0 ) )
+} )
+
+$jin.property( '$jin.test..code', null )
+
+$jin.property( '$jin.test..passed', Boolean )
+$jin.property( '$jin.test..timeout', Number )
+$jin.property( '$jin.test..timer', null )
+
+$jin.property( '$jin.test..asserts', Array )
+$jin.property( '$jin.test..results', Array )
+$jin.property( '$jin.test..errors', Array )
+
+$jin.method( '$jin.klass..init', '$jin.test..init', function( code ){
+    this.code( code )
+	this.constructor.next( this )
+    return this
+} )
+
+$jin.method( '$jin.klass..destroy', '$jin.test..destroy', function( destroy ){
+    var completeList = this.constructor.completeList()
+    var pendingList = this.constructor.pendingList()
+    
+    completeList.splice( completeList.indexOf( this ), 1 )
+    pendingList.splice( pendingList.indexOf( this ), 1 )
+    
+    return this['$jin.klass..destroy']()
+} )
+
+$jin.method( '$jin.test..run', function( ){
+    var test = this
+    
+    var complete = false
+    this.callback( function( ){
+        if( typeof this.code() === 'string' )
+            this.code( new Function( 'test', this.code() ) )
+        
+        this.code()( this )
+        complete = true
+    } ).call( this )
+    
+    this.asserts().push( complete )
+    
+    if( this.timeout() ){
+        if( !this.done() ){
+            this.timer( setTimeout( this.callback( function( ){
+                test.asserts().push( false )
+                var error = new Error( 'timeout (' + test.timeout() + ') of ' + test.code() )
+                test.errors().push( error )
+                test.done( true )
+                throw error
+            }), this.timeout() ))
+        }
+    } else {
+        this.done( true )
+    }
+} )
+
+$jin.property( '$jin.test..done', function( done ){
+    if( !arguments.length ) return false
+    
+    this.timer( clearTimeout( this.timer() ) )
+    
+    var passed = true
+    this.asserts().forEach( function( assert ){
+        passed = passed && assert
+    })
+    this.passed( passed )
+    
+    this.constructor.completeList().push( this )
+    var pendingList = this.constructor.pendingList()
+    pendingList.splice( pendingList.indexOf( this ), 1 )
+	
+	this.constructor.next()
+
+    return this
+} )
+    
+$jin.method( '$jin.test..fail', function(){
+    throw new Error( 'Failed' )
+} )
+
+$jin.method( '$jin.test..ok', function( value ){
+    if( value ) return this
+    
+    throw new Error( 'Not true (' + value + ')' )
+} )
+
+$jin.method( '$jin.test..not', function( value ){
+    if( !value ) return this
+    
+    throw new Error( 'Not false (' + value + ')' )
+} )
+
+$jin.method( '$jin.test..equal', function( ){
+    var valueList = [].slice.call( arguments )
+    
+    for( var i= 1; i < valueList.length; ++i ){
+        var passed = $jin.identical( valueList[ i ], valueList[ i - 1 ] )
+        if( passed ) continue
+        
+        throw new Error( 'Not equal (' + valueList.join( '), (' ) + ')' )
+    }
+    
+    return this
+} )
+
+$jin.method( '$jin.test..unique', function( ){
+    var valueList = [].slice.call( arguments )
+    
+    for( var i= 1; i < valueList.length; ++i ){
+        var passed = $jin.identical( valueList[ i ], valueList[ i - 1 ] )
+        if( !passed ) continue
+        
+        throw new Error( 'Not unique (' + valueList.join( '), (' ) + ')' )
+    }
+    
+    return this
+} )
+
+$jin.method( '$jin.test..callback', function( func ){
+    var test = this
+    return $jin.thread( function( ){
+        var mockHash = test.mockHash()
+        try {
+            for( var name in mockHash ) mockHash[ name ].mocking( true )
+            return func.apply( this, arguments )
+        } catch( error ){
+            test.errors().push( error )
+            throw error
+        } finally {
+            for( var name in mockHash ) mockHash[ name ].mocking( false )
+        }
+    } )
+} )
+
+$jin.property( '$jin.test..mockHash', Object )
+
+$jin.method( '$jin.test..mock', function( path, value ){
+    var mock = $jin.mock({ path: path, value: value, mocking: true })
+    this.mockHash()[ path ] = mock
+    return mock
+} )
 
 ;// ../../dom/jin_dom.jam.js
 $jin.klass({ '$jin.dom': [ '$jin.wrapper' ] })
@@ -2262,6 +2553,35 @@ if( $jin.support.eventModel() === 'ms' ){
     
 }
 
+;// ../../dom/jin-dom-test.env=web.jam.js
+$jin.test( function hasRange_including( test ){
+	var root = $jin.dom( '<div> </div>' ).parent( document.body )
+	var text = root.childList()[0]
+	
+	test.ok( root.rangeContent().hasRange( text.rangeContent() ) )
+	
+	root.parent( null )
+} )
+
+$jin.test( function hasRange_excluding( test ){
+	var one = $jin.dom( '<div></div>' ).parent( document.body )
+	var two = $jin.dom( '<div></div>' ).parent( document.body )
+	
+	test.not( one.rangeAround().hasRange( two.rangeAround() ) )
+	
+	one.parent( null )
+	two.parent( null )
+} )
+
+$jin.test( function hasRange_equal( test ){
+	var root = $jin.dom( '<div></div>' ).parent( document.body )
+	
+	test.ok( root.rangeAround().hasRange( root.rangeAround() ) )
+	test.ok( root.rangeContent().hasRange( root.rangeContent() ) )
+	
+	root.parent( null )
+} )
+
 ;// ../../state/local/jin_state_local.env=web.jam.js
 $jin.klass({ '$jin.state.local': [] })
 
@@ -2312,266 +2632,34 @@ $jin.atom.prop.hash( '$jin.state.local.item',
 ;// ../../sample/jin_sample.jam.js
 $jin.klass({ '$jin.sample': [ '$jin.dom' ] })
 
-$jin.property({ '$jin.sample.strings': function( next ){
-	if( !arguments.length ) return ''
-	return $jin.sample.strings() + next
-}})
-
-$jin.property({ '$jin.sample.templates': function( ){
-	var strings = $jin.sample.strings()
-	if( !strings ) throw new Error( 'Please, set up $jin.sample.strings' )
-	return $jin.dom( '<div xmlns="http://www.w3.org/1999/xhtml">' + $jin.sample.strings() + '</div>' )
-}})
-
-$jin.property.hash({ '$jin.sample.pool': { pull: function( ){
-	return []
-}}})
-
-$jin.method({ '$jin.sample.exec': function( type ){
-	var pool = $jin.sample.pool( type )
-	var sample = pool.shift()
-	
-	if( !sample ){
-		var proto = $jin.sample.proto( type )
-		proto.rules()
-		var node = proto.nativeNode().cloneNode( true )
-		sample = this[ '$jin.wrapper.exec' ]( node ).proto( proto )
-	}
-	
-	return sample
-}})
-
-$jin.atom.prop({ '$jin.sample..view': {
-	push: function( next, prev ){
-		if( next === prev ) return prev
-		
-		if( prev ){
-			var protoId = this.proto().id()
-			var prevSample = prev.sample( protoId )
-			if( prevSample === this ) prev.sample( protoId, void 0 )
-		}
-		
-		if( next == null ){
-			var protoId = this.proto().id()
-			var pool = $jin.sample.pool( protoId )
-			pool.push( this )
-		}
-		
-		return next
+$jin.atom.prop({ '$jin.sample.strings': {
+	value: '',
+	put: function( next, prev ){
+		return $jin.sample.strings() + next
 	}
 }})
 
-$jin.property({ '$jin.sample..covers': null })
-
-$jin.property({ '$jin.sample..proto': function( proto ){
-	
-	var node = this.nativeNode()
-	var rules = proto.rules()
-	var sample = this
-	var covers = []
-	var protoId = proto.id()
-	
-	rules.forEach( function ruleIterator( rule ){
-		var current = node
-		
-		var pull = function jin_sample_pull( prev ){
-			var view = sample.view()
-			if( !view ) return null
-			
-			try {
-				return view[ rule.key ]()
-			}  catch( error ){
-				error.stack = 'Can not get value (' + view.constructor + '..' + rule.key + ')\n' + error.stack
-				throw error
-			}
-		}
-		
-		rule.path.forEach( function pathIterator( name ){
-			current = current[ name ]
-		} )
-		
-		if( rule.attrName ){
-			var cover = $jin.atom(
-			{	name: '$jin.sample:' + protoId + '/' + rule.path.join( '/' ) + '/@' + rule.attrName + '=' + rule.key
-			,	pull: pull
-			,	push: function attrPush( next, prev ){
-					if( next == null ) current.removeAttribute( rule.attrName )
-					else current.setAttribute( rule.attrName, String( next ) )
-				}
-			})
-			if( /^(value|checked)$/i.test( rule.attrName ) && /^(select|input|textarea)$/i.test( current.nodeName ) ){
-				var handler = function( event ){
-					var view = sample.view()
-					if( !view ) return
-					view[ rule.key ]( current[ rule.attrName ] )
-				}
-				sample.entangle( $jin.dom( current ).listen( 'input', handler ) )
-				sample.entangle( $jin.dom( current ).listen( 'change', handler ) )
-				sample.entangle( $jin.dom( current ).listen( 'click', handler ) )
-			}
-		} else if( rule.fieldName ){
-			var cover = $jin.atom(
-			{	name: '$jin.sample:' + protoId + '/' + rule.path.join( '/' ) + '/' + rule.fieldName + '=' + rule.key
-			,	pull: pull
-			,	push: function fieldPush( next, prev ){
-					if( next == null ) return
-					//if( current[ rule.fieldName ] == next ) return
-					current[ rule.fieldName ] = next
-				}
-			})
-			if( /^(value|checked)$/i.test( rule.fieldName ) && /^(select|input|textarea)$/i.test( current.nodeName ) ){
-				var handler = function( event ){
-					var view = sample.view()
-					if( !view ) return
-					view[ rule.key ]( current[ rule.fieldName ] )
-				}
-				sample.entangle( $jin.dom( current ).listen( 'input', handler ) )
-				sample.entangle( $jin.dom( current ).listen( 'change', handler ) )
-				sample.entangle( $jin.dom( current ).listen( 'click', handler ) )
-			}
-			if( rule.fieldName === 'scrollTop' ){
-				var handler = function( event ){
-					var view = sample.view()
-					if( !view ) return
-					
-					view[ rule.key ]( current.scrollTop )
-				}
-				sample.entangle( $jin.dom( current ).listen( 'scroll', handler ) )
-			}
-		} else if( rule.eventName ){
-			var listener = $jin.dom( current ).listen( rule.eventName, function eventHandler( event ){
-				var view = sample.view()
-				if( !view ) return
-				
-				var handler = view[ rule.key ]
-				if( !handler ) throw new Error( 'View handler is not defined (' + view.constructor + '..' + rule.key + ')' )
-				
-				handler.call( view, $jin.dom.event( event ) )
-			})
-			sample.entangle( listener )
-			return
-		} else if( rule.event ){
-			var listener = rule.event.listen( current, function eventHandler( event ){
-				var view = sample.view()
-				if( !view ) return
-				
-				var handler = view[ rule.key ]
-				if( !handler ) throw new Error( 'View handler is not defined (' + view.constructor + '..'  + rule.key + ')' )
-				
-				handler.call( view, event )
-			})
-			sample.entangle( listener )
-			return
-		} else {
-			var cover = $jin.atom(
-			{	name: '$jin.sample:' + protoId + '/' + rule.path.join( '/' ) + '=' + rule.key
-			,	pull: pull
-			, 	merge: function contentPull( nextItems, prevItems ){
-					
-					if( !prevItems ) prevItems = []
-					
-					if( nextItems == null ){
-						nextItems = [ '' ]
-					} else if( typeof nextItems === 'object' ){
-						nextItems = [].concat( nextItems )
-					} else {
-						nextItems = [ String( nextItems ) ]
-					}
-					
-					nextItems = nextItems.filter( function jin_sample_filterNulls( item ){
-						return( item != null )
-					} )
-					
-					if( !nextItems.length ) nextItems.push( '' )
-					
-					nextItems = nextItems.map( function jin_sample_normalizeNext( item ){
-						if( typeof item !== 'object' ) return String( item )
-						if( item['$jin.view..element'] ) return item.element()
-						return item
-					} )
-					
-					var textNodes = []
-					var elements = []
-					
-					var nodes = current.childNodes
-					for( var i = 0; i < nodes.length; ++i ){
-						var node = nodes[i]
-						if( node.nodeName === '#text' ) textNodes.push( node )
-						else elements.push( node )
-					}
-					
-					var nextNodes = nextItems.map( function jin_sample_generateNodes( item ){
-						if( typeof item === 'string' ){
-							var node = textNodes.shift()
-							if( !node ) node = document.createTextNode( item )
-							else if( node.nodeValue !== item ) node.nodeValue = item
-							return node
-						} else {
-							var node = item[ '$jin.dom..nativeNode' ] ? item.nativeNode() : item
-							var index = elements.indexOf( node )
-							if( index >= 0 ) elements[ index ]  = null
-							return node
-						}
-					} )
-					
-					var removeNode = function jin_sample_removeNode( node ){
-						if( !node ) return
-						current.removeChild( node )
-					}
-					
-					elements.forEach( removeNode )
-					textNodes.forEach( removeNode )
-					
-					prevItems.map( function jin_sample_freePrevs( item ){
-						if( typeof item === 'string' ) return
-						if( !item['$jin.sample..view'] ) return
-						if( nextItems.indexOf( item ) >= 0 ) return
-						item.view( null )
-					} )
-					
-					for( var i = nextNodes.length; i > 0; --i ){
-						var next = nextNodes[ i ]
-						var node = nextNodes[ i - 1 ]
-						if( next ){
-							if( node.nextNode !== next ) current.insertBefore( node, next )
-						} else {
-							if( node.parentNode !== current ) current.appendChild( node )
-						}
-					}
-					
-					return nextItems
-				}
-			} )
-		}
-		
-		sample.entangle( cover )
-		
-		covers.push( cover )
-		
-		$jin.atom.bound( function( ){
-			cover.pull()
-		})
-	} )
-	
-	this.covers( covers )
-	
-	return proto
+$jin.atom.prop({ '$jin.sample.templates': {
+	pull: function( ){
+		var strings = this.strings()
+		if( !strings ) throw new Error( 'Please, set up $jin.sample.strings' )
+		return $jin.dom( '<div xmlns="http://www.w3.org/1999/xhtml">' + $jin.sample.strings() + '</div>' )
+	}
 }})
 
-;// ../../sample/jin-sample-proto.jam.js
-$jin.klass({ '$jin.sample.proto': [ '$jin.registry' ] })
-
-$jin.property({ '$jin.sample.proto..nativeNode': function( ){
-	var selector = '[' + this.id() + ']'
-	
-	var node = $jin.sample.templates().cssFind( selector )
-	if( !node ) throw new Error( 'Sample not found (' + selector + ')' )
-	
-	return node.raw()
+$jin.atom.prop.hash({ '$jin.sample.dom': {
+	pull: function( name ){
+		var selector = '[' + name + ']'
+		
+		var dom = $jin.sample.templates().cssFind( selector )
+		if( !dom ) throw new Error( 'Sample not found (' + selector + ')' )
+		
+		return dom.nativeNode()
+	}
 }})
 
-$jin.property({ '$jin.sample.proto..rules': function( ){
-	var node = this.nativeNode()
+$jin.atom.prop.hash({ '$jin.sample.rules': { pull: function( name ){
+	var node = this.dom( name )
 	
 	var path = []
 	var rules = []
@@ -2587,7 +2675,101 @@ $jin.property({ '$jin.sample.proto..rules': function( ){
 					if( !found ) continue
 					
 					var key = found[1]
-					rules.push({ key: key, path: path.slice() })
+					rules.push({
+						key: key,
+						path: path.slice(),
+						coverName: '$jin.sample:' + name + '/' + path.join( '/' ) + '=' + key,
+						attach: function( rule, sample, current ){
+							var cover = new $jin.atom(
+							{	name: rule.coverName
+							,	pull: function jin_sample_pull( ){
+									var view = sample.view()
+									if( !view ) return null
+									
+									return view[ rule.key ]()
+								}
+							, 	merge: function contentPull( nextItems, prevItems ){
+									
+									if( !prevItems ) prevItems = []
+									
+									if( nextItems == null ){
+										nextItems = [ '' ]
+									} else if( typeof nextItems === 'object' ){
+										nextItems = [].concat( nextItems )
+									} else {
+										nextItems = [ String( nextItems ) ]
+									}
+									
+									nextItems = nextItems.filter( function jin_sample_filterNulls( item ){
+										return( item != null )
+									} )
+									
+									if( !nextItems.length ) nextItems.push( '' )
+									
+									nextItems = nextItems.map( function jin_sample_normalizeNext( item ){
+										if( typeof item !== 'object' ) return String( item )
+										if( item.element ) return item.element()
+										return item
+									} )
+									
+									var textNodes = []
+									var elements = []
+									
+									var nodes = current.childNodes
+									for( var i = 0; i < nodes.length; ++i ){
+										var node = nodes[i]
+										if( node.nodeName === '#text' ) textNodes.push( node )
+										else elements.push( node )
+									}
+									
+									var nextNodes = nextItems.map( function jin_sample_generateNodes( item ){
+										if( typeof item === 'string' ){
+											var node = textNodes.shift()
+											if( !node ) node = document.createTextNode( item )
+											else if( node.nodeValue !== item ) node.nodeValue = item
+											return node
+										} else {
+											var node = item.nativeNode ? item.nativeNode() : item
+											var index = elements.indexOf( node )
+											if( index >= 0 ) elements[ index ]  = null
+											return node
+										}
+									} )
+									
+									var removeNode = function jin_sample_removeNode( node ){
+										if( !node ) return
+										current.removeChild( node )
+									}
+									
+									elements.forEach( removeNode )
+									textNodes.forEach( removeNode )
+									
+									prevItems.map( function jin_sample_freePrevs( item ){
+										if( typeof item === 'string' ) return
+										if( !item['$jin.sample..view'] ) return
+										if( nextItems.indexOf( item ) >= 0 ) return
+										item.view( null )
+									} )
+									
+									for( var i = nextNodes.length; i > 0; --i ){
+										var next = nextNodes[ i ]
+										var node = nextNodes[ i - 1 ]
+										if( next ){
+											if( node.nextNode !== next ) current.insertBefore( node, next )
+										} else {
+											if( node.parentNode !== current ) current.appendChild( node )
+										}
+									}
+									
+									return nextItems
+								}
+							} )
+							sample.entangle( cover )
+							$jin.atom.bound( function( ){
+								cover.pull()
+							} )
+						}
+					})
 					
 					while( node.firstChild ) node.removeChild( node.firstChild )
 					break;
@@ -2601,15 +2783,47 @@ $jin.property({ '$jin.sample.proto..rules': function( ){
 		
 		var attrs = node.attributes
 		if( attrs ){
+			var attrList = []
 			for( var i = 0; i < attrs.length; ++i ){
-				var attr = attrs[ i ]
-				
-				var found = /^\{(\w+)\}$/g.exec( attr.nodeValue )
-				if( !found ) continue
-				var key = found[1]
-				
-				rules.push({ key: key, path: path.slice(), attrName: attr.nodeName })
+				attrList.push( attrs[ i ] )
 			}
+			attrList.forEach( function( attr ){
+				var found = /^\{(\w+)\}$/g.exec( attr.nodeValue )
+				if( !found ) return
+				
+				var key = found[1]
+				var attrName = attr.nodeName
+				
+				var rule = {
+					key: key,
+					attrName: attrName,
+					coverName: '$jin.sample:' + name + '/' + path.join( '/' ) + '/@' + attrName + '=' + key,
+					path: path.slice(),
+					attach: function( rule, sample, node ){
+						var cover = new $jin.atom(
+						{	name: rule.coverName
+						,	pull: function jin_sample_pull( ){
+								var view = sample.view()
+								if( !view ) return null
+								
+								var next = view[ rule.key ]()
+								return next ? String( next ) : next
+							}
+						,	push: function attrPush( next, prev ){
+								if( next == null ) node.removeAttribute( rule.attrName )
+								else node.setAttribute( rule.attrName, next )
+							}
+						})
+						sample.entangle( cover )
+						$jin.atom.bound( function( ){
+							cover.pull()
+						} )
+					}
+				}
+				rules.push( rule )
+				
+				node.removeAttribute( attrName )
+			})
 			
 			var props = node.getAttribute( 'jin-sample-props' )
 			if( props ){
@@ -2621,8 +2835,61 @@ $jin.property({ '$jin.sample.proto..rules': function( ){
 					var key = subPath.pop()
 					var fieldName = subPath.pop()
 					
-					rules.push({ key: key, path: path.concat( subPath ), fieldName: fieldName })
+					rules.push({
+						key: key,
+						path: path.concat( subPath ),
+						coverName: '$jin.sample:' + name + '/' + path.join( '/' ) +  ( subPath.length ? '.' + subPath.join( '.' ) : '' ) + '.' + fieldName + '=' + key,
+						fieldName: fieldName,
+						attach: function( rule, sample, current ){
+							if( [ 'value', 'checked' ].indexOf( rule.fieldName ) !== -1 && [ 'select', 'input', 'textarea' ].indexOf( node.nodeName ) !== -1 ){
+								var handler = function( event ){
+									var view = sample.view()
+									if( !view ) return
+									view[ rule.key ]( current[ rule.fieldName ] )
+								}
+								sample.entangle( $jin.dom( current ).listen( 'input', handler ) )
+								sample.entangle( $jin.dom( current ).listen( 'change', handler ) )
+								sample.entangle( $jin.dom( current ).listen( 'click', handler ) )
+							}
+							if( rule.fieldName === 'scrollTop' ){
+								var handler = function( event ){
+									var view = sample.view()
+									if( !view ) return
+									
+									view[ rule.key ]( current.scrollTop )
+								}
+								sample.entangle( $jin.dom( current ).listen( 'scroll', handler ) )
+							} else if( rule.fieldName === 'scrollLeft' ){
+								var handler = function( event ){
+									var view = sample.view()
+									if( !view ) return
+									
+									view[ rule.key ]( current.scrollLeft )
+								}
+								sample.entangle( $jin.dom( current ).listen( 'scroll', handler ) )
+							}
+							var cover = new $jin.atom(
+							{	name: rule.coverName
+							,	pull: function jin_sample_pull( ){
+									var view = sample.view()
+									if( !view ) return null
+									
+									return view[ rule.key ]()
+								}
+							,	push: function fieldPush( next, prev ){
+									if( next == null ) return
+									//if( current[ rule.fieldName ] == next ) return
+									current[ rule.fieldName ] = next
+								}
+							})
+							sample.entangle( cover )
+							$jin.atom.bound( function( ){
+								cover.pull()
+							} )
+						}
+					})
 				} )
+				node.removeAttribute( 'jin-sample-props' )
 			}
 			
 			var events = node.getAttribute( 'jin-sample-events' )
@@ -2639,13 +2906,46 @@ $jin.property({ '$jin.sample.proto..rules': function( ){
 					if( shortFound ){
 						var type = shortFound[1]
 						var name = shortFound[2]
-						rules.push({ key: key, path: path.slice(), eventName: name })
+						rules.push({
+							key: key,
+							path: path.slice(),
+							eventName: name,
+							attach: function( rule, sample, current ){
+								var listener = $jin.dom( current ).listen( rule.eventName, function eventHandler( event ){
+									var view = sample.view()
+									if( !view ) return
+									
+									var handler = view[ rule.key ]
+									if( !handler ) throw new Error( 'View handler is not defined (' + view.constructor + '..' + rule.key + ')' )
+									
+									handler.call( view, $jin.dom.event( event ) )
+								})
+								sample.entangle( listener )
+							}
+						})
 					} else {
 						var event = $jin.glob( eventName )
 						if( !event ) throw new Error( 'Unknown event [' + eventName + ']' )
-						rules.push({ key: key, path: path.slice(), event: event })
+						rules.push({
+							key: key,
+							path: path.slice(),
+							event: event,
+							attach: function( rule, sample, current ){
+								var listener = rule.event.listen( current, function eventHandler( event ){
+									var view = sample.view()
+									if( !view ) return
+									
+									var handler = view[ rule.key ]
+									if( !handler ) throw new Error( 'View handler is not defined (' + view.constructor + '..'  + rule.key + ')' )
+									
+									handler.call( view, event )
+								})
+								sample.entangle( listener )
+							}
+						})
 					}
 				} )
+				node.removeAttribute( 'jin-sample-events' )
 			}
 			
 		}
@@ -2654,6 +2954,73 @@ $jin.property({ '$jin.sample.proto..rules': function( ){
 	collect( node )
 	
 	return rules
+}}})
+
+$jin.property.hash({ '$jin.sample.pool': { pull: function( ){
+	return []
+}}})
+
+$jin.method({ '$jin.sample.exec': function( type ){
+	'$jin.wrapper.exec'
+	
+	var pool = this.pool( type )
+	var sample = pool.shift()
+	
+	if( !sample ) sample = this[ '$jin.klass.exec' ]({ type: type })
+	
+	return sample
+}})
+
+
+$jin.method({ '$jin.sample..init': function( config ){
+	'$jin.dom..init'
+    return this['$jin.klass..init']( config )
+}})
+
+$jin.property({ '$jin.sample..type': String })
+
+$jin.atom.prop({ '$jin.sample..view': {
+	push: function( next, prev ){
+		if( next === prev ) return prev
+		
+		if( prev ){
+			var type = this.type()
+			var prevSample = prev.sample( type )
+			if( prevSample === this ) prev.sample( type, void 0 )
+		}
+		
+		if( next == null ){
+			var pool = $jin.sample.pool( this.type() )
+			pool.push( this )
+		}
+		
+		return next
+	}
+}})
+
+//$jin.property({ '$jin.sample..covers': null })
+
+$jin.atom.prop({ '$jin.sample..nativeNode': {
+	resolves: [ '$jin.dom..nativeNode' ],
+	pull: function( ){
+		
+		var type = this.type()
+		var node = this.constructor.dom( type ).cloneNode( true )
+		var rules = this.constructor.rules( type )
+		var sample = this
+		
+		rules.forEach( function ruleIterator( rule ){
+			var current = node
+			
+			rule.path.forEach( function pathIterator( name ){
+				current = current[ name ]
+			} )
+			
+			rule.attach( rule, sample, current )
+		} )
+		
+		return node
+	}
 }})
 
 ;// ../jin_view.env=web.jam.js

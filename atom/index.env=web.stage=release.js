@@ -1,7 +1,8 @@
-;//../../jin/jin.jam.js?=HSPXP6TC
+with( this ){
+;// ../../jin.jam.js
 this.$jin = {}
 
-;//../../jin/value/jin-value.jam.js?=HP6SVV48
+;// ../../value/jin-value.jam.js
 this.$jin.value = function $jin_value( value ){
     
     var func = function $jin_value_instance( ){
@@ -13,10 +14,10 @@ this.$jin.value = function $jin_value( value ){
     return func
 }
 
-;//../../jin/root/jin_root.jam.js?=HOPSL9XS
+;// ../../root/jin_root.jam.js
 this.$jin.root = $jin.value( this )
 
-;//../../jin/trait/jin_trait.jam.js?=HSPXP7L4
+;// ../../trait/jin_trait.jam.js
 this.$jin.trait = function( name ){
     
     var trait = $jin.glob( name )
@@ -29,20 +30,16 @@ this.$jin.trait = function( name ){
 
 this.$jin.trait.make = function( name ){
     
-    var trait = function( args ){
-        if( this instanceof trait ){
-            return this.init.apply( this, args || [] )
-        } else {
-            return trait.exec.apply( trait, arguments )
-        }
+    var trait = function jin_trait_instance( ){
+		return trait.exec.apply( trait, arguments )
     }
 
-    trait.jin_method_path = name
+    trait.displayName = name
     
     return trait
 }
 
-;//../../jin/glob/jin_glob.jam.js?=HSPXP6TC
+;// ../../glob/jin_glob.jam.js
 $jin.glob = function $jin_glob( name, value ){
     var keyList = name.split( '.' )
     var current = $jin.root()
@@ -70,13 +67,17 @@ $jin.glob = function $jin_glob( name, value ){
     return value
 }
 
-;//../../jin/definer/jin-definer.jam.js?=HSPXP6TC
+;// ../../definer/jin-definer.jam.js
 $jin.definer = function( path, definer ){
 	
-	var wrapper = function( defines ){
+	var wrapper = function( defines, arg ){
 		if( arguments.length > 1 ){
-			definer.apply( null, arguments )
+			if( defines == null ) return function( path ){
+				return definer( path, arg )
+			}
+			return definer.apply( null, arguments )
 		} else {
+			if( typeof defines === 'function' ) defines = new defines
 			for( var path in defines ){
 				definer( path, defines[ path ] )
 			}
@@ -88,7 +89,7 @@ $jin.definer = function( path, definer ){
 
 $jin.definer( '$jin.definer', $jin.definer )
 
-;//../../jin/func/jin_func.jam.js?=HSPXP6TC
+;// ../../func/jin_func.jam.js
 this.$jin.func = {}
 
 this.$jin.func.make = function( name ){
@@ -105,7 +106,16 @@ this.$jin.func.name = function( func, name ){
     || func.toString().match( /^\s*function\s*([$\w]*)\s*\(/ )[ 1 ]
 }
 
-;//../../jin/method/jin_method.jam.js?=HSPXP6TC
+this.$jin.func.usages = function( func ){
+	if( func.jin_func_usages ) return func.jin_func_usages
+	var found = {}
+	Object.toString.call( func ).replace( /\$[a-z][a-z0-9]+(\.[a-z][a-z0-9]*)+/g, function( token ){
+		found[ token ] = true
+	})
+	return func.jin_func_usages = Object.keys( found )
+}
+
+;// ../../method/jin_method.jam.js
 $jin.definer({ '$jin.method': function( ){ // arguments: resolveName*, path, func
     var resolveList = [].slice.call( arguments )
     var func = resolveList.pop()
@@ -121,9 +131,9 @@ $jin.definer({ '$jin.method': function( ){ // arguments: resolveName*, path, fun
 		})
 	}
 	
-    var funcName = func.jin_method_path
-    if( !funcName ) funcName = func.jin_method_path = name
-    //throw new Error( 'jin_method_path is not defined in [' + func + ']' )
+    var funcName = func.displayName
+    if( !funcName ) funcName = func.displayName = name
+    //throw new Error( 'displayName is not defined in [' + func + ']' )
     
     var nameList = name.split( '.' )
     var methodName = nameList.pop()
@@ -148,7 +158,7 @@ $jin.definer({ '$jin.method': function( ){ // arguments: resolveName*, path, fun
         
         if( func === existFunc ) return existFunc
         
-        if( !existFunc.jin_method_path ) break checkConflict
+        if( !existFunc.displayName ) break checkConflict
         
         func = $jin.method.merge( existFunc, func, name )
     }
@@ -172,7 +182,7 @@ $jin.method.merge = function $jin_method_merge( left, right, name ){
     var resolveList = leftResolves.concat( rightResolves )
     
     conflictList = conflictList.filter( function( conflict ){
-        return !~resolveList.indexOf( conflict.jin_method_path )
+        return !~resolveList.indexOf( conflict.displayName )
     })
     
     if( conflictList.length === 0 ){
@@ -183,7 +193,7 @@ $jin.method.merge = function $jin_method_merge( left, right, name ){
         var func = $jin.func.make( name )
         func.execute = function( ){
             var conflictNames = conflictList.reduce( function( names, func ){
-                var name = func.jin_method_path
+                var name = func.displayName
 				if( names.indexOf( name ) >= 0 ) return names
 				
 				names.push( name )
@@ -191,7 +201,7 @@ $jin.method.merge = function $jin_method_merge( left, right, name ){
             }, [] )
             throw new Error( "Conflict in [" + name + "] by [" + conflictNames + "]" )
         }
-        func.jin_method_path = name
+        func.displayName = name
         func.jin_method_conflicts = conflictList
     }
     
@@ -200,7 +210,7 @@ $jin.method.merge = function $jin_method_merge( left, right, name ){
     return func
 }
 
-;//../../jin/mixin/jin_mixin.jam.js?=HSQ2AWV4
+;// ../../mixin/jin_mixin.jam.js
 $jin.definer({ '$jin.mixin': function( targetPath, sourcePathList ){
     var trait = $jin.mixin.object( targetPath, sourcePathList )
     
@@ -224,14 +234,15 @@ $jin.definer({ '$jin.mixin.object': function( targetPath, sourcePathList ){
         
         for( var key in source ){
             var func = source[ key ]
+			if( key.charAt(0) === '_' ) continue
 			if( typeof func === 'function' ){
-				if( !func.jin_method_path ) func.jin_method_path = sourcePath + '.' + key
+				if( !func.displayName ) func.displayName = sourcePath + '.' + key
 			} else {
                 if(!( key in target )) target[ key ] = void 0
                 continue
             }
             
-            var methodName = func.jin_method_path.replace( /^([$\w]*\.)+/, '' )
+            var methodName = func.displayName.replace( /^([$\w]*\.)+/, '' )
 			$jin.method( targetPath + '.' + methodName, func )
         }
 		
@@ -241,7 +252,15 @@ $jin.definer({ '$jin.mixin.object': function( targetPath, sourcePathList ){
     return target
 }})
 
-;//../../jin/property/jin_property.jam.js?=HSPXP6TC
+;// ../../konst/jin-konst.jam.js
+$jin.definer({ '$jin.konst': function( path, gen ){
+	$jin.method( path, function jin_konst_wrapper(){
+		var key = '_' + path
+		return this[ key ] || ( this[ key ] = gen.call( this ) )
+	})
+}})
+
+;// ../../property/jin_property.jam.js
 $jin.definer({ '$jin.property': function( ){ // arguments: resolveName*, path, filter
     var resolveList = [].slice.call( arguments )
     var filter = resolveList.pop()
@@ -293,10 +312,17 @@ $jin.definer({ '$jin.property.hash': function( path, config ){
 		var storage = this[ fieldName ]
 		if( !storage ) storage = this[ fieldName ] = {}
 		if( arguments.length > 1 ){
-			var value2 = put ? put.call( key, value ) : value
+			var value2 = put ? put.call( this, key, value ) : value
 			if( value2 === void 0 ) delete storage[ key ]
 			else storage[ key ] = value2
+			return this
 		} else if( arguments.length ) {
+			if( typeof key === 'object' ){
+				for( var k in key ){
+					propHash.call( this, k, key[ k ] )
+				}
+				return this
+			}
 			var value2 = storage[ key ]
 			if( pull && value2 === void 0 ) value2 = storage[ key ] = pull.call( this, key )
 			return value2
@@ -308,14 +334,33 @@ $jin.definer({ '$jin.property.hash': function( path, config ){
 	return $jin.method( path, propHash )
 }})
 
-;//../../jin/klass/jin_klass.jam.js?=HSPXP6TC
+;// ../../klass/jin_klass.jam.js
 $jin.definer({ '$jin.klass': function( path, mixins ){
     mixins.unshift( '$jin.klass' )
-    return $jin.mixin( path, mixins )
+    var klass = $jin.mixin( path, mixins )
+	return klass
 }})
 
+$jin.konst( '$jin.klass.klass', function( ){
+	var klass = function Instance( ){ }
+	klass.prototype = this.prototype
+	return klass
+})
+
 $jin.method( '$jin.klass.exec', function( ){
-	return new this( arguments )
+	var klass = this.klass()
+	var obj = new klass
+	obj.init.apply( obj, arguments )
+	return obj
+} )
+
+$jin.property( '$jin.klass.descendantClasses', function( ){ // TODO: use atoms!
+	var paths = this.jin_mixin_slaveList || []
+	var lists = paths.map( function( path ){
+		var klass = $jin.glob( path )
+		return klass.descendantClasses()
+	} )
+	return [].concat.apply( [ this ], lists )
 } )
 
 $jin.method( '$jin.klass.subClass', function( fields ){
@@ -327,7 +372,7 @@ $jin.method( '$jin.klass.subClass', function( fields ){
 } )
 
 $jin.method( '$jin.klass.id', function( ){
-    return this.jin_method_path || this.name
+    return this.displayName || this.name
 } )
 
 $jin.method( '$jin.klass.toString', function( ){
@@ -383,7 +428,7 @@ $jin.method( '$jin.klass..method', function( name ){
     return hash[ '_' + name ] = method
 } )
 
-;//../../jin/wrapper/jin_wrapper.jam.js?=HSPXP7L4
+;// ../../wrapper/jin_wrapper.jam.js
 $jin.klass({ '$jin.wrapper': [] })
 
 $jin.property( '$jin.wrapper..raw', null )
@@ -399,7 +444,7 @@ $jin.method( '$jin.klass..init', '$jin.wrapper..init', function( obj ){
     return this
 } )
 
-;//../../jin/error/jin-error.jam.js?=HSPXP6TC
+;// ../../error/jin-error.jam.js
 $jin.definer({ '$jin.error': function( path, traits ){
 	var error = $jin.trait( path )
 	error.prototype = new Error
@@ -421,15 +466,7 @@ $jin.method({ '$jin.error..init': function( error ){
 	return this
 }})
 
-;//../../jin/schedule/jin_schedule.jam.js?=HSPXP6TC
-$jin.method( '$jin.schedule', function( delay, handler ){
-    var id = setTimeout( $jin.defer.callback( handler ), delay )
-    return { destroy: function( ){
-        clearTimeout( id )
-    } }
-} )
-
-;//../../jin/defer/jin_defer.env=web.jam.js?=HSPXP6TC
+;// ../../defer/jin_defer.js
 $jin.defer = function( func ){
     $jin.defer.queue.push( func )
     if( !$jin.defer.scheduled ) $jin.defer.schedule()
@@ -443,7 +480,7 @@ $jin.defer.queue = []
 $jin.defer.scheduled = false
 
 $jin.defer.schedule = function( ){
-	if( window.addEventListener ) window.postMessage( '$jin.defer', document.location.href )
+	if( typeof postMesasge === 'function' ) postMessage( '$jin.defer', document.location.href )
 	else $jin.schedule( 0, $jin.defer.check )
 	$jin.defer.scheduled = true
 }
@@ -465,10 +502,10 @@ $jin.defer.check = function( event ){
 	$jin.defer.scheduled = false
 }
 
-if( window.addEventListener ) window.addEventListener( 'message', $jin.defer.check, true )
+if( typeof addEventListener === 'function' ) addEventListener( 'message', $jin.defer.check, true )
 
 $jin.defer.callback = function( func ){
-	return function $jin_defer_callback_instance(){
+	var wrapper = function $jin_defer_callback_instance(){
 		$jin.defer.scheduled = true
 		try {
 			return func.apply( this, arguments )
@@ -476,9 +513,11 @@ $jin.defer.callback = function( func ){
 			$jin.defer.check()
 		}
 	}
+	if( $jin.sync2async ) wrapper = $jin.sync2async( wrapper )
+	return wrapper
 }
 
-;//../../jin/makeId/jin_makeId.jam.js?=HSPXP6TC
+;// ../../makeId/jin_makeId.jam.js
 $jin.makeId = function( prefix ){
 	var seeds = $jin.makeId.seeds 
 	var seed = seeds[ prefix ] || 0
@@ -488,7 +527,7 @@ $jin.makeId = function( prefix ){
 
 $jin.makeId.seeds = {}
 
-;//../../jin/log/jin-log.env=web.jam.js?=HSPXP6TC
+;// ../../log/jin-log.env=web.jam.js
 $jin.method({ '$jin.log' : function( ){
 	if( typeof console === 'undefined' ) return
 	
@@ -510,7 +549,7 @@ $jin.method({ '$jin.warn' : function( ){
 $jin.method({ '$jin.log.error' : function( error ){
 	if( typeof console === 'undefined' ) return
 	
-	if( error.$jin_log_isLogged ) return
+	if( error.jin_log_isLogged ) return
 	
 	var message = error.stack || error
 	
@@ -518,15 +557,28 @@ $jin.method({ '$jin.log.error' : function( error ){
 	else if( console.error ) console.error( message )
 	else if( console.log ) console.log( message )
 	
-	error.$jin_log_isLogged = true
+	error.jin_log_isLogged = true
 }})
 
-;//../../jin/atom/jin-atom.jam.js?=HSPXP6TC
+$jin.method({ '$jin.log.error.ignore' : function( error ){
+	error.jin_log_isLogged = true
+	return error
+}})
+
+;// ../../schedule/jin_schedule.jam.js
+$jin.method( '$jin.schedule', function( delay, handler ){
+    var id = setTimeout( $jin.defer.callback( handler ), delay )
+    return { destroy: function( ){
+        clearTimeout( id )
+    } }
+} )
+
+;// ../jin-atom.jam.js
 $jin.error({ '$jin.atom.wait': [] })
 
 $jin.klass({ '$jin.atom': [] })
 
-$jin.atom.slaves = []
+$jin.atom.current = null
 $jin.atom.scheduled = []
 $jin.atom._deferred = null
 
@@ -536,19 +588,20 @@ $jin.glob( '$jin.atom.._error', void 0 )
 $jin.glob( '$jin.atom.._slice', 0 )
 $jin.glob( '$jin.atom.._pulled', false )
 $jin.glob( '$jin.atom.._slavesCount', 0 )
-$jin.glob( '$jin.atom.._scheduled', false )
+$jin.glob( '$jin.atom.._isScheduled', false )
 
 $jin.method({ '$jin.atom.induce': function( ){
-	var scheduled = $jin.atom.scheduled
+	var scheduled = this.scheduled
 
 	scheduled: for( var i = 0; i < scheduled.length; ++i ){
 		var queue = scheduled[i]
 		if( !queue ) continue
 		scheduled[i] = null
 		
-		for( var atomId in queue ){
-			var atom = queue[ atomId ]
+		for( var j = 0; j < queue.length; ++j ){
+			var atom = queue[ j ]
 			if( !atom ) continue
+			if( !atom._isScheduled ) continue
 			
 			atom.pull()
 			
@@ -556,41 +609,37 @@ $jin.method({ '$jin.atom.induce': function( ){
 		}
 	}
 
-	$jin.atom._deferred = null
+	this._deferred = null
 }})
 
 $jin.method({ '$jin.atom.schedule': function( ){
 	if( this._deferred ) return
 
-	this._deferred = $jin.defer( this.induce )
+	this._deferred = $jin.defer( this.induce.bind( this ) )
 }})
 
 $jin.method({ '$jin.atom.bound': function( handler ){
-	$jin.atom.slaves.unshift( null )
-	try {
-		handler()
-	} finally {
-		var stack = $jin.atom.slaves
-		while( stack.length ){
-			var top = stack.shift()
-			if( top === null ) break
-		}
-	}
-	return this
+	var slave = this.current
+	this.current = null
+	var res = handler()
+	this.current = slave
+	return res
 }})
 
 $jin.method({ '$jin.atom..init': function jin_atom__init( config ){
-	this['$jin.klass..init']
+	'$jin.klass..init'
 	this._id = $jin.makeId( '$jin.atom' )
 	this._config = config
 	this._value = config.value
 	this._error = config.error
 	this._slaves = {}
 	this._masters = {}
-	this._slice = 0
-	this._pulled = false
-	this._slavesCount = 0
-	this._scheduled = false
+}})
+
+$jin.method({ '$jin.atom..destroy': function( ){
+	this.disleadAll()
+	this.disobeyAll()
+	return this['$jin.klass..destroy']()
 }})
 
 $jin.method({ '$jin.atom..id': function( ){
@@ -598,17 +647,19 @@ $jin.method({ '$jin.atom..id': function( ){
 }})
 
 $jin.method({ '$jin.atom..get': function( ){
-	if( this._config.pull && ( this._scheduled || ( this._value === void 0 ) ) ) this.pull()
+	var value = this._value
+	if( this._config.pull && ( this._isScheduled || ( value === void 0 ) ) ) value = this.pull()
 
-	var slave = $jin.atom.slaves[0]
+	var slave = this.constructor.current
 	if( slave ){
+		if( slave === this ) throw new Error( 'Circular dependency of atoms!' )
 		slave.obey( this )
 		this.lead( slave )
 	}
 	
 	if( this._error ) throw this._error
 	
-	return this._value
+	return value
 }})
 
 $jin.method({ '$jin.atom..valueOf': function( ){
@@ -619,13 +670,7 @@ $jin.method({ '$jin.atom..pull': function( ){
 	var config = this._config
 	if( !config.pull ) return this._value
 
-	if( this._scheduled ){
-		this._scheduled = false
-		var queue = $jin.atom.scheduled[ this._slice ]
-		if( queue ){
-			queue[ this._id ] = null
-		}
-	}
+	this._isScheduled = false
 	
 	this._error = void 0
 	
@@ -633,20 +678,16 @@ $jin.method({ '$jin.atom..pull': function( ){
 	this._masters = {}
 	this._slice = 0
 	
-	if( $jin.atom.slaves.indexOf( this ) >= 0 ) throw new Error( 'Recursive atom' )
-	$jin.atom.slaves.unshift( this )
+	var prevCurrent = this.constructor.current
+	this.constructor.current = this
 	try {
 		var value = config.pull.call( config.context, this._value )
+		this.constructor.current = null
 		this.put( value )
 	} catch( error ){
 		this.fail( error )
-	} finally {
-		var stack = $jin.atom.slaves
-		while( stack.length ){
-			var top = stack.shift()
-			if( top === this ) break
-		}
 	}
+	this.constructor.current = prevCurrent
 	
 	this._pulled = true
 	
@@ -659,19 +700,22 @@ $jin.method({ '$jin.atom..pull': function( ){
 }})
 
 $jin.method({ '$jin.atom..put': function( next ){
+	var slave = this.constructor.current
+	this.constructor.current = null
+	
 	var config = this._config
 	var merge = config.merge
 	if( merge ){
 		var context = config.context
 		var prev = this._value
-		$jin.atom.bound( function jin_atom_mergeBound( ){
-			next = merge.call( context, next, prev )
-		})
+		next = merge.call( context, next, prev )
 	}
 	
 	this.value( next )
 	this._error = void 0
 	this._pulled = false
+	
+	this.constructor.current = slave
 	
 	return this
 }})
@@ -687,11 +731,16 @@ $jin.method({ '$jin.atom..mutate': function( mutator ){
 	var prev = this._value
 	var atom = this
 	
-	$jin.atom.bound( function mutate( ){
+	this.constructor.bound( function mutate( ){
 		atom.put( mutator.call( context, prev ) )
 	})
 	
 	return this
+}})
+
+$jin.method({ '$jin.atom..error': function( next ){
+	if( arguments.length ) throw new Error( 'Property (error) is read only, use (fail) method' )
+	return this._error
 }})
 
 $jin.method({ '$jin.atom..value': function( next ){
@@ -699,7 +748,7 @@ $jin.method({ '$jin.atom..value': function( next ){
 
 	if( !arguments.length ) return prev
 
-	if( next === prev ) return this
+	if( next === prev && !this._error ) return this
 
 	this._value = next
 	
@@ -710,16 +759,16 @@ $jin.method({ '$jin.atom..value': function( next ){
 	if( error ){
 		var fail = config.fail
 		if( fail ){
-			$jin.atom.bound( function jin_atom_failBound( ){
-				fail.call( context, error, prev )
-			})
+			fail.call( context, error, prev )
+		} else if( !this._slavesCount ){
+			if(!( error instanceof this.constructor.wait )){
+				$jin.log.error( error )
+			}
 		}
 	} else {
 		var push = config.push
 		if( push ){
-			$jin.atom.bound( function jin_atom_pushBound( ){
-				push.call( context, next, prev )
-			})
+			push.call( context, next, prev )
 		}
 	}
 
@@ -737,7 +786,7 @@ $jin.method({ '$jin.atom..slice': function( ){
 }})
 
 $jin.method({ '$jin.atom..notify': function( ){
-	var slaveExclude = $jin.atom.slaves[0]
+	var slaveExclude = this.constructor.current
 	
 	var slaves = this._slaves
 	for( var id in slaves ){
@@ -746,28 +795,29 @@ $jin.method({ '$jin.atom..notify': function( ){
 		if( !slave ) continue
 		if( slave === slaveExclude ) continue
 		
-		slave.update()
+		slave.update( this )
 	}
 
 	return this
 }})
 
 $jin.method({ '$jin.atom..update': function( ){
+	if( this._isScheduled ) return
+	
 	var slice = this._slice
 
-	var queue = $jin.atom.scheduled[ slice ]
-	if( !queue ) queue = $jin.atom.scheduled[ slice ] = {}
+	var queue = this.constructor.scheduled[ slice ]
+	if( !queue ) queue = this.constructor.scheduled[ slice ] = []
 
-	queue[ this._id ] = this
-	this._scheduled = true
+	queue.push( this )
+	this._isScheduled = true
 
-	$jin.atom.schedule()
+	this.constructor.schedule()
 
 	return this
 }})
 
 $jin.method({ '$jin.atom..lead': function( slave ){
-	if( slave === this ) throw new Error( 'Self leading atom' )
 	var id = slave.id()
 	
 	var slaves = this._slaves
@@ -780,7 +830,6 @@ $jin.method({ '$jin.atom..lead': function( slave ){
 }})
 
 $jin.method({ '$jin.atom..obey': function( master ){
-	if( master === this ) throw new Error( 'Self obey atom' )
 	var id = master.id()
 	
 	this._masters[ id ] = master
@@ -816,7 +865,10 @@ $jin.method({ '$jin.atom..disleadAll': function( ){
 	this._slaves = {}
 	this._slavesCount = 0
 	for( var id in slaves ){
-		slaves[ id ].disobey( this )
+		var slave = slaves[ id ]
+		if( !slave ) continue
+		
+		slave.disobey( this )
 	}
 	this.reap()
 }})
@@ -825,7 +877,10 @@ $jin.method({ '$jin.atom..disobeyAll': function( ){
 	var masters = this._masters
 	this._masters = {}
 	for( var id in masters ){
-		masters[ id ].dislead( this )
+		var master = masters[ id ]
+		if( !master ) continue
+		
+		master.dislead( this )
 	}
 	this._slice = 0
 }})
@@ -845,16 +900,7 @@ $jin.method({ '$jin.atom..reap': function( ){
 	return this
 }})
 
-$jin.method({ '$jin.atom..destroy': function( ){
-	this.disleadAll()
-	this.disobeyAll()
-	if( this._scheduled ){
-		var queue = $jin.atom.scheduled[ this._slice ]
-		queue[ this._id ] = null
-	}
-	return this['$jin.klass..destroy']()
-}})
-
+;// ../jin-atom_logs.jam.js
 $jin.method({ '$jin.atom.enableLogs': function( ){
 	$jin.mixin({ '$jin.atom': [ '$jin.atom.logging' ] })
 }})
@@ -867,11 +913,11 @@ $jin.method({ '$jin.atom.logging..notify': function( ){
 	if( !ctor._deferedLogging ){
 		ctor._deferedLogging = $jin.schedule( 0, function defferedLogging( ){
 			ctor._deferedLogging = null
-			console.groupCollapsed('$jin.atom.log')
+			if( console.groupCollapsed ) console.groupCollapsed('$jin.atom.log')
 			ctor.log().forEach( function jin_atom_defferedLog( row ){
 				$jin.log.apply( $jin, row )
 			} )
-			console.groupEnd('$jin.atom.log')
+			if( console.groupEnd ) console.groupEnd('$jin.atom.log')
 			ctor.log( [] )
 		} )
 	}
@@ -883,20 +929,57 @@ $jin.property({ '$jin.atom.logging.log': function( ){
 	return []
 }})
 
-;//../../jin/atom/prop/jin-atom-prop.jam.js?=HSPXP6TC
+;// ../jin-atom_promise.jam.js
+$jin.method({ '$jin.atom..then': function( done, fail ){
+	
+	if( this._error ){
+		if( fail ) fail( this._error )
+		return this
+	}
+	
+	if( this._value ){
+		done( this._value )
+		return this
+	}
+	
+	var self = this
+	var promise = $jin.atom({
+		pull: function( ){
+			return self.get()
+		},
+		push: function( next ){
+			if( next === void  0 ) return
+			promise.disobeyAll()
+		},
+		merge: function( next ){
+			if( next === void  0 ) return
+			return done ? done( next ) : next
+		},
+		fail: fail
+	})
+	promise.pull()
+	
+	return promise
+}})
+
+$jin.method({ '$jin.atom..catch': function( fail ){
+	return this.then( null, fail )
+}})
+
+;// ../prop/jin-atom-prop.jam.js
 $jin.definer({ '$jin.atom.prop': function( path, config ){
     
 	var pull = config.pull
-	if( pull ) pull.jin_method_path = path + '.pull'
+	if( pull && !pull.displayName ) pull.displayName = path + '.pull'
 
 	var put = config.put
-	if( put ) put.jin_method_path = path + '.put'
+	if( put && !put.displayName ) put.displayName = path + '.put'
 
 	var push = config.push
-	if( push ) push.jin_method_path = path + '.push'
+	if( push && !push.displayName ) push.displayName = path + '.push'
 
 	var merge = config.merge
-	if( merge ) merge.jin_method_path = path + '.merge'
+	if( merge && !merge.displayName ) merge.displayName = path + '.merge'
 
     var prop = function jin_atom_prop_accessor( next ){
         var atom = propAtom.call( this )
@@ -919,7 +1002,7 @@ $jin.definer({ '$jin.atom.prop': function( path, config ){
         
         if( atom ) return atom
         
-        return this[ fieldName ] = $jin.atom(
+        return this[ fieldName ] = new $jin.atom(
 		{	name: path /*+ ':' + this.id()*/
 		,	context: this
 		,	pull: pull
@@ -941,6 +1024,19 @@ $jin.definer({ '$jin.atom.prop': function( path, config ){
 }})
 
 $jin.definer({ '$jin.atom.prop.list': function( path, config ){
+	if( !config.merge ) config.merge = function( next, prev ){
+		if( !prev || !next ) return next
+		
+		if( next.length !== prev.length ) return next
+		
+		for( var i = 0; i < next.length; ++i ){
+			if( next[ i ] === prev[ i ] ) continue
+			return next
+		}
+		
+		return prev
+	}
+	
 	$jin.atom.prop( path, config )
 	
 	var propName = path.replace( /([$\w]*\.)+/, '' )
@@ -977,6 +1073,7 @@ $jin.definer({ '$jin.atom.prop.list': function( path, config ){
 	$jin.method( path + '_has', function( item ){
 		if( config.merge ) item = config.merge.call( this, [ item ] )[ 0 ]
 		var items = this[propName]()
+		if( !items ) return items
         
         return items.indexOf( item ) >= 0 
     } )
@@ -1016,7 +1113,7 @@ $jin.definer({ '$jin.atom.prop.hash': function( path, config ){
         var atom = atomHash[ key ]
         if( atom ) return atom
         
-        return atomHash[ key ] = $jin.atom(
+        return atomHash[ key ] = new $jin.atom(
 		{	name: path/* + ':' + this.id()*/
 		,	context: context
 		,	pull: pull && function( prev ){
@@ -1033,3 +1130,5 @@ $jin.definer({ '$jin.atom.prop.hash': function( path, config ){
 
     return prop
 }})
+
+}
