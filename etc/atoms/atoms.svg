@@ -55,8 +55,8 @@
     <polygon style="fill: #1e90ff" points="780.235,306.585 772.53,327.576 793.946,321.145 "/>
     <polygon style="fill: none; fill-opacity:0; stroke-width: 5; stroke: #1e90ff" points="780.235,306.585 772.53,327.576 793.946,321.145 "/>
   </g>
-  <text font-size="28.2222" style="fill: #ff0000;text-anchor:middle;font-family:Segoe UI Semibold;font-style:normal;font-weight:600" x="874.392" y="267.295">
-    <tspan x="874.392" y="267.295">Pull</tspan>
+  <text font-size="28.2222" style="fill: #ff0000;text-anchor:middle;font-family:Segoe UI Semibold;font-style:normal;font-weight:600" x="872" y="390.675">
+    <tspan x="872" y="390.675">Pull</tspan>
   </text>
   <g>
     <path style="fill: none; fill-opacity:0; stroke-width: 5; stroke: #1e90ff" d="M 805.559 357.777 C 895.178,321.929 919.548,349.774 959.548,369.774"/>
@@ -64,8 +64,8 @@
     <path style="fill: #1e90ff" d="M 959.548 369.774 C 957.311,374.246 950.603,376.482 946.131,374.246 C 941.659,372.01 939.423,365.302 941.659,360.83 C 943.895,356.357 950.603,354.121 955.075,356.357 C 959.548,358.593 961.784,365.302 959.548,369.774z"/>
     <path style="fill: none; fill-opacity:0; stroke-width: 5; stroke: #1e90ff" d="M 959.548 369.774 C 957.311,374.246 950.603,376.482 946.131,374.246 C 941.659,372.01 939.423,365.302 941.659,360.83 C 943.895,356.357 950.603,354.121 955.075,356.357 C 959.548,358.593 961.784,365.302 959.548,369.774"/>
   </g>
-  <text font-size="28.2222" style="fill: #000000;text-anchor:middle;font-family:Segoe UI Semibold;font-style:normal;font-weight:600" x="875.208" y="328.62">
-    <tspan x="875.208" y="328.62">Update</tspan>
+  <text font-size="28.2222" style="fill: #000000;text-anchor:middle;font-family:Segoe UI Semibold;font-style:normal;font-weight:600" x="875.208" y="329.089">
+    <tspan x="875.208" y="329.089">Update</tspan>
   </text>
   <g>
     <path style="fill: none; fill-opacity:0; stroke-width: 5; stroke: #1e90ff" d="M 771.41 473.545 C 834.61,538.635 930.197,519.972 961.914,477.601"/>
@@ -89,8 +89,8 @@
     <path style="fill: #1e90ff" d="M 957.588 400 C 957.588,405 952.588,410 947.588,410 C 942.588,410 937.588,405 937.588,400 C 937.588,395 942.588,390 947.588,390 C 952.588,390 957.588,395 957.588,400z"/>
     <path style="fill: none; fill-opacity:0; stroke-width: 5; stroke: #1e90ff" d="M 957.588 400 C 957.588,405 952.588,410 947.588,410 C 942.588,410 937.588,405 937.588,400 C 937.588,395 942.588,390 947.588,390 C 952.588,390 957.588,395 957.588,400"/>
   </g>
-  <text font-size="28.2222" style="fill: #000000;text-anchor:middle;font-family:Segoe UI Semibold;font-style:normal;font-weight:600" x="873.14" y="390.423">
-    <tspan x="873.14" y="390.423">Push</tspan>
+  <text font-size="28.2222" style="fill: #000000;text-anchor:middle;font-family:Segoe UI Semibold;font-style:normal;font-weight:600" x="870" y="271.675">
+    <tspan x="870" y="271.675">Push</tspan>
   </text>
   <text font-size="16.9333" style="fill: #ff0000;text-anchor:middle;font-family:Segoe UI Semibold;font-style:normal;font-weight:600" x="698.748" y="474.533">
     <tspan x="698.748" y="474.533">Merge</tspan>
