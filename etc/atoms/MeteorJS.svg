@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
+<svg width="100%" height="100%" viewBox="-23 253 1627 491" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g>
+    <ellipse style="fill: #ffffff" cx="160" cy="320" rx="60" ry="60"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #1e90ff" cx="160" cy="320" rx="60" ry="60"/>
+    <text font-size="50.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="160" y="335.4">
+      <tspan x="160" y="335.4">A</tspan>
+    </text>
+  </g>
+  <g>
+    <ellipse style="fill: #ffffff" cx="40" cy="500" rx="60" ry="60"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #1e90ff" cx="40" cy="500" rx="60" ry="60"/>
+    <text font-size="50.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="40" y="515.4">
+      <tspan x="40" y="515.4">B</tspan>
+    </text>
+  </g>
+  <g>
+    <ellipse style="fill: #ffffff" cx="280" cy="500" rx="60" ry="60"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #1e90ff" cx="280" cy="500" rx="60" ry="60"/>
+    <text font-size="50.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="280" y="515.4">
+      <tspan x="280" y="515.4">C</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #1e90ff" x1="74.3652" y1="448.452" x2="118.994" y2="381.509"/>
+    <polygon style="fill: #1e90ff" points="123.154,375.269 121.767,386.363 118.994,381.509 113.447,380.816 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #1e90ff" points="123.154,375.269 121.767,386.363 118.994,381.509 113.447,380.816 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #1e90ff" x1="245.635" y1="448.452" x2="201.006" y2="381.509"/>
+    <polygon style="fill: #1e90ff" points="196.846,375.269 206.553,380.816 201.006,381.509 198.233,386.363 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #1e90ff" points="196.846,375.269 206.553,380.816 201.006,381.509 198.233,386.363 "/>
+  </g>
+  <g>
+    <ellipse style="fill: #ffffff" cx="160" cy="680" rx="60" ry="60"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #1e90ff" cx="160" cy="680" rx="60" ry="60"/>
+    <text font-size="50.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="160" y="695.4">
+      <tspan x="160" y="695.4">D</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #1e90ff" x1="194.365" y1="628.452" x2="238.994" y2="561.509"/>
+    <polygon style="fill: #1e90ff" points="243.154,555.269 241.767,566.363 238.994,561.509 233.447,560.816 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #1e90ff" points="243.154,555.269 241.767,566.363 238.994,561.509 233.447,560.816 "/>
+  </g>
+  <g>
+    <ellipse style="fill: #ffffff" cx="580" cy="320" rx="60" ry="60"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #1e90ff" cx="580" cy="320" rx="60" ry="60"/>
+    <text font-size="50.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="580" y="335.4">
+      <tspan x="580" y="335.4">A</tspan>
+    </text>
+  </g>
+  <g>
+    <ellipse style="fill: #ffffff" cx="460" cy="500" rx="60" ry="60"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 8; stroke: #ff0000" cx="460" cy="500" rx="60" ry="60"/>
+    <text font-size="50.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="460" y="515.4">
+      <tspan x="460" y="515.4">B</tspan>
+    </text>
+  </g>
+  <g>
+    <ellipse style="fill: #ffffff" cx="700" cy="500" rx="60" ry="60"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #1e90ff" cx="700" cy="500" rx="60" ry="60"/>
+    <text font-size="50.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="700" y="515.4">
+      <tspan x="700" y="515.4">C</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #1e90ff" x1="495.449" y1="446.826" x2="538.994" y2="381.509"/>
+    <polygon style="fill: #1e90ff" points="543.154,375.269 541.767,386.363 538.994,381.509 533.447,380.816 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #1e90ff" points="543.154,375.269 541.767,386.363 538.994,381.509 533.447,380.816 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #1e90ff" x1="665.635" y1="448.452" x2="621.006" y2="381.509"/>
+    <polygon style="fill: #1e90ff" points="616.846,375.269 626.553,380.816 621.006,381.509 618.233,386.363 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #1e90ff" points="616.846,375.269 626.553,380.816 621.006,381.509 618.233,386.363 "/>
+  </g>
+  <g>
+    <ellipse style="fill: #ffffff" cx="580" cy="680" rx="60" ry="60"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 8; stroke: #ff0000" cx="580" cy="680" rx="60" ry="60"/>
+    <text font-size="50.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="580" y="695.4">
+      <tspan x="580" y="695.4">D</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #1e90ff" x1="615.449" y1="626.826" x2="658.994" y2="561.509"/>
+    <polygon style="fill: #1e90ff" points="663.154,555.269 661.767,566.363 658.994,561.509 653.447,560.816 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #1e90ff" points="663.154,555.269 661.767,566.363 658.994,561.509 653.447,560.816 "/>
+  </g>
+  <g>
+    <ellipse style="fill: #ffffff" cx="1000" cy="320" rx="60" ry="60"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 8; stroke: #ff0000" cx="1000" cy="320" rx="60" ry="60"/>
+    <text font-size="50.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="1000" y="335.4">
+      <tspan x="1000" y="335.4">A</tspan>
+    </text>
+  </g>
+  <g>
+    <ellipse style="fill: #ffffff" cx="880" cy="500" rx="60" ry="60"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 8; stroke: #ff0000" cx="880" cy="500" rx="60" ry="60"/>
+    <text font-size="50.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="880" y="515.4">
+      <tspan x="880" y="515.4">B</tspan>
+    </text>
+  </g>
+  <g>
+    <ellipse style="fill: #ffffff" cx="1120" cy="500" rx="60" ry="60"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 8; stroke: #ff0000" cx="1120" cy="500" rx="60" ry="60"/>
+    <text font-size="50.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="1120" y="515.4">
+      <tspan x="1120" y="515.4">C</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #ff0000" x1="915.449" y1="446.826" x2="957.91" y2="383.135"/>
+    <polygon style="fill: #ff0000" points="962.07,376.895 960.683,387.989 957.91,383.135 952.363,382.442 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #ff0000" points="962.07,376.895 960.683,387.989 957.91,383.135 952.363,382.442 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #1e90ff" x1="1084.55" y1="446.826" x2="1042.09" y2="383.135"/>
+    <polygon style="fill: #1e90ff" points="1037.93,376.895 1047.64,382.442 1042.09,383.135 1039.32,387.989 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #1e90ff" points="1037.93,376.895 1047.64,382.442 1042.09,383.135 1039.32,387.989 "/>
+  </g>
+  <g>
+    <ellipse style="fill: #ffffff" cx="1000" cy="680" rx="60" ry="60"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 8; stroke: #ff0000" cx="1000" cy="680" rx="60" ry="60"/>
+    <text font-size="50.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="1000" y="695.4">
+      <tspan x="1000" y="695.4">D</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #ff0000" x1="1035.45" y1="626.826" x2="1077.91" y2="563.135"/>
+    <polygon style="fill: #ff0000" points="1082.07,556.895 1080.68,567.989 1077.91,563.135 1072.36,562.442 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #ff0000" points="1082.07,556.895 1080.68,567.989 1077.91,563.135 1072.36,562.442 "/>
+  </g>
+  <g>
+    <ellipse style="fill: #ffffff" cx="1420" cy="320" rx="60" ry="60"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 12; stroke: #ff0000" cx="1420" cy="320" rx="60" ry="60"/>
+    <text font-size="50.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="1420" y="335.4">
+      <tspan x="1420" y="335.4">A</tspan>
+    </text>
+  </g>
+  <g>
+    <ellipse style="fill: #ffffff" cx="1300" cy="500" rx="60" ry="60"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 8; stroke: #ff0000" cx="1300" cy="500" rx="60" ry="60"/>
+    <text font-size="50.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="1300" y="515.4">
+      <tspan x="1300" y="515.4">B</tspan>
+    </text>
+  </g>
+  <g>
+    <ellipse style="fill: #ffffff" cx="1540" cy="500" rx="60" ry="60"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 8; stroke: #ff0000" cx="1540" cy="500" rx="60" ry="60"/>
+    <text font-size="50.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="1540" y="515.4">
+      <tspan x="1540" y="515.4">C</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #ff0000" x1="1335.45" y1="446.826" x2="1376.77" y2="384.849"/>
+    <polygon style="fill: #ff0000" points="1380.93,378.609 1379.54,389.703 1376.77,384.849 1371.22,384.156 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #ff0000" points="1380.93,378.609 1379.54,389.703 1376.77,384.849 1371.22,384.156 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #ff0000" x1="1504.55" y1="446.826" x2="1463.23" y2="384.849"/>
+    <polygon style="fill: #ff0000" points="1459.07,378.609 1468.78,384.156 1463.23,384.849 1460.46,389.703 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #ff0000" points="1459.07,378.609 1468.78,384.156 1463.23,384.849 1460.46,389.703 "/>
+  </g>
+  <g>
+    <ellipse style="fill: #ffffff" cx="1420" cy="680" rx="60" ry="60"/>
+    <ellipse style="fill: none; fill-opacity:0; stroke-width: 8; stroke: #ff0000" cx="1420" cy="680" rx="60" ry="60"/>
+    <text font-size="50.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="1420" y="695.4">
+      <tspan x="1420" y="695.4">D</tspan>
+    </text>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #ff0000" x1="1455.45" y1="626.826" x2="1497.91" y2="563.135"/>
+    <polygon style="fill: #ff0000" points="1502.07,556.895 1500.68,567.989 1497.91,563.135 1492.36,562.442 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 4; stroke: #ff0000" points="1502.07,556.895 1500.68,567.989 1497.91,563.135 1492.36,562.442 "/>
+  </g>
+</svg>
