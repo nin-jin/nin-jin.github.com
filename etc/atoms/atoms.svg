@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
-<svg width="100%" height="100%" viewBox="258 139 883 502" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="45cm" height="26cm" viewBox="258 139 883 502" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
   <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 4; stroke: #000000" x1="260" y1="400" x2="1140" y2="400"/>
   <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke-dasharray: 4; stroke: #000000" x1="700" y1="140" x2="700" y2="640"/>
   <g>
@@ -51,9 +51,10 @@
     <tspan x="529.362" y="504.143">Set</tspan>
   </text>
   <g>
-    <path style="fill: none; fill-opacity:0; stroke-width: 5; stroke: #1e90ff" d="M 787.091 313.865 C 824.522,278.618 908.586,251.448 968.586,331.448"/>
-    <polygon style="fill: #1e90ff" points="780.235,306.585 772.53,327.576 793.946,321.145 "/>
-    <polygon style="fill: none; fill-opacity:0; stroke-width: 5; stroke: #1e90ff" points="780.235,306.585 772.53,327.576 793.946,321.145 "/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 5; stroke: #1e90ff" d="M 778.85 321.625 C 824.522,278.618 908.586,251.448 968.586,331.448"/>
+    <polyline style="fill: none; fill-opacity:0; stroke-width: 5; stroke: #1e90ff" points="782.485,304.466 774.78,325.458 796.196,319.027 "/>
+    <path style="fill: #1e90ff" d="M 968.586 331.448 C 964.586,334.448 957.586,333.448 954.586,329.448 C 951.586,325.448 952.586,318.448 956.586,315.448 C 960.586,312.448 967.586,313.448 970.586,317.448 C 973.586,321.448 972.586,328.448 968.586,331.448z"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 5; stroke: #1e90ff" d="M 968.586 331.448 C 964.586,334.448 957.586,333.448 954.586,329.448 C 951.586,325.448 952.586,318.448 956.586,315.448 C 960.586,312.448 967.586,313.448 970.586,317.448 C 973.586,321.448 972.586,328.448 968.586,331.448"/>
   </g>
   <text font-size="28.2222" style="fill: #ff0000;text-anchor:middle;font-family:Segoe UI Semibold;font-style:normal;font-weight:600" x="872" y="390.675">
     <tspan x="872" y="390.675">Pull</tspan>
@@ -84,10 +85,9 @@
     </text>
   </g>
   <g>
-    <path style="fill: none; fill-opacity:0; stroke-width: 5; stroke: #1e90ff" d="M 811.18 400 C 880,400 877.588,400 957.588,400"/>
-    <polyline style="fill: none; fill-opacity:0; stroke-width: 5; stroke: #1e90ff" points="825.59,390 805.59,400 825.59,410 "/>
-    <path style="fill: #1e90ff" d="M 957.588 400 C 957.588,405 952.588,410 947.588,410 C 942.588,410 937.588,405 937.588,400 C 937.588,395 942.588,390 947.588,390 C 952.588,390 957.588,395 957.588,400z"/>
-    <path style="fill: none; fill-opacity:0; stroke-width: 5; stroke: #1e90ff" d="M 957.588 400 C 957.588,405 952.588,410 947.588,410 C 942.588,410 937.588,405 937.588,400 C 937.588,395 942.588,390 947.588,390 C 952.588,390 957.588,395 957.588,400"/>
+    <path style="fill: none; fill-opacity:0; stroke-width: 5; stroke: #1e90ff" d="M 822.5 400 C 880,400 877.588,400 957.588,400"/>
+    <polygon style="fill: #1e90ff" points="822.5,390 802.5,400 822.5,410 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 5; stroke: #1e90ff" points="822.5,390 802.5,400 822.5,410 "/>
   </g>
   <text font-size="28.2222" style="fill: #000000;text-anchor:middle;font-family:Segoe UI Semibold;font-style:normal;font-weight:600" x="870" y="271.675">
     <tspan x="870" y="271.675">Push</tspan>
