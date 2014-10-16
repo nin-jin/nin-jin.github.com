@@ -1,0 +1,99 @@
+[jin-todo-view] {
+    background: #ccc /*url( 'http://hyoo.ru/wc/desktop/wc-desktop_light.png' ) left top no-repeat*/;
+    position: relative;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    /*padding: 1%;*/
+	padding: 2%;
+    width: 100%;
+    height: 100%;
+    display: -moz-flex;
+    display: flex;
+    -moz-flex-direction: column;
+    flex-direction: column;
+    -moz-justify-content: center;
+    justify-content: center;
+    -moz-align-items: stretch;
+    align-items: stretch;
+    -moz-align-content: flex-start;
+    align-content: flex-start;
+}
+
+[jin-todo-view-title] {
+    text-align: center;
+    font: 24px/1 'Segoe UI', sans-serif;
+    margin: 2% 2%;
+    -moz-flex: 0 0 100%;
+    flex: 0 0 100%;
+}
+
+[jin-todo-view-resizer] {
+	padding: 1%;
+	cursor: ns-resize;
+}
+
+[jin-todo-view-panel] {
+	height: 100%;
+	width: 100%;
+	background: #fcfcfc;
+    box-shadow: 0 0 6px rgba( 0, 0, 0, .5 );
+    display: -moz-flex;
+    display: flex;
+    -moz-flex-direction: column;
+    flex-direction: column;
+	position: relative;
+}
+
+[jin-todo-view-toolbar] {
+	position: absolute;
+	margin-top: -1.6em;
+    font: 15px/1 'Segoe UI Semibold', 'Segoe UI', sans-serif;
+	width: 100%;
+	display: -moz-flex;
+	display: flex;
+	-moz-justify-content: center;
+	justify-content: center;
+}
+
+[jin-todo-view-create],
+[jin-todo-view-clear] {
+	margin: 1.5em .25em 0;
+	cursor: pointer;
+	padding: .25em .5em;
+    box-shadow: 0 0 3px rgba( 0, 0, 0, .5 );
+	background: snow;
+	transition: margin-top .2s .2s;
+	border-bottom: 1px solid #ccc;
+}
+
+[jin-todo-view-create]:hover,
+[jin-todo-view-clear]:hover {
+	background: white;
+    box-shadow: 0 0 6px rgba( 0, 0, 0, .5 );
+}
+
+[jin-todo-view-toolbar]:hover [jin-todo-view-create],
+[jin-todo-view-toolbar]:hover [jin-todo-view-clear] {
+	margin-top: 0;
+	transition: margin-top .1s .1s;
+}
+
+[jin-todo-view-list-pane] {
+	height: 100%;
+	width: 100%;
+	overflow: auto;
+}
+
+@media ( min-width: 40em ) {
+	
+	[jin-todo-view] {
+		-moz-flex-direction: row;
+		flex-direction: row;
+	}
+	
+	[jin-todo-view-resizer] {
+		cursor: ew-resize;
+	}
+
+}
+

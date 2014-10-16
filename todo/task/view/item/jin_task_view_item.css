@@ -1,0 +1,64 @@
+[jin-task-view-item] {
+    display: block;
+    background: #fcfcfc;
+    font: 15px/1 'Segoe UI', sans-serif;
+    white-space: nowrap;
+    cursor: pointer;
+    position: relative;
+}
+
+[jin-task-view-item]:nth-child(even) {
+    background: #f6f6f6;
+}
+
+[jin-task-view-item]:hover {
+    background: #def;
+}
+
+[jin-task-view-item][jin-task-view-item-current="true"] {
+    background: steelblue;
+    color: snow;
+}
+
+[jin-task-view-item-link] {
+    color: inherit;
+    text-decoration: inherit;
+    display: block;
+}
+[jin-task-view-item-link]:focus {
+    outline: none;
+}
+
+[jin-task-view-item-title] {
+    display: block;
+    padding: 1.5%;
+    position: relative;
+    min-height: 1em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+[jin-task-view-item-title]:empty:before {
+    color: gray;
+    font-style: italic;
+    content: attr( jin-task-view-item-title-default );
+    position: absolute;
+}
+
+[jin-task-view-item][jin-task-view-item-current="true"] [jin-task-view-item-title]:empty:before {
+    color: inherit;
+}
+
+[jin-task-view-item-dropper] {
+	padding: 1.5% 1.5%;
+	float: right;
+	display: none;
+}
+
+[jin-task-view-item-dropper]:hover {
+	background: lightsteelblue;
+}
+
+[jin-task-view-item]:hover [jin-task-view-item-dropper] {
+	display: block;
+}

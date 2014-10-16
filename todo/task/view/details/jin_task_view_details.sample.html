@@ -1,0 +1,17 @@
+<div jin-task-view-details="{id}">
+	<div
+		jin-task-view-details-title=""
+		contenteditable="{editableTitle}"
+		jin-sample-events="$jin.dom.event.onInput=onChangeTitle"
+		>
+		{title}
+	</div>
+	<div
+		jin-task-view-details-description=""
+		contenteditable="{editableDescription}"
+		visible="{visibleDescription}"
+		jin-sample-events="$jin.dom.event.onInput=onChangeDescription"
+		>
+		{description}
+	</div>
+</div>

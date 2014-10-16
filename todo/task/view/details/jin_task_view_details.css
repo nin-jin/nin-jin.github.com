@@ -1,0 +1,83 @@
+[jin-task-view-details] {
+    /*padding: 2% 2%;*/
+    background: #fcfcfc;
+    min-height: 1em;
+    /*overflow: hidden;*/
+    width: 100%;
+    height: 100%;
+    display: -moz-flex;
+    display: flex;
+    -moz-flex-direction: column;
+    flex-direction: column;
+}
+
+[jin-task-view-details-title] {
+    font: 21px/27px 'Segoe UI', sans-serif;
+    padding: 2% 3%;
+    border-radius: 2px;
+    /*margin: 2%;*/
+	position: relative;
+}
+
+[jin-task-view-details-title]:empty:before {
+    color: gray;
+    font-style: italic;
+    content: 'empty title';
+    position: absolute;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	width: 94%;
+}
+
+[jin-task-view-details-title]:empty:after {
+    content: '\A0';
+    width: 0;
+    display: inline-block;
+}
+
+[jin-task-view-details-title]:focus {
+    outline: none;
+    position: relative;
+    box-shadow: 0 0 4px steelblue;
+    background: white;
+}
+
+[jin-task-view-details-description] {
+    font: 15px/25px 'Segoe UI', sans-serif;
+    padding: 2% 3%;
+    margin-top: -2%;
+    /*margin: 2%;*/
+    position: relative;
+    overflow: auto;
+    -moz-flex: 1;
+    flex: 1;
+}
+
+[jin-task-view-details-description]:empty:before {
+    color: gray;
+    font-style: italic;
+    content: 'empty description';
+    position: absolute;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	width: 94%;
+}
+
+[jin-task-view-details-description]:empty:after {
+    content: '\A0';
+    width: 0;
+    display: inline-block;
+}
+
+[jin-task-view-details-description]:focus {
+    outline: none;
+    position: relative;
+    box-shadow: 0 0 4px steelblue;
+    background: white;
+}
+
+[jin-task-view-details-description][visible="false"] {
+    display: none;
+}

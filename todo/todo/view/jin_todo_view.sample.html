@@ -1,0 +1,72 @@
+<div jin-todo-view="{id}"
+	jin-sample-events="
+		$jin.dnd.onOver=onResizeMove
+		$jin.dnd.onEnter=onResizeMove
+	"
+	>
+	
+	<div jin-todo-view-panel=""
+		jin-sample-props="style.flexShrink=shrinkDetails"
+		>
+		{details}
+	</div>
+	
+	<div jin-todo-view-resizer=""
+		jin-sample-events="$jin.dnd.onStart=onResizeStart"
+		>
+	</div>
+	
+	<div jin-todo-view-panel=""
+		jin-sample-props="style.flexShrink=shrinkList"
+		>
+		<div jin-todo-view-toolbar="">
+			<div jin-todo-view-create=""
+				tabindex="0"
+				jin-sample-events="$jin.dom.event.onClick=onAddTask"
+				>
+				Добавить
+			</div>
+			<div jin-todo-view-clear=""
+				tabindex="0"
+				jin-sample-events="$jin.dom.event.onClick=onClear"
+				>
+				Очистить
+			</div>
+		</div>
+		<div jin-todo-view-list-pane="">{items}</div>
+	</div>
+	
+</div>
+
+<div jin-task-view-item=""
+	jin-task-view-item-current="{current}"
+	>
+	<a jin-task-view-item-link=""
+		href="{uri}"
+		tabindex="0"
+		>
+		<div jin-task-view-item-title=""
+			jin-task-view-item-title-default="{uri}"
+			>
+			{title}
+		</div>
+	</a>
+</div>
+
+<div jin-task-view-details="">
+	<div
+		jin-task-view-details-title=""
+		contenteditable="{editableTitle}"
+		jin-sample-events="$jin.dom.event.onInput=onChangeTitle"
+		>
+		{title}
+	</div>
+	<div
+		jin-task-view-details-description=""
+		contenteditable="{editableDescription}"
+		visible="{visibleDescription}"
+		jin-sample-events="$jin.dom.event.onInput=onChangeDescription"
+		>
+		{description}
+	</div>
+</div>

@@ -1,0 +1,24 @@
+<div jin-task-view-item="{id}"
+	jin-task-view-item-current="{current}"
+	>
+	<a jin-task-view-item-link=""
+		href="{uri}"
+		tabindex="0"
+		jin-sample-events="
+			$jin.dom.event.onDoubleClick=onReActivate
+		"
+		>
+		<div jin-task-view-item-dropper=""
+			jin-sample-events="
+				$jin.dom.event.onClick=onTaskDrop
+			"
+			>
+			×
+		</div>
+		<div jin-task-view-item-title=""
+			jin-task-view-item-title-default="{uri}"
+			>
+			{title}
+		</div>
+	</a>
+</div>

@@ -1,0 +1,28 @@
+[jin-todo-intro] {
+    background: #fcfcfc;
+    width: 100%;
+    height: 100%;
+    display: -moz-flex;
+    display: flex;
+    -moz-flex-direction: column;
+    flex-direction: column;
+}
+
+[jin-todo-intro-title] {
+    font: 21px/27px 'Segoe UI', sans-serif;
+    padding: 2% 3%;
+    border-radius: 2px;
+    /*margin: 2%;*/
+	position: relative;
+}
+
+[jin-todo-intro-description] {
+    font: 15px/25px 'Segoe UI', sans-serif;
+    padding: 2% 3%;
+    margin-top: -2%;
+    /*margin: 2%;*/
+    position: relative;
+    overflow: auto;
+    -moz-flex: 1;
+    flex: 1;
+}
