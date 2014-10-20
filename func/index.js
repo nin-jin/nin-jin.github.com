@@ -16,18 +16,16 @@ var $jin;
 (function ($jin) {
     (function (func) {
         function iterator(list) {
+            var length = list.length;
             return function (state) {
-                if (!state) {
-                    if (!list.length)
-                        return null;
-                    state = {
-                        key: -1,
-                        val: null
-                    };
-                }
-                if (++state.key < list.length) {
-                    state.val = list[state.key];
-                    return state;
+                var state2 = state || {
+                    key: -1,
+                    val: null
+                };
+                var key = ++state2.key;
+                if (key < length) {
+                    state2.val = list[key];
+                    return state2;
                 }
                 return null;
             };
@@ -80,22 +78,20 @@ var $jin;
         function filter(check) {
             return function (next) {
                 return function (state) {
-                    if (!state) {
-                        state = {
-                            prev: null,
-                            key: -1,
-                            val: null
-                        };
-                    }
+                    var state2 = state || {
+                        prev: null,
+                        key: -1,
+                        val: null
+                    };
                     while (true) {
-                        state.prev = next(state.prev);
-                        if (!state.prev)
+                        state2.prev = next(state2.prev);
+                        if (!state2.prev)
                             return null;
-                        if (!check(state.prev.val))
+                        if (!check(state2.prev.val))
                             continue;
-                        ++state.key;
-                        state.val = state.prev.val;
-                        return state;
+                        ++state2.key;
+                        state2.val = state2.prev.val;
+                        return state2;
                     }
                 };
             };
@@ -139,11 +135,11 @@ var $jin;
         function mapper(transform) {
             return function (next) {
                 return function (state) {
-                    state = next(state);
-                    if (!state)
+                    var state2 = next(state);
+                    if (!state2)
                         return null;
-                    state.val = transform(state.val);
-                    return state;
+                    state2.val = transform(state2.val);
+                    return state2;
                 };
             };
         }
