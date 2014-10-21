@@ -13,10 +13,14 @@ var $jin;
 (function ($jin) {
     (function (func) {
         function collector() {
-            return function (input) {
+            return function (next) {
                 var res = [];
-                while (input.next()) {
-                    res.push(input.val);
+                var val;
+                while (true) {
+                    val = next();
+                    if (val === void 0)
+                        break;
+                    res.push(val);
                 }
                 return res;
             };
@@ -32,20 +36,12 @@ var $jin;
 (function ($jin) {
     (function (func) {
         function filter(check) {
-            return function (input) {
-                return {
-                    key: -1,
-                    val: null,
-                    next: function () {
-                        while (true) {
-                            if (!input.next())
-                                return null;
-                            if (!check(input.val))
-                                continue;
-                            ++this.key;
-                            this.val = input.val;
-                            return this;
-                        }
+            return function (next) {
+                return function () {
+                    while (true) {
+                        var val = next();
+                        if ((val === void 0) || (check(val)))
+                            return val;
                     }
                 };
             };
@@ -62,17 +58,9 @@ var $jin;
     (function (func) {
         function iterator() {
             return function (list) {
-                var length = list.length;
-                return {
-                    key: -1,
-                    val: null,
-                    next: function () {
-                        ++this.key;
-                        if (this.key >= length)
-                            return null;
-                        this.val = list[this.key];
-                        return this;
-                    }
+                var index = 0;
+                return function () {
+                    return list[index++];
                 };
             };
         }
@@ -87,21 +75,11 @@ var $jin;
 (function ($jin) {
     (function (func) {
         function limiter(count) {
-            count = count - 1;
-            return function (input) {
-                return {
-                    key: -1,
-                    val: null,
-                    next: function () {
-                        if (this.key < count) {
-                            input.next();
-                            this.key = input.key;
-                            this.val = input.val;
-                            return this;
-                        } else {
-                            return null;
-                        }
-                    }
+            return function (next) {
+                var index = 0;
+                return function () {
+                    if (index++ < count)
+                        return next();
                 };
             };
         }
@@ -124,15 +102,12 @@ var $jin;
 (function ($jin) {
     (function (func) {
         function mapper(transform) {
-            return function (input) {
-                return {
-                    next: function () {
-                        if (!input.next())
-                            return null;
-                        this.key = input.key;
-                        this.val = transform(input.val);
-                        return this;
-                    }
+            return function (next) {
+                return function () {
+                    var val = next();
+                    if (val !== void 0)
+                        val = transform(val);
+                    return val;
                 };
             };
         }
@@ -170,20 +145,6 @@ var $jin;
     var func = $jin.func;
 })($jin || ($jin = {}));
 //# sourceMappingURL=pipeline.js.map
-
-;
-var proc = $jin.func.pipeline([
-    $jin.func.iterator(),
-    $jin.func.mapper(function (x) {
-        return x * x;
-    }),
-    $jin.func.filter(function (x) {
-        return x % 2;
-    }),
-    $jin.func.limiter(2),
-    $jin.func.collector()
-]);
-//# sourceMappingURL=func.js.map
 
 ;
 this.$jin.func.usages = function( func ){
