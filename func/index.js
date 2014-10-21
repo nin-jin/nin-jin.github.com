@@ -84,13 +84,13 @@ var $jin;
                         val: null
                     };
                     while (true) {
-                        state2.prev = next(state2.prev);
-                        if (!state2.prev)
+                        var prev = state2.prev = next(state2.prev);
+                        if (!prev)
                             return null;
-                        if (!check(state2.prev.val))
+                        if (!check(prev.val))
                             continue;
                         ++state2.key;
-                        state2.val = state2.prev.val;
+                        state2.val = prev.val;
                         return state2;
                     }
                 };
