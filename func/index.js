@@ -57,24 +57,6 @@ var $jin;
 var $jin;
 (function ($jin) {
     (function (func) {
-        function combiner(procs) {
-            return function (next) {
-                for (var i = 0; i < procs.length; ++i) {
-                    next = procs[i](next);
-                }
-                return next;
-            };
-        }
-        func.combiner = combiner;
-    })($jin.func || ($jin.func = {}));
-    var func = $jin.func;
-})($jin || ($jin = {}));
-//# sourceMappingURL=combiner.js.map
-
-;
-var $jin;
-(function ($jin) {
-    (function (func) {
         function filter(check) {
             return function (next) {
                 return function (state) {
@@ -156,6 +138,24 @@ this.$jin.func.name = function( func, name ){
     || func.$jin_func_name
     || func.toString().match( /^\s*function\s*([$\w]*)\s*\(/ )[ 1 ]
 }
+
+;
+var $jin;
+(function ($jin) {
+    (function (func) {
+        function pipeline(procs) {
+            return function (next) {
+                for (var i = 0; i < procs.length; ++i) {
+                    next = procs[i](next);
+                }
+                return next;
+            };
+        }
+        func.pipeline = pipeline;
+    })($jin.func || ($jin.func = {}));
+    var func = $jin.func;
+})($jin || ($jin = {}));
+//# sourceMappingURL=pipeline.js.map
 
 ;
 this.$jin.func.usages = function( func ){
