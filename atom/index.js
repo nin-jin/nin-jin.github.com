@@ -91,6 +91,133 @@ var $jin;
 //object.js.map
 
 ;
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var $jin;
+(function ($jin) {
+    (function (prop) {
+        var vary = (function (_super) {
+            __extends(vary, _super);
+            function vary(config) {
+                _super.call(this, config.name);
+
+                this._host = config.owner || this;
+
+                if (config.pull)
+                    this._pull = config.pull;
+                if (config.get)
+                    this._get = config.get;
+                if (config.merge)
+                    this._merge = config.merge;
+                if (config.put)
+                    this._put = config.put;
+                if (config.clear)
+                    this._clear = config.clear;
+
+                return this;
+            }
+            vary.prototype._get = function (value) {
+                return value;
+            };
+            vary.prototype._pull = function (prev) {
+                return prev;
+            };
+            vary.prototype._merge = function (next, prev) {
+                return next;
+            };
+            vary.prototype._put = function (next, prev) {
+                this._host[this.objectName] = next;
+            };
+            vary.prototype._clear = function (prev) {
+            };
+
+            vary.prototype.clear = function () {
+                var prev = this._host[this.objectName];
+                this._host[this.objectName] = undefined;
+                this._clear(prev);
+            };
+
+            vary.prototype.value = function () {
+                return this._host[this.objectName];
+            };
+
+            vary.prototype.push = function (next) {
+                next = this._merge(next, this.value());
+                this._host[this.objectName] = next;
+                return next;
+            };
+
+            vary.prototype.get = function () {
+                var value = this.value();
+                if (value !== undefined)
+                    return this._get(value);
+
+                var next = this._pull(value);
+                next = this._merge(next, value);
+                this._host[this.objectName] = next;
+
+                return this._get(next);
+            };
+
+            vary.prototype.pull = function () {
+                var value = this.value();
+                value = this._pull(value);
+                value = this.push(value);
+                return value;
+            };
+
+            vary.prototype.update = function () {
+                if (this.value() !== undefined) {
+                    this.pull();
+                }
+            };
+
+            vary.prototype.set = function (next) {
+                var prev = this.value();
+                next = this._merge(next, prev);
+                if (next !== prev) {
+                    this._put(next, prev);
+                }
+            };
+            return vary;
+        })($jin.object);
+        prop.vary = vary;
+    })($jin.prop || ($jin.prop = {}));
+    var prop = $jin.prop;
+})($jin || ($jin = {}));
+//vary.js.map
+
+;
+var $jin;
+(function ($jin) {
+    (function (prop) {
+        var proxy = (function () {
+            function proxy(config) {
+                if (config.pull)
+                    this.get = config.pull;
+                if (config.put)
+                    this.set = config.put;
+                return this;
+            }
+            proxy.prototype.get = function () {
+                return undefined;
+            };
+
+            proxy.prototype.set = function (next) {
+            };
+            return proxy;
+        })();
+        prop.proxy = proxy;
+    })($jin.prop || ($jin.prop = {}));
+    var prop = $jin.prop;
+})($jin || ($jin = {}));
+//proxy.js.map
+
+;
 var $jin;
 (function ($jin) {
     var schedule = (function () {
@@ -671,32 +798,6 @@ var __extends = this.__extends || function (d, b) {
 var $jin;
 (function ($jin) {
     (function (atom) {
-        var flag = (function (_super) {
-            __extends(flag, _super);
-            function flag() {
-                _super.apply(this, arguments);
-            }
-            flag.prototype.toggle = function () {
-                this.set(!this.get());
-            };
-            return flag;
-        })($jin.atom.prop);
-        atom.flag = flag;
-    })($jin.atom || ($jin.atom = {}));
-    var atom = $jin.atom;
-})($jin || ($jin = {}));
-//atom-flag.js.map
-
-;
-var __extends = this.__extends || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
-};
-var $jin;
-(function ($jin) {
-    (function (atom) {
         var list = (function (_super) {
             __extends(list, _super);
             function list() {
@@ -772,6 +873,32 @@ var $jin;
     var atom = $jin.atom;
 })($jin || ($jin = {}));
 //numb.js.map
+
+;
+var __extends = this.__extends || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var $jin;
+(function ($jin) {
+    (function (atom) {
+        var flag = (function (_super) {
+            __extends(flag, _super);
+            function flag() {
+                _super.apply(this, arguments);
+            }
+            flag.prototype.toggle = function () {
+                this.set(!this.get());
+            };
+            return flag;
+        })($jin.atom.prop);
+        atom.flag = flag;
+    })($jin.atom || ($jin.atom = {}));
+    var atom = $jin.atom;
+})($jin || ($jin = {}));
+//atom-flag.js.map
 
 ;
 var __extends = this.__extends || function (d, b) {
