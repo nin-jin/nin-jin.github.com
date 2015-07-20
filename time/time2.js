@@ -14,7 +14,7 @@ var $jin;
                 var first = $jin.concater(funcs.slice(0, mid));
                 var second = $jin.concater(funcs.slice(mid));
                 return function (value) {
-                    return first.call(this, value) + second.call(this, value);
+                    return first(value) + second(value);
                 };
         }
     }
@@ -126,7 +126,7 @@ var $jin;
                                 second: found[6],
                             });
                         }
-                        var parser = /^[+-](\d+)(?::(\d+))?$/i;
+                        var parser = /^[+-](\d\d)(?::?(\d\d))?$/i;
                         var found = parser.exec(duration);
                         if (found) {
                             return new this({
@@ -194,7 +194,7 @@ var $jin;
                 });
             };
             duration_class.prototype.valueOf = function () {
-                var day = this.year * 365 + this.month * 30 + this.day;
+                var day = this.year * 365 + this.month * 30.4 + this.day;
                 var second = ((day * 24 + this.hour) * 60 + this.minute) * 60 + this.second;
                 return second * 1000;
             };
@@ -382,7 +382,15 @@ var $jin;
             });
             Object.defineProperty(moment_class.prototype, "normal", {
                 get: function () {
-                    return this.constructor.make(this.native);
+                    return this.constructor.make(this.native).merge({
+                        year: (this._year === void 0) ? null : void 0,
+                        month: (this._month === void 0) ? null : void 0,
+                        day: (this._day === void 0) ? null : void 0,
+                        hour: (this._hour === void 0) ? null : void 0,
+                        minute: (this._minute === void 0) ? null : void 0,
+                        second: (this._second === void 0) ? null : void 0,
+                        offset: (this._offset === void 0) ? null : void 0,
+                    });
                 },
                 enumerable: true,
                 configurable: true
@@ -453,6 +461,31 @@ var $jin;
                     offset: this.offset,
                 });
             };
+            moment_class.prototype.sub = function (config) {
+                var Moment = this.constructor;
+                var moment = Moment.make(config);
+                var dur = {
+                    year: (moment.year === void 0)
+                        ? this.year
+                        : (this.year || 0) - moment.year,
+                    month: (moment.month === void 0)
+                        ? this.month
+                        : (this.month || 0) - moment.month,
+                    day: (moment.day === void 0)
+                        ? this.day
+                        : (this.day || 0) - moment.day,
+                    hour: (moment.hour === void 0)
+                        ? this.hour
+                        : (this.hour || 0) - moment.hour,
+                    minute: (moment.minute === void 0)
+                        ? this.minute
+                        : (this.minute || 0) - moment.minute,
+                    second: (moment.second === void 0)
+                        ? this.second
+                        : (this.second || 0) - moment.second,
+                };
+                return new Moment.duration_class(dur);
+            };
             moment_class.prototype.toOffset = function (duration) {
                 if (this._offset) {
                     var Moment = this.constructor;
@@ -490,17 +523,17 @@ var $jin;
                 'Month': function (moment) {
                     if (moment.month == null)
                         return '';
-                    return this.monthLong[moment.month];
+                    return moment.constructor.monthLong[moment.month];
                 },
                 'Mon': function (moment) {
                     if (moment.month == null)
                         return '';
-                    return this.monthShort[moment.month];
+                    return moment.constructor.monthShort[moment.month];
                 },
                 '-MM': function (moment) {
                     if (moment.month == null)
                         return '';
-                    return '-' + this.patterns['MM'](moment);
+                    return '-' + moment.constructor.patterns['MM'](moment);
                 },
                 'MM': function (moment) {
                     if (moment.month == null)
@@ -518,17 +551,17 @@ var $jin;
                 'WeekDay': function (moment) {
                     if (moment.weekDay == null)
                         return '';
-                    return this.weekDayLong[moment.weekDay];
+                    return moment.constructor.weekDayLong[moment.weekDay];
                 },
                 'WD': function (moment) {
                     if (moment.weekDay == null)
                         return '';
-                    return this.weekDayShort[moment.weekDay];
+                    return moment.constructor.weekDayShort[moment.weekDay];
                 },
                 '-DD': function (moment) {
                     if (moment.day == null)
                         return '';
-                    return '-' + this.patterns['DD'](moment);
+                    return '-' + moment.constructor.patterns['DD'](moment);
                 },
                 'DD': function (moment) {
                     if (moment.day == null)
@@ -546,7 +579,7 @@ var $jin;
                 'Thh': function (moment) {
                     if (moment.hour == null)
                         return '';
-                    return 'T' + this.patterns['hh'](moment);
+                    return 'T' + moment.constructor.patterns['hh'](moment);
                 },
                 'hh': function (moment) {
                     if (moment.hour == null)
@@ -563,7 +596,7 @@ var $jin;
                 ':mm': function (moment) {
                     if (moment.minute == null)
                         return '';
-                    return ':' + this.patterns['mm'](moment);
+                    return ':' + moment.constructor.patterns['mm'](moment);
                 },
                 'mm': function (moment) {
                     if (moment.minute == null)
@@ -580,7 +613,7 @@ var $jin;
                 ':ss': function (moment) {
                     if (moment.second == null)
                         return '';
-                    return ':' + this.patterns['ss'](moment);
+                    return ':' + moment.constructor.patterns['ss'](moment);
                 },
                 'ss': function (moment) {
                     if (moment.second == null)
@@ -600,7 +633,7 @@ var $jin;
                         return '';
                     if (moment.second - Math.floor(moment.second) === 0)
                         return '';
-                    return '.' + this.patterns['sss'](moment);
+                    return '.' + moment.constructor.patterns['sss'](moment);
                 },
                 'sss': function (moment) {
                     if (moment.second == null)
@@ -627,6 +660,20 @@ var $jin;
         })($jin.time.base_class);
         time.moment_class = moment_class;
         time.moment = moment_class.make.bind(moment_class);
+        time.moment['en'] = moment_class.make.bind(moment_class);
+        var moment_class_ru = (function (_super) {
+            __extends(moment_class_ru, _super);
+            function moment_class_ru() {
+                _super.apply(this, arguments);
+            }
+            moment_class_ru.monthLong = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+            moment_class_ru.monthShort = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
+            moment_class_ru.weekDayLong = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+            moment_class_ru.weekDayShort = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+            return moment_class_ru;
+        })(moment_class);
+        time.moment_class_ru = moment_class_ru;
+        time.moment['ru'] = moment_class_ru.make.bind(moment_class_ru);
     })(time = $jin.time || ($jin.time = {}));
 })($jin || ($jin = {}));
 //moment.js.map
@@ -646,8 +693,8 @@ var $jin;
             function range_class(config) {
                 _super.call(this);
                 var Range = this.constructor;
-                this._from = config.from && Range.Moment.make(config.from);
-                this._to = config.to && Range.Moment.make(config.to);
+                this._start = config.start && Range.Moment.make(config.start);
+                this._end = config.end && Range.Moment.make(config.end);
                 this._duration = config.duration && Range.Duration.make(config.duration);
             }
             range_class.make = function (range) {
@@ -656,13 +703,24 @@ var $jin;
                     case 'String':
                         var chunks = range.split('/');
                         var config = {};
-                        config[/^P/i.test(chunks[0]) ? 'duration' : 'from'] = chunks[0];
-                        config[/^P/i.test(chunks[1]) ? 'duration' : 'to'] = chunks[1];
+                        if (chunks[0]) {
+                            config[/^P/i.test(chunks[0]) ? 'duration' : 'start'] = chunks[0];
+                        }
+                        else {
+                            config['start'] = $jin.time.moment();
+                        }
+                        if (chunks[1]) {
+                            config[/^P/i.test(chunks[1]) ? 'duration' : 'end'] = chunks[1];
+                        }
+                        else {
+                            config['end'] = $jin.time.moment();
+                        }
                         return this.make(config);
                     case 'Array':
                         return new this({
-                            from: range[0],
-                            to: range[1],
+                            start: range[0],
+                            end: range[1],
+                            duration: range[2],
                         });
                     case 'Object':
                         if (range instanceof this)
@@ -672,21 +730,21 @@ var $jin;
                         throw new Error('Wrong type of time range (' + type + ')');
                 }
             };
-            Object.defineProperty(range_class.prototype, "from", {
+            Object.defineProperty(range_class.prototype, "start", {
                 get: function () {
-                    if (this._from)
-                        return this._from;
+                    if (this._start)
+                        return this._start;
                     var Range = this.constructor;
-                    return this._from = this._to.shift(Range.Duration.make().sub(this._duration));
+                    return this._start = this._end.shift(Range.Duration.make().sub(this._duration));
                 },
                 enumerable: true,
                 configurable: true
             });
-            Object.defineProperty(range_class.prototype, "to", {
+            Object.defineProperty(range_class.prototype, "end", {
                 get: function () {
-                    if (this._to)
-                        return this._to;
-                    return this._to = this._from.shift(this._duration);
+                    if (this._end)
+                        return this._end;
+                    return this._end = this._start.shift(this._duration);
                 },
                 enumerable: true,
                 configurable: true
@@ -696,14 +754,14 @@ var $jin;
                     if (this._duration)
                         return this._duration;
                     var Range = this.constructor;
-                    return this._duration = Range.Duration.make(this._to.valueOf() - this.from.valueOf());
+                    return this._duration = Range.Duration.make(this._end.valueOf() - this.start.valueOf());
                 },
                 enumerable: true,
                 configurable: true
             });
             range_class.prototype.toJSON = function () { return this.toString(); };
             range_class.prototype.toString = function () {
-                return (this._from || this._duration).toString() + '/' + (this._to || this._duration).toString();
+                return (this._start || this._duration).toString() + '/' + (this._end || this._duration).toString();
             };
             range_class.Moment = $jin.time.moment_class;
             range_class.Duration = $jin.time.duration_class;
