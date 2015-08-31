@@ -1,0 +1,128 @@
+[
+	{
+		"jin2/demo/list": {
+			":priority": 0,
+			"": [
+				"jin2/demo/list/index.html",
+				"jin2/demo/list/readme.md"
+			]
+		}
+	},
+	{
+		"jin2/demo/list/app": {
+			":priority": 0,
+			"jin2/view": {
+				":priority": 0,
+				"jin2": {
+					"jin/dumb": {
+						":priority": 0,
+						"jin": {
+							"": [
+								"jin/jin.jam.js",
+								"jin/demo.html",
+								"jin/README.md",
+								"jin/package.json",
+								"jin/git-init.cmd"
+							]
+						},
+						"": [
+							"jin/dumb/dumb.ts"
+						]
+					},
+					"": [
+						"jin2/jin2.meta.tree",
+						"jin2/index.html"
+					]
+				},
+				"jin2/object": {
+					":priority": 0,
+					"jin2/error": {
+						":priority": 2,
+						"": [
+							"jin2/error/error.ts"
+						]
+					},
+					"": [
+						"jin2/object/object.ts"
+					]
+				},
+				"jin2/lazy": {
+					":priority": 1,
+					"": [
+						"jin2/lazy/lazy.ts"
+					]
+				},
+				"jin2/prop": {
+					":priority": 2,
+					"": [
+						"jin2/prop/prop.ts"
+					]
+				},
+				"jin2/atom": {
+					":priority": 2,
+					"jin2/state": {
+						":priority": 2,
+						"": [
+							"jin2/state/state.ts"
+						]
+					},
+					"jin2/log": {
+						":priority": 2,
+						"": [
+							"jin2/log/log.env=web.ts"
+						]
+					},
+					"": [
+						"jin2/atom/atom.ts"
+					]
+				},
+				"": [
+					"jin2/view/view.ts"
+				]
+			},
+			"jin2/demo/list/person": {
+				":priority": 1,
+				"": [
+					"jin2/demo/list/person/person.ts"
+				]
+			},
+			"jin2/string/compare": {
+				":priority": 3,
+				"": [
+					"jin2/string/compare/compare.ts"
+				]
+			},
+			"jin2/demo/list/person/view/list": {
+				":priority": 1,
+				"jin2/view/list": {
+					":priority": 0,
+					"jin2/view/row": {
+						":priority": 1,
+						"": [
+							"jin2/view/row/row.css",
+							"jin2/view/row/row.ts"
+						]
+					},
+					"": [
+						"jin2/view/list/list.ts"
+					]
+				},
+				"jin2/demo/list/person/view/row": {
+					":priority": 1,
+					"": [
+						"jin2/demo/list/person/view/row/row.css",
+						"jin2/demo/list/person/view/row/row.ts"
+					]
+				},
+				"": [
+					"jin2/demo/list/person/view/list/list.css",
+					"jin2/demo/list/person/view/list/list.ts"
+				]
+			},
+			"": [
+				"jin2/demo/list/app/app.css",
+				"jin2/demo/list/app/app.ts"
+			]
+		}
+	}
+]

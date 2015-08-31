@@ -1,0 +1,534 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <style>
+            html {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+            }
+            body {
+                margin: 0;
+                padding: 0;
+                font-family: 'Segoe UI' , sans-serif;
+                width: 100%;
+                height: 100%;
+                display: flex;
+            }
+        </style>
+        <link href="-mix/index.env=web.stage=release.css" rel="stylesheet" />
+    </head>
+    <body id="$jin2_demo_list_app.widget_all">
+        <script src="-mix/index.env=web.stage=release.js" charset="utf-8"></script>
+        <script>
+            var persons = [
+                {
+                    "id": "55e06d8217d20056b89b24ca",
+                    "firstName": "Sophia",
+                    "lastName": "Cline"
+                },
+                {
+                    "id": "55e06d823c4f2c9338118e53",
+                    "firstName": "Lawson",
+                    "lastName": "Armstrong"
+                },
+                {
+                    "id": "55e06d82c6cbce55c7d556c4",
+                    "firstName": "Mcdowell",
+                    "lastName": "Padilla"
+                },
+                {
+                    "id": "55e06d824dfd4ad443d6fe52",
+                    "firstName": "Randi",
+                    "lastName": "Parsons"
+                },
+                {
+                    "id": "55e06d82b95c9524a7174031",
+                    "firstName": "Essie",
+                    "lastName": "Watkins"
+                },
+                {
+                    "id": "55e06d82c66551bd9b389d1c",
+                    "firstName": "Shaw",
+                    "lastName": "Oneal"
+                },
+                {
+                    "id": "55e06d821de0f96bcf27c68c",
+                    "firstName": "Margo",
+                    "lastName": "Odonnell"
+                },
+                {
+                    "id": "55e06d8287232d00522f50e8",
+                    "firstName": "Kline",
+                    "lastName": "Harper"
+                },
+                {
+                    "id": "55e06d824638b473d4bb422f",
+                    "firstName": "Araceli",
+                    "lastName": "Castro"
+                },
+                {
+                    "id": "55e06d827cdc3b4250a129f7",
+                    "firstName": "Lindsey",
+                    "lastName": "Head"
+                },
+                {
+                    "id": "55e06d82da04b08b88a9c16f",
+                    "firstName": "Noble",
+                    "lastName": "Spence"
+                },
+                {
+                    "id": "55e06d829eead49a3b85c832",
+                    "firstName": "Hoover",
+                    "lastName": "Garcia"
+                },
+                {
+                    "id": "55e06d82b81db6958a865008",
+                    "firstName": "Stout",
+                    "lastName": "Hubbard"
+                },
+                {
+                    "id": "55e06d8258a71c395f53a150",
+                    "firstName": "Knapp",
+                    "lastName": "Pitts"
+                },
+                {
+                    "id": "55e06d82e2e6c8f25a1155aa",
+                    "firstName": "Tracy",
+                    "lastName": "Gill"
+                },
+                {
+                    "id": "55e06d8208c60ba6fe7192db",
+                    "firstName": "Kirby",
+                    "lastName": "Bonner"
+                },
+                {
+                    "id": "55e06d82d97a204894614060",
+                    "firstName": "Susanna",
+                    "lastName": "Turner"
+                },
+                {
+                    "id": "55e06d822669ae34b50f43fa",
+                    "firstName": "Rasmussen",
+                    "lastName": "Griffith"
+                },
+                {
+                    "id": "55e06d82cd39589a7beb2f3f",
+                    "firstName": "Ramos",
+                    "lastName": "Barker"
+                },
+                {
+                    "id": "55e06d822a014c16c998ab94",
+                    "firstName": "Frazier",
+                    "lastName": "Whitney"
+                },
+                {
+                    "id": "55e06d82f013698a5ed16889",
+                    "firstName": "Edith",
+                    "lastName": "Wilson"
+                },
+                {
+                    "id": "55e06d82fdf5a123c9bec45c",
+                    "firstName": "Terry",
+                    "lastName": "Huffman"
+                },
+                {
+                    "id": "55e06d8260ac7fb8ec58824e",
+                    "firstName": "Henrietta",
+                    "lastName": "Knox"
+                },
+                {
+                    "id": "55e06d82838486bc50e4644a",
+                    "firstName": "Bridgett",
+                    "lastName": "Hendricks"
+                },
+                {
+                    "id": "55e06d820370596799dd11ee",
+                    "firstName": "Rebekah",
+                    "lastName": "Gonzalez"
+                },
+                {
+                    "id": "55e06d823b2102746ff880f5",
+                    "firstName": "Julie",
+                    "lastName": "Kane"
+                },
+                {
+                    "id": "55e06d82440ea6728a9ff08f",
+                    "firstName": "Deana",
+                    "lastName": "Woods"
+                },
+                {
+                    "id": "55e06d82f7cf12624eb4cea6",
+                    "firstName": "Yesenia",
+                    "lastName": "Sutton"
+                },
+                {
+                    "id": "55e06d82aedff272143d2cbf",
+                    "firstName": "Hensley",
+                    "lastName": "Tillman"
+                },
+                {
+                    "id": "55e06d8274f9b5ec8af6854d",
+                    "firstName": "Lester",
+                    "lastName": "Clay"
+                },
+                {
+                    "id": "55e06d8292ca91bcedcec6b1",
+                    "firstName": "Lelia",
+                    "lastName": "Castaneda"
+                },
+                {
+                    "id": "55e06d820c55cd61abeced95",
+                    "firstName": "Elvira",
+                    "lastName": "Finch"
+                },
+                {
+                    "id": "55e06d82995811de0628187f",
+                    "firstName": "Sims",
+                    "lastName": "Hahn"
+                },
+                {
+                    "id": "55e06d821da5fc57fd6d4d4d",
+                    "firstName": "Haley",
+                    "lastName": "Alvarez"
+                },
+                {
+                    "id": "55e06d82e327da41ed8a8f41",
+                    "firstName": "Dunlap",
+                    "lastName": "Carey"
+                },
+                {
+                    "id": "55e06d8287a4b6bc32ca0a06",
+                    "firstName": "Andrews",
+                    "lastName": "Weiss"
+                },
+                {
+                    "id": "55e06d8258421692a9b1e117",
+                    "firstName": "Jeannine",
+                    "lastName": "Hanson"
+                },
+                {
+                    "id": "55e06d82acf349601a2da37b",
+                    "firstName": "Deanna",
+                    "lastName": "Bryan"
+                },
+                {
+                    "id": "55e06d82338724b7ca23d83a",
+                    "firstName": "Helene",
+                    "lastName": "Rivas"
+                },
+                {
+                    "id": "55e06d82573a2e4cc623d9d7",
+                    "firstName": "Bartlett",
+                    "lastName": "Bean"
+                },
+                {
+                    "id": "55e06d8276ed7cff096df33f",
+                    "firstName": "Kelley",
+                    "lastName": "Wheeler"
+                },
+                {
+                    "id": "55e06d82346d804131d46277",
+                    "firstName": "Mary",
+                    "lastName": "Love"
+                },
+                {
+                    "id": "55e06d82ce4754d2095f5ab5",
+                    "firstName": "Rosales",
+                    "lastName": "Obrien"
+                },
+                {
+                    "id": "55e06d82aaf9ce0da238971c",
+                    "firstName": "Travis",
+                    "lastName": "Clarke"
+                },
+                {
+                    "id": "55e06d8282b566235a49c94e",
+                    "firstName": "Watkins",
+                    "lastName": "Buchanan"
+                },
+                {
+                    "id": "55e06d822cfff5c9c2d20a59",
+                    "firstName": "Ollie",
+                    "lastName": "Barton"
+                },
+                {
+                    "id": "55e06d82ca1a74008fe64b97",
+                    "firstName": "Harris",
+                    "lastName": "Chan"
+                },
+                {
+                    "id": "55e06d82e782f42a9047abb4",
+                    "firstName": "Elliott",
+                    "lastName": "Morrison"
+                },
+                {
+                    "id": "55e06d823d3599e590f5f612",
+                    "firstName": "Aurora",
+                    "lastName": "Kerr"
+                },
+                {
+                    "id": "55e06d8282e249308d030e2b",
+                    "firstName": "Dixon",
+                    "lastName": "Buck"
+                },
+                {
+                    "id": "55e06d8264c1a9a63a50d101",
+                    "firstName": "Rhea",
+                    "lastName": "Price"
+                },
+                {
+                    "id": "55e06d825944e136597ce62e",
+                    "firstName": "Shirley",
+                    "lastName": "Hayden"
+                },
+                {
+                    "id": "55e06d820a00b1a81debf0e7",
+                    "firstName": "Josie",
+                    "lastName": "Vance"
+                },
+                {
+                    "id": "55e06d82a1941387b6ff1f99",
+                    "firstName": "Sophie",
+                    "lastName": "Campos"
+                },
+                {
+                    "id": "55e06d82e3499af8400986d6",
+                    "firstName": "Mejia",
+                    "lastName": "Cherry"
+                },
+                {
+                    "id": "55e06d8280f41e7d80543686",
+                    "firstName": "Jackson",
+                    "lastName": "Wallace"
+                },
+                {
+                    "id": "55e06d8223029867fa221ca0",
+                    "firstName": "Byrd",
+                    "lastName": "Barlow"
+                },
+                {
+                    "id": "55e06d82408476744d9b311a",
+                    "firstName": "Linda",
+                    "lastName": "Stanton"
+                },
+                {
+                    "id": "55e06d8290767ff917f7a0a9",
+                    "firstName": "Lara",
+                    "lastName": "Santos"
+                },
+                {
+                    "id": "55e06d8275f782e1a590072f",
+                    "firstName": "June",
+                    "lastName": "Young"
+                },
+                {
+                    "id": "55e06d821d56ca190c31131d",
+                    "firstName": "Vera",
+                    "lastName": "Rose"
+                },
+                {
+                    "id": "55e06d82024ef34701f08114",
+                    "firstName": "Stanton",
+                    "lastName": "Hatfield"
+                },
+                {
+                    "id": "55e06d82d9946b787b7bc776",
+                    "firstName": "Juanita",
+                    "lastName": "Calhoun"
+                },
+                {
+                    "id": "55e06d82425ff5b95eec2b43",
+                    "firstName": "Liliana",
+                    "lastName": "Lester"
+                },
+                {
+                    "id": "55e06d8213da3ebd724eff69",
+                    "firstName": "Ramsey",
+                    "lastName": "Ashley"
+                },
+                {
+                    "id": "55e06d82d5859e8d37539460",
+                    "firstName": "Cleo",
+                    "lastName": "Zamora"
+                },
+                {
+                    "id": "55e06d82bd5521407c87100c",
+                    "firstName": "Jami",
+                    "lastName": "Shannon"
+                },
+                {
+                    "id": "55e06d8279afd637b7557b60",
+                    "firstName": "Angelia",
+                    "lastName": "Luna"
+                },
+                {
+                    "id": "55e06d826ae068848bc4fa18",
+                    "firstName": "Ruth",
+                    "lastName": "Nicholson"
+                },
+                {
+                    "id": "55e06d82110fc5bea21daea9",
+                    "firstName": "Mooney",
+                    "lastName": "Ballard"
+                },
+                {
+                    "id": "55e06d82883ccd4eb3c0d358",
+                    "firstName": "Marcia",
+                    "lastName": "Shepherd"
+                },
+                {
+                    "id": "55e06d82b39d636d4b7ed01e",
+                    "firstName": "Curry",
+                    "lastName": "Clemons"
+                },
+                {
+                    "id": "55e06d82e99547e94f66ea13",
+                    "firstName": "Beryl",
+                    "lastName": "Peck"
+                },
+                {
+                    "id": "55e06d82a3ab4e488111219a",
+                    "firstName": "Johnnie",
+                    "lastName": "Blevins"
+                },
+                {
+                    "id": "55e06d827a9d536502a12b20",
+                    "firstName": "Sheppard",
+                    "lastName": "Craig"
+                },
+                {
+                    "id": "55e06d82d5ae705032eed513",
+                    "firstName": "Luann",
+                    "lastName": "Copeland"
+                },
+                {
+                    "id": "55e06d82ae7c831ca3d73427",
+                    "firstName": "Melton",
+                    "lastName": "Coffey"
+                },
+                {
+                    "id": "55e06d82396b872f3cece16c",
+                    "firstName": "Lillie",
+                    "lastName": "Lynn"
+                },
+                {
+                    "id": "55e06d825a7140e2f055bd13",
+                    "firstName": "Simmons",
+                    "lastName": "Gillespie"
+                },
+                {
+                    "id": "55e06d82f6798bec9ec6cd9c",
+                    "firstName": "Santiago",
+                    "lastName": "Buckner"
+                },
+                {
+                    "id": "55e06d8230e3d216be7cd293",
+                    "firstName": "Marcy",
+                    "lastName": "Warner"
+                },
+                {
+                    "id": "55e06d8250fba4da7ec84a96",
+                    "firstName": "Snyder",
+                    "lastName": "Randall"
+                },
+                {
+                    "id": "55e06d82fce41e302ea1dae5",
+                    "firstName": "Parsons",
+                    "lastName": "Graham"
+                },
+                {
+                    "id": "55e06d82f0629733f72b08b4",
+                    "firstName": "Gracie",
+                    "lastName": "Sharpe"
+                },
+                {
+                    "id": "55e06d82e14bac808b2bc77f",
+                    "firstName": "Iris",
+                    "lastName": "Atkins"
+                },
+                {
+                    "id": "55e06d8295337813ef3b584d",
+                    "firstName": "Mandy",
+                    "lastName": "Moody"
+                },
+                {
+                    "id": "55e06d829404542fbb5dc43b",
+                    "firstName": "Wanda",
+                    "lastName": "Mcconnell"
+                },
+                {
+                    "id": "55e06d8262adaf8cf8005d9c",
+                    "firstName": "Terrell",
+                    "lastName": "York"
+                },
+                {
+                    "id": "55e06d82b7e6ba01b783be47",
+                    "firstName": "Barker",
+                    "lastName": "Myers"
+                },
+                {
+                    "id": "55e06d820467214d7af6d61c",
+                    "firstName": "Estelle",
+                    "lastName": "Kaufman"
+                },
+                {
+                    "id": "55e06d82cd37737b10aa166d",
+                    "firstName": "Spence",
+                    "lastName": "Frye"
+                },
+                {
+                    "id": "55e06d822528007e1ad02e7b",
+                    "firstName": "Joseph",
+                    "lastName": "Mcdowell"
+                },
+                {
+                    "id": "55e06d82b349c8f9e4495844",
+                    "firstName": "Pollard",
+                    "lastName": "Reeves"
+                },
+                {
+                    "id": "55e06d8235123bd36fc7c974",
+                    "firstName": "Roslyn",
+                    "lastName": "Hines"
+                },
+                {
+                    "id": "55e06d82c949e0ee645ffced",
+                    "firstName": "Dee",
+                    "lastName": "Mcintyre"
+                },
+                {
+                    "id": "55e06d821092f472c443075e",
+                    "firstName": "Karla",
+                    "lastName": "Allen"
+                },
+                {
+                    "id": "55e06d82b500f8c91d86810a",
+                    "firstName": "Lisa",
+                    "lastName": "Mckay"
+                },
+                {
+                    "id": "55e06d825ea3ca1fbb0dc4ca",
+                    "firstName": "Diana",
+                    "lastName": "Saunders"
+                },
+                {
+                    "id": "55e06d8264d8ab0d080af02a",
+                    "firstName": "Duke",
+                    "lastName": "Whitaker"
+                },
+                {
+                    "id": "55e06d82f39c0c157c3e57cf",
+                    "firstName": "Stacey",
+                    "lastName": "Rush"
+                }
+            ]
+
+            $jin2_demo_list_person.list('all').set( persons )
+            $jin2_demo_list_app.widget('all').render()
+
+        </script>
+    </body>
+</html>

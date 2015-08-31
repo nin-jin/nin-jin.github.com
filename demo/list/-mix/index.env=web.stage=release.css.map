@@ -1,0 +1,18 @@
+{
+	"version": 3,
+	"sources": [
+		"../../../view/row/row.css",
+		"../person/view/row/row.css",
+		"../person/view/list/list.css",
+		"../app/app.css"
+	],
+	"names": [],
+	"mappings": "AAAA;IACI,qBAAc;IAAd,sBAAc;IAAd,qBAAc;IAAd,cAAc;IACd,wBAAgB;QAAhB,oBAAgB;YAAhB,gBAAgB;IAChB,eAAe;IACf,mBAAmB;IACnB,wCAAgC;YAAhC,gCAAgC;IAChC,YAAY;IACZ,iBAAiB;IACjB,wBAAwB;IACxB,0BAAoB;IAApB,4BAAoB;QAApB,uBAAoB;YAApB,oBAAoB;IACpB,uBAAuB;IACvB,iBAAiB;CACpB;ACZD;IACI,gBAAiB;CACpB;AACD;IACI,gBAAiB;IACjB,oBAAoB;CACvB;ACND;IACI,oBAAQ;IAAR,gBAAQ;QAAR,YAAQ;YAAR,QAAQ;IACR,eAAe;IACf,mBAAmB;IACnB,2BAA0C;IAA1C,0CAA0C;CAC7C;AAED;IACI,oBAAyC;IAAzC,yCAAyC;IACzC,2BAA0C;IAA1C,0CAA0C;CAC7C;AAED;IACI,oBAAyC;IAAzC,yCAAyC;IACzC,aAAa;IACb,kBAAkB;IAClB,WAAW;IACX,yBAAiB;YAAjB,iBAAiB;IACjB,gBAAgB;CACnB;ACnBD;IACI,YAAY;IACZ,aAAa;IACb,qBAAc;IAAd,sBAAc;IAAd,qBAAc;IAAd,cAAc;CACjB;AAED;IACI,gBAAgB;CACnB;AAED;IACI,iBAAiB;CACpB",
+	"file": "index.env=web.stage=release.css",
+	"sourcesContent": [
+		"[jin2_view_row=\"\"] {\n    display: flex;\n    flex-wrap: wrap;\n    line-height: 1;\n    position: absolute;\n    transition: all .2s ease-in-out;\n    width: 100%;\n    overflow: hidden;\n    text-overflow: ellipsis;\n    align-items: center;\n    box-sizing: border-box;\n    padding: 0 .25em;\n}\n",
+		"[jin2_demo_list_person_view_row=\"blockFirstName\"] {\n    margin : 0 .25em;\n}\n[jin2_demo_list_person_view_row=\"blockLastName\"] {\n    margin : 0 .25em;\n    font-weight: bolder;\n}\n",
+		"[jin2_demo_list_person_view_list=\"\"] {\n    flex: 1;\n    overflow: auto;\n    position: relative;\n    outline: 1px solid rgba( 0 , 0 , 0 , .1 );\n}\n\n[jin2_demo_list_person_view_list=\"rowPerson\"] {\n    background: rgba( 255 , 255 , 255 , .9 );\n    outline: 1px solid rgba( 0 , 0 , 0 , .1 );\n}\n\n[jin2_demo_list_person_view_list=\"rowGroup\"] {\n    background: rgba( 128 , 128 , 128 , .9 );\n    color: white;\n    font-weight: bold;\n    z-index: 1;\n    transition: none;\n    padding: 0 .5em;\n}\n",
+		"[jin2_demo_list_app=\"\"] {\n    width: 100%;\n    height: 100%;\n    display: flex;\n}\n\n[jin2_demo_list_app=\"widgetSingle\"] {\n    background: red;\n}\n\n[jin2_demo_list_app=\"widgetByLetter\"] {\n    background: blue;\n}"
+	]
+}
