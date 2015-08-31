@@ -61,11 +61,7 @@
     display: -ms-flexbox;
     display: flex;
 }
-[jin2_demo_list_app="widgetSingle"] {
-    background: red;
-}
-[jin2_demo_list_app="widgetByLetter"] {
-    background: blue;
-}
+[jin2_demo_list_app="widgetSingle"] {}
+[jin2_demo_list_app="widgetByLetter"] {}
 
 /*# sourceMappingURL=index.env=web.stage=release.css.map */
