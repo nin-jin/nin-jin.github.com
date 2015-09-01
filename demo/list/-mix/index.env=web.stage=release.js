@@ -1104,7 +1104,7 @@ var $jin2_view_list = (function (_super) {
             var _this = this;
             return new $jin2_atom({
                 pull_: function (prev) {
-                    var rows = _this.rows.get();
+                    var rows = _this.rowsPositioned.get();
                     if (!prev)
                         return rows;
                     var next = [];
@@ -1121,6 +1121,25 @@ var $jin2_view_list = (function (_super) {
                         next.push(row);
                     }
                     return next;
+                }
+            });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty($jin2_view_list.prototype, "rowsPositioned", {
+        get: function () {
+            var _this = this;
+            return new $jin2_atom({
+                pull_: function (prev) {
+                    var rows = _this.rows.get();
+                    var offset = 0;
+                    for (var _i = 0; _i < rows.length; _i++) {
+                        var row = rows[_i];
+                        row.offsetTop.set(offset);
+                        offset += row.height.get();
+                    }
+                    return rows;
                 }
             });
         },
@@ -1304,14 +1323,11 @@ var $jin2_demo_list_person_view_list = (function (_super) {
             var _this = this;
             return new $jin2_atom({
                 pull_: function (prev) {
-                    var offset = 0;
                     var groups = _this.groups.get();
                     var next = [];
                     for (var _i = 0, _a = Object.keys(groups).sort(); _i < _a.length; _i++) {
                         var groupName = _a[_i];
                         var rowGroup = _this.rowGroup(groupName);
-                        rowGroup.offsetTop.set(offset);
-                        offset = rowGroup.offsetBottom.get();
                         next.push(rowGroup);
                         next = next.concat(rowGroup.rowsChild.get());
                     }
@@ -1330,17 +1346,11 @@ var $jin2_demo_list_person_view_list = (function (_super) {
             scrollTop_: this.scrollTop,
             rowsChild_: new $jin2_atom({
                 pull_: function () {
-                    var next = [];
-                    var offset = row.offsetTop.get() + row.height.get();
-                    for (var _i = 0, _a = _this.groups.get()[id]; _i < _a.length; _i++) {
-                        var person = _a[_i];
+                    return _this.groups.get()[id].map(function (person) {
                         var rowPerson = _this.rowPerson(person.id.get());
-                        rowPerson.offsetTop.set(offset);
-                        offset = rowPerson.offsetBottom.get();
                         rowPerson.person.set(person);
-                        next.push(rowPerson);
-                    }
-                    return next;
+                        return rowPerson;
+                    });
                 }
             })
         });
