@@ -37,7 +37,7 @@
 				"jin2/object": {
 					":priority": 0,
 					"jin2/error": {
-						":priority": 2,
+						":priority": 1,
 						"": [
 							"jin2/error/error.ts"
 						]

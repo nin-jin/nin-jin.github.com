@@ -20,6 +20,15 @@ function $jin2_error(info) {
 }
 //error.js.map
 ;
+function $jin2_object_path(obj) {
+    var path = obj.objectPath;
+    if (path)
+        return path;
+    if (typeof obj === 'function') {
+        return obj.objectPath = obj.name || Function.toString.call(obj).match(/^\s*function\s*([$\w]*)\s*\(/)[1];
+    }
+    throw $jin2_error({ reason: 'Field not defined', field: 'objectPath' });
+}
 var $jin2_object = (function () {
     function $jin2_object(config) {
         if (config)
@@ -84,7 +93,7 @@ var $jin2_object = (function () {
             if (this._objectPath)
                 return this._objectPath;
             var owner = this.objectOwner;
-            return this._objectPath = (owner.objectPath || owner.name) + '.' + this.objectName + '_' + this.objectId;
+            return this._objectPath = $jin2_object_path(owner) + '.' + this.objectName + '_' + this.objectId;
         },
         set: function (next) {
             if (this._objectPath)
@@ -602,7 +611,10 @@ var $jin2_atom = (function (_super) {
         this._timer = setTimeout(this.induce.bind(this), 0);
     };
     $jin2_atom.induce = function () {
-        this._timer = null;
+        if (this._timer) {
+            clearTimeout(this._timer);
+            this._timer = null;
+        }
         this.schedule();
         while (true) {
             while (this._minUpdateDeep < this._planPull.length) {
@@ -730,11 +742,11 @@ var $jin2_view_div = (function (_super) {
                     var version = prev + 1 || 0;
                     var node = _this.node;
                     node.setAttribute('jin2_view', String(version));
-                    var className = _this.objectOwner.constructor['objectPath'] || _this.objectOwner.constructor['name'] || 'jin2_view';
+                    var className = $jin2_object_path(_this.objectOwner.constructor);
                     node.setAttribute(className.replace(/\$/g, ''), _this.objectName);
                     var proto = _this;
                     while (proto && (proto !== $jin2_view_div.prototype)) {
-                        var className = proto.constructor['objectPath'] || proto.constructor['name'];
+                        var className = $jin2_object_path(proto.constructor);
                         if (!className)
                             continue;
                         node.setAttribute(className.replace(/\$/g, ''), "");
