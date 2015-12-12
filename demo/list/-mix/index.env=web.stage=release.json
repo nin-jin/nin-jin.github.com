@@ -58,22 +58,28 @@
 						"jin2/prop/prop.ts"
 					]
 				},
-				"jin2/atom": {
+				"jin2/vary": {
 					":priority": 2,
-					"jin2/state": {
+					"jin2/atom": {
 						":priority": 2,
+						"jin2/state": {
+							":priority": 2,
+							"": [
+								"jin2/state/state.ts"
+							]
+						},
+						"jin2/log": {
+							":priority": 2,
+							"": [
+								"jin2/log/log.env=web.ts"
+							]
+						},
 						"": [
-							"jin2/state/state.ts"
-						]
-					},
-					"jin2/log": {
-						":priority": 2,
-						"": [
-							"jin2/log/log.env=web.ts"
+							"jin2/atom/atom.ts"
 						]
 					},
 					"": [
-						"jin2/atom/atom.ts"
+						"jin2/vary/vary.ts"
 					]
 				},
 				"": [

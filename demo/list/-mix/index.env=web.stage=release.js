@@ -1,9 +1,4 @@
-/**
- * @name $jin
- * @class $jin
- * @singleton
- */
-this.$jin = {}
+var $jin = this.$jin = {}
 
 ;
 //dumb.js.map
@@ -112,7 +107,10 @@ var $jin2_object = (function () {
         get: function () {
             if (this._objectOwner)
                 return this._objectOwner;
-            return this.objectOwner = this.constructor;
+            throw $jin2_error({
+                reason: 'Property not defined',
+                name: 'objectOwner',
+            });
         },
         set: function (next) {
             var ownerField = this.objectName + '_' + this.objectId;
@@ -174,7 +172,7 @@ var $jin2_object = (function () {
                 continue;
             subClass[key] = this[key];
         }
-        subClass.prototype.objectUpdate(config);
+        subClass.prototype.objectAssign(config);
         return subClass;
     };
     $jin2_object.seed = 0;
@@ -187,12 +185,14 @@ function $jin2_lazy(prototype, name, descr) {
     var getValue = function (id) {
         if (id === void 0) { id = ''; }
         var field = prefix + id;
-        if (this.hasOwnProperty(field))
+        if (this[field])
             return this[field];
         var obj = makeValue.call(this, id);
-        obj.objectName = name;
-        obj.objectId = id;
-        obj.objectOwner = this;
+        obj.objectAssign({
+            objectName: name,
+            objectId: id,
+            objectOwner: this,
+        });
         return obj;
     };
     if (descr.get) {
@@ -217,13 +217,12 @@ function $jin2_lazy(prototype, name, descr) {
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var $jin2_prop = (function (_super) {
     __extends($jin2_prop, _super);
-    function $jin2_prop() {
-        _super.apply(this, arguments);
+    function $jin2_prop(config) {
+        _super.call(this, config);
     }
     Object.defineProperty($jin2_prop.prototype, "objectOwner", {
         get: function () {
@@ -235,8 +234,8 @@ var $jin2_prop = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    $jin2_prop.prototype.pull_ = function () {
-        return void 0;
+    $jin2_prop.prototype.pull_ = function (prev) {
+        return prev;
     };
     $jin2_prop.prototype.put_ = function (next, prev) {
         throw $jin2_error({ reason: 'Read only' });
@@ -279,7 +278,7 @@ function $jin2_log_info(message) {
         return;
     if (!$jin2_log_filter.test(message))
         return;
-    return console.info.apply(console, arguments);
+    console.log(message, values);
 }
 function $jin2_log_warn(message) {
     var values = [];
@@ -316,25 +315,23 @@ var $jin2_log_filter = /^$/;
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var $jin2_atom_wait = new Error('Wait...');
-var $jin2_atom_obsolete = new Error('Obsolate...');
 var $jin2_atom = (function (_super) {
     __extends($jin2_atom, _super);
-    function $jin2_atom() {
-        _super.apply(this, arguments);
-        this.error = $jin2_atom_obsolete;
+    function $jin2_atom(config) {
+        _super.call(this, config);
+        this.error = $jin2_atom.obsolete;
         this.mastersDeep = 0;
         this.slavesCount = 0;
+        $jin2_atom.count++;
     }
     $jin2_atom.prototype.get_ = function (value) { return value; };
     $jin2_atom.prototype.pull_ = function (prev) { return prev; };
     $jin2_atom.prototype.norm_ = function (next, prev) { return next; };
     $jin2_atom.prototype.put_ = function (next, prev) { return next; };
     $jin2_atom.prototype.notify_ = function (next, prev) { };
-    $jin2_atom.prototype.fail_ = function (error) { };
+    $jin2_atom.prototype.fail_ = function (error) { return void 0; };
     $jin2_atom.prototype.reap_ = function () { return true; };
     $jin2_atom.prototype.reap = function () {
         $jin2_atom._planReap[this.objectPath] = null;
@@ -359,29 +356,29 @@ var $jin2_atom = (function (_super) {
     };
     $jin2_atom.prototype.get = function () {
         this.touch();
-        if (this.error === $jin2_atom_obsolete)
+        if (this.error === $jin2_atom.obsolete)
             this.pull();
         if (this.error)
             throw this.error;
-        return this.get_(this.value);
+        return this.get_(this.value_);
     };
     $jin2_atom.prototype.pull = function () {
         var backup = $jin2_atom.swap(this);
         var oldMasters = this.masters;
         this.masters = null;
         this.mastersDeep = 0;
-        this.error = $jin2_atom_wait;
+        this.error = $jin2_atom.wait;
         try {
-            var next = this.pull_(this.value);
+            var next = this.pull_(this.value_);
             if (next !== void 0)
                 this.push(next);
-            return this.value;
+            return this.value_;
         }
         catch (error) {
             this.fail(error);
-            if (error !== $jin2_atom_wait)
+            if (error !== $jin2_atom.wait)
                 throw error;
-            return this.value;
+            return this.value_;
         }
         finally {
             $jin2_atom.swap(backup);
@@ -397,17 +394,17 @@ var $jin2_atom = (function (_super) {
         }
     };
     $jin2_atom.prototype.push = function (next) {
-        var prev = this.value;
+        var prev = this.value_;
         next = this.norm_(next, prev);
         this.error = null;
         if (next !== prev) {
-            this.value = next;
+            this.value_ = next;
             this.notify(prev);
         }
         return next;
     };
     $jin2_atom.prototype.set = function (next, prev) {
-        var value = this.value;
+        var value = this.value_;
         next = this.norm_(next, value);
         if (prev !== void 0)
             prev = this.norm_(prev, value);
@@ -417,12 +414,12 @@ var $jin2_atom = (function (_super) {
                 this.push(next);
             }
         }
-        return next;
+        return this.value_;
     };
     $jin2_atom.prototype.clear = function () {
-        var prev = this.value;
-        this.value = void 0;
-        this.error = $jin2_atom_obsolete;
+        var prev = this.value_;
+        this.value_ = void 0;
+        this.error = $jin2_atom.obsolete;
         this.notify(prev);
         return void 0;
     };
@@ -437,11 +434,11 @@ var $jin2_atom = (function (_super) {
         }
     };
     $jin2_atom.prototype.notify = function (prev) {
-        $jin2_log_info(this.objectPath, this.value);
+        $jin2_log_info(this.objectPath, this.value_, prev);
         this.notifySlaves();
         var backup = $jin2_atom.swap(this);
         try {
-            this.notify_(this.value, prev);
+            this.notify_(this.value_, prev);
         }
         finally {
             $jin2_atom.swap(backup);
@@ -450,19 +447,23 @@ var $jin2_atom = (function (_super) {
     $jin2_atom.prototype.fail = function (error) {
         this.error = error;
         this.notifySlaves();
-        this.fail_(error);
+        var value = this.fail_(error);
+        if (value !== void 0)
+            this.push(value);
+        if (!this.slavesCount && error !== $jin2_atom.wait)
+            $jin2_log_error(error);
     };
     $jin2_atom.prototype.update = function () {
-        if (this.error === $jin2_atom_obsolete)
+        if (this.error === $jin2_atom.obsolete)
             return;
-        this.error = $jin2_atom_obsolete;
+        this.error = $jin2_atom.obsolete;
         $jin2_atom.actualize(this);
     };
     $jin2_atom.prototype.lead = function (slave) {
         var slaveName = slave.objectPath;
         if (this.slaves) {
             if (this.slaves[slaveName])
-                return;
+                return false;
         }
         else {
             this.slaves = {};
@@ -470,6 +471,7 @@ var $jin2_atom = (function (_super) {
         this.slaves[slaveName] = slave;
         delete $jin2_atom._planReap[this.objectPath];
         this.slavesCount++;
+        return true;
     };
     $jin2_atom.prototype.dislead = function (slave) {
         var slaveName = slave.objectPath;
@@ -499,12 +501,13 @@ var $jin2_atom = (function (_super) {
             masters = this.masters = {};
         var masterName = master.objectPath;
         if (masters[masterName])
-            return;
+            return false;
         masters[masterName] = master;
         var masterDeep = master.mastersDeep;
-        if ((this.mastersDeep - masterDeep) > 0)
-            return;
-        this.mastersDeep = masterDeep + 1;
+        if (this.mastersDeep <= masterDeep) {
+            this.mastersDeep = masterDeep + 1;
+        }
+        return true;
     };
     $jin2_atom.prototype.disobey = function (master) {
         if (!this.masters)
@@ -524,7 +527,7 @@ var $jin2_atom = (function (_super) {
         this.mastersDeep = 0;
     };
     $jin2_atom.prototype.mutate = function (mutate) {
-        var next = mutate.call(this.objectOwner, this.value);
+        var next = mutate.call(this.objectOwner, this.value_);
         return this.set(next);
     };
     $jin2_atom.prototype.on = function (notify, fail) {
@@ -538,7 +541,7 @@ var $jin2_atom = (function (_super) {
                 listener.push(notify(_this.get()));
             },
             fail_: function (listener, error) {
-                if (listener.error === $jin2_atom_wait)
+                if (listener.error === $jin2_atom.wait)
                     return;
                 listener.push(fail(listener.error));
             }
@@ -553,37 +556,37 @@ var $jin2_atom = (function (_super) {
             notify = function (value) { return null; };
         if (!fail)
             fail = function (error) { return (console.error(error), null); };
-        var Promise = $jin2_atom.subClass({
-            pull_: function (promise, prev) {
+        var promise = new $jin2_atom({
+            pull_: function (prev) {
                 try {
-                    promise.push(notify(_this.get()));
+                    return notify(_this.get());
                 }
                 catch (error) {
-                    if (error === $jin2_atom_wait)
+                    if (error === $jin2_atom.wait)
                         return;
                     throw error;
                 }
             },
-            notify_: function (promise) {
+            notify_: function (next) {
                 promise.disobeyAll();
             },
-            fail_: function (promise) {
-                if (promise.error === $jin2_atom_wait)
-                    return;
+            fail_: function (error) {
+                if (error === $jin2_atom.wait)
+                    return void 0;
                 promise.disobeyAll();
-                promise.push(fail(promise.error));
+                return fail(error);
             },
         });
-        var promise = new Promise({});
-        promise.update();
+        promise.pull();
         return promise;
     };
     $jin2_atom.prototype.catch = function (fail) {
         return this.then(null, fail);
     };
     $jin2_atom.link = function (master, slave) {
-        slave.obey(master);
-        master.lead(slave);
+        if (slave.obey(master)) {
+            master.lead(slave);
+        }
     };
     $jin2_atom.swap = function (next) {
         var prev = $jin2_state_stack['$jin2_atom_current'];
@@ -626,7 +629,7 @@ var $jin2_atom = (function (_super) {
                 var atom = level.shift();
                 if (level.length)
                     this._minUpdateDeep--;
-                if (atom.error !== $jin2_atom_obsolete)
+                if (atom.error !== this.obsolete)
                     continue;
                 atom.pull();
             }
@@ -643,26 +646,165 @@ var $jin2_atom = (function (_super) {
         clearTimeout(this._timer);
         this._timer = null;
     };
+    $jin2_atom.wait = new Error('Waiting for pulling...');
+    $jin2_atom.obsolete = new Error('Obsolate state!');
+    $jin2_atom.count = 0;
     $jin2_atom._planPull = [];
     $jin2_atom._planReap = {};
     $jin2_atom._minUpdateDeep = 0;
     return $jin2_atom;
 })($jin2_object);
+var $jin2_atom_own = (function (_super) {
+    __extends($jin2_atom_own, _super);
+    function $jin2_atom_own() {
+        _super.apply(this, arguments);
+    }
+    $jin2_atom_own.prototype.push = function (next) {
+        var prev = this.value_;
+        next = this.norm_(next, prev);
+        this.error = null;
+        if (next !== prev) {
+            next.objectName = 'value';
+            next.objectOwner = this;
+            this.notify(prev);
+        }
+        return next;
+    };
+    return $jin2_atom_own;
+})($jin2_atom);
+var $jin2_atom_list = (function (_super) {
+    __extends($jin2_atom_list, _super);
+    function $jin2_atom_list() {
+        _super.apply(this, arguments);
+    }
+    $jin2_atom_list.prototype.norm_ = function (next, prev) {
+        if (!prev || !next)
+            return next;
+        if (next.length !== prev.length)
+            return next;
+        for (var i = 0; i < next.length; ++i) {
+            if (next[i] === prev[i])
+                continue;
+            return next;
+        }
+        return prev;
+    };
+    return $jin2_atom_list;
+})($jin2_atom);
 //atom.js.map
 ;
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var $jin2_vary = (function (_super) {
+    __extends($jin2_vary, _super);
+    function $jin2_vary(config) {
+        _super.call(this, config);
+        $jin2_atom.count++;
+    }
+    Object.defineProperty($jin2_vary.prototype, "objectOwner", {
+        get: function () {
+            return this._objectOwner;
+        },
+        set: function (next) {
+            this._objectOwner = next;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty($jin2_vary.prototype, "value", {
+        get: function () {
+            return this.objectOwner['_' + this.objectName + '_' + this.objectId];
+        },
+        set: function (next) {
+            this.objectOwner['_' + this.objectName + '_' + this.objectId] = next;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    $jin2_vary.prototype.get_ = function (value) { return value; };
+    $jin2_vary.prototype.pull_ = function (prev) { return prev; };
+    $jin2_vary.prototype.norm_ = function (next, prev) { return next; };
+    $jin2_vary.prototype.put_ = function (next, prev) { return next; };
+    $jin2_vary.prototype.notify_ = function (next, prev) { };
+    $jin2_vary.prototype.get = function () {
+        var value = this.value;
+        if (value === undefined)
+            value = this.pull();
+        return this.get_(value);
+    };
+    $jin2_vary.prototype.pull = function () {
+        var value = this.pull_(this.value);
+        return this.push(value);
+    };
+    $jin2_vary.prototype.push = function (next) {
+        var prev = this.value;
+        next = this.norm_(next, prev);
+        if (next !== prev) {
+            this.value = next;
+            this.notify(prev);
+        }
+        return next;
+    };
+    $jin2_vary.prototype.clear = function () {
+        var prev = this.value;
+        this.value = void 0;
+        this.notify(prev);
+        return void 0;
+    };
+    $jin2_vary.prototype.set = function (next, prev) {
+        var value = this.value;
+        next = this.norm_(next, value);
+        if (prev !== undefined)
+            prev = this.norm_(prev, value);
+        if (next !== value) {
+            next = this.put_(next, prev);
+            if (next !== void 0)
+                this.value = next;
+        }
+        return next;
+    };
+    $jin2_vary.prototype.mutate = function (mutate) {
+        var next = mutate.call(this.objectOwner, this.value);
+        return this.set(next);
+    };
+    $jin2_vary.prototype.notify = function (prev) {
+        this.notify_(this.value, prev);
+    };
+    return $jin2_vary;
+})($jin2_object);
+var $jin2_vary_own = (function (_super) {
+    __extends($jin2_vary_own, _super);
+    function $jin2_vary_own() {
+        _super.apply(this, arguments);
+    }
+    $jin2_vary_own.prototype.push = function (next) {
+        var prev = this.value;
+        next = this.norm_(next, prev);
+        if (next !== prev) {
+            next.objectName = '_' + this.objectName;
+            next.objectId = this.objectId;
+            next.objectOwner = this.objectOwner;
+            this.notify(prev);
+        }
+        return next;
+    };
+    return $jin2_vary_own;
+})($jin2_vary);
+//vary.js.map
+;
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var $jin2_view_div = (function (_super) {
     __extends($jin2_view_div, _super);
@@ -681,7 +823,7 @@ var $jin2_view_div = (function (_super) {
     });
     Object.defineProperty($jin2_view_div.prototype, "child", {
         get: function () {
-            return new $jin2_atom({
+            return new $jin2_prop({
                 pull_: function () { return []; }
             });
         },
@@ -715,42 +857,65 @@ var $jin2_view_div = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    $jin2_view_div.prototype.render = function () {
-        if (this.node)
-            return this.node;
-        this.node = document.getElementById(this.objectPath);
-        if (!this.node) {
-            this.node = document.createElement(this.tagName.get());
-        }
-        var events = this.event.get();
-        for (var name in events) {
-            var prop = events[name];
-            this.node.addEventListener(name, function (event) {
-                prop.set(event);
-                $jin2_atom.induce();
-            }, false);
-        }
-        this.node.id = this.objectPath;
-        this.version.pull();
-        return this.node;
-    };
+    Object.defineProperty($jin2_view_div.prototype, "node", {
+        get: function () {
+            var _this = this;
+            return new $jin2_vary({
+                pull_: function () {
+                    var id = _this.objectPath
+                        .replace(/\$\w+\./, '')
+                        .replace(/_\b/g, '')
+                        .replace(/\.value/g, '')
+                        .replace(/\./g, '/')
+                        .replace(/_/g, '=');
+                    var node = document.getElementById(id);
+                    if (node)
+                        return node;
+                    node = document.createElement(_this.tagName.get());
+                    node.id = id;
+                    return node;
+                },
+                notify_: function (next) {
+                    var router = (document.body === next) ? document : next;
+                    var events = _this.event.get();
+                    for (var name in events) {
+                        var prop = events[name];
+                        router.addEventListener(name, function (event) {
+                            if (event.defaultPrevented)
+                                return;
+                            prop.set(event);
+                            $jin2_atom.induce();
+                        }, false);
+                    }
+                    _this.version.pull();
+                }
+            });
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty($jin2_view_div.prototype, "version", {
         get: function () {
             var _this = this;
             return new $jin2_atom({
                 pull_: function (prev) {
                     var version = prev + 1 || 0;
-                    var node = _this.node;
-                    node.setAttribute('jin2_view', String(version));
-                    var className = $jin2_object_path(_this.objectOwner.constructor);
-                    node.setAttribute(className.replace(/\$/g, ''), _this.objectName);
-                    var proto = _this;
-                    while (proto && (proto !== $jin2_view_div.prototype)) {
-                        var className = $jin2_object_path(proto.constructor);
+                    var node = _this.node.get();
+                    var proto1 = _this.objectOwner;
+                    while (proto1 && (proto1 !== $jin2_view_div.prototype)) {
+                        var className = $jin2_object_path(proto1.constructor);
+                        if (!className)
+                            continue;
+                        node.setAttribute(className.replace(/\$/g, ''), _this.objectName);
+                        proto1 = Object.getPrototypeOf(proto1);
+                    }
+                    var proto2 = _this;
+                    while (proto2 && (proto2 !== $jin2_view_div.prototype)) {
+                        var className = $jin2_object_path(proto2.constructor);
                         if (!className)
                             continue;
                         node.setAttribute(className.replace(/\$/g, ''), "");
-                        proto = Object.getPrototypeOf(proto);
+                        proto2 = Object.getPrototypeOf(proto2);
                     }
                     var attrs = _this.attr.get();
                     for (var name in attrs) {
@@ -760,15 +925,17 @@ var $jin2_view_div = (function (_super) {
                             node.setAttribute(name, n);
                         }
                     }
-                    var childViews = [].concat(_this.child.get() || []);
+                    var childViews = [].concat.apply([], [].concat(_this.child.get()));
                     var childNodes = node.childNodes;
                     for (var i = 0; i < childViews.length; ++i) {
                         var nextNode = childNodes[i];
                         var view = childViews[i];
                         if (typeof view === 'object') {
-                            var existsNode = view.render();
-                            if (nextNode !== existsNode)
-                                node.insertBefore(existsNode, nextNode);
+                            if (view) {
+                                var existsNode = view.node.get();
+                                if (nextNode !== existsNode)
+                                    node.insertBefore(existsNode, nextNode);
+                            }
                         }
                         else {
                             if (nextNode && nextNode.nodeName === '#text') {
@@ -799,30 +966,27 @@ var $jin2_view_div = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty($jin2_view_div.prototype, "tagName",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_view_div.prototype, "tagName", Object.getOwnPropertyDescriptor($jin2_view_div.prototype, "tagName")));
-    Object.defineProperty($jin2_view_div.prototype, "child",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_view_div.prototype, "child", Object.getOwnPropertyDescriptor($jin2_view_div.prototype, "child")));
-    Object.defineProperty($jin2_view_div.prototype, "attr",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_view_div.prototype, "attr", Object.getOwnPropertyDescriptor($jin2_view_div.prototype, "attr")));
-    Object.defineProperty($jin2_view_div.prototype, "field",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_view_div.prototype, "field", Object.getOwnPropertyDescriptor($jin2_view_div.prototype, "field")));
-    Object.defineProperty($jin2_view_div.prototype, "event",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_view_div.prototype, "event", Object.getOwnPropertyDescriptor($jin2_view_div.prototype, "event")));
-    Object.defineProperty($jin2_view_div.prototype, "version",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_view_div.prototype, "version", Object.getOwnPropertyDescriptor($jin2_view_div.prototype, "version")));
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_div.prototype, "tagName", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_div.prototype, "child", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_div.prototype, "attr", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_div.prototype, "field", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_div.prototype, "event", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_div.prototype, "node", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_div.prototype, "version", null);
     return $jin2_view_div;
 })($jin2_object);
 //view.js.map
@@ -830,16 +994,13 @@ var $jin2_view_div = (function (_super) {
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var $jin2_demo_list_person = (function (_super) {
     __extends($jin2_demo_list_person, _super);
@@ -851,15 +1012,15 @@ var $jin2_demo_list_person = (function (_super) {
     };
     $jin2_demo_list_person.list = function (id) {
         var _this = this;
-        return new $jin2_atom({
+        return new $jin2_atom_list({
             pull_: function () { return []; },
             put_: function (next) {
                 return next.map(function (data) {
                     if (data instanceof $jin2_demo_list_person)
                         return data;
                     if (typeof data === 'string')
-                        return _this.item(data);
-                    var person = _this.item(data.id);
+                        return _this.item(String(data));
+                    var person = _this.item(String(data.id));
                     for (var key in data) {
                         if (key === 'id')
                             continue;
@@ -890,26 +1051,21 @@ var $jin2_demo_list_person = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty($jin2_demo_list_person.prototype, "id",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_demo_list_person.prototype, "id", Object.getOwnPropertyDescriptor($jin2_demo_list_person.prototype, "id")));
-    Object.defineProperty($jin2_demo_list_person.prototype, "firstName",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_demo_list_person.prototype, "firstName", Object.getOwnPropertyDescriptor($jin2_demo_list_person.prototype, "firstName")));
-    Object.defineProperty($jin2_demo_list_person.prototype, "lastName",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_demo_list_person.prototype, "lastName", Object.getOwnPropertyDescriptor($jin2_demo_list_person.prototype, "lastName")));
-    Object.defineProperty($jin2_demo_list_person, "item",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_demo_list_person, "item", Object.getOwnPropertyDescriptor($jin2_demo_list_person, "item")));
-    Object.defineProperty($jin2_demo_list_person, "list",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_demo_list_person, "list", Object.getOwnPropertyDescriptor($jin2_demo_list_person, "list")));
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_person.prototype, "id", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_person.prototype, "firstName", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_person.prototype, "lastName", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_person, "item", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_person, "list", null);
     return $jin2_demo_list_person;
 })($jin2_object);
 //person.js.map
@@ -928,16 +1084,13 @@ function $jin2_string_compare(a, b) {
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var $jin2_view_row = (function (_super) {
     __extends($jin2_view_row, _super);
@@ -968,7 +1121,7 @@ var $jin2_view_row = (function (_super) {
     });
     Object.defineProperty($jin2_view_row.prototype, "scrollTop", {
         get: function () {
-            return new $jin2_atom({
+            return new $jin2_prop({
                 pull_: function (prev) { return 0; }
             });
         },
@@ -978,7 +1131,7 @@ var $jin2_view_row = (function (_super) {
     Object.defineProperty($jin2_view_row.prototype, "offsetTopView", {
         get: function () {
             var _this = this;
-            return new $jin2_atom({
+            return new $jin2_prop({
                 pull_: function () {
                     var offset = Math.max(_this.offsetTop.get(), _this.scrollTop.get());
                     offset = Math.min(offset, _this.offsetBottom.get() - _this.height.get());
@@ -1021,7 +1174,7 @@ var $jin2_view_row = (function (_super) {
     Object.defineProperty($jin2_view_row.prototype, "offsetBottom", {
         get: function () {
             var _this = this;
-            return new $jin2_atom({
+            return new $jin2_prop({
                 pull_: function () {
                     var childs = _this.rowsChild.get();
                     if (childs.length)
@@ -1042,42 +1195,33 @@ var $jin2_view_row = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty($jin2_view_row.prototype, "field",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_view_row.prototype, "field", Object.getOwnPropertyDescriptor($jin2_view_row.prototype, "field")));
-    Object.defineProperty($jin2_view_row.prototype, "offsetTop",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_view_row.prototype, "offsetTop", Object.getOwnPropertyDescriptor($jin2_view_row.prototype, "offsetTop")));
-    Object.defineProperty($jin2_view_row.prototype, "scrollTop",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_view_row.prototype, "scrollTop", Object.getOwnPropertyDescriptor($jin2_view_row.prototype, "scrollTop")));
-    Object.defineProperty($jin2_view_row.prototype, "offsetTopView",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_view_row.prototype, "offsetTopView", Object.getOwnPropertyDescriptor($jin2_view_row.prototype, "offsetTopView")));
-    Object.defineProperty($jin2_view_row.prototype, "offsetTopPX",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_view_row.prototype, "offsetTopPX", Object.getOwnPropertyDescriptor($jin2_view_row.prototype, "offsetTopPX")));
-    Object.defineProperty($jin2_view_row.prototype, "height",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_view_row.prototype, "height", Object.getOwnPropertyDescriptor($jin2_view_row.prototype, "height")));
-    Object.defineProperty($jin2_view_row.prototype, "heightPX",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_view_row.prototype, "heightPX", Object.getOwnPropertyDescriptor($jin2_view_row.prototype, "heightPX")));
-    Object.defineProperty($jin2_view_row.prototype, "offsetBottom",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_view_row.prototype, "offsetBottom", Object.getOwnPropertyDescriptor($jin2_view_row.prototype, "offsetBottom")));
-    Object.defineProperty($jin2_view_row.prototype, "rowsChild",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_view_row.prototype, "rowsChild", Object.getOwnPropertyDescriptor($jin2_view_row.prototype, "rowsChild")));
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_row.prototype, "field", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_row.prototype, "offsetTop", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_row.prototype, "scrollTop", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_row.prototype, "offsetTopView", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_row.prototype, "offsetTopPX", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_row.prototype, "height", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_row.prototype, "heightPX", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_row.prototype, "offsetBottom", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_row.prototype, "rowsChild", null);
     return $jin2_view_row;
 })($jin2_view_div);
 //row.js.map
@@ -1085,16 +1229,13 @@ var $jin2_view_row = (function (_super) {
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var $jin2_view_list = (function (_super) {
     __extends($jin2_view_list, _super);
@@ -1104,7 +1245,7 @@ var $jin2_view_list = (function (_super) {
     Object.defineProperty($jin2_view_list.prototype, "child", {
         get: function () {
             var _this = this;
-            return new $jin2_atom({
+            return new $jin2_atom_list({
                 pull_: function () { return _this.rowsReordered.get(); }
             });
         },
@@ -1114,7 +1255,7 @@ var $jin2_view_list = (function (_super) {
     Object.defineProperty($jin2_view_list.prototype, "rowsReordered", {
         get: function () {
             var _this = this;
-            return new $jin2_atom({
+            return new $jin2_atom_list({
                 pull_: function (prev) {
                     var rows = _this.rowsPositioned.get();
                     if (!prev)
@@ -1142,7 +1283,7 @@ var $jin2_view_list = (function (_super) {
     Object.defineProperty($jin2_view_list.prototype, "rowsPositioned", {
         get: function () {
             var _this = this;
-            return new $jin2_atom({
+            return new $jin2_atom_list({
                 pull_: function (prev) {
                     var rows = _this.rows.get();
                     var offset = 0;
@@ -1160,7 +1301,7 @@ var $jin2_view_list = (function (_super) {
     });
     Object.defineProperty($jin2_view_list.prototype, "rows", {
         get: function () {
-            return new $jin2_atom({
+            return new $jin2_atom_list({
                 pull_: function (prev) { return []; }
             });
         },
@@ -1179,9 +1320,10 @@ var $jin2_view_list = (function (_super) {
     Object.defineProperty($jin2_view_list.prototype, "eventScroll", {
         get: function () {
             var _this = this;
-            return new $jin2_atom({
+            return new $jin2_prop({
                 put_: function (next) {
-                    _this.scrollTop.set(next.target.scrollTop);
+                    _this.scrollTop.set(_this.node.get().scrollTop);
+                    return null;
                 }
             });
         },
@@ -1200,30 +1342,27 @@ var $jin2_view_list = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty($jin2_view_list.prototype, "child",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_view_list.prototype, "child", Object.getOwnPropertyDescriptor($jin2_view_list.prototype, "child")));
-    Object.defineProperty($jin2_view_list.prototype, "rowsReordered",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_view_list.prototype, "rowsReordered", Object.getOwnPropertyDescriptor($jin2_view_list.prototype, "rowsReordered")));
-    Object.defineProperty($jin2_view_list.prototype, "rows",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_view_list.prototype, "rows", Object.getOwnPropertyDescriptor($jin2_view_list.prototype, "rows")));
-    Object.defineProperty($jin2_view_list.prototype, "scrollTop",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_view_list.prototype, "scrollTop", Object.getOwnPropertyDescriptor($jin2_view_list.prototype, "scrollTop")));
-    Object.defineProperty($jin2_view_list.prototype, "eventScroll",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_view_list.prototype, "eventScroll", Object.getOwnPropertyDescriptor($jin2_view_list.prototype, "eventScroll")));
-    Object.defineProperty($jin2_view_list.prototype, "event",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_view_list.prototype, "event", Object.getOwnPropertyDescriptor($jin2_view_list.prototype, "event")));
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_list.prototype, "child", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_list.prototype, "rowsReordered", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_list.prototype, "rowsPositioned", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_list.prototype, "rows", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_list.prototype, "scrollTop", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_list.prototype, "eventScroll", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_view_list.prototype, "event", null);
     return $jin2_view_list;
 })($jin2_view_div);
 //list.js.map
@@ -1231,16 +1370,13 @@ var $jin2_view_list = (function (_super) {
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var $jin2_demo_list_person_view_row = (function (_super) {
     __extends($jin2_demo_list_person_view_row, _super);
@@ -1248,14 +1384,14 @@ var $jin2_demo_list_person_view_row = (function (_super) {
         _super.apply(this, arguments);
     }
     Object.defineProperty($jin2_demo_list_person_view_row.prototype, "person", {
-        get: function () { return new $jin2_atom(); },
+        get: function () { return new $jin2_prop(); },
         enumerable: true,
         configurable: true
     });
     Object.defineProperty($jin2_demo_list_person_view_row.prototype, "child", {
         get: function () {
             var _this = this;
-            return new $jin2_atom({
+            return new $jin2_prop({
                 pull_: function () { return [_this.blockFirstName, _this.blockLastName]; }
             });
         },
@@ -1282,22 +1418,18 @@ var $jin2_demo_list_person_view_row = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty($jin2_demo_list_person_view_row.prototype, "person",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_demo_list_person_view_row.prototype, "person", Object.getOwnPropertyDescriptor($jin2_demo_list_person_view_row.prototype, "person")));
-    Object.defineProperty($jin2_demo_list_person_view_row.prototype, "child",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_demo_list_person_view_row.prototype, "child", Object.getOwnPropertyDescriptor($jin2_demo_list_person_view_row.prototype, "child")));
-    Object.defineProperty($jin2_demo_list_person_view_row.prototype, "blockFirstName",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_demo_list_person_view_row.prototype, "blockFirstName", Object.getOwnPropertyDescriptor($jin2_demo_list_person_view_row.prototype, "blockFirstName")));
-    Object.defineProperty($jin2_demo_list_person_view_row.prototype, "blockLastName",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_demo_list_person_view_row.prototype, "blockLastName", Object.getOwnPropertyDescriptor($jin2_demo_list_person_view_row.prototype, "blockLastName")));
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_person_view_row.prototype, "person", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_person_view_row.prototype, "child", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_person_view_row.prototype, "blockFirstName", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_person_view_row.prototype, "blockLastName", null);
     return $jin2_demo_list_person_view_row;
 })($jin2_view_row);
 //row.js.map
@@ -1305,16 +1437,13 @@ var $jin2_demo_list_person_view_row = (function (_super) {
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var $jin2_demo_list_person_view_list = (function (_super) {
     __extends($jin2_demo_list_person_view_list, _super);
@@ -1333,7 +1462,7 @@ var $jin2_demo_list_person_view_list = (function (_super) {
     Object.defineProperty($jin2_demo_list_person_view_list.prototype, "rows", {
         get: function () {
             var _this = this;
-            return new $jin2_atom({
+            return new $jin2_atom_list({
                 pull_: function (prev) {
                     var groups = _this.groups.get();
                     var next = [];
@@ -1351,44 +1480,44 @@ var $jin2_demo_list_person_view_list = (function (_super) {
         configurable: true
     });
     $jin2_demo_list_person_view_list.prototype.rowGroup = function (id) {
-        var _this = this;
-        var row = new $jin2_view_row({
+        return new $jin2_view_row({
             height_: { get: function () { return id ? 32 : 0; } },
             child_: { get: function () { return id; } },
             scrollTop_: this.scrollTop,
-            rowsChild_: new $jin2_atom({
-                pull_: function () {
-                    return _this.groups.get()[id].map(function (person) {
-                        var rowPerson = _this.rowPerson(person.id.get());
-                        rowPerson.person.set(person);
-                        return rowPerson;
-                    });
-                }
-            })
+            rowsChild_: this.rowGroupChilds(id)
         });
-        return row;
+    };
+    $jin2_demo_list_person_view_list.prototype.rowGroupChilds = function (id) {
+        var _this = this;
+        return new $jin2_atom_list({
+            pull_: function () {
+                return _this.groups.get()[id].map(function (person) {
+                    return _this.rowPerson(person.id.get());
+                });
+            }
+        });
     };
     $jin2_demo_list_person_view_list.prototype.rowPerson = function (id) {
         return new $jin2_demo_list_person_view_row({
             height_: { get: function () { return 40; } },
+            person_: { get: function () { return $jin2_demo_list_person.item(id); } }
         });
     };
-    Object.defineProperty($jin2_demo_list_person_view_list.prototype, "groups",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_demo_list_person_view_list.prototype, "groups", Object.getOwnPropertyDescriptor($jin2_demo_list_person_view_list.prototype, "groups")));
-    Object.defineProperty($jin2_demo_list_person_view_list.prototype, "rows",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_demo_list_person_view_list.prototype, "rows", Object.getOwnPropertyDescriptor($jin2_demo_list_person_view_list.prototype, "rows")));
-    Object.defineProperty($jin2_demo_list_person_view_list.prototype, "rowGroup",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_demo_list_person_view_list.prototype, "rowGroup", Object.getOwnPropertyDescriptor($jin2_demo_list_person_view_list.prototype, "rowGroup")));
-    Object.defineProperty($jin2_demo_list_person_view_list.prototype, "rowPerson",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_demo_list_person_view_list.prototype, "rowPerson", Object.getOwnPropertyDescriptor($jin2_demo_list_person_view_list.prototype, "rowPerson")));
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_person_view_list.prototype, "groups", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_person_view_list.prototype, "rows", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_person_view_list.prototype, "rowGroup", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_person_view_list.prototype, "rowGroupChilds", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_person_view_list.prototype, "rowPerson", null);
     return $jin2_demo_list_person_view_list;
 })($jin2_view_list);
 //list.js.map
@@ -1396,16 +1525,13 @@ var $jin2_demo_list_person_view_list = (function (_super) {
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") return Reflect.decorate(decorators, target, key, desc);
-    switch (arguments.length) {
-        case 2: return decorators.reduceRight(function(o, d) { return (d && d(o)) || o; }, target);
-        case 3: return decorators.reduceRight(function(o, d) { return (d && d(target, key)), void 0; }, void 0);
-        case 4: return decorators.reduceRight(function(o, d) { return (d && d(target, key, o)) || o; }, desc);
-    }
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var $jin2_demo_list_app = (function (_super) {
     __extends($jin2_demo_list_app, _super);
@@ -1418,7 +1544,7 @@ var $jin2_demo_list_app = (function (_super) {
     Object.defineProperty($jin2_demo_list_app.prototype, "persons", {
         get: function () {
             var _this = this;
-            return new $jin2_atom({
+            return new $jin2_atom_list({
                 pull_: function (prev) { return $jin2_demo_list_person.list(_this.objectId).get(); }
             });
         },
@@ -1428,7 +1554,7 @@ var $jin2_demo_list_app = (function (_super) {
     Object.defineProperty($jin2_demo_list_app.prototype, "personsSorted", {
         get: function () {
             var _this = this;
-            return new $jin2_atom({
+            return new $jin2_atom_list({
                 pull_: function (prev) { return _this.persons.get().slice().sort(function (a, b) {
                     return $jin2_string_compare(a.lastName.get(), b.lastName.get())
                         || $jin2_string_compare(a.firstName.get(), b.firstName.get())
@@ -1480,7 +1606,7 @@ var $jin2_demo_list_app = (function (_super) {
     Object.defineProperty($jin2_demo_list_app.prototype, "child", {
         get: function () {
             var _this = this;
-            return new $jin2_atom({
+            return new $jin2_atom_list({
                 pull_: function (prev) {
                     return [_this.widgetSingle, _this.widgetByLetter];
                 }
@@ -1507,38 +1633,30 @@ var $jin2_demo_list_app = (function (_super) {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty($jin2_demo_list_app.prototype, "persons",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_demo_list_app.prototype, "persons", Object.getOwnPropertyDescriptor($jin2_demo_list_app.prototype, "persons")));
-    Object.defineProperty($jin2_demo_list_app.prototype, "personsSorted",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_demo_list_app.prototype, "personsSorted", Object.getOwnPropertyDescriptor($jin2_demo_list_app.prototype, "personsSorted")));
-    Object.defineProperty($jin2_demo_list_app.prototype, "groupsSingle",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_demo_list_app.prototype, "groupsSingle", Object.getOwnPropertyDescriptor($jin2_demo_list_app.prototype, "groupsSingle")));
-    Object.defineProperty($jin2_demo_list_app.prototype, "groupsByLetter",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_demo_list_app.prototype, "groupsByLetter", Object.getOwnPropertyDescriptor($jin2_demo_list_app.prototype, "groupsByLetter")));
-    Object.defineProperty($jin2_demo_list_app.prototype, "child",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_demo_list_app.prototype, "child", Object.getOwnPropertyDescriptor($jin2_demo_list_app.prototype, "child")));
-    Object.defineProperty($jin2_demo_list_app.prototype, "widgetSingle",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_demo_list_app.prototype, "widgetSingle", Object.getOwnPropertyDescriptor($jin2_demo_list_app.prototype, "widgetSingle")));
-    Object.defineProperty($jin2_demo_list_app.prototype, "widgetByLetter",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_demo_list_app.prototype, "widgetByLetter", Object.getOwnPropertyDescriptor($jin2_demo_list_app.prototype, "widgetByLetter")));
-    Object.defineProperty($jin2_demo_list_app, "widget",
-        __decorate([
-            $jin2_lazy
-        ], $jin2_demo_list_app, "widget", Object.getOwnPropertyDescriptor($jin2_demo_list_app, "widget")));
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_app.prototype, "persons", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_app.prototype, "personsSorted", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_app.prototype, "groupsSingle", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_app.prototype, "groupsByLetter", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_app.prototype, "child", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_app.prototype, "widgetSingle", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_app.prototype, "widgetByLetter", null);
+    __decorate([
+        $jin2_lazy
+    ], $jin2_demo_list_app, "widget", null);
     return $jin2_demo_list_app;
 })($jin2_view_div);
 //app.js.map
