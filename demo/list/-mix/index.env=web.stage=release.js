@@ -862,12 +862,7 @@ var $jin2_view_div = (function (_super) {
             var _this = this;
             return new $jin2_vary({
                 pull_: function () {
-                    var id = _this.objectPath
-                        .replace(/\$\w+\./, '')
-                        .replace(/_\b/g, '')
-                        .replace(/\.value/g, '')
-                        .replace(/\./g, '/')
-                        .replace(/_/g, '=');
+                    var id = _this.objectPath;
                     var node = document.getElementById(id);
                     if (node)
                         return node;
