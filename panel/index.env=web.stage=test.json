@@ -1,0 +1,116 @@
+[
+	{
+		"mol/panel": {
+			":priority": 0,
+			"mol": {
+				"": [
+					"mol/index.html"
+				]
+			},
+			"mol/block": {
+				":priority": 0,
+				"jin2/object": {
+					":priority": 0,
+					"jin2": {
+						"jin/dumb": {
+							":priority": 0,
+							"jin": {
+								"": [
+									"jin/jin.jam.js",
+									"jin/demo.html",
+									"jin/README.md",
+									"jin/package.json",
+									"jin/git-init.cmd"
+								]
+							},
+							"": [
+								"jin/dumb/dumb.ts"
+							]
+						},
+						"": [
+							"jin2/jin2.meta.tree"
+						]
+					},
+					"jin2/error": {
+						":priority": 1,
+						"": [
+							"jin2/error/error.ts"
+						]
+					},
+					"": [
+						"jin2/object/object.ts"
+					]
+				},
+				"jin2/grab": {
+					":priority": 1,
+					"": [
+						"jin2/grab/grab.ts"
+					]
+				},
+				"jin2/atom": {
+					":priority": 2,
+					"jin2/prop": {
+						":priority": 0,
+						"": [
+							"jin2/prop/prop.ts"
+						]
+					},
+					"jin2/state/stack": {
+						":priority": 1,
+						"": [
+							"jin2/state/stack/stack.ts"
+						]
+					},
+					"": [
+						"jin2/atom/atom.ts"
+					]
+				},
+				"jin2/vary": {
+					":priority": 2,
+					"": [
+						"jin2/vary/vary.ts"
+					]
+				},
+				"": [
+					"mol/block/block.css",
+					"mol/block/block.ts"
+				]
+			},
+			"mol/scroller": {
+				":priority": 0,
+				"jin2/state/local": {
+					":priority": 2,
+					"": [
+						"jin2/state/local/local.env=web.ts"
+					]
+				},
+				"": [
+					"mol/scroller/scroller.css",
+					"mol/scroller/scroller.view.tree",
+					"mol/scroller/scroller.view.ts"
+				]
+			},
+			"mol/demo": {
+				":priority": 0,
+				"mol/button": {
+					":priority": 0,
+					"": [
+						"mol/button/button.css",
+						"mol/button/button.view.tree"
+					]
+				},
+				"": [
+					"mol/demo/demo.css",
+					"mol/demo/demo.view.tree",
+					"mol/demo/demo.view.ts"
+				]
+			},
+			"": [
+				"mol/panel/index.html",
+				"mol/panel/panel.css",
+				"mol/panel/panel.view.tree",
+				"mol/panel/panel.stage=test.view.tree"
+			]
+		}
+	}
+]

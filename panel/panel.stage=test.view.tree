@@ -1,0 +1,20 @@
+$mol_panel_demo : $mol_demo child
+	-
+	< lighting : $mol_demo_screen content < lightingContent : $mol_panel
+		head < lightingHead = < head
+		body < lightingBody = < body
+		foot < lightingFoot = < foot
+	-
+	< generic : $mol_demo_screen content < genericContent : $mol_panel
+		head < genericHead = < head
+		body < genericBody : $mol_demo_lorem
+		foot < genericFoot = < foot
+	-
+	< bloating : $mol_demo_screen content < bloatingContent : $mol_panel
+		head < bloatingHead : $mol_demo_lorem
+		body < bloatingBody : $mol_demo_lorem
+		foot < bloatingFoot : $mol_demo_lorem
+	-
+	< heading : $mol_demo_screen content < headingContent : $mol_panel
+		head < headingHead : $mol_demo_lorem
+		body < headingBody : $mol_demo_lorem
