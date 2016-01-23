@@ -124,6 +124,7 @@
 				"mol/filler": {
 					":priority": 0,
 					"": [
+						"mol/filler/filler.css",
 						"mol/filler/filler.view.tree"
 					]
 				},
@@ -138,6 +139,39 @@
 				"mol/demo/demo.css",
 				"mol/demo/demo.view.tree",
 				"mol/demo/demo.view.ts"
+			]
+		}
+	},
+	{
+		"mol/demo/todomvc": {
+			":priority": 0,
+			"mol/demo/todomvc/task": {
+				":priority": 1,
+				"": [
+					"mol/demo/todomvc/task/task.ts"
+				]
+			},
+			"mol/stringer": {
+				":priority": 0,
+				"": [
+					"mol/stringer/stringer.css",
+					"mol/stringer/stringer.view.tree",
+					"mol/stringer/stringer.view.ts",
+					"mol/stringer/stringer.stage=test.view.tree"
+				]
+			},
+			"jin2/state/arg": {
+				":priority": 3,
+				"": [
+					"jin2/state/arg/arg.env=web.ts"
+				]
+			},
+			"": [
+				"mol/demo/todomvc/index.html",
+				"mol/demo/todomvc/todomvc.css",
+				"mol/demo/todomvc/todomvc.view.tree",
+				"mol/demo/todomvc/todomvc.view.ts",
+				"mol/demo/todomvc/todomvc-bg.png"
 			]
 		}
 	},
@@ -166,21 +200,9 @@
 		"mol/spoiler": {
 			":priority": 0,
 			"": [
-				"mol/spoiler/spoiler.css",
 				"mol/spoiler/spoiler.view.tree",
 				"mol/spoiler/spoiler.view.ts",
 				"mol/spoiler/spoiler.stage=test.view.tree"
-			]
-		}
-	},
-	{
-		"mol/stringer": {
-			":priority": 0,
-			"": [
-				"mol/stringer/stringer.css",
-				"mol/stringer/stringer.view.tree",
-				"mol/stringer/stringer.view.ts",
-				"mol/stringer/stringer.stage=test.view.tree"
 			]
 		}
 	}
