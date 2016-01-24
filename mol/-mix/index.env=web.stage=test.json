@@ -9,9 +9,9 @@
 		}
 	},
 	{
-		"mol/block": {
+		"mol/atom": {
 			":priority": 0,
-			"jin2/object": {
+			"jin2/test": {
 				":priority": 0,
 				"jin2": {
 					"jin/dumb": {
@@ -33,28 +33,43 @@
 						"jin2/jin2.meta.tree"
 					]
 				},
-				"jin2/error": {
-					":priority": 1,
-					"jin/tree2": {
-						":priority": 3,
-						"jin/type": {
-							":priority": 2,
+				"jin2/object": {
+					":priority": 0,
+					"jin2/error": {
+						":priority": 1,
+						"jin/tree2": {
+							":priority": 3,
+							"jin/type": {
+								":priority": 2,
+								"": [
+									"jin/type/type.ts"
+								]
+							},
 							"": [
-								"jin/type/type.ts"
+								"jin/tree2/tree.ts"
 							]
 						},
 						"": [
-							"jin/tree2/tree.ts"
+							"jin2/error/error.ts"
 						]
 					},
 					"": [
-						"jin2/error/error.ts"
+						"jin2/object/object.ts"
 					]
 				},
 				"": [
-					"jin2/object/object.ts"
+					"jin2/test/test.ts"
 				]
 			},
+			"": [
+				"mol/atom/atom.ts",
+				"mol/atom/index.html"
+			]
+		}
+	},
+	{
+		"mol/block": {
+			":priority": 0,
 			"jin2/grab": {
 				":priority": 1,
 				"": [
@@ -119,6 +134,13 @@
 					":priority": 2,
 					"": [
 						"jin2/state/local/local.env=web.ts"
+					]
+				},
+				"mol/rower": {
+					":priority": 0,
+					"": [
+						"mol/rower/rower.css",
+						"mol/rower/rower.view.tree"
 					]
 				},
 				"mol/filler": {
