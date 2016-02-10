@@ -227,6 +227,17 @@
 		}
 	},
 	{
+		"mol/grid": {
+			":priority": 0,
+			"": [
+				"mol/grid/grid.css",
+				"mol/grid/grid.view.tree",
+				"mol/grid/grid.stage=test.view.tree",
+				"mol/grid/grid.stage=test.view.ts"
+			]
+		}
+	},
+	{
 		"mol/object": {
 			":priority": 0,
 			"": [

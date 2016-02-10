@@ -382,8 +382,7 @@
 	outline: 1px solid #000000;
 	outline: 1px solid rgba( 0 , 0 , 0 , .3 );
 	outline-offset: 0;
-	background: #FFFFFF;
-	background: rgba( 255 , 255 , 255 , .5 );
+	background: white;
 }
 
 [mol_stringer]:empty:before {
@@ -1031,16 +1030,43 @@ hr {
 
 [mol_number] {
 	text-align: right;
-	-webkit-box-flex: 1;
-	-webkit-flex: 1 1 auto;
-	    -ms-flex: 1 1 auto;
-	        flex: 1 1 auto;
+
+	/*flex: 1 1 auto;*/
 }
 
-[mol_number]::-webkit-outer-spin-button,
+/*[mol_number]::-webkit-outer-spin-button,
 [mol_number]::-webkit-inner-spin-button {
 	-webkit-appearance: none;
 	margin: 0;
+}*/
+
+[mol_grid] {
+	width: 100%;
+	max-height: 100%;
+	background: inherit;
+}
+
+[mol_grid_table] {
+	margin: auto;
+	display: table;
+	border-spacing: 1px;
+	background: inherit;
+}
+
+[mol_grid_table] > * {
+	display: table-row;
+	background: inherit;
+	background: rgba(255,255,255,1);
+}
+
+[mol_grid_table] > * > * {
+	white-space: nowrap;
+	display: table-cell;
+}
+
+[mol_grid_table] > *:nth-child(odd) {
+	background: #FFFFFF;
+	background: rgba(255,255,255,.95);
 }
 
 [mol_panel] {
