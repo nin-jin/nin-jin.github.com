@@ -9,106 +9,116 @@
 		}
 	},
 	{
-		"mol/app/todo": {
+		"mol/app/demo": {
 			":priority": 0,
-			"mol/app/todo/task": {
-				":priority": 1,
-				"jin2/object": {
+			"mol/scroller": {
+				":priority": 0,
+				"mol/block": {
 					":priority": 0,
-					"jin2": {
-						"jin/dumb": {
+					"jin2/object": {
+						":priority": 0,
+						"jin2": {
+							"jin/dumb": {
+								":priority": 0,
+								"jin": {
+									"": [
+										"jin/jin.jam.js",
+										"jin/demo.html",
+										"jin/README.md",
+										"jin/package.json",
+										"jin/git-init.cmd"
+									]
+								},
+								"": [
+									"jin/dumb/dumb.ts"
+								]
+							},
+							"": [
+								"jin2/jin2.meta.tree"
+							]
+						},
+						"jin2/error": {
+							":priority": 1,
+							"jin/tree2": {
+								":priority": 3,
+								"jin/type": {
+									":priority": 2,
+									"": [
+										"jin/type/type.ts"
+									]
+								},
+								"": [
+									"jin/tree2/tree.ts"
+								]
+							},
+							"": [
+								"jin2/error/error.ts"
+							]
+						},
+						"": [
+							"jin2/object/object.ts"
+						]
+					},
+					"jin2/grab": {
+						":priority": 1,
+						"": [
+							"jin2/grab/grab.ts"
+						]
+					},
+					"jin2/atom": {
+						":priority": 2,
+						"jin2/prop": {
 							":priority": 0,
-							"jin": {
-								"": [
-									"jin/jin.jam.js",
-									"jin/demo.html",
-									"jin/README.md",
-									"jin/package.json",
-									"jin/git-init.cmd"
-								]
-							},
 							"": [
-								"jin/dumb/dumb.ts"
+								"jin2/prop/prop.ts"
+							]
+						},
+						"jin2/state/stack": {
+							":priority": 1,
+							"": [
+								"jin2/state/stack/stack.ts"
 							]
 						},
 						"": [
-							"jin2/jin2.meta.tree"
+							"jin2/atom/atom.ts"
 						]
 					},
-					"jin2/error": {
-						":priority": 1,
-						"jin/tree2": {
-							":priority": 3,
-							"jin/type": {
-								":priority": 2,
-								"": [
-									"jin/type/type.ts"
-								]
-							},
-							"": [
-								"jin/tree2/tree.ts"
-							]
-						},
+					"jin2/vary": {
+						":priority": 2,
 						"": [
-							"jin2/error/error.ts"
+							"jin2/vary/vary.ts"
 						]
 					},
 					"": [
-						"jin2/object/object.ts"
-					]
-				},
-				"jin2/prop": {
-					":priority": 2,
-					"": [
-						"jin2/prop/prop.ts"
-					]
-				},
-				"jin2/grab": {
-					":priority": 1,
-					"": [
-						"jin2/grab/grab.ts"
-					]
-				},
-				"jin2/atom": {
-					":priority": 2,
-					"jin2/state/stack": {
-						":priority": 1,
-						"": [
-							"jin2/state/stack/stack.ts"
-						]
-					},
-					"": [
-						"jin2/atom/atom.ts"
+						"mol/block/block.css",
+						"mol/block/block.ts"
 					]
 				},
 				"jin2/state/local": {
-					":priority": 4,
+					":priority": 2,
 					"": [
 						"jin2/state/local/local.env=web.ts"
 					]
 				},
-				"": [
-					"mol/app/todo/task/task.ts"
-				]
-			},
-			"mol/block": {
-				":priority": 0,
-				"jin2/vary": {
-					":priority": 2,
+				"mol/rower": {
+					":priority": 0,
 					"": [
-						"jin2/vary/vary.ts"
+						"mol/rower/rower.css",
+						"mol/rower/rower.view.tree"
+					]
+				},
+				"mol/filler": {
+					":priority": 0,
+					"": [
+						"mol/filler/filler.css",
+						"mol/filler/filler.view.tree"
 					]
 				},
 				"": [
-					"mol/block/block.css",
-					"mol/block/block.ts"
-				]
-			},
-			"mol/rower": {
-				":priority": 0,
-				"": [
-					"mol/rower/rower.css",
-					"mol/rower/rower.view.tree"
+					"mol/scroller/scroller.css",
+					"mol/scroller/scroller.view.tree",
+					"mol/scroller/scroller.view.ts",
+					"mol/scroller/scroller.stage=test.view.tree"
 				]
 			},
 			"mol/checker": {
@@ -129,29 +139,37 @@
 					"mol/checker/checker.stage=test.view.tree"
 				]
 			},
-			"mol/stringer": {
-				":priority": 0,
-				"mol/scroller": {
+			"": [
+				"mol/app/demo/demo.css",
+				"mol/app/demo/demo.view.tree",
+				"mol/app/demo/demo.view.ts"
+			]
+		}
+	},
+	{
+		"mol/app/todo": {
+			":priority": 0,
+			"mol/app/todo/task": {
+				":priority": 1,
+				"mol/stringer": {
 					":priority": 0,
-					"mol/filler": {
-						":priority": 0,
-						"": [
-							"mol/filler/filler.css",
-							"mol/filler/filler.view.tree"
-						]
-					},
 					"": [
-						"mol/scroller/scroller.css",
-						"mol/scroller/scroller.view.tree",
-						"mol/scroller/scroller.view.ts",
-						"mol/scroller/scroller.stage=test.view.tree"
+						"mol/stringer/stringer.css",
+						"mol/stringer/stringer.view.tree",
+						"mol/stringer/stringer.view.ts",
+						"mol/stringer/stringer.stage=test.view.tree"
 					]
 				},
 				"": [
-					"mol/stringer/stringer.css",
-					"mol/stringer/stringer.view.tree",
-					"mol/stringer/stringer.view.ts",
-					"mol/stringer/stringer.stage=test.view.tree"
+					"mol/app/todo/task/task.ts",
+					"mol/app/todo/task/task.view.tree"
+				]
+			},
+			"mol/lister": {
+				":priority": 0,
+				"": [
+					"mol/lister/lister.view.tree",
+					"mol/lister/lister.view.ts"
 				]
 			},
 			"jin2/state/arg": {
@@ -209,12 +227,10 @@
 		}
 	},
 	{
-		"mol/demo": {
+		"mol/object": {
 			":priority": 0,
 			"": [
-				"mol/demo/demo.css",
-				"mol/demo/demo.view.tree",
-				"mol/demo/demo.view.ts"
+				"mol/object/object.ts"
 			]
 		}
 	},
@@ -244,6 +260,17 @@
 				"mol/spoiler/spoiler.view.tree",
 				"mol/spoiler/spoiler.view.ts",
 				"mol/spoiler/spoiler.stage=test.view.tree"
+			]
+		}
+	},
+	{
+		"mol/switcher": {
+			":priority": 0,
+			"": [
+				"mol/switcher/switcher.css",
+				"mol/switcher/switcher.view.tree",
+				"mol/switcher/switcher.view.ts",
+				"mol/switcher/switcher.stage=test.view.tree"
 			]
 		}
 	}
