@@ -15,7 +15,7 @@
 				":priority": 0,
 				"mol/block": {
 					":priority": 0,
-					"jin2/object": {
+					"jin2/atom": {
 						":priority": 0,
 						"jin2": {
 							"jin/dumb": {
@@ -37,36 +37,30 @@
 								"jin2/jin2.meta.tree"
 							]
 						},
-						"jin2/error": {
-							":priority": 1,
-							"jin/tree2": {
-								":priority": 3,
-								"jin/type": {
-									":priority": 2,
+						"jin2/object": {
+							":priority": 0,
+							"jin2/error": {
+								":priority": 1,
+								"jin/tree2": {
+									":priority": 3,
+									"jin/type": {
+										":priority": 2,
+										"": [
+											"jin/type/type.ts"
+										]
+									},
 									"": [
-										"jin/type/type.ts"
+										"jin/tree2/tree.ts"
 									]
 								},
 								"": [
-									"jin/tree2/tree.ts"
+									"jin2/error/error.ts"
 								]
 							},
 							"": [
-								"jin2/error/error.ts"
+								"jin2/object/object.ts"
 							]
 						},
-						"": [
-							"jin2/object/object.ts"
-						]
-					},
-					"jin2/grab": {
-						":priority": 1,
-						"": [
-							"jin2/grab/grab.ts"
-						]
-					},
-					"jin2/atom": {
-						":priority": 2,
 						"jin2/prop": {
 							":priority": 0,
 							"": [
@@ -81,6 +75,12 @@
 						},
 						"": [
 							"jin2/atom/atom.ts"
+						]
+					},
+					"jin2/grab": {
+						":priority": 1,
+						"": [
+							"jin2/grab/grab.ts"
 						]
 					},
 					"jin2/vary": {
@@ -227,17 +227,6 @@
 		}
 	},
 	{
-		"mol/grid": {
-			":priority": 0,
-			"": [
-				"mol/grid/grid.css",
-				"mol/grid/grid.view.tree",
-				"mol/grid/grid.stage=test.view.tree",
-				"mol/grid/grid.stage=test.view.ts"
-			]
-		}
-	},
-	{
 		"mol/object": {
 			":priority": 0,
 			"": [
@@ -282,6 +271,17 @@
 				"mol/switcher/switcher.view.tree",
 				"mol/switcher/switcher.view.ts",
 				"mol/switcher/switcher.stage=test.view.tree"
+			]
+		}
+	},
+	{
+		"mol/tabler": {
+			":priority": 0,
+			"": [
+				"mol/tabler/tabler.css",
+				"mol/tabler/tabler.view.tree",
+				"mol/tabler/tabler.stage=test.view.tree",
+				"mol/tabler/tabler.stage=test.view.ts"
 			]
 		}
 	}
