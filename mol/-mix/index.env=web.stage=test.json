@@ -227,6 +227,16 @@
 		}
 	},
 	{
+		"mol/floater": {
+			":priority": 0,
+			"": [
+				"mol/floater/floater.css",
+				"mol/floater/floater.view.tree",
+				"mol/floater/floater.view.ts"
+			]
+		}
+	},
+	{
 		"mol/object": {
 			":priority": 0,
 			"": [

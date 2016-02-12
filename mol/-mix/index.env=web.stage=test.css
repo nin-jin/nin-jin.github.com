@@ -151,10 +151,10 @@
 	vertical-align: middle;
 	padding: 1vmin;
 	margin: 0 1px 1px 0;
-	display: -webkit-inline-box;
-	display: -webkit-inline-flex;
-	display: -ms-inline-flexbox;
-	display: inline-flex;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
 	background: #FFFFFF;
 	background: rgba( 255 , 255 , 255 , .2 );
 	-webkit-box-flex: 1;
@@ -310,8 +310,9 @@
 	padding: .25em .5em;
 	font-size: .8em;
 	font-weight: bold;
-	margin: 1px 0 0 0;
+	margin: -1.75em 0 0 0;
 	outline: 1px solid steelblue;
+	position: absolute;
 }
 
 [mol_app_demo_screen_contenter] {
@@ -348,12 +349,15 @@
 }
 
 [mol_app_demo_screen_expanded="true"] [mol_app_demo_screen_titler] {
-	margin-top: 10px;
+	margin-top: -2.25em;
 	box-shadow: 0 0 20px;
 }
 
 [mol_stringer] {
-	display: inline-block;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
 	vertical-align: middle;
 	border: none;
 	outline: 1px solid #000000;
@@ -1030,6 +1034,10 @@ hr {
 
 [mol_number] {
 	text-align: right;
+	-webkit-box-pack: end;
+	-webkit-justify-content: flex-end;
+	    -ms-flex-pack: end;
+	        justify-content: flex-end;
 
 	/*flex: 1 1 auto;*/
 }
@@ -1039,6 +1047,31 @@ hr {
 	-webkit-appearance: none;
 	margin: 0;
 }*/
+
+[mol_floater] {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	position: relative;
+}
+
+[mol_floater_floatingHor="true"] {
+	box-shadow: 3px 0px 3px 0px rgba(0,0,0,.5);
+	position: relative;
+	z-index: 1;
+}
+
+[mol_floater_floatingVert="true"] {
+	box-shadow: 0px 3px 3px 0px rgba(0,0,0,.5);
+	position: relative;
+	z-index: 2;
+}
+
+[mol_floater_floatingHor="true"][mol_floater_floatingVert="true"] {
+	z-index: 3;
+	box-shadow: 2px 2px 3px 1px rgba(0,0,0,.5);
+}
 
 [mol_panel] {
 	width: 100%;
@@ -1108,15 +1141,15 @@ hr {
 [mol_tabler_lister] > * {
 	display: table-row;
 	background: inherit;
-	background: rgba(255,255,255,1);
 }
 
 [mol_tabler_lister] > * > * {
 	white-space: nowrap;
 	display: table-cell;
+	background: rgba(255,255,255,1);
 }
 
-[mol_tabler_lister] > *:nth-child(odd) {
+[mol_tabler_lister] > *:nth-child(odd) > * {
 	background: #FFFFFF;
 	background: rgba(255,255,255,.95);
 }
