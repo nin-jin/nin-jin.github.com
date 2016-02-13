@@ -2906,7 +2906,7 @@ var $mol_app_calc = (function (_super) {
         var _this = this;
         return this.atom(function () {
             var rows = [];
-            for (var i = 0; i < 30; ++i) {
+            for (var i = 0; i < 101; ++i) {
                 rows.push(_this.row(i).get());
             }
             return rows;
@@ -2917,7 +2917,7 @@ var $mol_app_calc = (function (_super) {
         return (new $mol_view).setup(function (_) {
             _.child = function () { return _this.prop(function () {
                 var cells = [];
-                for (var i = 0; i < 30; ++i) {
+                for (var i = 0; i < 27; ++i) {
                     if (i > 0) {
                         if (id > 0) {
                             cells.push(_this.cell(_this.number2string(i - 1) + id).get());
