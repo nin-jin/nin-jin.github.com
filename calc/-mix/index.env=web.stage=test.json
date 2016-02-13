@@ -1,0 +1,204 @@
+[
+	{
+		"mol/app/calc": {
+			":priority": 0,
+			"mol/tabler": {
+				":priority": 0,
+				"mol": {
+					":priority": 0,
+					"": [
+						"mol/mol.jpg",
+						"mol/index.html",
+						"mol/README.md"
+					]
+				},
+				"mol/scroller": {
+					":priority": 0,
+					"mol/view": {
+						":priority": 0,
+						"mol/model": {
+							":priority": 0,
+							"jin2/atom": {
+								":priority": 0,
+								"jin2": {
+									"jin/dumb": {
+										":priority": 0,
+										"jin": {
+											"": [
+												"jin/jin.jam.js",
+												"jin/demo.html",
+												"jin/README.md",
+												"jin/package.json",
+												"jin/git-init.cmd"
+											]
+										},
+										"": [
+											"jin/dumb/dumb.ts"
+										]
+									},
+									"": [
+										"jin2/jin2.meta.tree"
+									]
+								},
+								"jin2/object": {
+									":priority": 0,
+									"jin2/error": {
+										":priority": 1,
+										"jin/tree2": {
+											":priority": 3,
+											"jin/type": {
+												":priority": 2,
+												"": [
+													"jin/type/type.ts"
+												]
+											},
+											"": [
+												"jin/tree2/tree.ts"
+											]
+										},
+										"": [
+											"jin2/error/error.ts"
+										]
+									},
+									"jin2/log": {
+										":priority": 2,
+										"": [
+											"jin2/log/log.env=web.ts"
+										]
+									},
+									"": [
+										"jin2/object/object.ts"
+									]
+								},
+								"jin2/prop": {
+									":priority": 0,
+									"": [
+										"jin2/prop/prop.ts"
+									]
+								},
+								"jin2/state/stack": {
+									":priority": 1,
+									"": [
+										"jin2/state/stack/stack.ts"
+									]
+								},
+								"": [
+									"jin2/atom/atom.ts"
+								]
+							},
+							"jin2/grab": {
+								":priority": 1,
+								"": [
+									"jin2/grab/grab.ts"
+								]
+							},
+							"": [
+								"mol/model/model.ts"
+							]
+						},
+						"jin2/vary": {
+							":priority": 2,
+							"": [
+								"jin2/vary/vary.ts"
+							]
+						},
+						"": [
+							"mol/view/view.css",
+							"mol/view/view.ts"
+						]
+					},
+					"jin2/state/local": {
+						":priority": 2,
+						"": [
+							"jin2/state/local/local.env=web.ts"
+						]
+					},
+					"mol/rower": {
+						":priority": 0,
+						"": [
+							"mol/rower/rower.css",
+							"mol/rower/rower.view.tree"
+						]
+					},
+					"mol/filler": {
+						":priority": 0,
+						"": [
+							"mol/filler/filler.css",
+							"mol/filler/filler.view.tree"
+						]
+					},
+					"": [
+						"mol/scroller/scroller.css",
+						"mol/scroller/scroller.view.tree",
+						"mol/scroller/scroller.view.ts",
+						"mol/scroller/scroller.stage=test.view.tree"
+					]
+				},
+				"mol/lister": {
+					":priority": 0,
+					"": [
+						"mol/lister/lister.view.tree",
+						"mol/lister/lister.view.ts"
+					]
+				},
+				"mol/floater": {
+					":priority": 0,
+					"": [
+						"mol/floater/floater.css",
+						"mol/floater/floater.view.tree",
+						"mol/floater/floater.view.ts"
+					]
+				},
+				"mol/number": {
+					":priority": 0,
+					"mol/stringer": {
+						":priority": 0,
+						"": [
+							"mol/stringer/stringer.css",
+							"mol/stringer/stringer.view.tree",
+							"mol/stringer/stringer.view.ts",
+							"mol/stringer/stringer.stage=test.view.tree"
+						]
+					},
+					"": [
+						"mol/number/number.css",
+						"mol/number/number.view.tree",
+						"mol/number/number.view.ts",
+						"mol/number/number.stage=test.view.tree"
+					]
+				},
+				"mol/checker": {
+					":priority": 0,
+					"mol/clicker": {
+						":priority": 0,
+						"": [
+							"mol/clicker/clicker.css",
+							"mol/clicker/clicker.view.tree",
+							"mol/clicker/clicker.view.ts",
+							"mol/clicker/clicker.stage=test.view.tree"
+						]
+					},
+					"": [
+						"mol/checker/checker.css",
+						"mol/checker/checker.view.tree",
+						"mol/checker/checker.view.ts",
+						"mol/checker/checker.stage=test.view.tree"
+					]
+				},
+				"": [
+					"mol/tabler/tabler.css",
+					"mol/tabler/tabler.view.tree",
+					"mol/tabler/tabler.stage=test.view.tree",
+					"mol/tabler/tabler.stage=test.view.ts"
+				]
+			},
+			"": [
+				"mol/app/calc/calc.css",
+				"mol/app/calc/calc.view.tree",
+				"mol/app/calc/calc.view.ts",
+				"mol/app/calc/calc.stage=test.view.tree",
+				"mol/app/calc/index.html"
+			]
+		}
+	}
+]
