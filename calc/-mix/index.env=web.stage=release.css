@@ -126,13 +126,13 @@
 }
 
 [mol_tabler_lister] > * {
-	display: table-row;
+	display: table-row !important;
 	background: inherit;
 }
 
 [mol_tabler_lister] > * > * {
 	white-space: nowrap;
-	display: table-cell;
+	display: table-cell !important;
 	background: rgba(255,255,255,1);
 }
 
