@@ -956,6 +956,110 @@ function $jin2_grab(prototype, name, descr) {
 }
 //# sourceMappingURL=grab.js.map
 ;
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var $jin2_state_arg = (function () {
+    function $jin2_state_arg() {
+    }
+    $jin2_state_arg.href = function () {
+        return new $jin2_atom(function () { return window.location.search + window.location.hash; }, function (next) { return document.location.href = next; });
+    };
+    $jin2_state_arg.dict = function () {
+        var _this = this;
+        return new $jin2_atom(function () {
+            var href = _this.href().get();
+            var chunks = href.split(/[\/\?#!&;]/g);
+            var params = {};
+            chunks.forEach(function (chunk) {
+                if (!chunk)
+                    return;
+                var vals = chunk.split(/[:=]/).map(decodeURIComponent);
+                params[vals.shift()] = vals;
+            });
+            return params;
+        }, function (next) {
+            _this.href().set(_this.make(next));
+        });
+    };
+    $jin2_state_arg.item = function (key) {
+        var _this = this;
+        return new $jin2_atom(function () {
+            return _this.dict().get()[key] || null;
+        }, function (next) {
+            var diff = {};
+            diff[key] = next;
+            _this.dict().set(diff);
+        });
+    };
+    $jin2_state_arg.override = function (next) {
+        var params = {};
+        var prev = this.dict().get();
+        for (var key in prev) {
+            if (key in next)
+                continue;
+            params[key] = prev[key];
+        }
+        for (var key in next) {
+            params[key] = next[key];
+        }
+        return this.make(params);
+    };
+    $jin2_state_arg.make = function (next) {
+        var chunks = [];
+        for (var key in next) {
+            if (!next[key])
+                continue;
+            chunks.push([key].concat(next[key]).map(encodeURIComponent).join('='));
+        }
+        return '#!' + chunks.join('/');
+    };
+    __decorate([
+        $jin2_grab
+    ], $jin2_state_arg, "href", null);
+    __decorate([
+        $jin2_grab
+    ], $jin2_state_arg, "dict", null);
+    __decorate([
+        $jin2_grab
+    ], $jin2_state_arg, "item", null);
+    return $jin2_state_arg;
+}());
+window.addEventListener('hashchange', function () { return $jin2_state_arg.href().update(); });
+//# sourceMappingURL=arg.env=web.js.map
+;
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var $jin2_state_local = (function () {
+    function $jin2_state_local() {
+    }
+    $jin2_state_local.item = function (key) {
+        return new $jin2_atom(function () { return JSON.parse(localStorage.getItem(key) || "null"); }, function (next) {
+            if (next == null) {
+                localStorage.removeItem(key);
+                return null;
+            }
+            else {
+                localStorage.setItem(key, JSON.stringify(next));
+                return next;
+            }
+        });
+    };
+    __decorate([
+        $jin2_grab
+    ], $jin2_state_local, "item", null);
+    return $jin2_state_local;
+}());
+window.addEventListener('storage', function (event) { return $jin2_state_local.item(event.key).update(); });
+//# sourceMappingURL=local.env=web.js.map
+;
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -985,6 +1089,12 @@ var $mol_model = (function (_super) {
     };
     $mol_model.prototype.atom = function (pull, put, reap) {
         return new $jin2_atom(pull, put, reap);
+    };
+    $mol_model.prototype.argument = function (path) {
+        return $jin2_state_arg.item(this.objectPath + (path ? '.' + path : ''));
+    };
+    $mol_model.prototype.persist = function (path) {
+        return $jin2_state_local.item(this.objectPath + '.' + (path ? '.' + path : ''));
     };
     __decorate([
         $jin2_grab
@@ -1122,42 +1232,44 @@ var $mol_view = (function (_super) {
     };
     $mol_view.prototype.child = function () { return this.prop(null); };
     $mol_view.prototype.childNodes = function () { return this.child(); };
-    $mol_view.prototype.attr = function () {
-        if (this._attr)
-            return this._attr;
-        this._attr = {};
+    $mol_view.prototype.attrNames = function () {
+        if (this.hasOwnProperty('_attrNames'))
+            return this._attrNames;
+        var names = this._attrNames = [];
         for (var key in this) {
-            if (typeof this[key] !== 'function')
-                continue;
             if (key.substring(0, 5) !== 'attr_')
                 continue;
-            this._attr[key.substring(5)] = this[key]();
-        }
-        return this._attr;
-    };
-    $mol_view.prototype.field = function () {
-        if (this._field)
-            return this._field;
-        this._field = {};
-        for (var key in this) {
             if (typeof this[key] !== 'function')
                 continue;
+            names.push(key.substring(5));
+        }
+        return names;
+    };
+    $mol_view.prototype.fieldNames = function () {
+        if (this.hasOwnProperty('_fieldNames'))
+            return this._fieldNames;
+        var names = this._fieldNames = [];
+        for (var key in this) {
             if (key.substring(0, 6) !== 'field_')
                 continue;
-            this._field[key.substring(6)] = this[key]();
-        }
-        return this._field;
-    };
-    $mol_view.prototype.event = function () {
-        var event = {};
-        for (var key in this) {
             if (typeof this[key] !== 'function')
                 continue;
+            names.push(key.substring(6));
+        }
+        return names;
+    };
+    $mol_view.prototype.eventNames = function () {
+        if (this.hasOwnProperty('_eventNames'))
+            return this._eventNames;
+        var names = this._eventNames = [];
+        for (var key in this) {
             if (key.substring(0, 6) !== 'event_')
                 continue;
-            event[key.substring(6)] = this[key]();
+            if (typeof this[key] !== 'function')
+                continue;
+            names.push(key.substring(6));
         }
-        return event;
+        return names;
     };
     $mol_view.prototype.node = function () {
         var _this = this;
@@ -1168,16 +1280,13 @@ var $mol_view = (function (_super) {
                 prev = document.createElementNS(_this.nameSpace().get(), _this.tagName().get());
                 prev.setAttribute('id', id);
             }
-            var router = prev;
-            var events = _this.event();
-            for (var name in events)
-                (function (name) {
-                    var prop = events[name];
-                    router.addEventListener(name, function (event) {
-                        prop.set(event);
-                        $jin2_atom.induce();
-                    }, false);
-                })(name);
+            Object.getPrototypeOf(_this).eventNames().forEach(function (name) {
+                var prop = _this['event_' + name]();
+                prev.addEventListener(name, function (event) {
+                    prop.set(event);
+                    $jin2_atom.induce();
+                });
+            });
             var proto1 = _this.objectOwner;
             while (proto1 && (proto1.constructor !== $mol_view) && (proto1.constructor !== Function)) {
                 var className = $jin2_object_path(proto1.constructor);
@@ -1194,16 +1303,6 @@ var $mol_view = (function (_super) {
                 prev.setAttribute(className.replace(/\$/g, ''), "");
                 proto2 = Object.getPrototypeOf(proto2);
             }
-            var onAttach = function (event) {
-                prev.removeEventListener('DOMNodeInserted', onAttach);
-                _this.version()['pull']();
-            };
-            if (prev.parentNode) {
-                setTimeout(onAttach);
-            }
-            else {
-                prev.addEventListener('DOMNodeInserted', onAttach);
-            }
             return prev;
         });
     };
@@ -1211,14 +1310,13 @@ var $mol_view = (function (_super) {
         var _this = this;
         var prop = this.atom(function () {
             var prev = _this.node().get();
-            var attrs = _this.attr();
-            for (var name in attrs) {
+            Object.getPrototypeOf(_this).attrNames().forEach(function (name) {
                 var p = prev.getAttribute(name);
-                var n = String(attrs[name].get());
+                var n = String(_this['attr_' + name]().get());
                 if (p !== n) {
                     prev.setAttribute(name, n);
                 }
-            }
+            });
             var childs = _this.childNodes().get();
             if (childs != null) {
                 var childViews = [].concat.apply([], [].concat(childs));
@@ -1250,6 +1348,7 @@ var $mol_view = (function (_super) {
                                     }
                                 }
                             }
+                            view.version().get();
                         }
                     }
                     else {
@@ -1269,16 +1368,15 @@ var $mol_view = (function (_super) {
                     prev.removeChild(currNode);
                 }
             }
-            var fields = _this.field();
-            for (var path in fields) {
+            Object.getPrototypeOf(_this).fieldNames().forEach(function (path) {
                 var names = path.split('_');
                 var obj = prev;
                 for (var i = 0; i < names.length - 1; ++i) {
                     if (names[i])
                         obj = obj[names[i]];
                 }
-                obj[names[names.length - 1]] = fields[path].get();
-            }
+                obj[names[names.length - 1]] = _this['field_' + path]().get();
+            });
             prev.removeAttribute('mol_view_error');
             return prev;
         });
@@ -1307,94 +1405,18 @@ function $mol_replace(Class) {
     window[Class.name] = Class;
     return Class;
 }
-//# sourceMappingURL=view.js.map
-;
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $jin2_state_local = (function () {
-    function $jin2_state_local() {
+document.addEventListener('DOMContentLoaded', function (event) {
+    var nodes = document.querySelectorAll('[mol_view_app]');
+    for (var i = nodes.length - 1; i >= 0; --i) {
+        var node = nodes[i];
+        var klass = node.getAttribute('mol_view_app');
+        node.id = klass + '.app_';
+        var app = $mol[klass].app();
+        app.node().get();
+        app.version().get();
     }
-    $jin2_state_local.item = function (key) {
-        return new $jin2_atom(function () { return JSON.parse(localStorage.getItem(key) || "null"); }, function (next) {
-            if (next == null) {
-                localStorage.removeItem(key);
-                return null;
-            }
-            else {
-                localStorage.setItem(key, JSON.stringify(next));
-                return next;
-            }
-        });
-    };
-    __decorate([
-        $jin2_grab
-    ], $jin2_state_local, "item", null);
-    return $jin2_state_local;
-}());
-window.addEventListener('storage', function (event) { return $jin2_state_local.item(event.key).update(); });
-//# sourceMappingURL=local.env=web.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $mol;
-(function ($mol) {
-    var $mol_rower = (function (_super) {
-        __extends($mol_rower, _super);
-        function $mol_rower() {
-            _super.apply(this, arguments);
-        }
-        $mol_rower = __decorate([
-            $mol_replace
-        ], $mol_rower);
-        return $mol_rower;
-    }($mol_view));
-    $mol.$mol_rower = $mol_rower;
-})($mol || ($mol = {}));
-//# sourceMappingURL=rower.view.tree.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $mol;
-(function ($mol) {
-    var $mol_filler = (function (_super) {
-        __extends($mol_filler, _super);
-        function $mol_filler() {
-            _super.apply(this, arguments);
-        }
-        $mol_filler.prototype.child = function () { return this.prop(function () { return (["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.", "Vivamus fermentum semper porta. Nunc diam velit, adipiscing ut tristique vitae, sagittis vel odio. Maecenas convallis ullamcorper ultricies. Curabitur ornare, ligula semper consectetur sagittis, nisi diam iaculis velit, id fringilla sem nunc vel mi. Nam dictum, odio nec pretium volutpat, arcu ante placerat erat, non tristique elit urna et turpis. Quisque mi metus, ornare sit amet fermentum et, tincidunt et orci. Fusce eget orci a orci congue vestibulum. Ut dolor diam, elementum et vestibulum eu, porttitor vel elit. Curabitur venenatis pulvinar tellus gravida ornare. Sed et erat faucibus nunc euismod ultricies ut id justo. Nullam cursus suscipit nisi, et ultrices justo sodales nec. Fusce venenatis facilisis lectus ac semper. Aliquam at massa ipsum. Quisque bibendum purus convallis nulla ultrices ultricies. Nullam aliquam, mi eu aliquam tincidunt, purus velit laoreet tortor, viverra pretium nisi quam vitae mi. Fusce vel volutpat elit. Nam sagittis nisi dui.", "Suspendisse lectus leo, consectetur in tempor sit amet, placerat quis neque. Etiam luctus porttitor lorem, sed suscipit est rutrum non. Curabitur lobortis nisl a enim congue semper. Aenean commodo ultrices imperdiet. Vestibulum ut justo vel sapien venenatis tincidunt. Phasellus eget dolor sit amet ipsum dapibus condimentum vitae quis lectus. Aliquam ut massa in turpis dapibus convallis. Praesent elit lacus, vestibulum at malesuada et, ornare et est. Ut augue nunc, sodales ut euismod non, adipiscing vitae orci. Mauris ut placerat justo. Mauris in ultricies enim. Quisque nec est eleifend nulla ultrices egestas quis ut quam. Donec sollicitudin lectus a mauris pulvinar id aliquam urna cursus. Cras quis ligula sem, vel elementum mi. Phasellus non ullamcorper urna.", "Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In euismod ultrices facilisis. Vestibulum porta sapien adipiscing augue congue id pretium lectus molestie. Proin quis dictum nisl. Morbi id quam sapien, sed vestibulum sem. Duis elementum rutrum mauris sed convallis. Proin vestibulum magna mi. Aenean tristique hendrerit magna, ac facilisis nulla hendrerit ut. Sed non tortor sodales quam auctor elementum. Donec hendrerit nunc eget elit pharetra pulvinar. Suspendisse id tempus tortor. Aenean luctus, elit commodo laoreet commodo, justo nisi consequat massa, sed vulputate quam urna quis eros. Donec vel.", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec a diam lectus. Sed sit amet ipsum mauris. Maecenas congue ligula ac quam viverra nec consectetur ante hendrerit. Donec et mollis dolor. Praesent et diam eget libero egestas mattis sit amet vitae augue. Nam tincidunt congue enim, ut porta lorem lacinia consectetur. Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor. Pellentesque auctor nisi id magna consequat sagittis. Curabitur dapibus enim sit amet elit pharetra tincidunt feugiat nisl imperdiet. Ut convallis libero in urna ultrices accumsan. Donec sed odio eros. Donec viverra mi quis quam pulvinar at malesuada arcu rhoncus. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In rutrum accumsan ultricies. Mauris vitae nisi at sem facilisis semper ac in est.", "Vivamus fermentum semper porta. Nunc diam velit, adipiscing ut tristique vitae, sagittis vel odio. Maecenas convallis ullamcorper ultricies. Curabitur ornare, ligula semper consectetur sagittis, nisi diam iaculis velit, id fringilla sem nunc vel mi. Nam dictum, odio nec pretium volutpat, arcu ante placerat erat, non tristique elit urna et turpis. Quisque mi metus, ornare sit amet fermentum et, tincidunt et orci. Fusce eget orci a orci congue vestibulum. Ut dolor diam, elementum et vestibulum eu, porttitor vel elit. Curabitur venenatis pulvinar tellus gravida ornare. Sed et erat faucibus nunc euismod ultricies ut id justo. Nullam cursus suscipit nisi, et ultrices justo sodales nec. Fusce venenatis facilisis lectus ac semper. Aliquam at massa ipsum. Quisque bibendum purus convallis nulla ultrices ultricies. Nullam aliquam, mi eu aliquam tincidunt, purus velit laoreet tortor, viverra pretium nisi quam vitae mi. Fusce vel volutpat elit. Nam sagittis nisi dui.", "Suspendisse lectus leo, consectetur in tempor sit amet, placerat quis neque. Etiam luctus porttitor lorem, sed suscipit est rutrum non. Curabitur lobortis nisl a enim congue semper. Aenean commodo ultrices imperdiet. Vestibulum ut justo vel sapien venenatis tincidunt. Phasellus eget dolor sit amet ipsum dapibus condimentum vitae quis lectus. Aliquam ut massa in turpis dapibus convallis. Praesent elit lacus, vestibulum at malesuada et, ornare et est. Ut augue nunc, sodales ut euismod non, adipiscing vitae orci. Mauris ut placerat justo. Mauris in ultricies enim. Quisque nec est eleifend nulla ultrices egestas quis ut quam. Donec sollicitudin lectus a mauris pulvinar id aliquam urna cursus. Cras quis ligula sem, vel elementum mi. Phasellus non ullamcorper urna.", "Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. In euismod ultrices facilisis. Vestibulum porta sapien adipiscing augue congue id pretium lectus molestie. Proin quis dictum nisl. Morbi id quam sapien, sed vestibulum sem. Duis elementum rutrum mauris sed convallis. Proin vestibulum magna mi. Aenean tristique hendrerit magna, ac facilisis nulla hendrerit ut. Sed non tortor sodales quam auctor elementum. Donec hendrerit nunc eget elit pharetra pulvinar. Suspendisse id tempus tortor. Aenean luctus, elit commodo laoreet commodo, justo nisi consequat massa, sed vulputate quam urna quis eros. Donec vel."]); }); };
-        __decorate([
-            $jin2_grab
-        ], $mol_filler.prototype, "child", null);
-        $mol_filler = __decorate([
-            $mol_replace
-        ], $mol_filler);
-        return $mol_filler;
-    }($mol_view));
-    $mol.$mol_filler = $mol_filler;
-})($mol || ($mol = {}));
-//# sourceMappingURL=filler.view.tree.js.map
+});
+//# sourceMappingURL=view.js.map
 ;
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -1477,11 +1499,11 @@ var $mol_scroller = (function (_super) {
         _super.apply(this, arguments);
     }
     $mol_scroller.prototype.scrollTop = function () {
-        var state = $jin2_state_local.item(this.objectPath + '.scrollTop_');
+        var state = this.persist('scrollTop_');
         return this.atom(function () { return Number(state.get()) || 0; }, function (next) { return (state.set(next), next); });
     };
     $mol_scroller.prototype.scrollLeft = function () {
-        var state = $jin2_state_local.item(this.objectPath + '.scrollLeft_');
+        var state = this.persist('scrollLeft_');
         return this.atom(function () { return Number(state.get()) || 0; }, function (next) { return (state.set(next), next); });
     };
     $mol_scroller.prototype.scrollHeight = function () {
@@ -1580,115 +1602,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 var $mol;
 (function ($mol) {
-    var $mol_scroller_demo = (function (_super) {
-        __extends($mol_scroller_demo, _super);
-        function $mol_scroller_demo() {
-            _super.apply(this, arguments);
-        }
-        $mol_scroller_demo.prototype.oneContent = function () { return this.prop(function () { return ("Hello, World!\r"); }); };
-        $mol_scroller_demo.prototype.one = function () {
-            var _this = this;
-            var view = new $mol.$mol_scroller;
-            view.child = function () { return _this.oneContent(); };
-            return view;
-        };
-        $mol_scroller_demo.prototype.twoFiller = function () {
-            var view = new $mol.$mol_filler;
-            return view;
-        };
-        $mol_scroller_demo.prototype.two = function () {
-            var _this = this;
-            var view = new $mol.$mol_scroller;
-            view.scrollTop = function () { return _this.prop(function () { return (0); }); };
-            view.child = function () { return _this.twoFiller(); };
-            return view;
-        };
-        $mol_scroller_demo.prototype.threeFiller = function () {
-            var view = new $mol.$mol_filler;
-            return view;
-        };
-        $mol_scroller_demo.prototype.three = function () {
-            var _this = this;
-            var view = new $mol.$mol_scroller;
-            view.scrollTop = function () { return _this.prop(function () { return (100); }); };
-            view.child = function () { return _this.threeFiller(); };
-            return view;
-        };
-        $mol_scroller_demo.prototype.fourFiller = function () {
-            var view = new $mol.$mol_filler;
-            return view;
-        };
-        $mol_scroller_demo.prototype.four = function () {
-            var _this = this;
-            var view = new $mol.$mol_scroller;
-            view.scrollTop = function () { return _this.prop(function () { return (20000); }); };
-            view.child = function () { return _this.fourFiller(); };
-            return view;
-        };
-        $mol_scroller_demo.prototype.child = function () {
-            var _this = this;
-            return this.prop(function () { return [_this.one().get(), _this.two().get(), _this.three().get(), _this.four().get()]; });
-        };
-        __decorate([
-            $jin2_grab
-        ], $mol_scroller_demo.prototype, "oneContent", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_scroller_demo.prototype, "one", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_scroller_demo.prototype, "twoFiller", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_scroller_demo.prototype, "two", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_scroller_demo.prototype, "threeFiller", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_scroller_demo.prototype, "three", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_scroller_demo.prototype, "fourFiller", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_scroller_demo.prototype, "four", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_scroller_demo.prototype, "child", null);
-        $mol_scroller_demo = __decorate([
-            $mol_replace
-        ], $mol_scroller_demo);
-        return $mol_scroller_demo;
-    }($mol.$mol_rower));
-    $mol.$mol_scroller_demo = $mol_scroller_demo;
-})($mol || ($mol = {}));
-//# sourceMappingURL=scroller.stage=test.view.tree.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $mol;
-(function ($mol) {
     var $mol_lister = (function (_super) {
         __extends($mol_lister, _super);
         function $mol_lister() {
             _super.apply(this, arguments);
         }
-        $mol_lister.prototype.rowMinHeight = function () { return this.prop(function () { return (20); }); };
+        $mol_lister.prototype.rowMinHeight = function () { return this.prop(function () { return (40); }); };
         $mol_lister.prototype.items = function () { return this.prop(function () { return (null); }); };
         $mol_lister.prototype.itemsVisible = function () { return this.items(); };
         $mol_lister.prototype.child = function () { return this.itemsVisible(); };
+        $mol_lister.prototype.fillerHeight = function () { return this.prop(function () { return ("0"); }); };
         $mol_lister.prototype.filler = function () {
+            var _this = this;
             var view = new $mol.$mol_lister_filler;
+            view.height = function () { return _this.fillerHeight(); };
             return view;
         };
         __decorate([
@@ -1697,6 +1624,9 @@ var $mol;
         __decorate([
             $jin2_grab
         ], $mol_lister.prototype, "items", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_lister.prototype, "fillerHeight", null);
         __decorate([
             $jin2_grab
         ], $mol_lister.prototype, "filler", null);
@@ -1766,10 +1696,12 @@ var $mol_lister = (function (_super) {
             var limit = (scroller['scrollTop']().get() + screen.height) / rowMinHeight;
             if (limit >= items.length)
                 return items;
-            var filler = _this.filler().get();
-            filler.height().set(rowMinHeight * (items.length - limit) + 'px');
-            return items.slice(0, limit).concat(filler);
+            return items.slice(0, limit).concat(_this.filler().get());
         });
+    };
+    $mol_lister.prototype.fillerHeight = function () {
+        var _this = this;
+        return this.atom(function () { return (_this.items().get().length - _this.itemsVisible().get().length) * _this.rowMinHeight().get() + 'px'; });
     };
     __decorate([
         $jin2_grab
@@ -1777,12 +1709,56 @@ var $mol_lister = (function (_super) {
     __decorate([
         $jin2_grab
     ], $mol_lister.prototype, "itemsVisible", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_lister.prototype, "fillerHeight", null);
     $mol_lister = __decorate([
         $mol_replace
     ], $mol_lister);
     return $mol_lister;
 }($mol.$mol_lister));
 //# sourceMappingURL=lister.view.js.map
+;
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var $mol;
+(function ($mol) {
+    var $mol_tabler = (function (_super) {
+        __extends($mol_tabler, _super);
+        function $mol_tabler() {
+            _super.apply(this, arguments);
+        }
+        $mol_tabler.prototype.rows = function () { return this.prop(function () { return (null); }); };
+        $mol_tabler.prototype.lister = function () {
+            var _this = this;
+            var view = new $mol.$mol_lister;
+            view.items = function () { return _this.rows(); };
+            return view;
+        };
+        $mol_tabler.prototype.child = function () { return this.lister(); };
+        __decorate([
+            $jin2_grab
+        ], $mol_tabler.prototype, "rows", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_tabler.prototype, "lister", null);
+        $mol_tabler = __decorate([
+            $mol_replace
+        ], $mol_tabler);
+        return $mol_tabler;
+    }($mol.$mol_scroller));
+    $mol.$mol_tabler = $mol_tabler;
+})($mol || ($mol = {}));
+//# sourceMappingURL=tabler.view.tree.js.map
 ;
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -2062,778 +2038,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 var $mol;
 (function ($mol) {
-    var $mol_stringer_demo = (function (_super) {
-        __extends($mol_stringer_demo, _super);
-        function $mol_stringer_demo() {
-            _super.apply(this, arguments);
-        }
-        $mol_stringer_demo.prototype.one = function () {
-            var _this = this;
-            var view = new $mol.$mol_stringer;
-            view.hint = function () { return _this.prop(function () { return ("Greeting"); }); };
-            return view;
-        };
-        $mol_stringer_demo.prototype.two = function () {
-            var _this = this;
-            var view = new $mol.$mol_stringer;
-            view.hint = function () { return _this.prop(function () { return ("Greeting"); }); };
-            view.value = function () { return _this.prop(function () { return ("Hello, World!"); }); };
-            return view;
-        };
-        $mol_stringer_demo.prototype.child = function () {
-            var _this = this;
-            return this.prop(function () { return [_this.one().get(), _this.two().get()]; });
-        };
-        __decorate([
-            $jin2_grab
-        ], $mol_stringer_demo.prototype, "one", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_stringer_demo.prototype, "two", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_stringer_demo.prototype, "child", null);
-        $mol_stringer_demo = __decorate([
-            $mol_replace
-        ], $mol_stringer_demo);
-        return $mol_stringer_demo;
-    }($mol.$mol_rower));
-    $mol.$mol_stringer_demo = $mol_stringer_demo;
-})($mol || ($mol = {}));
-//# sourceMappingURL=stringer.stage=test.view.tree.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $mol;
-(function ($mol) {
-    var $mol_number = (function (_super) {
-        __extends($mol_number, _super);
-        function $mol_number() {
-            _super.apply(this, arguments);
-        }
-        $mol_number = __decorate([
-            $mol_replace
-        ], $mol_number);
-        return $mol_number;
-    }($mol.$mol_stringer));
-    $mol.$mol_number = $mol_number;
-})($mol || ($mol = {}));
-//# sourceMappingURL=number.view.tree.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $mol_number = (function (_super) {
-    __extends($mol_number, _super);
-    function $mol_number() {
-        _super.apply(this, arguments);
-    }
-    $mol_number = __decorate([
-        $mol_replace
-    ], $mol_number);
-    return $mol_number;
-}($mol.$mol_number));
-//# sourceMappingURL=number.view.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $mol;
-(function ($mol) {
-    var $mol_number_demo = (function (_super) {
-        __extends($mol_number_demo, _super);
-        function $mol_number_demo() {
-            _super.apply(this, arguments);
-        }
-        $mol_number_demo.prototype.one = function () {
-            var _this = this;
-            var view = new $mol.$mol_number;
-            view.hint = function () { return _this.prop(function () { return ("16-99"); }); };
-            return view;
-        };
-        $mol_number_demo.prototype.two = function () {
-            var _this = this;
-            var view = new $mol.$mol_number;
-            view.hint = function () { return _this.prop(function () { return ("16-99"); }); };
-            view.value = function () { return _this.prop(function () { return ("21"); }); };
-            return view;
-        };
-        $mol_number_demo.prototype.child = function () {
-            var _this = this;
-            return this.prop(function () { return [_this.one().get(), _this.two().get()]; });
-        };
-        __decorate([
-            $jin2_grab
-        ], $mol_number_demo.prototype, "one", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_number_demo.prototype, "two", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_number_demo.prototype, "child", null);
-        $mol_number_demo = __decorate([
-            $mol_replace
-        ], $mol_number_demo);
-        return $mol_number_demo;
-    }($mol.$mol_rower));
-    $mol.$mol_number_demo = $mol_number_demo;
-})($mol || ($mol = {}));
-//# sourceMappingURL=number.stage=test.view.tree.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $mol;
-(function ($mol) {
-    var $mol_clicker = (function (_super) {
-        __extends($mol_clicker, _super);
-        function $mol_clicker() {
-            _super.apply(this, arguments);
-        }
-        $mol_clicker.prototype.field_tabIndex = function () { return this.prop(function () { return (0); }); };
-        $mol_clicker.prototype.type = function () { return this.prop(function () { return ("minor"); }); };
-        $mol_clicker.prototype.attr_mol_clicker_type = function () { return this.type(); };
-        $mol_clicker.prototype.clicks = function () { return this.prop(function () { return (null); }); };
-        $mol_clicker.prototype.event_click = function () { return this.clicks(); };
-        __decorate([
-            $jin2_grab
-        ], $mol_clicker.prototype, "field_tabIndex", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_clicker.prototype, "type", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_clicker.prototype, "clicks", null);
-        $mol_clicker = __decorate([
-            $mol_replace
-        ], $mol_clicker);
-        return $mol_clicker;
-    }($mol_view));
-    $mol.$mol_clicker = $mol_clicker;
-})($mol || ($mol = {}));
-//# sourceMappingURL=clicker.view.tree.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $mol_clicker = (function (_super) {
-    __extends($mol_clicker, _super);
-    function $mol_clicker() {
-        _super.apply(this, arguments);
-    }
-    $mol_clicker.prototype.clicks = function () {
-        var _this = this;
-        return this.prop(null, function (event) {
-            alert("Clicked \"" + _this.objectName + "\"");
-        });
-    };
-    __decorate([
-        $jin2_grab
-    ], $mol_clicker.prototype, "clicks", null);
-    $mol_clicker = __decorate([
-        $mol_replace
-    ], $mol_clicker);
-    return $mol_clicker;
-}($mol.$mol_clicker));
-//# sourceMappingURL=clicker.view.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $mol;
-(function ($mol) {
-    var $mol_clicker_demo = (function (_super) {
-        __extends($mol_clicker_demo, _super);
-        function $mol_clicker_demo() {
-            _super.apply(this, arguments);
-        }
-        $mol_clicker_demo.prototype.one = function () {
-            var _this = this;
-            var view = new $mol.$mol_clicker;
-            view.child = function () { return _this.prop(function () { return ("Click me!"); }); };
-            view.type = function () { return _this.prop(function () { return ("major"); }); };
-            return view;
-        };
-        $mol_clicker_demo.prototype.two = function () {
-            var _this = this;
-            var view = new $mol.$mol_clicker;
-            view.child = function () { return _this.prop(function () { return ("Or click me.."); }); };
-            view.type = function () { return _this.prop(function () { return ("minor"); }); };
-            return view;
-        };
-        $mol_clicker_demo.prototype.three = function () {
-            var _this = this;
-            var view = new $mol.$mol_clicker;
-            view.child = function () { return _this.prop(function () { return ("Be attentive!"); }); };
-            view.type = function () { return _this.prop(function () { return ("warn"); }); };
-            return view;
-        };
-        $mol_clicker_demo.prototype.child = function () {
-            var _this = this;
-            return this.prop(function () { return [_this.one().get(), _this.two().get(), _this.three().get()]; });
-        };
-        __decorate([
-            $jin2_grab
-        ], $mol_clicker_demo.prototype, "one", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_clicker_demo.prototype, "two", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_clicker_demo.prototype, "three", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_clicker_demo.prototype, "child", null);
-        $mol_clicker_demo = __decorate([
-            $mol_replace
-        ], $mol_clicker_demo);
-        return $mol_clicker_demo;
-    }($mol.$mol_rower));
-    $mol.$mol_clicker_demo = $mol_clicker_demo;
-})($mol || ($mol = {}));
-//# sourceMappingURL=clicker.stage=test.view.tree.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $mol;
-(function ($mol) {
-    var $mol_checker = (function (_super) {
-        __extends($mol_checker, _super);
-        function $mol_checker() {
-            _super.apply(this, arguments);
-        }
-        $mol_checker.prototype.checked = function () { return this.prop(function () { return (false); }); };
-        $mol_checker.prototype.attr_mol_checker_checked = function () { return this.checked(); };
-        __decorate([
-            $jin2_grab
-        ], $mol_checker.prototype, "checked", null);
-        $mol_checker = __decorate([
-            $mol_replace
-        ], $mol_checker);
-        return $mol_checker;
-    }($mol.$mol_clicker));
-    $mol.$mol_checker = $mol_checker;
-})($mol || ($mol = {}));
-//# sourceMappingURL=checker.view.tree.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $mol_checker = (function (_super) {
-    __extends($mol_checker, _super);
-    function $mol_checker() {
-        _super.apply(this, arguments);
-    }
-    $mol_checker.prototype.clicks = function () {
-        var _this = this;
-        return this.prop(null, function (next) {
-            _this.checked().set(!_this.checked().get());
-        });
-    };
-    __decorate([
-        $jin2_grab
-    ], $mol_checker.prototype, "clicks", null);
-    $mol_checker = __decorate([
-        $mol_replace
-    ], $mol_checker);
-    return $mol_checker;
-}($mol.$mol_checker));
-//# sourceMappingURL=checker.view.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $mol;
-(function ($mol) {
-    var $mol_checker_demo = (function (_super) {
-        __extends($mol_checker_demo, _super);
-        function $mol_checker_demo() {
-            _super.apply(this, arguments);
-        }
-        $mol_checker_demo.prototype.one = function () {
-            var _this = this;
-            var view = new $mol.$mol_checker;
-            view.checked = function () { return _this.prop(function () { return (false); }); };
-            return view;
-        };
-        $mol_checker_demo.prototype.two = function () {
-            var _this = this;
-            var view = new $mol.$mol_checker;
-            view.checked = function () { return _this.prop(function () { return (true); }); };
-            return view;
-        };
-        $mol_checker_demo.prototype.three = function () {
-            var _this = this;
-            var view = new $mol.$mol_checker;
-            view.checked = function () { return _this.prop(function () { return (false); }); };
-            view.child = function () { return _this.prop(function () { return ("Unchecked"); }); };
-            return view;
-        };
-        $mol_checker_demo.prototype.four = function () {
-            var _this = this;
-            var view = new $mol.$mol_checker;
-            view.child = function () { return _this.prop(function () { return ("Checked"); }); };
-            view.checked = function () { return _this.prop(function () { return (true); }); };
-            return view;
-        };
-        $mol_checker_demo.prototype.child = function () {
-            var _this = this;
-            return this.prop(function () { return [_this.one().get(), _this.two().get(), _this.three().get(), _this.four().get()]; });
-        };
-        __decorate([
-            $jin2_grab
-        ], $mol_checker_demo.prototype, "one", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_checker_demo.prototype, "two", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_checker_demo.prototype, "three", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_checker_demo.prototype, "four", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_checker_demo.prototype, "child", null);
-        $mol_checker_demo = __decorate([
-            $mol_replace
-        ], $mol_checker_demo);
-        return $mol_checker_demo;
-    }($mol.$mol_rower));
-    $mol.$mol_checker_demo = $mol_checker_demo;
-})($mol || ($mol = {}));
-//# sourceMappingURL=checker.stage=test.view.tree.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $mol;
-(function ($mol) {
-    var $mol_tabler = (function (_super) {
-        __extends($mol_tabler, _super);
-        function $mol_tabler() {
-            _super.apply(this, arguments);
-        }
-        $mol_tabler.prototype.rows = function () { return this.prop(function () { return (null); }); };
-        $mol_tabler.prototype.lister = function () {
-            var _this = this;
-            var view = new $mol.$mol_lister;
-            view.items = function () { return _this.rows(); };
-            return view;
-        };
-        $mol_tabler.prototype.child = function () { return this.lister(); };
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler.prototype, "rows", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler.prototype, "lister", null);
-        $mol_tabler = __decorate([
-            $mol_replace
-        ], $mol_tabler);
-        return $mol_tabler;
-    }($mol.$mol_scroller));
-    $mol.$mol_tabler = $mol_tabler;
-})($mol || ($mol = {}));
-//# sourceMappingURL=tabler.view.tree.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $mol;
-(function ($mol) {
-    var $mol_tabler_demo = (function (_super) {
-        __extends($mol_tabler_demo, _super);
-        function $mol_tabler_demo() {
-            _super.apply(this, arguments);
-        }
-        $mol_tabler_demo.prototype.header = function () {
-            var view = new $mol.$mol_tabler_demo_header;
-            return view;
-        };
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler_demo.prototype, "header", null);
-        $mol_tabler_demo = __decorate([
-            $mol_replace
-        ], $mol_tabler_demo);
-        return $mol_tabler_demo;
-    }($mol.$mol_tabler));
-    $mol.$mol_tabler_demo = $mol_tabler_demo;
-})($mol || ($mol = {}));
-var $mol;
-(function ($mol) {
-    var $mol_tabler_demo_header = (function (_super) {
-        __extends($mol_tabler_demo_header, _super);
-        function $mol_tabler_demo_header() {
-            _super.apply(this, arguments);
-        }
-        $mol_tabler_demo_header.prototype.cellIdContent = function () {
-            var _this = this;
-            var view = new $mol.$mol_number;
-            view.editable = function () { return _this.prop(function () { return (false); }); };
-            view.value = function () { return _this.prop(function () { return ("ID"); }); };
-            return view;
-        };
-        $mol_tabler_demo_header.prototype.cellId = function () {
-            var _this = this;
-            var view = new $mol.$mol_floater;
-            view.child = function () { return _this.cellIdContent(); };
-            return view;
-        };
-        $mol_tabler_demo_header.prototype.cellFlagContent = function () {
-            var _this = this;
-            var view = new $mol.$mol_stringer;
-            view.editable = function () { return _this.prop(function () { return (false); }); };
-            view.value = function () { return _this.prop(function () { return ("Active"); }); };
-            return view;
-        };
-        $mol_tabler_demo_header.prototype.cellFlag = function () {
-            var _this = this;
-            var view = new $mol.$mol_floater;
-            view.floatHor = function () { return _this.prop(function () { return (false); }); };
-            view.child = function () { return _this.cellFlagContent(); };
-            return view;
-        };
-        $mol_tabler_demo_header.prototype.cellNumberContent = function () {
-            var _this = this;
-            var view = new $mol.$mol_number;
-            view.editable = function () { return _this.prop(function () { return (false); }); };
-            view.value = function () { return _this.prop(function () { return ("Age"); }); };
-            return view;
-        };
-        $mol_tabler_demo_header.prototype.cellNumber = function () {
-            var _this = this;
-            var view = new $mol.$mol_floater;
-            view.floatHor = function () { return _this.prop(function () { return (false); }); };
-            view.child = function () { return _this.cellNumberContent(); };
-            return view;
-        };
-        $mol_tabler_demo_header.prototype.cellStringContent = function () {
-            var _this = this;
-            var view = new $mol.$mol_stringer;
-            view.editable = function () { return _this.prop(function () { return (false); }); };
-            view.value = function () { return _this.prop(function () { return ("Title"); }); };
-            return view;
-        };
-        $mol_tabler_demo_header.prototype.cellString = function () {
-            var _this = this;
-            var view = new $mol.$mol_floater;
-            view.floatHor = function () { return _this.prop(function () { return (false); }); };
-            view.child = function () { return _this.cellStringContent(); };
-            return view;
-        };
-        $mol_tabler_demo_header.prototype.cellActionsContent = function () {
-            var _this = this;
-            var view = new $mol.$mol_stringer;
-            view.editable = function () { return _this.prop(function () { return (false); }); };
-            view.value = function () { return _this.prop(function () { return ("Actions"); }); };
-            return view;
-        };
-        $mol_tabler_demo_header.prototype.cellActions = function () {
-            var _this = this;
-            var view = new $mol.$mol_floater;
-            view.floatHor = function () { return _this.prop(function () { return (false); }); };
-            view.child = function () { return _this.cellActionsContent(); };
-            return view;
-        };
-        $mol_tabler_demo_header.prototype.child = function () {
-            var _this = this;
-            return this.prop(function () { return [_this.cellId().get(), _this.cellFlag().get(), _this.cellNumber().get(), _this.cellString().get(), _this.cellActions().get()]; });
-        };
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler_demo_header.prototype, "cellIdContent", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler_demo_header.prototype, "cellId", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler_demo_header.prototype, "cellFlagContent", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler_demo_header.prototype, "cellFlag", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler_demo_header.prototype, "cellNumberContent", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler_demo_header.prototype, "cellNumber", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler_demo_header.prototype, "cellStringContent", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler_demo_header.prototype, "cellString", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler_demo_header.prototype, "cellActionsContent", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler_demo_header.prototype, "cellActions", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler_demo_header.prototype, "child", null);
-        $mol_tabler_demo_header = __decorate([
-            $mol_replace
-        ], $mol_tabler_demo_header);
-        return $mol_tabler_demo_header;
-    }($mol_view));
-    $mol.$mol_tabler_demo_header = $mol_tabler_demo_header;
-})($mol || ($mol = {}));
-var $mol;
-(function ($mol) {
-    var $mol_tabler_demo_row = (function (_super) {
-        __extends($mol_tabler_demo_row, _super);
-        function $mol_tabler_demo_row() {
-            _super.apply(this, arguments);
-        }
-        $mol_tabler_demo_row.prototype.id = function () { return this.prop(function () { return (""); }); };
-        $mol_tabler_demo_row.prototype.cellIdContent = function () {
-            var _this = this;
-            var view = new $mol.$mol_number;
-            view.editable = function () { return _this.prop(function () { return (false); }); };
-            view.value = function () { return _this.id(); };
-            return view;
-        };
-        $mol_tabler_demo_row.prototype.cellId = function () {
-            var _this = this;
-            var view = new $mol.$mol_floater;
-            view.floatVert = function () { return _this.prop(function () { return (false); }); };
-            view.child = function () { return _this.cellIdContent(); };
-            return view;
-        };
-        $mol_tabler_demo_row.prototype.cellFlag = function () {
-            var view = new $mol.$mol_checker;
-            return view;
-        };
-        $mol_tabler_demo_row.prototype.cellNumber = function () {
-            var _this = this;
-            var view = new $mol.$mol_number;
-            view.value = function () { return _this.prop(function () { return ("12345"); }); };
-            return view;
-        };
-        $mol_tabler_demo_row.prototype.stringContent = function () { return this.prop(function () { return ("Hello, World!"); }); };
-        $mol_tabler_demo_row.prototype.cellString = function () {
-            var _this = this;
-            var view = new $mol.$mol_stringer;
-            view.value = function () { return _this.stringContent(); };
-            return view;
-        };
-        $mol_tabler_demo_row.prototype.cellButton = function () {
-            var _this = this;
-            var view = new $mol.$mol_clicker;
-            view.child = function () { return _this.prop(function () { return ("Open"); }); };
-            return view;
-        };
-        $mol_tabler_demo_row.prototype.child = function () {
-            var _this = this;
-            return this.prop(function () { return [_this.cellId().get(), _this.cellFlag().get(), _this.cellNumber().get(), _this.cellString().get(), _this.cellButton().get()]; });
-        };
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler_demo_row.prototype, "id", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler_demo_row.prototype, "cellIdContent", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler_demo_row.prototype, "cellId", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler_demo_row.prototype, "cellFlag", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler_demo_row.prototype, "cellNumber", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler_demo_row.prototype, "stringContent", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler_demo_row.prototype, "cellString", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler_demo_row.prototype, "cellButton", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_tabler_demo_row.prototype, "child", null);
-        $mol_tabler_demo_row = __decorate([
-            $mol_replace
-        ], $mol_tabler_demo_row);
-        return $mol_tabler_demo_row;
-    }($mol_view));
-    $mol.$mol_tabler_demo_row = $mol_tabler_demo_row;
-})($mol || ($mol = {}));
-//# sourceMappingURL=tabler.stage=test.view.tree.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $mol_tabler_demo = (function (_super) {
-    __extends($mol_tabler_demo, _super);
-    function $mol_tabler_demo() {
-        _super.apply(this, arguments);
-    }
-    $mol_tabler_demo.prototype.rows = function () {
-        var _this = this;
-        return this.atom(function () {
-            var rows = [];
-            rows.push(_this.header().get());
-            for (var i = 0; i < 200; ++i) {
-                rows.push(_this.row(i).get());
-            }
-            return rows;
-        });
-    };
-    $mol_tabler_demo.prototype.row = function (id) { return new $mol_tabler_demo_row; };
-    __decorate([
-        $jin2_grab
-    ], $mol_tabler_demo.prototype, "rows", null);
-    __decorate([
-        $jin2_grab
-    ], $mol_tabler_demo.prototype, "row", null);
-    $mol_tabler_demo = __decorate([
-        $mol_replace
-    ], $mol_tabler_demo);
-    return $mol_tabler_demo;
-}($mol.$mol_tabler_demo));
-var $mol_tabler_demo_row = (function (_super) {
-    __extends($mol_tabler_demo_row, _super);
-    function $mol_tabler_demo_row() {
-        _super.apply(this, arguments);
-    }
-    $mol_tabler_demo_row.prototype.id = function () {
-        var _this = this;
-        return this.prop(function () { return _this.objectId; });
-    };
-    $mol_tabler_demo_row.prototype.stringContent = function () {
-        var name = '00000000000000000000'.substring(Math.round(Math.random() * 20)) + '7';
-        return this.atom("Hello, Mister " + name + "!");
-    };
-    __decorate([
-        $jin2_grab
-    ], $mol_tabler_demo_row.prototype, "id", null);
-    __decorate([
-        $jin2_grab
-    ], $mol_tabler_demo_row.prototype, "stringContent", null);
-    $mol_tabler_demo_row = __decorate([
-        $mol_replace
-    ], $mol_tabler_demo_row);
-    return $mol_tabler_demo_row;
-}($mol.$mol_tabler_demo_row));
-//# sourceMappingURL=tabler.stage=test.view.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $mol;
-(function ($mol) {
     var $mol_app_calc = (function (_super) {
         __extends($mol_app_calc, _super);
         function $mol_app_calc() {
@@ -2906,7 +2110,7 @@ var $mol_app_calc = (function (_super) {
         var _this = this;
         return this.atom(function () {
             var rows = [];
-            for (var i = 0; i < 101; ++i) {
+            for (var i = 0; i < 1001; ++i) {
                 rows.push(_this.row(i).get());
             }
             return rows;
@@ -2956,7 +2160,7 @@ var $mol_app_calc = (function (_super) {
         });
     };
     $mol_app_calc.prototype.value = function (id) {
-        var state = $jin2_state_local.item(this.objectPath + '.value_' + id);
+        var state = this.persist('value_' + id);
         return this.atom(function () { return state.get(); }, function (next) {
             var numb = Number(next);
             if (numb.toString() == next)
@@ -3018,31 +2222,4 @@ var $mol_app_calc = (function (_super) {
     return $mol_app_calc;
 }($mol.$mol_app_calc));
 //# sourceMappingURL=calc.view.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $mol;
-(function ($mol) {
-    var $mol_app_calc_demo = (function (_super) {
-        __extends($mol_app_calc_demo, _super);
-        function $mol_app_calc_demo() {
-            _super.apply(this, arguments);
-        }
-        $mol_app_calc_demo = __decorate([
-            $mol_replace
-        ], $mol_app_calc_demo);
-        return $mol_app_calc_demo;
-    }($mol.$mol_app_calc));
-    $mol.$mol_app_calc_demo = $mol_app_calc_demo;
-})($mol || ($mol = {}));
-//# sourceMappingURL=calc.stage=test.view.tree.js.map
-//# sourceMappingURL=index.env=web.stage=test.js.map
+//# sourceMappingURL=index.env=web.stage=release.js.map
