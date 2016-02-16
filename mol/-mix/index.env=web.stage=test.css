@@ -132,6 +132,92 @@
 	box-shadow: inset 0 4px 8px -4px , inset 0 -4px 8px -4px;
 }
 
+[mol_floater] {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	position: relative;
+}
+
+[mol_floater_floatingHor="true"] {
+	box-shadow: 3px 0px 3px 0px rgba(0,0,0,.5);
+	position: relative;
+	z-index: 1;
+}
+
+[mol_floater_floatingVert="true"] {
+	box-shadow: 0px 3px 3px 0px rgba(0,0,0,.5);
+	position: relative;
+	z-index: 2;
+}
+
+[mol_floater_floatingHor="true"][mol_floater_floatingVert="true"] {
+	z-index: 3;
+	box-shadow: 2px 2px 3px 1px rgba(0,0,0,.5);
+}
+
+[mol_stringer] {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	vertical-align: middle;
+	border: none;
+	outline: 1px solid #000000;
+	outline: 1px solid rgba( 0 , 0 , 0 , .1 );
+	white-space: nowrap;
+	overflow: hidden;
+	padding: .5em;
+	text-align: left;
+	position: relative;
+	z-index: 0;
+	background: #FFFFFF;
+	background: rgba( 255 , 255 , 255 , .2 );
+	margin: 0 1px 1px 0;
+	font: inherit;
+	-webkit-box-flex: 1000;
+	-webkit-flex: 1000 1000 10em;
+	    -ms-flex: 1000 1000 10em;
+	        flex: 1000 1000 10em;
+	-webkit-align-self: auto;
+	    -ms-flex-item-align: auto;
+	        align-self: auto;
+}
+
+[mol_stringer]:hover ,
+[mol_stringer]:focus {
+	outline: 1px solid #000000;
+	outline: 1px solid rgba( 0 , 0 , 0 , .3 );
+	outline-offset: 0;
+	background: white;
+}
+
+[mol_stringer]:empty:before {
+	content: attr( mol_stringer_hint );
+	display: inline;
+	color: #000000;
+	color: rgba( 0 , 0 , 0 , .25 );
+	position: relative;
+	z-index: -1;
+}
+
+[mol_number] {
+	text-align: right;
+	-webkit-box-pack: end;
+	-webkit-justify-content: flex-end;
+	    -ms-flex-pack: end;
+	        justify-content: flex-end;
+
+	/*flex: 1 1 auto;*/
+}
+
+/*[mol_number]::-webkit-outer-spin-button,
+[mol_number]::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}*/
+
 [mol_clicker] {
 	cursor: pointer;
 	-webkit-user-select: none;
@@ -156,7 +242,7 @@
 	    -ms-flex-align: center;
 	        align-items: center;
 	vertical-align: middle;
-	padding: 1vmin;
+	padding: .5em;
 	margin: 0 1px 1px 0;
 	display: -webkit-box;
 	display: -webkit-flex;
@@ -221,6 +307,67 @@
 
 [mol_checker_checked="false"]:before {
 	opacity: .25;
+}
+
+[mol_tabler] {
+	width: 100%;
+	max-height: 100%;
+	background: inherit;
+}
+
+[mol_tabler_lister] {
+	margin: auto;
+	display: table;
+	border-spacing: 1px;
+	background: inherit;
+}
+
+[mol_tabler_lister] > * {
+	display: table-row !important;
+	background: inherit;
+}
+
+[mol_tabler_lister] > * > * {
+	white-space: nowrap;
+	display: table-cell !important;
+	background: rgba(255,255,255,1);
+}
+
+[mol_tabler_lister] > *:nth-child(odd) > * {
+	background: #FFFFFF;
+	background: rgba(255,255,255,.95);
+}
+
+[mol_app_calc_lister] {
+	margin: 0;
+}
+
+[mol_app_calc_header] {
+	text-align: center;
+	vertical-align: middle;
+	padding: .5em;
+	outline: 1px solid #000000;
+	outline: 1px solid rgba(0,0,0,.2);
+}
+
+[mol_app_calc_cell] {
+	min-width: 3em;
+}
+
+[mol_app_calc_cell]:not([mol_app_calc_cell_result=""]):not(:focus):not(:empty):after {
+	content: attr( mol_app_calc_cell_result );
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	background: white;
+	position: relative;
+	margin-top: -1.25em;
+}
+
+[mol_app_calc_cell]:not(:empty) {
+	outline-color: #000000;
+	outline-color: rgba(0,0,0,.5);
 }
 
 @-webkit-keyframes mol_app_demo_theming {
@@ -358,51 +505,6 @@
 [mol_app_demo_screen_expanded="true"] [mol_app_demo_screen_titler] {
 	margin-top: -2.25em;
 	box-shadow: 0 0 20px;
-}
-
-[mol_stringer] {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: -ms-flexbox;
-	display: flex;
-	vertical-align: middle;
-	border: none;
-	outline: 1px solid #000000;
-	outline: 1px solid rgba( 0 , 0 , 0 , .1 );
-	white-space: nowrap;
-	overflow: hidden;
-	padding: 1vmin;
-	text-align: left;
-	position: relative;
-	z-index: 0;
-	background: #FFFFFF;
-	background: rgba( 255 , 255 , 255 , .2 );
-	margin: 0 1px 1px 0;
-	font: inherit;
-	-webkit-box-flex: 1000;
-	-webkit-flex: 1000 1000 10em;
-	    -ms-flex: 1000 1000 10em;
-	        flex: 1000 1000 10em;
-	-webkit-align-self: auto;
-	    -ms-flex-item-align: auto;
-	        align-self: auto;
-}
-
-[mol_stringer]:hover ,
-[mol_stringer]:focus {
-	outline: 1px solid #000000;
-	outline: 1px solid rgba( 0 , 0 , 0 , .3 );
-	outline-offset: 0;
-	background: white;
-}
-
-[mol_stringer]:empty:before {
-	content: attr( mol_stringer_hint );
-	display: inline;
-	color: #000000;
-	color: rgba( 0 , 0 , 0 , .25 );
-	position: relative;
-	z-index: -1;
 }
 
 [mol_app_todo] {
@@ -1039,47 +1141,6 @@ hr {
 }
 */
 
-[mol_number] {
-	text-align: right;
-	-webkit-box-pack: end;
-	-webkit-justify-content: flex-end;
-	    -ms-flex-pack: end;
-	        justify-content: flex-end;
-
-	/*flex: 1 1 auto;*/
-}
-
-/*[mol_number]::-webkit-outer-spin-button,
-[mol_number]::-webkit-inner-spin-button {
-	-webkit-appearance: none;
-	margin: 0;
-}*/
-
-[mol_floater] {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: -ms-flexbox;
-	display: flex;
-	position: relative;
-}
-
-[mol_floater_floatingHor="true"] {
-	box-shadow: 3px 0px 3px 0px rgba(0,0,0,.5);
-	position: relative;
-	z-index: 1;
-}
-
-[mol_floater_floatingVert="true"] {
-	box-shadow: 0px 3px 3px 0px rgba(0,0,0,.5);
-	position: relative;
-	z-index: 2;
-}
-
-[mol_floater_floatingHor="true"][mol_floater_floatingVert="true"] {
-	z-index: 3;
-	box-shadow: 2px 2px 3px 1px rgba(0,0,0,.5);
-}
-
 [mol_panel] {
 	width: 100%;
 	height: 100%;
@@ -1130,35 +1191,6 @@ hr {
 
 [mol_switcher]:before {
 	content: '🔘';
-}
-
-[mol_tabler] {
-	width: 100%;
-	max-height: 100%;
-	background: inherit;
-}
-
-[mol_tabler_lister] {
-	margin: auto;
-	display: table;
-	border-spacing: 1px;
-	background: inherit;
-}
-
-[mol_tabler_lister] > * {
-	display: table-row;
-	background: inherit;
-}
-
-[mol_tabler_lister] > * > * {
-	white-space: nowrap;
-	display: table-cell;
-	background: rgba(255,255,255,1);
-}
-
-[mol_tabler_lister] > *:nth-child(odd) > * {
-	background: #FFFFFF;
-	background: rgba(255,255,255,.95);
 }
 
 /*# sourceMappingURL=index.env=web.stage=test.css.map */
