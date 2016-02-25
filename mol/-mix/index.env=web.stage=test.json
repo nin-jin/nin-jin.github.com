@@ -223,10 +223,19 @@
 		"mol/app/todo": {
 			":priority": 0,
 			"mol/app/todo/task": {
-				":priority": 1,
+				":priority": 0,
 				"": [
 					"mol/app/todo/task/task.ts",
 					"mol/app/todo/task/task.view.tree"
+				]
+			},
+			"mol/linker": {
+				":priority": 0,
+				"": [
+					"mol/linker/linker.css",
+					"mol/linker/linker.view.tree",
+					"mol/linker/linker.view.ts",
+					"mol/linker/linker.stage=test.view.tree"
 				]
 			},
 			"": [
