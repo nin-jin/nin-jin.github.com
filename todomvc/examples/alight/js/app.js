@@ -4,17 +4,18 @@ function TodoApp(scope) {
     scope.newTodo = '';
     scope.editedTodo = null;
     scope.allChecked = false;
-    
+
+    var t = null;
     scope.save = function() {
         localStorage['todos-alight'] = JSON.stringify( scope.todos )
     }
-    
+
     scope.load = function() {
         scope.todos = JSON.parse( localStorage['todos-alight'] || '[]' )
     }
 
     scope.load();
-    
+
     scope.addTodo = function() {
         scope.todos.push({
             title: scope.newTodo,
@@ -85,9 +86,10 @@ function TodoApp(scope) {
         scope.save()
     };
 
-    scope.revertEditing = function(todo) {
+    scope.revertEditing = function(todo, element) {
         todo.title = prevTitle;
-        return prevTitle
+        element.value = prevTitle;
+        element.blur()
     };
 
 };
