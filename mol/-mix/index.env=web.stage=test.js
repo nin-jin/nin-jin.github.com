@@ -3546,7 +3546,7 @@ var $mol_app_demo = (function (_super) {
     $mol_app_demo.prototype.graph = function (id) {
         var _this = this;
         return (new $mol.$mol_app_demo_graph).setup(function (_) {
-            _.child = function () { return _this.prop(function () {
+            _.child = function () { return _this.atom(function () {
                 var nodes = new Set;
                 var edges = new Set;
                 var stack = [_this.widget(id).get().version()];
