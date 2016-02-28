@@ -213,6 +213,26 @@
 	{
 		"mol/app/demo": {
 			":priority": 0,
+			"mol/svg": {
+				":priority": 0,
+				"": [
+					"mol/svg/svg.view.tree"
+				]
+			},
+			"mol/svg/text": {
+				":priority": 0,
+				"": [
+					"mol/svg/text/text.view.tree",
+					"mol/svg/text/text.view.ts"
+				]
+			},
+			"mol/svg/line": {
+				":priority": 0,
+				"": [
+					"mol/svg/line/line.view.tree",
+					"mol/svg/line/line.view.ts"
+				]
+			},
 			"": [
 				"mol/app/demo/demo.css",
 				"mol/app/demo/demo.view.tree",
@@ -232,12 +252,6 @@
 			},
 			"mol/linker": {
 				":priority": 0,
-				"jin2/state/arg": {
-					":priority": 2,
-					"": [
-						"jin2/state/arg/arg.env=web.ts"
-					]
-				},
 				"": [
 					"mol/linker/linker.css",
 					"mol/linker/linker.view.tree",

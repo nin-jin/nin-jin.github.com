@@ -65,7 +65,7 @@
 	display: -ms-flexbox;
 	display: flex;
 	width: 100%;
-	height: 100%;
+	max-height: 100%;
 	-webkit-box-align: start;
 	-webkit-align-items: flex-start;
 	    -ms-flex-align: start;
@@ -451,6 +451,12 @@
 	overflow: auto;
 }
 
+[mol_app_demo_single="true"] {
+	-webkit-flex-wrap: nowrap;
+	    -ms-flex-wrap: nowrap;
+	        flex-wrap: nowrap;
+}
+
 [mol_app_demo_screen] {
 	width: 560px;
 	height: 360px;
@@ -459,6 +465,23 @@
 	background: #ccc;
 	z-index: 0;
 	outline: 1px solid steelblue;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: column;
+	    -ms-flex-direction: column;
+	        flex-direction: column;
+}
+
+[mol_app_demo_single="true"] > [mol_app_demo_screen] {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+	    -ms-flex: 1;
+	        flex: 1;
+	height: auto;
 }
 
 [mol_app_demo_screen]:hover {
@@ -498,21 +521,23 @@
 	        flex-wrap: wrap;
 }
 
-[mol_app_demo_screen_expanded="true"] {
-	z-index: 1;
-	position: fixed;
-	left: 20px;
-	right: 20px;
-	top: 20px;
-	bottom: 20px;
-	width: auto;
-	height: auto;
-	box-shadow: 0 0 100px;
+[mol_app_demo_graph] {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+	    -ms-flex: 1;
+	        flex: 1;
+	background: snow;
+	outline: 1px solid steelblue;
+	margin: 20px;
 }
 
-[mol_app_demo_screen_expanded="true"] [mol_app_demo_screen_titler] {
-	margin-top: -2.25em;
-	box-shadow: 0 0 20px;
+[mol_app_demo_node] {
+	font-size: 12px;
+	font-size: .75rem;
+}
+
+[mol_app_demo_edge] {
+	stroke: steelblue;
 }
 
 [mol_linker] {
@@ -536,7 +561,8 @@
 
 [mol_app_todo] {
 	margin: 0;
-	height: 100%;
+
+	/*height: 100%;*/
 	display: -webkit-box;
 	display: -webkit-flex;
 	display: -ms-flexbox;
