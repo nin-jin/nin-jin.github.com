@@ -1,0 +1,377 @@
+[mol_view_error="fail"] {
+	background-image: -webkit-repeating-linear-gradient(45deg, rgba(255,220,220,1), rgba(255,220,220,1) 11px, rgba(255,255,220,1) 10px, rgba(255,255,220,1) 20px) !important;
+	background-image: repeating-linear-gradient(
+		45deg,
+		rgba(255,220,220,1),
+		rgba(255,220,220,1) 11px,
+		rgba(255,255,220,1) 10px,
+		rgba(255,255,220,1) 20px
+	) !important;
+	background-size: 28px 28px !important;
+}
+
+@-webkit-keyframes mol_view_show {
+	from {
+		opacity: 0;
+	}
+}
+
+@keyframes mol_view_show {
+	from {
+		opacity: 0;
+	}
+}
+
+@-webkit-keyframes mol_view_error_move {
+  0% {
+	background-position: 0 0;
+  }
+  100% {
+	background-position: 28px 0;
+  }
+}
+
+@keyframes mol_view_error_move {
+  0% {
+	background-position: 0 0;
+  }
+  100% {
+	background-position: 28px 0;
+  }
+}
+
+[mol_view] {
+	-webkit-animation: mol_view_show .25s ease-in;
+	        animation: mol_view_show .25s ease-in;
+}
+
+[mol_view_error="wait"] {
+	background-image: -webkit-repeating-linear-gradient(45deg, rgba(0,0,255,.05), rgba(0,0,255,.05) 11px, rgba(255,255,255,.02) 10px, rgba(255,255,255,.02) 20px) !important;
+	background-image: repeating-linear-gradient(
+		45deg,
+		rgba(0,0,255,.05),
+		rgba(0,0,255,.05) 11px,
+		rgba(255,255,255,.02) 10px,
+		rgba(255,255,255,.02) 20px
+	) !important;
+	background-size: 28px 28px !important;
+	-webkit-animation: mol_view_show 1s linear , mol_view_error_move .25s linear infinite !important;
+	        animation: mol_view_show 1s linear , mol_view_error_move .25s linear infinite !important;
+}
+
+[mol_clicker] {
+	cursor: pointer;
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	    -ms-user-select: none;
+	        user-select: none;
+	outline: 1px solid #000000;
+	outline: 1px solid rgba( 0 , 0 , 0 , .1 );
+	-webkit-box-flex: 0.001;
+	-webkit-flex: 0.001 0.001 auto;
+	    -ms-flex: 0.001 0.001 auto;
+	        flex: 0.001 0.001 auto;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	    -ms-flex-pack: center;
+	        justify-content: center;
+	-webkit-align-content: center;
+	    -ms-flex-line-pack: center;
+	        align-content: center;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	    -ms-flex-align: center;
+	        align-items: center;
+	vertical-align: middle;
+	padding: 8px;
+	padding: .5rem;
+	margin: 0 1px 1px 0;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	background: #FFFFFF;
+	background: rgba( 255 , 255 , 255 , .2 );
+	-webkit-box-flex: 1;
+	-webkit-flex: 1 1 auto;
+	    -ms-flex: 1 1 auto;
+	        flex: 1 1 auto;
+}
+
+[mol_clicker]:hover {
+	outline-color: #000000;
+	outline-color: rgba( 0 , 0 , 0 , .2 );
+	/*background: rgba( 255 , 255 , 255 , .3 );*/
+}
+
+[mol_clicker_type="major"] {
+	background: #00FF00;
+	background: rgba( 0 , 255 , 0 , .2 );
+}
+
+[mol_clicker_type="major"]:hover {
+	background: #00FF00;
+	background: rgba( 0 , 255 , 0 , .3 );
+}
+
+[mol_clicker_type="warn"] {
+	background: #FF0000;
+	background: rgba( 255 , 0 , 0 , .2 );
+}
+
+[mol_clicker_type="warn"]:hover {
+	background: #FF0000;
+	background: rgba( 255 , 0 , 0 , .3 );
+}
+
+[mol_checker] {
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	    -ms-flex-pack: center;
+	        justify-content: center;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	    -ms-flex-align: center;
+	        align-items: center;
+	-webkit-align-content: center;
+	    -ms-flex-line-pack: center;
+	        align-content: center;
+}
+
+[mol_checker]:before {
+	content: '✔';
+}
+
+[mol_checker]:not(:empty):before {
+	padding-right: .5vmin;
+}
+
+[mol_checker]:not([mol_checker_checked="true"]):before {
+	opacity: .25;
+}
+
+[mol_stringer] {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	vertical-align: middle;
+	border: none;
+	outline: 1px solid #000000;
+	outline: 1px solid rgba( 0 , 0 , 0 , .1 );
+	white-space: nowrap;
+	overflow: hidden;
+	padding: 8px;
+	padding: .5rem;
+	text-align: left;
+	position: relative;
+	z-index: 0;
+	background: #FFFFFF;
+	background: rgba( 255 , 255 , 255 , .2 );
+	margin: 0 1px 1px 0;
+	font: inherit;
+	/*flex: 1000 1000 10em;*/
+	-webkit-align-self: auto;
+	    -ms-flex-item-align: auto;
+	        align-self: auto;
+}
+
+[mol_stringer]:hover ,
+[mol_stringer]:focus {
+	outline-color: #000000;
+	outline-color: rgba( 0 , 0 , 0 , .3 );
+	outline-offset: 0;
+	background: white;
+}
+
+[mol_stringer]:empty:before {
+	content: attr( mol_stringer_hint );
+	display: inline;
+	color: #000000;
+	color: rgba( 0 , 0 , 0 , .25 );
+	position: relative;
+	z-index: -1;
+}
+
+[mol_scroller] {
+	overflow: auto;
+	overflow: auto;
+	-webkit-box-flex: 1;
+	-webkit-flex: 1 1 100%;
+	    -ms-flex: 1 1 100%;
+	        flex: 1 1 100%;
+	-webkit-align-self: stretch;
+	    -ms-flex-item-align: stretch;
+	        align-self: stretch;
+	outline: 1px solid #000000;
+	outline: 1px solid rgba( 0 , 0 , 0 , .1 );
+	will-change: scroll-position;
+}
+
+@media print {
+
+	[mol_scroller] {
+		overflow: visible;
+	}
+}
+
+[mol_scroller]::-webkit-scrollbar {
+	width: 2vmin;
+	height: 2vmin;
+	max-width: 10px;
+	max-height: 10px;
+}
+
+[mol_scroller]::-webkit-scrollbar-track {
+	background: #eee;
+}
+
+[mol_scroller]::-webkit-scrollbar-thumb {
+	background: #999;
+}
+
+[mol_scroller_contenter] > * {
+	-webkit-transform: translateZ(0);
+	        transform: translateZ(0);
+}
+
+[mol_scroller_overflowTop="true"] {
+	box-shadow: inset 0 4px 8px -4px;
+}
+
+[mol_scroller_overflowBottom="true"] {
+	box-shadow: inset 0 -4px 8px -4px;
+}
+
+[mol_scroller_overflowTop="true"][mol_scroller_overflowBottom="true"] {
+	box-shadow: inset 0 4px 8px -4px , inset 0 -4px 8px -4px;
+}
+
+[mol_switcher]:before {
+	content: '🔘';
+}
+
+[mol_app_wish] {
+	font: 32px/1 serif;
+	font: 2rem/1 serif;
+	background: pink;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: column;
+	    -ms-flex-direction: column;
+	        flex-direction: column;
+	width: 100%;
+	height: 100%;
+}
+
+[mol_app_wish_male="true"] {
+	background: lightblue;
+}
+
+[mol_app_wish_titler] {
+	padding: 16px;
+	padding: 1rem;
+	margin: 16px;
+	margin: 1rem;
+}
+
+[mol_app_wish_titler]:before {
+	display: inline;
+	content: 'Я,\00A0';
+}
+
+[mol_app_wish_titler]:not(:empty):after {
+	display: inline;
+	content: ', очень хочу..';
+}
+
+[mol_app_wish_male="true"] [mol_app_wish_titler]:not(:empty):after {
+	content: ', могу предложить..';
+}
+
+[mol_app_wish_lister] {
+	-webkit-box-flex: 1000;
+	-webkit-flex: 1000 1000 50%;
+	    -ms-flex: 1000 1000 50%;
+	        flex: 1000 1000 50%;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: start;
+	-webkit-align-items: flex-start;
+	    -ms-flex-align: start;
+	        align-items: flex-start;
+	-webkit-flex-wrap: wrap;
+	    -ms-flex-wrap: wrap;
+	        flex-wrap: wrap;
+	-webkit-align-content: flex-start;
+	    -ms-flex-line-pack: start;
+	        align-content: flex-start;
+}
+
+[mol_app_wish_offerer] {
+	padding: 16px;
+	padding: 1rem;
+	margin: 16px;
+	margin: 1rem;
+	-webkit-box-pack: end;
+	-webkit-justify-content: flex-end;
+	    -ms-flex-pack: end;
+	        justify-content: flex-end;
+}
+
+[mol_app_wish_offerer]:before {
+	display: none;
+}
+
+[mol_app_wish_offerer][mol_checker_checked="true"] {
+	background: #000000;
+	background: rgba( 0 , 0 , 0 , .25 );
+	color: white;
+}
+
+[mol_app_wish_servicer] {
+	padding: 16px;
+	padding: 1rem;
+	margin: 16px;
+	margin: 1rem;
+	-webkit-box-pack: end;
+	-webkit-justify-content: flex-end;
+	    -ms-flex-pack: end;
+	        justify-content: flex-end;
+}
+
+[mol_app_wish_logger] {
+	-webkit-box-flex: 1000;
+	-webkit-flex: 1000 1000 50%;
+	    -ms-flex: 1000 1000 50%;
+	        flex: 1000 1000 50%;
+	padding: 16px;
+	padding: 1rem;
+	white-space: pre-wrap;
+	text-align: left;
+	font-size: 16px;
+	font-size: 1rem;
+	overflow: auto;
+}
+
+[mol_app_wish_messenger] {
+	padding: 16px;
+	padding: 1rem;
+	margin: 16px;
+	margin: 1rem;
+}
+
+[mol_app_wish_clienter] {
+	padding: 16px;
+	padding: 1rem;
+	margin: 16px;
+	margin: 1rem;
+}
+
+/*# sourceMappingURL=index.env=web.stage=release.css.map */
