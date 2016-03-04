@@ -2176,7 +2176,7 @@ var $mol_app_wish = (function (_super) {
                 : _this.offers().get().map(function (id) { return _this.offerer(id).get(); });
         });
     };
-    $mol_app_wish.prototype.male = function () { return this.persist('male'); };
+    $mol_app_wish.prototype.male = function () { return this.argument().item('male'); };
     $mol_app_wish.prototype.wish = function () {
         return this.prop(function () { return myState.get()['wish']; }, function (next) { return myState.set({ wish: next }); });
     };
@@ -2203,7 +2203,7 @@ var $mol_app_wish = (function (_super) {
     $mol_app_wish.prototype.transes = function () {
         var _this = this;
         return this.prop(null, function (event) {
-            _this.male().set(!_this.male().get());
+            _this.male().set(_this.male().get() ? null : 'true');
         });
     };
     $mol_app_wish.prototype.offerer = function (id) {
