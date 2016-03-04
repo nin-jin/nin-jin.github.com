@@ -2142,10 +2142,12 @@ var customers = new $jin2_prop(function () {
         .map(function (id) { return states[id]; })
         .filter(function (state) { return state.wish === myId; });
 });
-var invites = $mol_state_arg.item('peer').get();
-if (invites)
-    invites.split('.').forEach(connect);
-myState.set({ id: myId });
+peer.on('open', function () {
+    var invites = $mol_state_arg.item('peer').get();
+    if (invites)
+        invites.split('.').forEach(connect);
+    myState.set({ id: myId });
+});
 var $mol_app_wish = (function (_super) {
     __extends($mol_app_wish, _super);
     function $mol_app_wish() {
