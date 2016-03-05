@@ -158,24 +158,6 @@
 						"mol/floater/floater.view.ts"
 					]
 				},
-				"mol/number": {
-					":priority": 0,
-					"mol/stringer": {
-						":priority": 0,
-						"": [
-							"mol/stringer/stringer.css",
-							"mol/stringer/stringer.view.tree",
-							"mol/stringer/stringer.view.ts",
-							"mol/stringer/stringer.stage=test.view.tree"
-						]
-					},
-					"": [
-						"mol/number/number.css",
-						"mol/number/number.view.tree",
-						"mol/number/number.view.ts",
-						"mol/number/number.stage=test.view.tree"
-					]
-				},
 				"mol/checker": {
 					":priority": 0,
 					"mol/clicker": {
@@ -192,6 +174,24 @@
 						"mol/checker/checker.view.tree",
 						"mol/checker/checker.view.ts",
 						"mol/checker/checker.stage=test.view.tree"
+					]
+				},
+				"mol/number": {
+					":priority": 0,
+					"mol/stringer": {
+						":priority": 0,
+						"": [
+							"mol/stringer/stringer.css",
+							"mol/stringer/stringer.view.tree",
+							"mol/stringer/stringer.view.ts",
+							"mol/stringer/stringer.stage=test.view.tree"
+						]
+					},
+					"": [
+						"mol/number/number.css",
+						"mol/number/number.view.tree",
+						"mol/number/number.view.ts",
+						"mol/number/number.stage=test.view.tree"
 					]
 				},
 				"": [
@@ -213,6 +213,15 @@
 	{
 		"mol/app/demo": {
 			":priority": 0,
+			"mol/switcher": {
+				":priority": 0,
+				"": [
+					"mol/switcher/switcher.css",
+					"mol/switcher/switcher.view.tree",
+					"mol/switcher/switcher.view.ts",
+					"mol/switcher/switcher.stage=test.view.tree"
+				]
+			},
 			"mol/svg": {
 				":priority": 0,
 				"": [
@@ -250,15 +259,6 @@
 					"mol/app/todo/task/task.view.tree"
 				]
 			},
-			"mol/linker": {
-				":priority": 0,
-				"": [
-					"mol/linker/linker.css",
-					"mol/linker/linker.view.tree",
-					"mol/linker/linker.view.ts",
-					"mol/linker/linker.stage=test.view.tree"
-				]
-			},
 			"": [
 				"mol/app/todo/todo.css",
 				"mol/app/todo/todo.view.tree",
@@ -293,17 +293,6 @@
 				"mol/spoiler/spoiler.view.tree",
 				"mol/spoiler/spoiler.view.ts",
 				"mol/spoiler/spoiler.stage=test.view.tree"
-			]
-		}
-	},
-	{
-		"mol/switcher": {
-			":priority": 0,
-			"": [
-				"mol/switcher/switcher.css",
-				"mol/switcher/switcher.view.tree",
-				"mol/switcher/switcher.view.ts",
-				"mol/switcher/switcher.stage=test.view.tree"
 			]
 		}
 	}
