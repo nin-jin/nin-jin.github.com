@@ -1,6 +1,6 @@
 var $jin = this.$jin = {}
 
-;
+
 //# sourceMappingURL=dumb.js.map
 ;
 function $jin_type(value) {
