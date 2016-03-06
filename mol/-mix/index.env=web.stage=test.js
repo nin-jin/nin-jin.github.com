@@ -1,318 +1,7 @@
 var $jin = this.$jin = {}
 
-
+;
 //# sourceMappingURL=dumb.js.map
-;
-function $jin_type(value) {
-    var str = {}.toString.apply(value);
-    var type = str.substring(8, str.length - 1);
-    if (['Window', 'global'].indexOf(type) >= 0)
-        type = 'Global';
-    return type;
-}
-//# sourceMappingURL=type.js.map
-;
-var $jin_tree2 = (function () {
-    function $jin_tree2(config) {
-        this.type = config.type || '';
-        if (config.value) {
-            var childs = $jin_tree2.values(config.value);
-            if (config.type || childs.length > 1) {
-                this.childs = childs.concat(config.childs || []);
-                this.data = config.data || '';
-            }
-            else {
-                this.data = childs[0].data;
-                this.childs = config.childs || [];
-            }
-        }
-        else {
-            this.data = config.data || '';
-            this.childs = config.childs || [];
-        }
-        this.baseUri = config.baseUri || '';
-        this.row = config.row || 0;
-        this.col = config.col || 0;
-    }
-    $jin_tree2.values = function (str, baseUri) {
-        return str.split('\n').map(function (data, index) { return new $jin_tree2({
-            data: data,
-            baseUri: baseUri,
-            row: index + 1
-        }); });
-    };
-    $jin_tree2.prototype.clone = function (config) {
-        return new $jin_tree2({
-            type: ('type' in config) ? config.type : this.type,
-            data: ('data' in config) ? config.data : this.data,
-            childs: ('childs' in config) ? config.childs : this.childs,
-            baseUri: ('baseUri' in config) ? config.baseUri : this.baseUri,
-            row: ('row' in config) ? config.row : this.row,
-            col: ('col' in config) ? config.col : this.col,
-            value: config.value
-        });
-    };
-    $jin_tree2.fromString = function (str, baseUri) {
-        var root = new $jin_tree2({ baseUri: baseUri });
-        var stack = [root];
-        var row = 0;
-        var lines = String(str).split(/\n/);
-        lines.forEach(function (line) {
-            ++row;
-            var chunks = /^(\t*)((?:[^\n\t= ]+ *)*)(=[^\n]*)?/.exec(line);
-            if (!chunks)
-                throw $jin2_error({
-                    reason: 'Syntax error',
-                    row: row,
-                    source: line
-                });
-            var indent = chunks[1];
-            var path = chunks[2];
-            var data = chunks[3];
-            var deep = indent.length;
-            var types = path ? path.split(/ +/) : [];
-            if (stack.length < deep)
-                throw $jin2_error({
-                    reason: 'Too more tabs',
-                    row: row,
-                    source: line
-                });
-            stack.length = deep + 1;
-            var parent = stack[deep];
-            types.forEach(function (type) {
-                if (!type)
-                    return;
-                var next = new $jin_tree2({
-                    type: type,
-                    baseUri: baseUri,
-                    row: row
-                });
-                parent.childs.push(next);
-                parent = next;
-            });
-            if (data) {
-                var next = new $jin_tree2({
-                    data: data.substring(1),
-                    baseUri: baseUri,
-                    row: row
-                });
-                parent.childs.push(next);
-                parent = next;
-            }
-            stack.push(parent);
-        });
-        return root;
-    };
-    $jin_tree2.fromJSON = function (json, baseUri) {
-        if (baseUri === void 0) { baseUri = ''; }
-        var type = $jin_type(json);
-        switch (type) {
-            case 'Boolean':
-            case 'Null':
-            case 'Number':
-                return new $jin_tree2({
-                    type: String(json),
-                    baseUri: baseUri
-                });
-            case 'String':
-                return new $jin_tree2({
-                    value: json,
-                    baseUri: baseUri
-                });
-            case 'Array':
-                return new $jin_tree2({
-                    type: "list",
-                    childs: json.map(function (json) { return $jin_tree2.fromJSON(json, baseUri); })
-                });
-            case 'Date':
-                return new $jin_tree2({
-                    type: "time",
-                    value: json.toISOString(),
-                    baseUri: baseUri
-                });
-            case 'Object':
-                var childs = [];
-                for (var key in json) {
-                    if (json[key] === undefined)
-                        continue;
-                    if (/^[^\n\t= ]+$/.test(key)) {
-                        var child = new $jin_tree2({
-                            type: key,
-                            baseUri: baseUri
-                        });
-                    }
-                    else {
-                        var child = new $jin_tree2({
-                            value: key,
-                            baseUri: baseUri
-                        });
-                    }
-                    child.childs.push(new $jin_tree2({
-                        type: ":",
-                        childs: [$jin_tree2.fromJSON(json[key], baseUri)],
-                        baseUri: baseUri
-                    }));
-                    childs.push(child);
-                }
-                return new $jin_tree2({
-                    type: "dict",
-                    childs: childs,
-                    baseUri: baseUri
-                });
-            default:
-                throw $jin2_error({
-                    reason: 'Unsupported type',
-                    type: type,
-                    uri: baseUri
-                });
-        }
-    };
-    Object.defineProperty($jin_tree2.prototype, "uri", {
-        get: function () {
-            return this.baseUri + '#' + this.row + ':' + this.col;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    $jin_tree2.prototype.toString = function (prefix) {
-        if (prefix === void 0) { prefix = ''; }
-        var output = '';
-        if (this.type.length) {
-            if (!prefix.length) {
-                prefix = "\t";
-            }
-            output += this.type + " ";
-            if (this.childs.length == 1) {
-                return output + this.childs[0].toString(prefix);
-            }
-            output += "\n";
-        }
-        else if (this.data.length || prefix.length) {
-            output += "=" + this.data + "\n";
-        }
-        for (var _i = 0, _a = this.childs; _i < _a.length; _i++) {
-            var child = _a[_i];
-            output += prefix;
-            output += child.toString(prefix + "\t");
-        }
-        return output;
-    };
-    $jin_tree2.prototype.toJSON = function () {
-        if (!this.type)
-            return this.value;
-        if (this.type === '//')
-            return undefined;
-        if (this.type === 'true')
-            return true;
-        if (this.type === 'false')
-            return false;
-        if (this.type === 'null')
-            return null;
-        if (this.type === 'dict') {
-            var obj = {};
-            for (var _i = 0, _a = this.childs; _i < _a.length; _i++) {
-                var child = _a[_i];
-                var key = child.type || child.value;
-                if (key === '//')
-                    continue;
-                var colon = child.select([':']).childs[0];
-                if (!colon)
-                    throw $jin2_error({
-                        reason: 'Syntax error',
-                        required: 'Colon after key',
-                        uri: child.uri
-                    });
-                var val = colon.childs[0].toJSON();
-                if (val !== undefined)
-                    obj[key] = val;
-            }
-            return obj;
-        }
-        if (this.type === 'list') {
-            var res = [];
-            this.childs.forEach(function (child) {
-                var val = child.toJSON();
-                if (val !== undefined)
-                    res.push(val);
-            });
-            return res;
-        }
-        if (this.type === 'time') {
-            return new Date(this.value);
-        }
-        if (String(Number(this.type)) == this.type.trim())
-            return Number(this.type);
-        throw $jin2_error({
-            reason: 'Unknown type',
-            type: this.type,
-            uri: this.uri,
-        });
-    };
-    Object.defineProperty($jin_tree2.prototype, "value", {
-        get: function () {
-            var values = [];
-            for (var _i = 0, _a = this.childs; _i < _a.length; _i++) {
-                var child = _a[_i];
-                if (child.type)
-                    continue;
-                values.push(child.value);
-            }
-            return this.data + values.join("\n");
-        },
-        enumerable: true,
-        configurable: true
-    });
-    $jin_tree2.prototype.select = function (path) {
-        if (typeof path === 'string')
-            path = path.split(/ +/);
-        var next = [this];
-        for (var _i = 0, path_1 = path; _i < path_1.length; _i++) {
-            var type = path_1[_i];
-            if (!next.length)
-                break;
-            var prev = next;
-            next = [];
-            for (var _a = 0, prev_1 = prev; _a < prev_1.length; _a++) {
-                var item = prev_1[_a];
-                for (var _b = 0, _c = item.childs; _b < _c.length; _b++) {
-                    var child = _c[_b];
-                    if (child.type == type) {
-                        next.push(child);
-                    }
-                }
-            }
-        }
-        return new $jin_tree2({ childs: next });
-    };
-    $jin_tree2.prototype.filter = function (path, value) {
-        if (typeof path === 'string')
-            path = path.split(/ +/);
-        var childs = this.childs.filter(function (item) {
-            var found = item.select(path);
-            if (value == null) {
-                return Boolean(found.childs.length);
-            }
-            else {
-                return found.childs.some(function (child) { return child.value == value; });
-            }
-        });
-        return new $jin_tree2({ childs: childs });
-    };
-    return $jin_tree2;
-}());
-//# sourceMappingURL=tree.js.map
-;
-function $jin2_error(info) {
-    var error = new Error(info.reason);
-    Object.defineProperty(error, 'message', {
-        get: function () {
-            return $jin_tree2.fromJSON(this.info).toString();
-        }
-    });
-    error['info'] = info;
-    return error;
-}
-//# sourceMappingURL=error.js.map
 ;
 function $jin2_log() {
     var values = [];
@@ -374,7 +63,7 @@ function $jin2_object_path(obj) {
     if (typeof obj === 'function') {
         return obj.objectPath = obj.name || Function.toString.call(obj).match(/^\s*function\s*([$\w]*)\s*\(/)[1];
     }
-    throw $jin2_error({ reason: 'Field not defined', field: 'objectPath' });
+    throw new Error("Field not defined (objectPath)");
 }
 var $jin2_object = (function () {
     function $jin2_object() {
@@ -404,12 +93,7 @@ var $jin2_object = (function () {
         get: function () { return this._objectName; },
         set: function (next) {
             if (this._objectName != null)
-                throw $jin2_error({
-                    reason: 'Property already defined',
-                    path: this.objectPath + '.objectName',
-                    next: next,
-                    prev: this._objectName,
-                });
+                throw new Error("Property already defined (" + this.objectPath + ".objectName)");
             this._objectName = next;
         },
         enumerable: true,
@@ -423,12 +107,7 @@ var $jin2_object = (function () {
         },
         set: function (next) {
             if (this._objectPath != null)
-                throw $jin2_error({
-                    reason: 'Property already defined',
-                    path: this.objectPath + '.objectPath',
-                    next: next,
-                    prev: this._objectPath,
-                });
+                throw new Error("Property already defined (" + this.objectPath + ".objectPath)");
             this._objectPath = next;
         },
         enumerable: true,
@@ -441,22 +120,12 @@ var $jin2_object = (function () {
             if (next) {
                 var prev = this._objectOwner;
                 if (prev)
-                    throw $jin2_error({
-                        reason: 'Property already defined',
-                        path: this.objectPath + '.objectOwner',
-                        prev: prev,
-                        next: next
-                    });
+                    throw new Error("Property already defined (" + this.objectPath + ".objectOwner");
                 var nextVal = next[ownerField];
                 if (nextVal === this)
                     return;
                 if (nextVal)
-                    throw $jin2_error({
-                        reason: 'Property already defined',
-                        path: next.objectPath + '.' + ownerField,
-                        prev: nextVal,
-                        next: this
-                    });
+                    throw new Error("Property already defined (" + next.objectPath + "." + ownerField + ")");
                 this._objectOwner = next;
                 next[ownerField] = this;
             }
@@ -509,10 +178,10 @@ var $jin2_prop = (function (_super) {
         configurable: true
     });
     $jin2_prop.prototype.pull_ = function (prev) {
-        throw $jin2_error({ reason: 'Pulling not supportetd' });
+        throw new Error("Pulling not supportetd (" + this.objectPath + ")");
     };
     $jin2_prop.prototype.put_ = function (next, prev) {
-        throw $jin2_error({ reason: 'Putting not supportetd' });
+        throw new Error("Putting not supportetd (" + this.objectPath + ")");
     };
     $jin2_prop.prototype.get = function () {
         return this.pull_();
@@ -1344,12 +1013,7 @@ var $mol_view = (function (_super) {
         });
         prop['fail_'] = function (error) {
             var node = _this.node().get();
-            if (error === $jin2_atom.wait) {
-                node.setAttribute('mol_view_error', 'wait');
-            }
-            else {
-                node.setAttribute('mol_view_error', 'fail');
-            }
+            node.setAttribute('mol_view_error', error.message);
             return node;
         };
         return prop;
@@ -1521,37 +1185,33 @@ var $mol_scroller = (function (_super) {
     }
     $mol_scroller.prototype.scrollTop = function () {
         var state = this.persist('scrollTop');
-        return this.atom(function () { return Number(state.get()) || 0; }, function (next) { return (state.set(next), next); });
+        return this.prop(function () { return Number(state.get()) || 0; }, function (next) { return (state.set(next), next); });
     };
     $mol_scroller.prototype.scrollLeft = function () {
         var state = this.persist('scrollLeft');
-        return this.atom(function () { return Number(state.get()) || 0; }, function (next) { return (state.set(next), next); });
+        return this.prop(function () { return Number(state.get()) || 0; }, function (next) { return (state.set(next), next); });
     };
     $mol_scroller.prototype.scrollHeight = function () {
         var _this = this;
-        return this.atom(function () { return _this.node().get().scrollHeight; });
+        return this.prop(function () { return _this.node().get().scrollHeight; });
     };
     $mol_scroller.prototype.scrollWidth = function () {
         var _this = this;
-        return this.atom(function () { return _this.node().get().scrollWidth; });
+        return this.prop(function () { return _this.node().get().scrollWidth; });
     };
     $mol_scroller.prototype.offsetHeight = function () {
         var _this = this;
-        return this.atom(function () { return _this.node().get().offsetHeight; });
+        return this.prop(function () { return _this.node().get().offsetHeight; });
     };
     $mol_scroller.prototype.offsetWidth = function () {
         var _this = this;
-        return this.atom(function () { return _this.node().get().offsetWidth; });
+        return this.prop(function () { return _this.node().get().offsetWidth; });
     };
     $mol_scroller.prototype.scrolls = function () {
         var _this = this;
         return this.prop(null, function (event) {
             _this.scrollTop().set(event.target.scrollTop);
             _this.scrollLeft().set(event.target.scrollLeft);
-            _this.scrollHeight().set(event.target.scrollHeight);
-            _this.scrollWidth().set(event.target.scrollWidth);
-            _this.offsetHeight().set(event.target.offsetHeight);
-            _this.offsetWidth().set(event.target.offsetWidth);
         });
     };
     $mol_scroller.prototype.overflowTop = function () {
@@ -1564,11 +1224,11 @@ var $mol_scroller = (function (_super) {
     };
     $mol_scroller.prototype.overflowBottom = function () {
         var _this = this;
-        return this.atom(function () { return (_this.scrollHeight().get() - _this.scrollTop().get() - _this.offsetHeight().get()) > 0; });
+        return this.prop(function () { return (_this.scrollHeight().get() - _this.scrollTop().get() - _this.offsetHeight().get()) > 0; });
     };
     $mol_scroller.prototype.overflowRight = function () {
         var _this = this;
-        return this.atom(function () { return (_this.scrollWidth().get() - _this.scrollLeft().get() - _this.offsetWidth().get()) > 0; });
+        return this.prop(function () { return (_this.scrollWidth().get() - _this.scrollLeft().get() - _this.offsetWidth().get()) > 0; });
     };
     __decorate([
         $jin2_grab
@@ -3650,6 +3310,9 @@ var $mol_app_demo = (function (_super) {
     };
     $mol_app_demo.prototype.widget = function (id) {
         var _this = this;
+        if (typeof $mol['$' + id] !== 'function') {
+            throw new Error('Molecula not found ($mol.$' + id + ')');
+        }
         return (new $mol['$' + id]).setup(function (_) {
             _.argument = function () { return _this.argument().item(id); };
         });
@@ -3667,7 +3330,6 @@ var $mol_app_demo = (function (_super) {
                     node = _this.graphNode($jin2_object_path(current)).get();
                     if (nodes.has(node))
                         return "continue";
-                    current.get();
                     var pos = [(12 - current.mastersDeep) / 32, y++ / 64];
                     node.position = function () { return _this.prop(pos); };
                     nodes.add(node);
@@ -3679,7 +3341,7 @@ var $mol_app_demo = (function (_super) {
                     stack.sort(function (a, b) { return (a.mastersDeep - b.mastersDeep); });
                 };
                 var current, node;
-                while (stack.length && (y < 200)) {
+                while (stack.length && y < 100) {
                     var state_1 = _loop_1();
                     if (state_1 === "continue") continue;
                 }

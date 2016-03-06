@@ -44,24 +44,6 @@
 								},
 								"jin2/object": {
 									":priority": 0,
-									"jin2/error": {
-										":priority": 1,
-										"jin/tree2": {
-											":priority": 3,
-											"jin/type": {
-												":priority": 2,
-												"": [
-													"jin/type/type.ts"
-												]
-											},
-											"": [
-												"jin/tree2/tree.ts"
-											]
-										},
-										"": [
-											"jin2/error/error.ts"
-										]
-									},
 									"jin2/log": {
 										":priority": 2,
 										"": [

@@ -1,4 +1,4 @@
-[mol_view_error="fail"] {
+[mol_view_error] {
 	background-image: -webkit-repeating-linear-gradient(45deg, rgba(255,220,220,1), rgba(255,220,220,1) 11px, rgba(255,255,220,1) 10px, rgba(255,255,220,1) 20px) !important;
 	background-image: repeating-linear-gradient(
 		45deg,
@@ -45,7 +45,7 @@
 	        animation: mol_view_show .25s ease-in;
 }
 
-[mol_view_error="wait"] {
+[mol_view_error="Wait..."] {
 	background-image: -webkit-repeating-linear-gradient(45deg, rgba(0,0,255,.05), rgba(0,0,255,.05) 11px, rgba(255,255,255,.02) 10px, rgba(255,255,255,.02) 20px) !important;
 	background-image: repeating-linear-gradient(
 		45deg,
@@ -433,9 +433,9 @@
 
 [mol_app_demo_selector] {
 	-webkit-box-flex: 0;
-	-webkit-flex: 0 1 auto;
-	    -ms-flex: 0 1 auto;
-	        flex: 0 1 auto;
+	-webkit-flex: 0 0 auto;
+	    -ms-flex: 0 0 auto;
+	        flex: 0 0 auto;
 	background: gainsboro;
 }
 
