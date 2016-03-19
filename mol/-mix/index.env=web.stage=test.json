@@ -188,6 +188,7 @@
 				"mol/app/calc/calc.view.tree",
 				"mol/app/calc/calc.view.ts",
 				"mol/app/calc/calc.stage=test.view.tree",
+				"mol/app/calc/calc.stage=test.view.ts",
 				"mol/app/calc/index.html"
 			]
 		}
@@ -237,7 +238,6 @@
 			"mol/app/todo/task": {
 				":priority": 0,
 				"": [
-					"mol/app/todo/task/task.ts",
 					"mol/app/todo/task/task.view.tree"
 				]
 			},

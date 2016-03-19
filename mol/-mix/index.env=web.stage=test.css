@@ -92,6 +92,8 @@
 	        align-self: stretch;
 	outline: 1px solid #000000;
 	outline: 1px solid rgba( 0 , 0 , 0 , .1 );
+
+	/*transform: translateZ(0); /* speed up scroll with large dom, but speed down dom modifications */
 	will-change: scroll-position;
 }
 
@@ -115,11 +117,6 @@
 
 [mol_scroller]::-webkit-scrollbar-thumb {
 	background: #999;
-}
-
-[mol_scroller_contenter] > * {
-	-webkit-transform: translateZ(0);
-	        transform: translateZ(0);
 }
 
 [mol_scroller_overflowTop="true"] {
@@ -315,6 +312,10 @@
 	width: 100%;
 	max-height: 100%;
 	background: inherit;
+	-webkit-transform: translateZ(0);
+	        transform: translateZ(0);
+
+	/*speed up scroll*/
 }
 
 [mol_tabler_lister] {
@@ -325,13 +326,14 @@
 }
 
 [mol_tabler_lister] > * {
-	display: table-row;
+	display: table-row !important;
 	background: inherit;
 }
 
 [mol_tabler_lister] > * > * {
-	white-space: nowrap;
-	display: table-cell;
+
+	/*white-space: nowrap;*/
+	display: table-cell !important;
 	background: rgba(255,255,255,1);
 }
 
@@ -350,6 +352,7 @@
 
 [mol_app_calc_lister] {
 	margin: 0;
+	width: 100%;
 }
 
 [mol_app_calc_cell] {
@@ -364,12 +367,12 @@
 	display: flex;
 	background: white;
 	position: relative;
-	margin-top: -1.25em;
+	margin-top: -1.26em;
 }
 
 [mol_app_calc_cell]:not(:empty) {
-	outline-color: #000000;
-	outline-color: rgba(0,0,0,.5);
+
+	/*outline-color: rgba(0,0,0,.5);*/
 }
 
 [mol_switcher]:before {
@@ -462,7 +465,6 @@
 		linear-gradient(90deg, rgba(255,255,255,.3) 1px, transparent 1px);
 	background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
 	background-position: -2px -2px, -2px -2px, -1px -1px, -1px -1px;
-	background-attachment: local;
 	padding: 20px;
 	box-sizing: border-box;
 	display: -webkit-box;
@@ -612,10 +614,14 @@
 	        transform: rotate( 90deg );
 }
 
-[mol_scroller_adder] {
+[mol_app_todo_adder] {
 	padding: 16px;
 	padding: 1rem;
 	outline: none;
+	-webkit-box-flex: 1;
+	-webkit-flex: 1;
+	    -ms-flex: 1;
+	        flex: 1;
 }
 
 [mol_app_todo_task_view_row] {
@@ -628,6 +634,8 @@
 	-webkit-align-items: center;
 	    -ms-flex-align: center;
 	        align-items: center;
+	font-size: 24px;
+	font-size: 1.5rem;
 }
 
 [mol_app_todo_task_view_row_completer] {
@@ -681,11 +689,6 @@
 	outline: 1px solid #ededed;
 }
 
-[mol_app_todo_bodier] {
-	font-size: 24px;
-	font-size: 1.5rem;
-}
-
 [mol_app_todo_titler] {
 	padding: 16px;
 	padding: 1rem;
@@ -724,8 +727,6 @@
 	font-size: 13px;
 	font-size: .85rem;
 	outline: 1px solid #ededed;
-	padding: 8px;
-	padding: .5rem;
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), 0 8px 0 -3px #f6f6f6, 0 9px 1px -3px rgba(0, 0, 0, 0.2), 0 16px 0 -6px #f6f6f6, 0 17px 2px -6px rgba(0, 0, 0, 0.2);
 }
 
@@ -742,6 +743,11 @@
 }
 
 [mol_app_todo_filter] {
+	padding: 8px;
+	padding: .5rem;
+}
+
+[mol_app_todo_actioner] {
 	padding: 8px;
 	padding: .5rem;
 }
