@@ -1,4 +1,4 @@
-[mol_view_error="fail"] {
+[mol_view_error] {
 	background-image: -webkit-repeating-linear-gradient(45deg, rgba(255,220,220,1), rgba(255,220,220,1) 11px, rgba(255,255,220,1) 10px, rgba(255,255,220,1) 20px) !important;
 	background-image: repeating-linear-gradient(
 		45deg,
@@ -45,7 +45,7 @@
 	        animation: mol_view_show .25s ease-in;
 }
 
-[mol_view_error="wait"] {
+[mol_view_error="Wait..."] {
 	background-image: -webkit-repeating-linear-gradient(45deg, rgba(0,0,255,.05), rgba(0,0,255,.05) 11px, rgba(255,255,255,.02) 10px, rgba(255,255,255,.02) 20px) !important;
 	background-image: repeating-linear-gradient(
 		45deg,
@@ -71,6 +71,8 @@
 	        align-self: stretch;
 	outline: 1px solid #000000;
 	outline: 1px solid rgba( 0 , 0 , 0 , .1 );
+	/*transform: translateZ(0); /* speed up scroll with large dom, but speed down dom modifications */
+	will-change: scroll-position;
 }
 
 @media print {
@@ -95,11 +97,6 @@
 	background: #999;
 }
 
-[mol_scroller_contenter] > * {
-	-webkit-transform: translateZ(0);
-	        transform: translateZ(0);
-}
-
 [mol_scroller_overflowTop="true"] {
 	box-shadow: inset 0 4px 8px -4px;
 }
@@ -112,10 +109,43 @@
 	box-shadow: inset 0 4px 8px -4px , inset 0 -4px 8px -4px;
 }
 
+[mol_lister] {
+	will-change: contents;
+}
+
+[mol_floater] {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	position: relative;
+	will-change: transform;
+}
+
+[mol_floater_floatingHor="true"] {
+	box-shadow: 3px 0px 3px 0px rgba(0,0,0,.5);
+	position: relative;
+	z-index: 2;
+}
+
+[mol_floater_floatingVert="true"] {
+	box-shadow: 0px 3px 3px 0px rgba(0,0,0,.5);
+	position: relative;
+	z-index: 3;
+}
+
+[mol_floater_floatingHor="true"][mol_floater_floatingVert="true"] {
+	z-index: 4;
+	box-shadow: 2px 2px 3px 1px rgba(0,0,0,.5);
+}
+
 [mol_tabler] {
 	width: 100%;
 	max-height: 100%;
 	background: inherit;
+	-webkit-transform: translateZ(0);
+	        transform: translateZ(0);
+	/*speed up scroll*/
 }
 
 [mol_tabler_lister] {
@@ -131,7 +161,7 @@
 }
 
 [mol_tabler_lister] > * > * {
-	white-space: nowrap;
+	/*white-space: nowrap;*/
 	display: table-cell !important;
 	background: rgba(255,255,255,1);
 }
@@ -141,29 +171,12 @@
 	background: rgba(255,255,255,.95);
 }
 
-[mol_floater] {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: -ms-flexbox;
-	display: flex;
-	position: relative;
-}
-
-[mol_floater_floatingHor="true"] {
-	box-shadow: 3px 0px 3px 0px rgba(0,0,0,.5);
-	position: relative;
-	z-index: 1;
-}
-
-[mol_floater_floatingVert="true"] {
-	box-shadow: 0px 3px 3px 0px rgba(0,0,0,.5);
-	position: relative;
-	z-index: 2;
-}
-
-[mol_floater_floatingHor="true"][mol_floater_floatingVert="true"] {
-	z-index: 3;
-	box-shadow: 2px 2px 3px 1px rgba(0,0,0,.5);
+[mol_tabler_header] {
+	text-align: center;
+	vertical-align: middle;
+	padding: 8px;
+	padding: .5rem;
+	outline: 1px solid #ccc;
 }
 
 [mol_stringer] {
@@ -173,11 +186,11 @@
 	display: flex;
 	vertical-align: middle;
 	border: none;
-	outline: 1px solid #000000;
-	outline: 1px solid rgba( 0 , 0 , 0 , .1 );
+	outline: 1px solid #ccc;
 	white-space: nowrap;
 	overflow: hidden;
-	padding: .5em;
+	padding: 8px;
+	padding: .5rem;
 	text-align: left;
 	position: relative;
 	z-index: 0;
@@ -185,10 +198,6 @@
 	background: rgba( 255 , 255 , 255 , .2 );
 	margin: 0 1px 1px 0;
 	font: inherit;
-	-webkit-box-flex: 1000;
-	-webkit-flex: 1000 1000 10em;
-	    -ms-flex: 1000 1000 10em;
-	        flex: 1000 1000 10em;
 	-webkit-align-self: auto;
 	    -ms-flex-item-align: auto;
 	        align-self: auto;
@@ -196,10 +205,10 @@
 
 [mol_stringer]:hover ,
 [mol_stringer]:focus {
-	outline: 1px solid #000000;
-	outline: 1px solid rgba( 0 , 0 , 0 , .3 );
+	outline-color: #aaa;
 	outline-offset: 0;
 	background: white;
+	z-index: 1;
 }
 
 [mol_stringer]:empty:before {
@@ -213,14 +222,7 @@
 
 [mol_app_calc_lister] {
 	margin: 0;
-}
-
-[mol_app_calc_header] {
-	text-align: center;
-	vertical-align: middle;
-	padding: .5em;
-	outline: 1px solid #000000;
-	outline: 1px solid rgba(0,0,0,.2);
+	width: 100%;
 }
 
 [mol_app_calc_cell] {
@@ -235,12 +237,11 @@
 	display: flex;
 	background: white;
 	position: relative;
-	margin-top: -1.25em;
+	margin-top: -1.26em;
 }
 
 [mol_app_calc_cell]:not(:empty) {
-	outline-color: #000000;
-	outline-color: rgba(0,0,0,.5);
+	/*outline-color: rgba(0,0,0,.5);*/
 }
 
 /*# sourceMappingURL=index.env=web.stage=release.css.map */
