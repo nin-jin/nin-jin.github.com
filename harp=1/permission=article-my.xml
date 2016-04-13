@@ -1,0 +1,10 @@
+<?xml-stylesheet type="text/xsl" href="harp.xsl"?>
+<response>
+	<permission id="permission=article-my">
+		<name>true</name>
+		<content>true</content>
+		<author>false</author>
+		<permission>false</permission>
+		<scheme>false</scheme>
+	</permission>
+</response>

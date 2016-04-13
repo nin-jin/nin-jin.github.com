@@ -1,0 +1,8 @@
+<?xml-stylesheet type="text/xsl" href="harp.xsl"?>
+<response>
+	<permission id="permission=user-my">
+		<name>true</name>
+		<permission>false</permission>
+		<scheme>false</scheme>
+	</permission>
+</response>

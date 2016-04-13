@@ -1,0 +1,67 @@
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+[harp_response] {
+	background: lightsteelblue;
+	font: 10pt/1.5 monospace;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+}
+
+[harp_resource] {
+	margin: 1vmin;
+	background: snow;
+	border: 1px solid steelblue;
+	display: flex;
+	flex-direction: column;
+	overflow: auto;
+}
+
+[harp_resource]:target {
+	border-color: navy;
+	background: white;
+}
+
+[harp_resource_uri] {
+	background: steelblue;
+	color: snow;
+	padding: 0 1vmin;
+	font-family: sans-serif;
+}
+
+[harp_resource_type] {
+	padding: 0 1vmin;
+	opacity: .75;
+}
+
+[harp_field] {
+	padding: 0 1vmin;
+}
+
+[harp_field_invalid] {
+	color: red;
+}
+
+[harp_field_name] {
+	opacity: .75;
+}
+
+[harp_field_value] {
+}
+
+[harp_field_value][href] {
+	color: steelblue;
+}
+
+[harp_space] {
+	white-space: pre;
+	color: lightsteelblue;
+}
+
+[harp_indent] {
+	white-space: pre;
+	font-size: 50%;
+}

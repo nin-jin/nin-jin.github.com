@@ -1,0 +1,10 @@
+<?xml-stylesheet type="text/xsl" href="harp.xsl"?>
+<response>
+	<user id="user=jin">
+		<name>Jin</name>
+		<article>article=12345</article>
+		<article>article=54321</article>
+		<permission>permission=user-my</permission>
+		<scheme>scheme=user</scheme>
+	</user>
+</response>

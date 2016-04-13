@@ -1,0 +1,10 @@
+<?xml-stylesheet type="text/xsl" href="harp.xsl"?>
+<response>
+	<article id="article=12345">
+		<name>Hello, World!</name>
+		<content>This is a <b>"simple"</b> post.</content>
+		<author>user=jin</author>
+		<permission>permission=article-my</permission>
+		<scheme>scheme=article</scheme>
+	</article>
+</response>

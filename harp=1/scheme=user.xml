@@ -1,0 +1,9 @@
+<?xml-stylesheet type="text/xsl" href="harp.xsl"?>
+<response>
+	<scheme id="scheme=user">
+		<name>string</name>
+		<article>scheme=article</article>
+		<permission>scheme=permission</permission>
+		<scheme>scheme=scheme</scheme>
+	</scheme>
+</response>
