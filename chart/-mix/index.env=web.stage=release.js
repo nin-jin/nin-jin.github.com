@@ -1334,22 +1334,14 @@ var $mol;
             _super.apply(this, arguments);
         }
         $mol_svg_circle.prototype.tagName = function () { return this.prop("circle", function (a) { return a; }); };
-        $mol_svg_circle.prototype.position = function () { return this.prop([0, 0], function (a) { return a; }); };
-        $mol_svg_circle.prototype.size = function () { return this.prop(0.1, function (a) { return a; }); };
+        $mol_svg_circle.prototype.position = function () { return this.prop([0.5, 0.5], function (a) { return a; }); };
+        $mol_svg_circle.prototype.size = function () { return this.prop(0.01, function (a) { return a; }); };
         $mol_svg_circle.prototype.offsetLeft = function () { return this.prop("50%", function (a) { return a; }); };
         $mol_svg_circle.prototype.attr_cx = function () { return this.offsetLeft(); };
         $mol_svg_circle.prototype.offsetTop = function () { return this.prop("50%", function (a) { return a; }); };
         $mol_svg_circle.prototype.attr_cy = function () { return this.offsetTop(); };
-        $mol_svg_circle.prototype.radius = function () { return this.prop("1px", function (a) { return a; }); };
+        $mol_svg_circle.prototype.radius = function () { return this.prop("1%", function (a) { return a; }); };
         $mol_svg_circle.prototype.attr_r = function () { return this.radius(); };
-        $mol_svg_circle.prototype.title = function () {
-            var _this = this;
-            var view = new $mol.$mol_svg;
-            view.tagName = function () { return _this.prop("title", function () { }); };
-            view.child = function () { return _this.prop("xxx", function () { }); };
-            return view;
-        };
-        $mol_svg_circle.prototype.child = function () { return this.title(); };
         __decorate([
             $jin2_grab
         ], $mol_svg_circle.prototype, "tagName", null);
@@ -1368,9 +1360,6 @@ var $mol;
         __decorate([
             $jin2_grab
         ], $mol_svg_circle.prototype, "radius", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_svg_circle.prototype, "title", null);
         $mol_svg_circle = __decorate([
             $mol_replace
         ], $mol_svg_circle);
@@ -1621,19 +1610,19 @@ var $mol_app_chart = (function (_super) {
     function $mol_app_chart() {
         _super.apply(this, arguments);
     }
-    $mol_app_chart.prototype.count = function () { return this.atom(200); };
+    $mol_app_chart.prototype.count = function () { return this.atom(100); };
     $mol_app_chart.prototype.series1 = function () {
         var _this = this;
         return this.atom(function (prev) {
             return Array(_this.count().get()).join('.').split('.')
-                .map(function (_, i) { return Math.sin((i - $mol_state_time.ticks(50).get() / 100) / 10); });
+                .map(function (_, i) { return Math.sin(i / 10); });
         });
     };
     $mol_app_chart.prototype.series2 = function () {
         var _this = this;
         return this.atom(function (prev) {
             return Array(_this.count().get()).join('.').split('.')
-                .map(function (_, i) { return Math.cos(i / 10); });
+                .map(function (_, i) { return Math.sin((i - $mol_state_time.ticks(40).get() / 100) / 10); });
         });
     };
     __decorate([
