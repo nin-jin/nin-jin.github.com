@@ -146,13 +146,6 @@
 	background: white;
 }
 
-[my_register_field_submitter] {
-	-webkit-box-flex: 1;
-	-webkit-flex: 1 1 auto;
-	    -ms-flex: 1 1 auto;
-	        flex: 1 1 auto;
-}
-
 [mol_clicker] {
 	cursor: pointer;
 	-webkit-user-select: none;
@@ -216,26 +209,36 @@
 	background: rgba( 255 , 0 , 0 , .3 );
 }
 
+[my_register_fieldMaster_submitter] {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1 1 auto;
+	    -ms-flex: 1 1 auto;
+	        flex: 1 1 auto;
+}
+
 [my_register] {
-	width: 100%;
+	height: auto;
 	margin: auto;
-	max-width: 60em;
 	-webkit-flex-wrap: wrap;
 	    -ms-flex-wrap: wrap;
 	        flex-wrap: wrap;
 	background: snow;
 	box-shadow: 0 0 1vmin;
+	padding: 2vmin;
+	max-width: 100%;
+	box-sizing: border-box;
 }
 
 [my_register] > * {
 	-webkit-box-flex: 1;
-	-webkit-flex: 1 1 10em;
-	    -ms-flex: 1 1 10em;
-	        flex: 1 1 10em;
+	-webkit-flex: 1 1 6em;
+	    -ms-flex: 1 1 6em;
+	        flex: 1 1 6em;
+	max-width: 100%;
 }
 
 [my_register] > * > * {
-	margin: calc( .5em + .5vmin );
+	margin: .5em;
 }
 
 /*# sourceMappingURL=index.env=web.stage=release.css.map */

@@ -129,6 +129,7 @@
 					]
 				},
 				"": [
+					"my/register/fieldMaster/field.view.css",
 					"my/register/fieldMaster/fieldMaster.view.tree"
 				]
 			},

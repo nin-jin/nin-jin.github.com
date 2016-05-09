@@ -1,16 +1,19 @@
 [my_register] {
-	width: 100%;
+	height: auto;
 	margin: auto;
-	max-width: 60em;
 	flex-wrap: wrap;
 	background: snow;
 	box-shadow: 0 0 1vmin;
+	padding: 2vmin;
+	max-width: 100%;
+	box-sizing: border-box;
 }
 
 [my_register] > * {
-	flex: 1 1 10em;
+	flex: 1 1 6em;
+	max-width: 100%;
 }
 
 [my_register] > * > * {
-	margin: calc( .5em + .5vmin );
+	margin: .5em;
 }
