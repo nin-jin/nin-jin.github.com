@@ -1,0 +1,56 @@
+$my_register : $mol_rower child
+	
+	< col1 : $mol_view child < col1Fields
+		
+		< namer : $my_register_field
+			title : =Your Name
+			value < name : =
+		
+		< zipper : $my_register_fieldMaster
+			title : =Your ZIP
+			value < zip : =
+		
+		< regioner : $my_register_field
+			title : =Your Region
+			value < region : =
+		
+		< citier : $my_register_field
+			title : =Your City
+			value < city : =
+	
+	< col2 : $mol_view child < col2Fields
+		
+		< carNumber : $my_register_fieldMaster
+			title : =Your Car Number
+			value < carNumb : =
+		
+		< carModeller : $my_register_field
+			title : =Your Car Model
+			value < carModel : =
+		
+		< carAger : $my_register_field
+			title : =Your Car Age
+			value < carAge : =
+	
+	< col3 : $mol_view child < col3Fields
+		
+		< socialer : $my_register_fieldMaster
+			title : =Your Social ID
+			value < social : =
+		
+		< sexer : $my_register_field
+			title : =Your Gender
+			value < sex : =
+		
+		< ager : $my_register_field
+			title : =Your Age
+			value < age : =
+		
+		< sexOrienter : $my_register_field
+			title : =Your Sexual Orientation
+			value < sexOrient : =
+		
+		< submitter : $mol_clicker
+			child : =Submit
+			type : =major
+			clicks < submits : null

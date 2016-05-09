@@ -1,0 +1,143 @@
+[
+	{
+		"my/register": {
+			":priority": 0,
+			"mol/rower": {
+				":priority": 0,
+				"mol": {
+					"": [
+						"mol/mol.jpg",
+						"mol/index.html",
+						"mol/README.md"
+					]
+				},
+				"mol/view": {
+					":priority": 0,
+					"mol/model": {
+						":priority": 0,
+						"jin2/atom": {
+							":priority": 0,
+							"jin2": {
+								"jin/dumb": {
+									":priority": 0,
+									"jin": {
+										"": [
+											"jin/jin.jam.js",
+											"jin/demo.html",
+											"jin/README.md",
+											"jin/package.json",
+											"jin/git-init.cmd"
+										]
+									},
+									"": [
+										"jin/dumb/dumb.ts"
+									]
+								},
+								"": [
+									"jin2/jin2.meta.tree"
+								]
+							},
+							"jin2/object": {
+								":priority": 0,
+								"jin2/log": {
+									":priority": 2,
+									"": [
+										"jin2/log/log.ts"
+									]
+								},
+								"": [
+									"jin2/object/object.ts"
+								]
+							},
+							"jin2/prop": {
+								":priority": 0,
+								"": [
+									"jin2/prop/prop.ts"
+								]
+							},
+							"jin2/state/stack": {
+								":priority": 1,
+								"": [
+									"jin2/state/stack/stack.ts"
+								]
+							},
+							"": [
+								"jin2/atom/atom.ts"
+							]
+						},
+						"jin2/grab": {
+							":priority": 1,
+							"": [
+								"jin2/grab/grab.ts"
+							]
+						},
+						"mol/state/arg": {
+							":priority": 1,
+							"": [
+								"mol/state/arg/arg.env=web.ts"
+							]
+						},
+						"jin2/state/local": {
+							":priority": 2,
+							"": [
+								"jin2/state/local/local.env=web.ts"
+							]
+						},
+						"": [
+							"mol/model/model.ts"
+						]
+					},
+					"jin2/vary": {
+						":priority": 2,
+						"": [
+							"jin2/vary/vary.ts"
+						]
+					},
+					"": [
+						"mol/view/view.css",
+						"mol/view/view.ts"
+					]
+				},
+				"": [
+					"mol/rower/rower.css",
+					"mol/rower/rower.view.tree"
+				]
+			},
+			"my/register/field": {
+				":priority": 0,
+				"mol/stringer": {
+					":priority": 0,
+					"": [
+						"mol/stringer/stringer.css",
+						"mol/stringer/stringer.view.tree",
+						"mol/stringer/stringer.view.ts"
+					]
+				},
+				"": [
+					"my/register/field/field.view.css",
+					"my/register/field/field.view.tree"
+				]
+			},
+			"my/register/fieldMaster": {
+				":priority": 0,
+				"mol/clicker": {
+					":priority": 0,
+					"": [
+						"mol/clicker/clicker.css",
+						"mol/clicker/clicker.view.tree",
+						"mol/clicker/clicker.view.ts"
+					]
+				},
+				"": [
+					"my/register/fieldMaster/fieldMaster.view.tree"
+				]
+			},
+			"": [
+				"my/register/index.html",
+				"my/register/register.view.css",
+				"my/register/register.view.tree",
+				"my/register/register.view.ts"
+			]
+		}
+	}
+]

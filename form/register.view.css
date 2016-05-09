@@ -1,0 +1,16 @@
+[my_register] {
+	width: 100%;
+	margin: auto;
+	max-width: 60em;
+	flex-wrap: wrap;
+	background: snow;
+	box-shadow: 0 0 1vmin;
+}
+
+[my_register] > * {
+	flex: 1 1 10em;
+}
+
+[my_register] > * > * {
+	margin: calc( .5em + .5vmin );
+}

@@ -1,0 +1,241 @@
+[mol_view_error] {
+	background-image: -webkit-repeating-linear-gradient(45deg, rgba(255,220,220,1), rgba(255,220,220,1) 11px, rgba(255,255,220,1) 10px, rgba(255,255,220,1) 20px) !important;
+	background-image: repeating-linear-gradient(
+		45deg,
+		rgba(255,220,220,1),
+		rgba(255,220,220,1) 11px,
+		rgba(255,255,220,1) 10px,
+		rgba(255,255,220,1) 20px
+	) !important;
+	background-size: 28px 28px !important;
+}
+
+@-webkit-keyframes mol_view_show {
+	from {
+		opacity: 0;
+	}
+}
+
+@keyframes mol_view_show {
+	from {
+		opacity: 0;
+	}
+}
+
+@-webkit-keyframes mol_view_error_move {
+  0% {
+	background-position: 0 0;
+  }
+  100% {
+	background-position: 28px 0;
+  }
+}
+
+@keyframes mol_view_error_move {
+  0% {
+	background-position: 0 0;
+  }
+  100% {
+	background-position: 28px 0;
+  }
+}
+
+[mol_view] {
+	-webkit-animation: mol_view_show .25s ease-in;
+	        animation: mol_view_show .25s ease-in;
+}
+
+[mol_view_error="Wait..."] {
+	background-image: -webkit-repeating-linear-gradient(45deg, rgba(0,0,255,.05), rgba(0,0,255,.05) 11px, rgba(255,255,255,.02) 10px, rgba(255,255,255,.02) 20px) !important;
+	background-image: repeating-linear-gradient(
+		45deg,
+		rgba(0,0,255,.05),
+		rgba(0,0,255,.05) 11px,
+		rgba(255,255,255,.02) 10px,
+		rgba(255,255,255,.02) 20px
+	) !important;
+	background-size: 28px 28px !important;
+	-webkit-animation: mol_view_show 1s linear , mol_view_error_move .25s linear infinite !important;
+	        animation: mol_view_show 1s linear , mol_view_error_move .25s linear infinite !important;
+	pointer-events: none;
+}
+
+[mol_rower] {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	/*width: 100%;*/
+	height: 100%;
+	-webkit-box-align: start;
+	-webkit-align-items: flex-start;
+	    -ms-flex-align: start;
+	        align-items: flex-start;
+	-webkit-align-content: flex-start;
+	    -ms-flex-line-pack: start;
+	        align-content: flex-start;
+}
+
+[mol_stringer] {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	vertical-align: middle;
+	border: none;
+	outline: 1px solid #ccc;
+	white-space: nowrap;
+	overflow: hidden;
+	padding: 8px;
+	padding: .5rem;
+	text-align: left;
+	position: relative;
+	z-index: 0;
+	background: #FFFFFF;
+	background: rgba( 255 , 255 , 255 , .2 );
+	margin: 0 1px 1px 0;
+	font: inherit;
+	-webkit-align-self: auto;
+	    -ms-flex-item-align: auto;
+	        align-self: auto;
+}
+
+[mol_stringer]:hover ,
+[mol_stringer]:focus {
+	outline-color: #aaa;
+	outline-offset: 0;
+	background: white;
+	z-index: 1;
+}
+
+[mol_stringer]:empty:before {
+	content: attr( mol_stringer_hint );
+	display: inline;
+	color: #000000;
+	color: rgba( 0 , 0 , 0 , .25 );
+	position: relative;
+	z-index: -1;
+}
+
+[my_register_field] {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-flex-wrap: wrap;
+	    -ms-flex-wrap: wrap;
+	        flex-wrap: wrap;
+}
+
+[my_register_field_titler] {
+	-webkit-box-flex: 100;
+	-webkit-flex: 100 100 100%;
+	    -ms-flex: 100 100 100%;
+	        flex: 100 100 100%;
+}
+
+[my_register_field_titler]:after {
+	content: ':';
+}
+
+[my_register_field_stringer] {
+	-webkit-box-flex: 100;
+	-webkit-flex: 100 100 5em;
+	    -ms-flex: 100 100 5em;
+	        flex: 100 100 5em;
+	background: white;
+}
+
+[my_register_field_submitter] {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1 1 auto;
+	    -ms-flex: 1 1 auto;
+	        flex: 1 1 auto;
+}
+
+[mol_clicker] {
+	cursor: pointer;
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+	    -ms-user-select: none;
+	        user-select: none;
+	outline: 1px solid #ccc;
+	-webkit-box-flex: 0.001;
+	-webkit-flex: 0.001 0.001 auto;
+	    -ms-flex: 0.001 0.001 auto;
+	        flex: 0.001 0.001 auto;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	    -ms-flex-pack: center;
+	        justify-content: center;
+	-webkit-align-content: center;
+	    -ms-flex-line-pack: center;
+	        align-content: center;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	    -ms-flex-align: center;
+	        align-items: center;
+	vertical-align: middle;
+	padding: 8px;
+	padding: .5rem;
+	margin: 0 1px 1px 0;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	background: #FFFFFF;
+	background: rgba( 255 , 255 , 255 , .2 );
+	text-decoration: inherit;
+	color: inherit;
+}
+
+[mol_clicker]:hover {
+	outline-color: #aaa;
+	position: relative;
+	z-index: 1;
+	/*background: rgba( 255 , 255 , 255 , .3 );*/
+}
+
+[mol_clicker_type="major"] {
+	background: #00FF00;
+	background: rgba( 0 , 255 , 0 , .2 );
+}
+
+[mol_clicker_type="major"]:hover {
+	background: #00FF00;
+	background: rgba( 0 , 255 , 0 , .3 );
+}
+
+[mol_clicker_type="warn"] {
+	background: #FF0000;
+	background: rgba( 255 , 0 , 0 , .2 );
+}
+
+[mol_clicker_type="warn"]:hover {
+	background: #FF0000;
+	background: rgba( 255 , 0 , 0 , .3 );
+}
+
+[my_register] {
+	width: 100%;
+	margin: auto;
+	max-width: 60em;
+	-webkit-flex-wrap: wrap;
+	    -ms-flex-wrap: wrap;
+	        flex-wrap: wrap;
+	background: snow;
+	box-shadow: 0 0 1vmin;
+}
+
+[my_register] > * {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1 1 10em;
+	    -ms-flex: 1 1 10em;
+	        flex: 1 1 10em;
+}
+
+[my_register] > * > * {
+	margin: calc( .5em + .5vmin );
+}
+
+/*# sourceMappingURL=index.env=web.stage=release.css.map */

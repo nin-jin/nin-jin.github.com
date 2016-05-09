@@ -1,0 +1,7 @@
+$my_register_fieldMaster : $my_register_field child
+	< titler
+	< stringer
+	< submitter : $mol_clicker
+		child : =Set
+		clicks < clicks : null
+		type : =major

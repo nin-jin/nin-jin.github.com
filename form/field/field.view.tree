@@ -1,0 +1,5 @@
+$my_register_field : $mol_view
+	tagName : =label
+	child
+		< titler : $mol_view child < title : =
+		< stringer : $mol_stringer value < value : =
