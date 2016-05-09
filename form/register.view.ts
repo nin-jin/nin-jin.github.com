@@ -2,16 +2,16 @@
 class $my_register extends $mol.$my_register {
 
 	@ $jin2_grab
-	name( ) { return this.atom( '' ) }
+	name( ) { return new $jin2_atom( '' ) }
 
 	@ $jin2_grab
-	zip( ) { return this.atom( '' ) }
+	zip( ) { return new $jin2_atom( '' ) }
 
 	@ $jin2_grab
-	zipInfo( ) { return this.atom<{ region : string , city : string }>( prev => {
+	zipInfo( ) { return new $jin2_atom<{ region : string , city : string }>( prev => {
 		if( this.zip().get() ) {
 			setTimeout( () => {
-				this.zipInfo()['push']({ region : 'Russia' , city : 'Moscow' })
+				this.zipInfo().push({ region : 'Russia' , city : 'Moscow' })
 			}, 5000 )
 		} else {
 			return { region : '' , city : '' }
@@ -19,19 +19,19 @@ class $my_register extends $mol.$my_register {
 	} ) }
 
 	@ $jin2_grab
-	region() { return this.atom<string>( prev => this.zipInfo().get().region ) }
+	region() { return new $jin2_atom<string>( prev => this.zipInfo().get().region ) }
 
 	@ $jin2_grab
-	city() { return this.atom<string>( prev => this.zipInfo().get().city ) }
+	city() { return new $jin2_atom<string>( prev => this.zipInfo().get().city ) }
 
 	@ $jin2_grab
-	carNumb( ) { return this.atom( '' ) }
+	carNumb( ) { return new $jin2_atom( '' ) }
 
 	@ $jin2_grab
-	carInfo( ) { return this.atom<{ model : string , age : string }>( prev => {
+	carInfo( ) { return new $jin2_atom<{ model : string , age : string }>( prev => {
 		if( this.carNumb().get() ) {
 			setTimeout( () => {
-				this.carInfo().set({ model : 'Tesla S' , age : '1' })
+				this.carInfo().push({ model : 'Tesla S' , age : '1' })
 			}, 5000 )
 		} else {
 			return { model : '' , age : '' }
@@ -39,19 +39,19 @@ class $my_register extends $mol.$my_register {
 	} ) }
 
 	@ $jin2_grab
-	carModel() { return this.atom<string>( prev => this.carInfo().get().model ) }
+	carModel() { return new $jin2_atom<string>( prev => this.carInfo().get().model ) }
 
 	@ $jin2_grab
-	carAge() { return this.atom<string>( prev => this.carInfo().get().age ) }
+	carAge() { return new $jin2_atom<string>( prev => this.carInfo().get().age ) }
 
 	@ $jin2_grab
-	social( ) { return this.atom( '' ) }
+	social( ) { return new $jin2_atom( '' ) }
 
 	@ $jin2_grab
-	socialInfo( ) { return this.atom<{ sex : string , age : string , sexOrient : string }>( prev => {
+	socialInfo( ) { return new $jin2_atom<{ sex : string , age : string , sexOrient : string }>( prev => {
 		if( this.social().get() ) {
 			setTimeout( () => {
-				this.socialInfo().set({ sex : 'male' , age : '30' , sexOrient : '' })
+				this.socialInfo().push({ sex : 'male' , age : '30' , sexOrient : '' })
 			}, 5000 )
 		} else {
 			return { sex : '' , age : '' , sexOrient : '' }
@@ -59,16 +59,17 @@ class $my_register extends $mol.$my_register {
 	} ) }
 
 	@ $jin2_grab
-	sex() { return this.atom<string>( prev => this.socialInfo().get().sex ) }
+	sex() { return new $jin2_atom<string>( prev => this.socialInfo().get().sex ) }
 
 	@ $jin2_grab
-	age() { return this.atom<string>( prev => this.socialInfo().get().age ) }
+	age() { return new $jin2_atom<string>( prev => this.socialInfo().get().age ) }
 
 	@ $jin2_grab
-	sexOrient() { return this.atom<string>( prev => this.socialInfo().get().sexOrient ) }
+	sexOrient() { return new $jin2_atom<string>( prev => this.socialInfo().get().sexOrient ) }
 
 	@ $jin2_grab
 	submit() { return new $jin2_atom( prev => {
+		
 		var data = {
 			name: this.name().get(),
 			zip: this.zip().get(),
@@ -82,6 +83,7 @@ class $my_register extends $mol.$my_register {
 			age: this.age().get(),
 			sexOrient: this.sexOrient().get(),
 		}
+		
 		if( !data.name ) alert( 'You must enter your name!' )
 		else if( !data.region ) alert( 'You must enter your region!' )
 		else if( !data.city ) alert( 'You must enter your city!' )
@@ -90,10 +92,11 @@ class $my_register extends $mol.$my_register {
 		else if( !data.age ) alert( 'You must enter your age!' )
 		else if( !data.sexOrient ) alert( 'You must enter your sexual orientation!' )
 		else alert( 'sended ' + JSON.stringify( data ) )
+		
 		this.submit().destroy()
 	} ) }
 
-	submits() { return this.prop<Event>( null , next => {
+	submits() { return new $jin2_prop<Event>( null , next => {
 		this.submit().get()
 	} ) }
 }

@@ -1370,12 +1370,12 @@ var $mol;
         function $my_register_fieldMaster() {
             _super.apply(this, arguments);
         }
-        $my_register_fieldMaster.prototype.clicks = function () { return this.prop(null, function (a) { return a; }); };
+        $my_register_fieldMaster.prototype.submits = function () { return this.prop(null, function (a) { return a; }); };
         $my_register_fieldMaster.prototype.submitter = function () {
             var _this = this;
             var view = new $mol.$mol_clicker;
             view.child = function () { return _this.prop("Set", function () { }); };
-            view.clicks = function () { return _this.clicks(); };
+            view.clicks = function () { return _this.submits(); };
             view.type = function () { return _this.prop("major", function () { }); };
             return view;
         };
@@ -1385,7 +1385,7 @@ var $mol;
         };
         __decorate([
             $jin2_grab
-        ], $my_register_fieldMaster.prototype, "clicks", null);
+        ], $my_register_fieldMaster.prototype, "submits", null);
         __decorate([
             $jin2_grab
         ], $my_register_fieldMaster.prototype, "submitter", null);
@@ -1653,14 +1653,14 @@ var $my_register = (function (_super) {
     function $my_register() {
         _super.apply(this, arguments);
     }
-    $my_register.prototype.name = function () { return this.atom(''); };
-    $my_register.prototype.zip = function () { return this.atom(''); };
+    $my_register.prototype.name = function () { return new $jin2_atom(''); };
+    $my_register.prototype.zip = function () { return new $jin2_atom(''); };
     $my_register.prototype.zipInfo = function () {
         var _this = this;
-        return this.atom(function (prev) {
+        return new $jin2_atom(function (prev) {
             if (_this.zip().get()) {
                 setTimeout(function () {
-                    _this.zipInfo()['push']({ region: 'Russia', city: 'Moscow' });
+                    _this.zipInfo().push({ region: 'Russia', city: 'Moscow' });
                 }, 5000);
             }
             else {
@@ -1670,19 +1670,19 @@ var $my_register = (function (_super) {
     };
     $my_register.prototype.region = function () {
         var _this = this;
-        return this.atom(function (prev) { return _this.zipInfo().get().region; });
+        return new $jin2_atom(function (prev) { return _this.zipInfo().get().region; });
     };
     $my_register.prototype.city = function () {
         var _this = this;
-        return this.atom(function (prev) { return _this.zipInfo().get().city; });
+        return new $jin2_atom(function (prev) { return _this.zipInfo().get().city; });
     };
-    $my_register.prototype.carNumb = function () { return this.atom(''); };
+    $my_register.prototype.carNumb = function () { return new $jin2_atom(''); };
     $my_register.prototype.carInfo = function () {
         var _this = this;
-        return this.atom(function (prev) {
+        return new $jin2_atom(function (prev) {
             if (_this.carNumb().get()) {
                 setTimeout(function () {
-                    _this.carInfo().set({ model: 'Tesla S', age: '1' });
+                    _this.carInfo().push({ model: 'Tesla S', age: '1' });
                 }, 5000);
             }
             else {
@@ -1692,19 +1692,19 @@ var $my_register = (function (_super) {
     };
     $my_register.prototype.carModel = function () {
         var _this = this;
-        return this.atom(function (prev) { return _this.carInfo().get().model; });
+        return new $jin2_atom(function (prev) { return _this.carInfo().get().model; });
     };
     $my_register.prototype.carAge = function () {
         var _this = this;
-        return this.atom(function (prev) { return _this.carInfo().get().age; });
+        return new $jin2_atom(function (prev) { return _this.carInfo().get().age; });
     };
-    $my_register.prototype.social = function () { return this.atom(''); };
+    $my_register.prototype.social = function () { return new $jin2_atom(''); };
     $my_register.prototype.socialInfo = function () {
         var _this = this;
-        return this.atom(function (prev) {
+        return new $jin2_atom(function (prev) {
             if (_this.social().get()) {
                 setTimeout(function () {
-                    _this.socialInfo().set({ sex: 'male', age: '30', sexOrient: '' });
+                    _this.socialInfo().push({ sex: 'male', age: '30', sexOrient: '' });
                 }, 5000);
             }
             else {
@@ -1714,15 +1714,15 @@ var $my_register = (function (_super) {
     };
     $my_register.prototype.sex = function () {
         var _this = this;
-        return this.atom(function (prev) { return _this.socialInfo().get().sex; });
+        return new $jin2_atom(function (prev) { return _this.socialInfo().get().sex; });
     };
     $my_register.prototype.age = function () {
         var _this = this;
-        return this.atom(function (prev) { return _this.socialInfo().get().age; });
+        return new $jin2_atom(function (prev) { return _this.socialInfo().get().age; });
     };
     $my_register.prototype.sexOrient = function () {
         var _this = this;
-        return this.atom(function (prev) { return _this.socialInfo().get().sexOrient; });
+        return new $jin2_atom(function (prev) { return _this.socialInfo().get().sexOrient; });
     };
     $my_register.prototype.submit = function () {
         var _this = this;
@@ -1761,7 +1761,7 @@ var $my_register = (function (_super) {
     };
     $my_register.prototype.submits = function () {
         var _this = this;
-        return this.prop(null, function (next) {
+        return new $jin2_prop(null, function (next) {
             _this.submit().get();
         });
     };
