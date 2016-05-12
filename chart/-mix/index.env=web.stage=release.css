@@ -57,6 +57,23 @@
 	background-size: 28px 28px !important;
 	-webkit-animation: mol_view_show 1s linear , mol_view_error_move .25s linear infinite !important;
 	        animation: mol_view_show 1s linear , mol_view_error_move .25s linear infinite !important;
+	pointer-events: none;
+}
+
+[mol_grapher_barer] {
+	stroke: lightsteelblue;
+	stroke-width: 2.5%;
+	fill: none;
+}
+
+[mol_grapher_barer]:nth-of-type(2) {
+	stroke: cadetblue;
+}
+
+[mol_grapher_barer_piler] {}
+
+[mol_grapher_barer_piler]:hover {
+	stroke: darkblue;
 }
 
 [mol_grapher_liner] {
@@ -66,7 +83,7 @@
 }
 
 [mol_grapher_liner]:nth-of-type(2) {
-	stroke: lightpink;
+	stroke: darkcyan;
 }
 
 [mol_grapher_liner_roper]:hover {
@@ -82,15 +99,24 @@
 	-webkit-flex: 1 1 auto;
 	    -ms-flex: 1 1 auto;
 	        flex: 1 1 auto;
-	position: relative;
+	padding: 5%;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-flex-wrap: wrap;
+	    -ms-flex-wrap: wrap;
+	        flex-wrap: wrap;
 }
 
-[mol_app_chart_frame] {
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 100%;
+[mol_app_chart] > * {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1 1 33%;
+	    -ms-flex: 1 1 33%;
+	        flex: 1 1 33%;
+	border: 1px solid black;
+	border-top: 0;
+	margin: 5%;
 }
 
 /*# sourceMappingURL=index.env=web.stage=release.css.map */
