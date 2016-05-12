@@ -97,17 +97,40 @@
 					"mol/view/view.ts"
 				]
 			},
-			"mol/plotter": {
+			"mol/scroller": {
 				":priority": 0,
-				"mol/svg": {
+				"": [
+					"mol/scroller/scroller.css",
+					"mol/scroller/scroller.view.tree",
+					"mol/scroller/scroller.view.ts"
+				]
+			},
+			"mol/chart": {
+				":priority": 0,
+				"mol/plotter": {
 					":priority": 0,
+					"mol/svg": {
+						":priority": 0,
+						"": [
+							"mol/svg/svg.view.tree"
+						]
+					},
+					"mol/svg/line": {
+						":priority": 0,
+						"": [
+							"mol/svg/line/line.view.tree",
+							"mol/svg/line/line.view.ts"
+						]
+					},
 					"": [
-						"mol/svg/svg.view.tree"
+						"mol/plotter/plotter.view.css",
+						"mol/plotter/plotter.view.tree",
+						"mol/plotter/plotter.view.ts"
 					]
 				},
 				"": [
-					"mol/plotter/plotter.view.tree",
-					"mol/plotter/plotter.view.ts"
+					"mol/chart/chart.view.css",
+					"mol/chart/chart.view.tree"
 				]
 			},
 			"mol/grapher/barer": {
@@ -123,13 +146,6 @@
 					"": [
 						"mol/grapher/grapher.view.tree",
 						"mol/grapher/grapher.view.ts"
-					]
-				},
-				"mol/svg/line": {
-					":priority": 1,
-					"": [
-						"mol/svg/line/line.view.tree",
-						"mol/svg/line/line.view.ts"
 					]
 				},
 				"": [

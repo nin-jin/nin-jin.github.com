@@ -60,6 +60,117 @@
 	pointer-events: none;
 }
 
+[mol_scroller] {
+	overflow: auto;
+	overflow: auto;
+	-webkit-box-flex: 1;
+	-webkit-flex: 1 1 100%;
+	    -ms-flex: 1 1 100%;
+	        flex: 1 1 100%;
+	-webkit-align-self: stretch;
+	    -ms-flex-item-align: stretch;
+	        align-self: stretch;
+	outline: 1px solid #000000;
+	outline: 1px solid rgba( 0 , 0 , 0 , .1 );
+	/*transform: translateZ(0); /* speed up scroll with large dom, but speed down dom modifications */
+	will-change: scroll-position;
+}
+
+@media print {
+
+	[mol_scroller] {
+		overflow: visible;
+	}
+}
+
+[mol_scroller]::-webkit-scrollbar {
+	width: 2vmin;
+	height: 2vmin;
+	max-width: 10px;
+	max-height: 10px;
+}
+
+[mol_scroller]::-webkit-scrollbar-track {
+	background: #eee;
+}
+
+[mol_scroller]::-webkit-scrollbar-thumb {
+	background: #999;
+}
+
+[mol_scroller_overflowTop="true"] {
+	box-shadow: inset 0 4px 8px -4px;
+}
+
+[mol_scroller_overflowBottom="true"] {
+	box-shadow: inset 0 -4px 8px -4px;
+}
+
+[mol_scroller_overflowTop="true"][mol_scroller_overflowBottom="true"] {
+	box-shadow: inset 0 4px 8px -4px , inset 0 -4px 8px -4px;
+}
+
+[mol_plotter] {
+	outline: 1px solid #AAC1D9;
+}
+
+[mol_plotter_grid] {
+	stroke: #AAC1D9;
+}
+
+[mol_chart] {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: column;
+	    -ms-flex-direction: column;
+	        flex-direction: column;
+}
+
+[mol_chart_plotter] {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1 1 auto;
+	    -ms-flex: 1 1 auto;
+	        flex: 1 1 auto;
+}
+
+[mol_chart_legender] {
+	padding: .25em;
+}
+
+[mol_chart_legender_info] {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+}
+
+[mol_chart_legender_info] > * {
+	margin: .25em;
+}
+
+[mol_chart_legender_info_sampler] {
+	background: lightsteelblue;
+	-webkit-box-flex: 0;
+	-webkit-flex: 0 0 1em;
+	    -ms-flex: 0 0 1em;
+	        flex: 0 0 1em;
+}
+
+[mol_chart_legender_info]:nth-of-type(2) [mol_chart_legender_info_sampler] {
+	background: darkcyan;
+}
+
+[mol_chart_legender_info_titler] {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1 1 auto;
+	    -ms-flex: 1 1 auto;
+	        flex: 1 1 auto;
+}
+
 [mol_grapher_barer] {
 	stroke: lightsteelblue;
 	stroke-width: 2.5%;
@@ -99,7 +210,42 @@
 	-webkit-flex: 1 1 auto;
 	    -ms-flex: 1 1 auto;
 	        flex: 1 1 auto;
-	padding: 5%;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-webkit-flex-direction: column;
+	    -ms-flex-direction: column;
+	        flex-direction: column;
+	height: 100%;
+}
+
+[mol_app_chart_header] {
+	background: #3A5C86;
+	-webkit-box-flex: 0;
+	-webkit-flex: 0 0 5%;
+	    -ms-flex: 0 0 5%;
+	        flex: 0 0 5%;
+	margin: 0;
+	padding: .5em;
+	color: white;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-align: center;
+	-webkit-align-items: center;
+	    -ms-flex-align: center;
+	        align-items: center;
+	-webkit-box-pack: center;
+	-webkit-justify-content: center;
+	    -ms-flex-pack: center;
+	        justify-content: center;
+}
+
+[mol_app_chart_bodier] {
 	display: -webkit-box;
 	display: -webkit-flex;
 	display: -ms-flexbox;
@@ -107,16 +253,19 @@
 	-webkit-flex-wrap: wrap;
 	    -ms-flex-wrap: wrap;
 	        flex-wrap: wrap;
+	-webkit-box-flex: 1;
+	-webkit-flex: 1 1 auto;
+	    -ms-flex: 1 1 auto;
+	        flex: 1 1 auto;
+	padding: 2vmin;
 }
 
-[mol_app_chart] > * {
+[mol_app_chart_bodier] > * {
 	-webkit-box-flex: 1;
 	-webkit-flex: 1 1 33%;
 	    -ms-flex: 1 1 33%;
 	        flex: 1 1 33%;
-	border: 1px solid black;
-	border-top: 0;
-	margin: 5%;
+	margin: 2vmin;
 }
 
 /*# sourceMappingURL=index.env=web.stage=release.css.map */
