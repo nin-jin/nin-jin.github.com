@@ -105,32 +105,12 @@
 					"mol/scroller/scroller.view.ts"
 				]
 			},
-			"mol/chart": {
+			"mol/tiler": {
 				":priority": 0,
-				"mol/plotter": {
-					":priority": 0,
-					"mol/svg": {
-						":priority": 0,
-						"": [
-							"mol/svg/svg.view.tree"
-						]
-					},
-					"mol/svg/line": {
-						":priority": 0,
-						"": [
-							"mol/svg/line/line.view.tree",
-							"mol/svg/line/line.view.ts"
-						]
-					},
-					"": [
-						"mol/plotter/plotter.view.css",
-						"mol/plotter/plotter.view.tree",
-						"mol/plotter/plotter.view.ts"
-					]
-				},
 				"": [
-					"mol/chart/chart.view.css",
-					"mol/chart/chart.view.tree"
+					"mol/tiler/tiler.view.css",
+					"mol/tiler/tiler.view.tree",
+					"mol/tiler/tiler.view.ts"
 				]
 			},
 			"mol/grapher/barer": {
@@ -139,6 +119,12 @@
 					":priority": 0,
 					"mol/svg/group": {
 						":priority": 0,
+						"mol/svg": {
+							":priority": 0,
+							"": [
+								"mol/svg/svg.view.tree"
+							]
+						},
 						"": [
 							"mol/svg/group/group.view.tree"
 						]
@@ -146,6 +132,13 @@
 					"": [
 						"mol/grapher/grapher.view.tree",
 						"mol/grapher/grapher.view.ts"
+					]
+				},
+				"mol/svg/line": {
+					":priority": 1,
+					"": [
+						"mol/svg/line/line.view.tree",
+						"mol/svg/line/line.view.ts"
 					]
 				},
 				"": [
@@ -169,10 +162,19 @@
 					"mol/grapher/liner/liner.view.ts"
 				]
 			},
-			"mol/state/time": {
-				":priority": 3,
+			"mol/chart": {
+				":priority": 0,
+				"mol/plotter": {
+					":priority": 0,
+					"": [
+						"mol/plotter/plotter.view.css",
+						"mol/plotter/plotter.view.tree",
+						"mol/plotter/plotter.view.ts"
+					]
+				},
 				"": [
-					"mol/state/time/time.env=web.ts"
+					"mol/chart/chart.view.css",
+					"mol/chart/chart.view.tree"
 				]
 			},
 			"": [

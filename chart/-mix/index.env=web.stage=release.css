@@ -110,12 +110,76 @@
 	box-shadow: inset 0 4px 8px -4px , inset 0 -4px 8px -4px;
 }
 
+[mol_tiler] {
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-flex-wrap: wrap;
+	    -ms-flex-wrap: wrap;
+	        flex-wrap: wrap;
+	-webkit-box-align: baseline;
+	-webkit-align-items: baseline;
+	    -ms-flex-align: baseline;
+	        align-items: baseline;
+}
+
+[mol_tiler] > * {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1 1 51%;
+	    -ms-flex: 1 1 51%;
+	        flex: 1 1 51%;
+}
+
+[mol_grapher_barer] {
+	stroke: #73C2CF;
+	stroke-width: 2.5%;
+	fill: none;
+}
+
+[mol_grapher_barer]:nth-of-type(2) {
+	stroke: #A973D0;
+}
+
+[mol_grapher_barer_piler] {}
+
+[mol_grapher_barer_piler]:hover {
+	stroke: darkblue;
+}
+
+[mol_grapher_liner] {
+	stroke: #C57995;
+	stroke-width: 3;
+	fill: none;
+}
+
+[mol_grapher_liner]:nth-of-type(2) {
+	stroke: #7570C1;
+}
+
+[mol_grapher_liner_roper]:hover {
+	stroke: darkblue;
+}
+
+[mol_grapher_liner_knoter] {
+	fill: #FF8EBC;
+}
+
+[mol_grapher_liner]:nth-of-type(2) [mol_grapher_liner_knoter] {
+	fill: #9494F5;
+}
+
+[mol_grapher_liner_knoter]:hover {
+	stroke: darkblue;
+}
+
 [mol_plotter] {
-	outline: 1px solid #AAC1D9;
+	border-top: 1px solid #CBCACB;
+	border-bottom: 1px solid #CBCACB;
 }
 
 [mol_plotter_grid] {
-	stroke: #AAC1D9;
+	stroke: #CBCACB;
 }
 
 [mol_chart] {
@@ -128,6 +192,10 @@
 	-webkit-flex-direction: column;
 	    -ms-flex-direction: column;
 	        flex-direction: column;
+	-webkit-box-flex: 1;
+	-webkit-flex: 1 1 50vmin;
+	    -ms-flex: 1 1 50vmin;
+	        flex: 1 1 50vmin;
 }
 
 [mol_chart_plotter] {
@@ -135,6 +203,7 @@
 	-webkit-flex: 1 1 auto;
 	    -ms-flex: 1 1 auto;
 	        flex: 1 1 auto;
+	height: 25vmin;
 }
 
 [mol_chart_legender] {
@@ -153,7 +222,7 @@
 }
 
 [mol_chart_legender_info_sampler] {
-	background: lightsteelblue;
+	background: #C57995;
 	-webkit-box-flex: 0;
 	-webkit-flex: 0 0 1em;
 	    -ms-flex: 0 0 1em;
@@ -161,7 +230,7 @@
 }
 
 [mol_chart_legender_info]:nth-of-type(2) [mol_chart_legender_info_sampler] {
-	background: darkcyan;
+	background: #7570C1;
 }
 
 [mol_chart_legender_info_titler] {
@@ -169,40 +238,6 @@
 	-webkit-flex: 1 1 auto;
 	    -ms-flex: 1 1 auto;
 	        flex: 1 1 auto;
-}
-
-[mol_grapher_barer] {
-	stroke: lightsteelblue;
-	stroke-width: 2.5%;
-	fill: none;
-}
-
-[mol_grapher_barer]:nth-of-type(2) {
-	stroke: cadetblue;
-}
-
-[mol_grapher_barer_piler] {}
-
-[mol_grapher_barer_piler]:hover {
-	stroke: darkblue;
-}
-
-[mol_grapher_liner] {
-	stroke: lightsteelblue;
-	stroke-width: .5%;
-	fill: none;
-}
-
-[mol_grapher_liner]:nth-of-type(2) {
-	stroke: darkcyan;
-}
-
-[mol_grapher_liner_roper]:hover {
-	stroke: darkblue;
-}
-
-[mol_grapher_liner_knoter]:hover {
-	stroke: darkblue;
 }
 
 [mol_app_chart] {
@@ -246,25 +281,10 @@
 }
 
 [mol_app_chart_bodier] {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: -ms-flexbox;
-	display: flex;
-	-webkit-flex-wrap: wrap;
-	    -ms-flex-wrap: wrap;
-	        flex-wrap: wrap;
-	-webkit-box-flex: 1;
-	-webkit-flex: 1 1 auto;
-	    -ms-flex: 1 1 auto;
-	        flex: 1 1 auto;
 	padding: 2vmin;
 }
 
-[mol_app_chart_bodier] > * {
-	-webkit-box-flex: 1;
-	-webkit-flex: 1 1 33%;
-	    -ms-flex: 1 1 33%;
-	        flex: 1 1 33%;
+[mol_app_chart_charter] {
 	margin: 2vmin;
 }
 
