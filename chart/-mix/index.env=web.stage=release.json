@@ -177,6 +177,12 @@
 					"mol/chart/chart.view.tree"
 				]
 			},
+			"mol/state/time": {
+				":priority": 3,
+				"": [
+					"mol/state/time/time.env=web.ts"
+				]
+			},
 			"": [
 				"mol/app/chart/chart.view.css",
 				"mol/app/chart/chart.view.tree",

@@ -2035,6 +2035,13 @@ var $mol;
         function $mol_chart() {
             _super.apply(this, arguments);
         }
+        $mol_chart.prototype.title = function () { return this.prop("", function (a) { return a; }); };
+        $mol_chart.prototype.titler = function () {
+            var _this = this;
+            var view = new $mol_view;
+            view.child = function () { return _this.title(); };
+            return view;
+        };
         $mol_chart.prototype.graphs = function () { return this.prop(null, function (a) { return a; }); };
         $mol_chart.prototype.plotter = function () {
             var _this = this;
@@ -2051,8 +2058,14 @@ var $mol;
         };
         $mol_chart.prototype.child = function () {
             var _this = this;
-            return this.prop(function () { return [_this.plotter().get(), _this.legender().get()]; });
+            return this.prop(function () { return [_this.titler().get(), _this.plotter().get(), _this.legender().get()]; });
         };
+        __decorate([
+            $jin2_grab
+        ], $mol_chart.prototype, "title", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_chart.prototype, "titler", null);
         __decorate([
             $jin2_grab
         ], $mol_chart.prototype, "graphs", null);
@@ -2123,6 +2136,35 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var $mol_state_time = (function (_super) {
+    __extends($mol_state_time, _super);
+    function $mol_state_time() {
+        _super.apply(this, arguments);
+    }
+    $mol_state_time.ticks = function (prec) {
+        return new $jin2_atom(function () {
+            setTimeout(function () { return $mol_state_time.ticks(prec).update(); }, prec);
+            return Date.now();
+        }, null);
+    };
+    __decorate([
+        $jin2_grab
+    ], $mol_state_time, "ticks", null);
+    return $mol_state_time;
+}($jin2_object));
+//# sourceMappingURL=time.env=web.js.map
+;
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var $mol;
 (function ($mol) {
     var $mol_app_chart = (function (_super) {
@@ -2173,6 +2215,7 @@ var $mol;
         $mol_app_chart.prototype.frame1 = function () {
             var _this = this;
             var view = new $mol.$mol_app_chart_charter;
+            view.title = function () { return _this.prop("Объём реализации", function () { }); };
             view.graphs = function () { return _this.graphs1(); };
             view.legends = function () { return _this.legends1(); };
             return view;
@@ -2195,6 +2238,7 @@ var $mol;
         $mol_app_chart.prototype.frame2 = function () {
             var _this = this;
             var view = new $mol.$mol_app_chart_charter;
+            view.title = function () { return _this.prop("Объём Добычи КЦ", function () { }); };
             view.graphs = function () { return _this.graphs2(); };
             view.legends = function () { return _this.legends2(); };
             return view;
@@ -2234,6 +2278,7 @@ var $mol;
         $mol_app_chart.prototype.frame3 = function () {
             var _this = this;
             var view = new $mol.$mol_app_chart_charter;
+            view.title = function () { return _this.prop("Сравнение планируемого объёма и добычи", function () { }); };
             view.graphs = function () { return _this.graphs3(); };
             view.legends = function () { return _this.legends3(); };
             return view;
@@ -2273,6 +2318,7 @@ var $mol;
         $mol_app_chart.prototype.frame4 = function () {
             var _this = this;
             var view = new $mol.$mol_app_chart_charter;
+            view.title = function () { return _this.prop("Сравнение фактического объёма и добычи", function () { }); };
             view.graphs = function () { return _this.graphs4(); };
             view.legends = function () { return _this.legends4(); };
             return view;
@@ -2312,6 +2358,7 @@ var $mol;
         $mol_app_chart.prototype.frame5 = function () {
             var _this = this;
             var view = new $mol.$mol_app_chart_charter;
+            view.title = function () { return _this.prop("Сравнение планируемого объёма и добычи", function () { }); };
             view.graphs = function () { return _this.graphs5(); };
             view.legends = function () { return _this.legends5(); };
             return view;
@@ -2467,7 +2514,7 @@ var $mol_app_chart = (function (_super) {
         var _this = this;
         return this.atom(function (prev) {
             return Array(_this.count().get()).join('.').split('.')
-                .map(function (_, i) { return Math.sin(i / 10) / 2 + .5; });
+                .map(function (_, i) { return Math.sin((i - $mol_state_time.ticks(40).get() / 40) / 10) / 3 + .5; });
         });
     };
     $mol_app_chart.prototype.series2 = function () {
