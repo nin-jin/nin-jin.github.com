@@ -2170,7 +2170,7 @@ var $mol_chart = (function (_super) {
     function $mol_chart() {
         _super.apply(this, arguments);
     }
-    $mol_chart.prototype.hueBase = function () { return this.prop(function () { return Math.floor($mol_state_time.ticks(1000).get() / 10) % 360; }); };
+    $mol_chart.prototype.hueBase = function () { return this.prop(function () { return Math.floor($mol_state_time.ticks(1000).get() / 100) % 360; }); };
     $mol_chart.prototype.hue = function (index) {
         var _this = this;
         return this.prop(function () { return _this.hueBase().get() + 160 * index; });
