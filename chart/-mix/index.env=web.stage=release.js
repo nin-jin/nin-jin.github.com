@@ -1429,6 +1429,11 @@ var $mol;
         $mol_grapher.prototype.series = function () { return this.prop([], function (a) { return a; }); };
         $mol_grapher.prototype.points = function () { return this.prop([], function (a) { return a; }); };
         $mol_grapher.prototype.pointsNorm = function () { return this.prop([], function (a) { return a; }); };
+        $mol_grapher.prototype.hue = function () { return this.prop(220, function (a) { return a; }); };
+        $mol_grapher.prototype.colorStroke = function () { return this.prop("none", function (a) { return a; }); };
+        $mol_grapher.prototype.field_style_stroke = function () { return this.colorStroke(); };
+        $mol_grapher.prototype.colorFill = function () { return this.prop("none", function (a) { return a; }); };
+        $mol_grapher.prototype.field_style_fill = function () { return this.colorFill(); };
         __decorate([
             $jin2_grab
         ], $mol_grapher.prototype, "series", null);
@@ -1438,6 +1443,15 @@ var $mol;
         __decorate([
             $jin2_grab
         ], $mol_grapher.prototype, "pointsNorm", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_grapher.prototype, "hue", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_grapher.prototype, "colorStroke", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_grapher.prototype, "colorFill", null);
         $mol_grapher = __decorate([
             $mol_replace
         ], $mol_grapher);
@@ -1497,6 +1511,14 @@ var $mol_grapher = (function (_super) {
         return this.atom(function (prev) {
             return _this.points().get();
         });
+    };
+    $mol_grapher.prototype.colorStroke = function () {
+        var _this = this;
+        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 50% , 66% )"); });
+    };
+    $mol_grapher.prototype.colorFill = function () {
+        var _this = this;
+        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 50% , 88% )"); });
     };
     __decorate([
         $jin2_grab
@@ -1727,26 +1749,12 @@ var $mol;
             var _this = this;
             return this.prop(function () { return [_this.ropes().get(), _this.knots().get()]; });
         };
-        $mol_grapher_liner.prototype.hue = function () { return this.prop(220, function (a) { return a; }); };
-        $mol_grapher_liner.prototype.colorStroke = function () { return this.prop("none", function (a) { return a; }); };
-        $mol_grapher_liner.prototype.field_style_stroke = function () { return this.colorStroke(); };
-        $mol_grapher_liner.prototype.colorFill = function () { return this.prop("none", function (a) { return a; }); };
-        $mol_grapher_liner.prototype.field_style_fill = function () { return this.colorFill(); };
         __decorate([
             $jin2_grab
         ], $mol_grapher_liner.prototype, "ropes", null);
         __decorate([
             $jin2_grab
         ], $mol_grapher_liner.prototype, "knots", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_grapher_liner.prototype, "hue", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_grapher_liner.prototype, "colorStroke", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_grapher_liner.prototype, "colorFill", null);
         $mol_grapher_liner = __decorate([
             $mol_replace
         ], $mol_grapher_liner);
@@ -1797,14 +1805,6 @@ var $mol_grapher_liner = (function (_super) {
             _.position = function () { return _this.prop(function () { return _this.pointsNorm().get()[i]; }); };
             _.size = function () { return _this.prop(.005); };
         });
-    };
-    $mol_grapher_liner.prototype.colorStroke = function () {
-        var _this = this;
-        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 50% , 66% )"); });
-    };
-    $mol_grapher_liner.prototype.colorFill = function () {
-        var _this = this;
-        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 50% , 75% )"); });
     };
     __decorate([
         $jin2_grab
@@ -2026,35 +2026,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var $mol_state_time = (function (_super) {
-    __extends($mol_state_time, _super);
-    function $mol_state_time() {
-        _super.apply(this, arguments);
-    }
-    $mol_state_time.ticks = function (prec) {
-        return new $jin2_atom(function () {
-            setTimeout(function () { return $mol_state_time.ticks(prec).update(); }, prec);
-            return Date.now();
-        }, null);
-    };
-    __decorate([
-        $jin2_grab
-    ], $mol_state_time, "ticks", null);
-    return $mol_state_time;
-}($jin2_object));
-//# sourceMappingURL=time.env=web.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 var $mol;
 (function ($mol) {
     var $mol_chart = (function (_super) {
@@ -2121,8 +2092,11 @@ var $mol;
         function $mol_chart_legender_info() {
             _super.apply(this, arguments);
         }
+        $mol_chart_legender_info.prototype.color = function () { return this.prop("none", function (a) { return a; }); };
         $mol_chart_legender_info.prototype.sampler = function () {
-            var view = new $mol_view;
+            var _this = this;
+            var view = new $mol.$mol_chart_legender_info_sampler;
+            view.color = function () { return _this.color(); };
             return view;
         };
         $mol_chart_legender_info.prototype.title = function () { return this.prop("", function (a) { return a; }); };
@@ -2138,6 +2112,9 @@ var $mol;
         };
         __decorate([
             $jin2_grab
+        ], $mol_chart_legender_info.prototype, "color", null);
+        __decorate([
+            $jin2_grab
         ], $mol_chart_legender_info.prototype, "sampler", null);
         __decorate([
             $jin2_grab
@@ -2151,6 +2128,25 @@ var $mol;
         return $mol_chart_legender_info;
     }($mol_view));
     $mol.$mol_chart_legender_info = $mol_chart_legender_info;
+})($mol || ($mol = {}));
+var $mol;
+(function ($mol) {
+    var $mol_chart_legender_info_sampler = (function (_super) {
+        __extends($mol_chart_legender_info_sampler, _super);
+        function $mol_chart_legender_info_sampler() {
+            _super.apply(this, arguments);
+        }
+        $mol_chart_legender_info_sampler.prototype.color = function () { return this.prop("none", function (a) { return a; }); };
+        $mol_chart_legender_info_sampler.prototype.field_style_backgroundColor = function () { return this.color(); };
+        __decorate([
+            $jin2_grab
+        ], $mol_chart_legender_info_sampler.prototype, "color", null);
+        $mol_chart_legender_info_sampler = __decorate([
+            $mol_replace
+        ], $mol_chart_legender_info_sampler);
+        return $mol_chart_legender_info_sampler;
+    }($mol_view));
+    $mol.$mol_chart_legender_info_sampler = $mol_chart_legender_info_sampler;
 })($mol || ($mol = {}));
 //# sourceMappingURL=chart.view.tree.js.map
 ;
@@ -2170,17 +2166,26 @@ var $mol_chart = (function (_super) {
     function $mol_chart() {
         _super.apply(this, arguments);
     }
-    $mol_chart.prototype.hueBase = function () { return this.prop(function () { return Math.floor($mol_state_time.ticks(1000).get() / 100) % 360; }); };
+    $mol_chart.prototype.hueBase = function () { return this.atom(12); };
+    $mol_chart.prototype.hueShift = function () { return this.atom(151); };
     $mol_chart.prototype.hue = function (index) {
         var _this = this;
-        return this.prop(function () { return _this.hueBase().get() - 110 * index; });
+        return this.prop(function () { return _this.hueBase().get() + _this.hueShift().get() * index; });
     };
     $mol_chart.prototype.graphsColored = function () {
         var _this = this;
         return this.atom(function (prev) {
-            var graphs = [].concat(_this.graphs().get());
+            var graphs = [].concat(_this.graphs().get() || []);
             graphs.forEach(function (graph, index) { return graph.hue = function () { return _this.hue(index + 1); }; });
             return graphs;
+        });
+    };
+    $mol_chart.prototype.legendsColored = function () {
+        var _this = this;
+        return this.atom(function (prev) {
+            var legends = [].concat(_this.legends().get() || []);
+            legends.forEach(function (legend, index) { return legend.hue = function () { return _this.hue(index + 1); }; });
+            return legends;
         });
     };
     __decorate([
@@ -2188,7 +2193,13 @@ var $mol_chart = (function (_super) {
     ], $mol_chart.prototype, "hueBase", null);
     __decorate([
         $jin2_grab
+    ], $mol_chart.prototype, "hueShift", null);
+    __decorate([
+        $jin2_grab
     ], $mol_chart.prototype, "graphsColored", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_chart.prototype, "legendsColored", null);
     $mol_chart = __decorate([
         $mol_replace
     ], $mol_chart);
@@ -2257,6 +2268,14 @@ var $mol_grapher_barer = (function (_super) {
             _.end = function () { return _this.prop(function () { return _this.pointsNorm().get()[i]; }); };
         });
     };
+    $mol_grapher_barer.prototype.colorStroke = function () {
+        var _this = this;
+        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 50% , 77% )"); });
+    };
+    $mol_grapher_barer.prototype.colorFill = function () {
+        var _this = this;
+        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 50% , 88% )"); });
+    };
     __decorate([
         $jin2_grab
     ], $mol_grapher_barer.prototype, "piler", null);
@@ -2291,243 +2310,7 @@ var $mol;
             view.child = function () { return _this.prop("Показатели в реальном времени", function () { }); };
             return view;
         };
-        $mol_app_chart.prototype.series1 = function () { return this.prop(null, function (a) { return a; }); };
-        $mol_app_chart.prototype.graph1 = function () {
-            var _this = this;
-            var view = new $mol.$mol_grapher_liner;
-            view.series = function () { return _this.series1(); };
-            return view;
-        };
-        $mol_app_chart.prototype.series2 = function () { return this.prop(null, function (a) { return a; }); };
-        $mol_app_chart.prototype.graph2 = function () {
-            var _this = this;
-            var view = new $mol.$mol_grapher_liner;
-            view.series = function () { return _this.series2(); };
-            return view;
-        };
-        $mol_app_chart.prototype.series3 = function () { return this.prop(null, function (a) { return a; }); };
-        $mol_app_chart.prototype.graph2_2 = function () {
-            var _this = this;
-            var view = new $mol.$mol_grapher_liner;
-            view.series = function () { return _this.series3(); };
-            return view;
-        };
-        $mol_app_chart.prototype.series4 = function () { return this.prop(null, function (a) { return a; }); };
-        $mol_app_chart.prototype.graph2_3 = function () {
-            var _this = this;
-            var view = new $mol.$mol_grapher_liner;
-            view.series = function () { return _this.series4(); };
-            return view;
-        };
-        $mol_app_chart.prototype.series5 = function () { return this.prop(null, function (a) { return a; }); };
-        $mol_app_chart.prototype.graph2_4 = function () {
-            var _this = this;
-            var view = new $mol.$mol_grapher_liner;
-            view.series = function () { return _this.series5(); };
-            return view;
-        };
-        $mol_app_chart.prototype.series6 = function () { return this.prop(null, function (a) { return a; }); };
-        $mol_app_chart.prototype.graph2_5 = function () {
-            var _this = this;
-            var view = new $mol.$mol_grapher_liner;
-            view.series = function () { return _this.series6(); };
-            return view;
-        };
-        $mol_app_chart.prototype.series7 = function () { return this.prop(null, function (a) { return a; }); };
-        $mol_app_chart.prototype.graph2_6 = function () {
-            var _this = this;
-            var view = new $mol.$mol_grapher_liner;
-            view.series = function () { return _this.series7(); };
-            return view;
-        };
-        $mol_app_chart.prototype.series8 = function () { return this.prop(null, function (a) { return a; }); };
-        $mol_app_chart.prototype.graph2_7 = function () {
-            var _this = this;
-            var view = new $mol.$mol_grapher_liner;
-            view.series = function () { return _this.series8(); };
-            return view;
-        };
-        $mol_app_chart.prototype.series9 = function () { return this.prop(null, function (a) { return a; }); };
-        $mol_app_chart.prototype.graph2_8 = function () {
-            var _this = this;
-            var view = new $mol.$mol_grapher_liner;
-            view.series = function () { return _this.series9(); };
-            return view;
-        };
-        $mol_app_chart.prototype.graphs1 = function () {
-            var _this = this;
-            return this.prop(function () { return [_this.graph1().get(), _this.graph2().get(), _this.graph2_2().get(), _this.graph2_3().get(), _this.graph2_4().get(), _this.graph2_5().get(), _this.graph2_6().get(), _this.graph2_7().get(), _this.graph2_8().get()]; });
-        };
-        $mol_app_chart.prototype.legend1 = function () {
-            var _this = this;
-            var view = new $mol.$mol_chart_legender_info;
-            view.title = function () { return _this.prop("Фактический объём реализации ЭГО", function () { }); };
-            return view;
-        };
-        $mol_app_chart.prototype.legend2 = function () {
-            var _this = this;
-            var view = new $mol.$mol_chart_legender_info;
-            view.title = function () { return _this.prop("Планируемый объём реализации ЭГО", function () { }); };
-            return view;
-        };
-        $mol_app_chart.prototype.legends1 = function () {
-            var _this = this;
-            return this.prop(function () { return [_this.legend1().get(), _this.legend2().get()]; });
-        };
-        $mol_app_chart.prototype.frame1 = function () {
-            var _this = this;
-            var view = new $mol.$mol_app_chart_charter;
-            view.title = function () { return _this.prop("Объём реализации", function () { }); };
-            view.graphs = function () { return _this.graphs1(); };
-            view.legends = function () { return _this.legends1(); };
-            return view;
-        };
-        $mol_app_chart.prototype.graph3 = function () {
-            var _this = this;
-            var view = new $mol.$mol_grapher_liner;
-            view.series = function () { return _this.series3(); };
-            return view;
-        };
-        $mol_app_chart.prototype.graphs2 = function () { return this.graph3(); };
-        $mol_app_chart.prototype.legend3 = function () {
-            var _this = this;
-            var view = new $mol.$mol_chart_legender_info;
-            view.title = function () { return _this.prop("Объём добычи КЦ ", function () { }); };
-            return view;
-        };
-        $mol_app_chart.prototype.legends2 = function () { return this.legend3(); };
-        $mol_app_chart.prototype.frame2 = function () {
-            var _this = this;
-            var view = new $mol.$mol_app_chart_charter;
-            view.title = function () { return _this.prop("Объём Добычи КЦ", function () { }); };
-            view.graphs = function () { return _this.graphs2(); };
-            view.legends = function () { return _this.legends2(); };
-            return view;
-        };
-        $mol_app_chart.prototype.graph4 = function () {
-            var _this = this;
-            var view = new $mol.$mol_grapher_liner;
-            view.series = function () { return _this.series2(); };
-            return view;
-        };
-        $mol_app_chart.prototype.graph5 = function () {
-            var _this = this;
-            var view = new $mol.$mol_grapher_liner;
-            view.series = function () { return _this.series3(); };
-            return view;
-        };
-        $mol_app_chart.prototype.graphs3 = function () {
-            var _this = this;
-            return this.prop(function () { return [_this.graph4().get(), _this.graph5().get()]; });
-        };
-        $mol_app_chart.prototype.legend4 = function () {
-            var _this = this;
-            var view = new $mol.$mol_chart_legender_info;
-            view.title = function () { return _this.prop("Планируемый объём реализации ЭГО", function () { }); };
-            return view;
-        };
-        $mol_app_chart.prototype.legend5 = function () {
-            var _this = this;
-            var view = new $mol.$mol_chart_legender_info;
-            view.title = function () { return _this.prop("Объём добычи КЦ", function () { }); };
-            return view;
-        };
-        $mol_app_chart.prototype.legends3 = function () {
-            var _this = this;
-            return this.prop(function () { return [_this.legend4().get(), _this.legend5().get()]; });
-        };
-        $mol_app_chart.prototype.frame3 = function () {
-            var _this = this;
-            var view = new $mol.$mol_app_chart_charter;
-            view.title = function () { return _this.prop("Сравнение планируемого объёма и добычи", function () { }); };
-            view.graphs = function () { return _this.graphs3(); };
-            view.legends = function () { return _this.legends3(); };
-            return view;
-        };
-        $mol_app_chart.prototype.graph6 = function () {
-            var _this = this;
-            var view = new $mol.$mol_grapher_barer;
-            view.series = function () { return _this.series1(); };
-            return view;
-        };
-        $mol_app_chart.prototype.graph7 = function () {
-            var _this = this;
-            var view = new $mol.$mol_grapher_barer;
-            view.series = function () { return _this.series3(); };
-            return view;
-        };
-        $mol_app_chart.prototype.graphs4 = function () {
-            var _this = this;
-            return this.prop(function () { return [_this.graph6().get(), _this.graph7().get()]; });
-        };
-        $mol_app_chart.prototype.legend6 = function () {
-            var _this = this;
-            var view = new $mol.$mol_chart_legender_info;
-            view.title = function () { return _this.prop("Фактический объём реализации ЭГО", function () { }); };
-            return view;
-        };
-        $mol_app_chart.prototype.legend7 = function () {
-            var _this = this;
-            var view = new $mol.$mol_chart_legender_info;
-            view.title = function () { return _this.prop("Объём добычи КЦ", function () { }); };
-            return view;
-        };
-        $mol_app_chart.prototype.legends4 = function () {
-            var _this = this;
-            return this.prop(function () { return [_this.legend6().get(), _this.legend7().get()]; });
-        };
-        $mol_app_chart.prototype.frame4 = function () {
-            var _this = this;
-            var view = new $mol.$mol_app_chart_charter;
-            view.title = function () { return _this.prop("Сравнение фактического объёма и добычи", function () { }); };
-            view.graphs = function () { return _this.graphs4(); };
-            view.legends = function () { return _this.legends4(); };
-            return view;
-        };
-        $mol_app_chart.prototype.graph8 = function () {
-            var _this = this;
-            var view = new $mol.$mol_grapher_barer;
-            view.series = function () { return _this.series2(); };
-            return view;
-        };
-        $mol_app_chart.prototype.graph9 = function () {
-            var _this = this;
-            var view = new $mol.$mol_grapher_barer;
-            view.series = function () { return _this.series3(); };
-            return view;
-        };
-        $mol_app_chart.prototype.graphs5 = function () {
-            var _this = this;
-            return this.prop(function () { return [_this.graph8().get(), _this.graph9().get()]; });
-        };
-        $mol_app_chart.prototype.legend8 = function () {
-            var _this = this;
-            var view = new $mol.$mol_chart_legender_info;
-            view.title = function () { return _this.prop("Планируемый объём реализации ЭГО", function () { }); };
-            return view;
-        };
-        $mol_app_chart.prototype.legend9 = function () {
-            var _this = this;
-            var view = new $mol.$mol_chart_legender_info;
-            view.title = function () { return _this.prop("Объём добычи КЦ", function () { }); };
-            return view;
-        };
-        $mol_app_chart.prototype.legends5 = function () {
-            var _this = this;
-            return this.prop(function () { return [_this.legend8().get(), _this.legend9().get()]; });
-        };
-        $mol_app_chart.prototype.frame5 = function () {
-            var _this = this;
-            var view = new $mol.$mol_app_chart_charter;
-            view.title = function () { return _this.prop("Сравнение планируемого объёма и добычи", function () { }); };
-            view.graphs = function () { return _this.graphs5(); };
-            view.legends = function () { return _this.legends5(); };
-            return view;
-        };
-        $mol_app_chart.prototype.frames = function () {
-            var _this = this;
-            return this.prop(function () { return [_this.frame1().get(), _this.frame2().get(), _this.frame3().get(), _this.frame4().get(), _this.frame5().get()]; });
-        };
+        $mol_app_chart.prototype.frames = function () { return this.prop(function () { return []; }); };
         $mol_app_chart.prototype.framer = function () {
             var _this = this;
             var view = new $mol.$mol_tiler;
@@ -2547,123 +2330,6 @@ var $mol;
         __decorate([
             $jin2_grab
         ], $mol_app_chart.prototype, "header", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "series1", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "graph1", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "series2", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "graph2", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "series3", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "graph2_2", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "series4", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "graph2_3", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "series5", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "graph2_4", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "series6", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "graph2_5", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "series7", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "graph2_6", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "series8", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "graph2_7", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "series9", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "graph2_8", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "legend1", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "legend2", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "frame1", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "graph3", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "legend3", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "frame2", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "graph4", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "graph5", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "legend4", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "legend5", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "frame3", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "graph6", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "graph7", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "legend6", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "legend7", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "frame4", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "graph8", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "graph9", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "legend8", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "legend9", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "frame5", null);
         __decorate([
             $jin2_grab
         ], $mol_app_chart.prototype, "framer", null);
@@ -2709,104 +2375,117 @@ var $mol_app_chart = (function (_super) {
     function $mol_app_chart() {
         _super.apply(this, arguments);
     }
-    $mol_app_chart.prototype.count = function () { return this.atom(12); };
-    $mol_app_chart.prototype.series1 = function () {
+    $mol_app_chart.prototype.countSample = function () { return this.atom(12); };
+    $mol_app_chart.prototype.countChart = function () { return this.atom(5); };
+    $mol_app_chart.prototype.countGraph = function () { return this.atom(5); };
+    $mol_app_chart.prototype.series = function (series) {
         var _this = this;
         return this.atom(function (prev) {
-            $mol_state_time.ticks(100).get();
-            if (!prev)
-                prev = Array(_this.count().get()).join('.').split('.')
-                    .map(function (_, i) { return Math.sin(i / 10) / 2 + .5; });
-            prev[Math.floor(Math.random() * prev.length)] += (Math.random() - .5) / 10;
-            return prev;
+            var titles = [
+                "Объём добычи газа",
+                "Объём добычи нефти",
+                "Объём реализации газа",
+                "Объём реализации нефти",
+                "Объём накладных расходов",
+            ];
+            return {
+                title: titles[series % titles.length],
+                samples: Array(_this.countSample().get()).join('.').split('.').map(function (_) { return Math.random() / 2 + .5; }),
+            };
         });
     };
-    $mol_app_chart.prototype.series2 = function () {
+    $mol_app_chart.prototype.frames = function () {
         var _this = this;
         return this.atom(function (prev) {
-            return Array(_this.count().get()).join('.').split('.')
-                .map(function (_, i) { return Math.cos(i / 5) / 2 + .5; });
+            return Array(_this.countChart().get()).join('.').split('.')
+                .map(function (_, index) { return _this.charter(index).get(); });
         });
     };
-    $mol_app_chart.prototype.series3 = function () {
+    $mol_app_chart.prototype.charter = function (id) {
+        var _this = this;
+        return (new $mol_chart).setup(function (_) {
+            var titles = [
+                "Сравнение всех показателей",
+                "Сравшение основных показателей",
+                "Сравнение важных показателей",
+                "Сравнение объёмов добычи",
+                "Показатель выполнения планов",
+            ];
+            _.title = function () { return _this.prop(function () { return titles[id % titles.length]; }); };
+            _.graphs = function () { return _this.prop(function () { return _this.graphs(id).get(); }); };
+            _.legends = function () { return _this.prop(function () { return _this.legends(id).get(); }); };
+        });
+    };
+    $mol_app_chart.prototype.graphs = function (chart) {
         var _this = this;
         return this.atom(function (prev) {
-            return Array(_this.count().get()).join('.').split('.')
-                .map(function (_, i) { return Math.sin(i) / 3 + .5; });
+            return Array(_this.countGraph().get()).join('.').split('.')
+                .map(function (_, graph) {
+                return _this.liner({ chart: chart, graph: graph }).get();
+            });
         });
     };
-    $mol_app_chart.prototype.series4 = function () {
+    $mol_app_chart.prototype.liner = function (id) {
+        var _this = this;
+        return (new $mol_grapher_liner).setup(function (_) {
+            _.series = function () { return _this.prop(_this.series(id.graph).get().samples); };
+        });
+    };
+    $mol_app_chart.prototype.barer = function (id) {
+        var _this = this;
+        return (new $mol_grapher_barer).setup(function (_) {
+            _.series = function () { return _this.prop(_this.series(id.graph).get().samples); };
+        });
+    };
+    $mol_app_chart.prototype.legends = function (chart) {
         var _this = this;
         return this.atom(function (prev) {
-            return Array(_this.count().get()).join('.').split('.')
-                .map(function (_, i) { return Math.sin(i) / 4 + .75; });
+            return Array(_this.countGraph().get()).join('.').split('.')
+                .map(function (_, graph) {
+                return _this.legender({ chart: chart, graph: graph }).get();
+            });
         });
     };
-    $mol_app_chart.prototype.series5 = function () {
+    $mol_app_chart.prototype.legender = function (id) {
         var _this = this;
-        return this.atom(function (prev) {
-            return Array(_this.count().get()).join('.').split('.')
-                .map(function (_, i) { return Math.sin(i) / 6 + .5; });
-        });
-    };
-    $mol_app_chart.prototype.series6 = function () {
-        var _this = this;
-        return this.atom(function (prev) {
-            return Array(_this.count().get()).join('.').split('.')
-                .map(function (_, i) { return Math.sin(i) / 2 + .5; });
-        });
-    };
-    $mol_app_chart.prototype.series7 = function () {
-        var _this = this;
-        return this.atom(function (prev) {
-            return Array(_this.count().get()).join('.').split('.')
-                .map(function (_, i) { return Math.sin(i / 2) / 4 + .75; });
-        });
-    };
-    $mol_app_chart.prototype.series8 = function () {
-        var _this = this;
-        return this.atom(function (prev) {
-            return Array(_this.count().get()).join('.').split('.')
-                .map(function (_, i) { return Math.sin(i * 2) / 4 + .5; });
-        });
-    };
-    $mol_app_chart.prototype.series9 = function () {
-        var _this = this;
-        return this.atom(function (prev) {
-            return Array(_this.count().get()).join('.').split('.')
-                .map(function (_, i) { return Math.sin(i * 3) / 4 + .75; });
+        return (new $mol.$mol_chart_legender_info).setup(function (_) {
+            _.title = function () { return _this.prop(_this.series(id.graph).get().title); };
+            _.color = function () { return _this.prop(function () { return _this.liner(id).get().colorStroke().get(); }); };
         });
     };
     __decorate([
         $jin2_grab
-    ], $mol_app_chart.prototype, "count", null);
+    ], $mol_app_chart.prototype, "countSample", null);
     __decorate([
         $jin2_grab
-    ], $mol_app_chart.prototype, "series1", null);
+    ], $mol_app_chart.prototype, "countChart", null);
     __decorate([
         $jin2_grab
-    ], $mol_app_chart.prototype, "series2", null);
+    ], $mol_app_chart.prototype, "countGraph", null);
     __decorate([
         $jin2_grab
-    ], $mol_app_chart.prototype, "series3", null);
+    ], $mol_app_chart.prototype, "series", null);
     __decorate([
         $jin2_grab
-    ], $mol_app_chart.prototype, "series4", null);
+    ], $mol_app_chart.prototype, "frames", null);
     __decorate([
         $jin2_grab
-    ], $mol_app_chart.prototype, "series5", null);
+    ], $mol_app_chart.prototype, "charter", null);
     __decorate([
         $jin2_grab
-    ], $mol_app_chart.prototype, "series6", null);
+    ], $mol_app_chart.prototype, "graphs", null);
     __decorate([
         $jin2_grab
-    ], $mol_app_chart.prototype, "series7", null);
+    ], $mol_app_chart.prototype, "liner", null);
     __decorate([
         $jin2_grab
-    ], $mol_app_chart.prototype, "series8", null);
+    ], $mol_app_chart.prototype, "barer", null);
     __decorate([
         $jin2_grab
-    ], $mol_app_chart.prototype, "series9", null);
+    ], $mol_app_chart.prototype, "legends", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_app_chart.prototype, "legender", null);
     $mol_app_chart = __decorate([
         $mol_replace
     ], $mol_app_chart);

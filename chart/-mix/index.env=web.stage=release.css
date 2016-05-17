@@ -204,7 +204,7 @@
 	        flex: 1 1 50vmin;
 }
 
-[mol_app_chart_charter_titler] {
+[mol_chart_titler] {
 	display: -webkit-box;
 	display: -webkit-flex;
 	display: -ms-flexbox;
@@ -256,13 +256,8 @@
 }
 
 [mol_grapher_barer] {
-	stroke: #73C2CF;
 	stroke-width: 2.5%;
 	fill: none;
-}
-
-[mol_grapher_barer]:nth-of-type(2) {
-	stroke: #A973D0;
 }
 
 [mol_grapher_barer_piler] {}

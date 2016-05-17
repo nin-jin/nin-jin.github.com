@@ -164,12 +164,6 @@
 						"mol/plotter/plotter.view.ts"
 					]
 				},
-				"mol/state/time": {
-					":priority": 1,
-					"": [
-						"mol/state/time/time.env=web.ts"
-					]
-				},
 				"": [
 					"mol/chart/chart.view.css",
 					"mol/chart/chart.view.tree",
