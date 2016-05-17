@@ -131,42 +131,13 @@
 	        flex: 1 1 51%;
 }
 
-[mol_grapher_barer] {
-	stroke: #73C2CF;
-	stroke-width: 2.5%;
-	fill: none;
-}
-
-[mol_grapher_barer]:nth-of-type(2) {
-	stroke: #A973D0;
-}
-
-[mol_grapher_barer_piler] {}
-
-[mol_grapher_barer_piler]:hover {
-	stroke: darkblue;
-}
-
 [mol_grapher_liner] {
-	stroke: #C57995;
 	stroke-width: 3;
 	fill: none;
 }
 
-[mol_grapher_liner]:nth-of-type(2) {
-	stroke: #7570C1;
-}
-
 [mol_grapher_liner_roper]:hover {
 	stroke: darkblue;
-}
-
-[mol_grapher_liner_knoter] {
-	fill: #FF8EBC;
-}
-
-[mol_grapher_liner]:nth-of-type(2) [mol_grapher_liner_knoter] {
-	fill: #9494F5;
 }
 
 [mol_grapher_liner_knoter]:hover {
@@ -174,12 +145,47 @@
 }
 
 [mol_plotter] {
-	border-top: 1px solid #CBCACB;
-	border-bottom: 1px solid #CBCACB;
+	position: relative;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
 }
 
 [mol_plotter_grid] {
-	stroke: #CBCACB;
+	position: absolute;
+	left: 0;
+	width: 100%;
+	display: -webkit-box;
+	display: -webkit-flex;
+	display: -ms-flexbox;
+	display: flex;
+}
+
+[mol_plotter_grid_labeler] {
+	-webkit-box-flex: 0;
+	-webkit-flex: 0 1 3em;
+	    -ms-flex: 0 1 3em;
+	        flex: 0 1 3em;
+	text-align: right;
+	margin: -.5em .5em;
+}
+
+[mol_plotter_grid_liner] {
+	border-top: 1px solid #CBCACB;
+	-webkit-box-flex: 1;
+	-webkit-flex: 1 1 auto;
+	    -ms-flex: 1 1 auto;
+	        flex: 1 1 auto;
+}
+
+[mol_plotter_svg] {
+	-webkit-box-flex: 1;
+	-webkit-flex: 1 1 auto;
+	    -ms-flex: 1 1 auto;
+	        flex: 1 1 auto;
+	position: relative;
+	margin-left: 4em;
 }
 
 [mol_chart] {
@@ -220,26 +226,22 @@
 }
 
 [mol_chart_legender] {
-	padding: .25em;
+	padding: .5em;
+	margin-left: 4em;
 }
 
 [mol_chart_legender_info] {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: -ms-flexbox;
-	display: flex;
+	display: table-row;
 }
 
 [mol_chart_legender_info] > * {
-	margin: .25em;
+	display: table-cell;
+	padding: .25em;
 }
 
 [mol_chart_legender_info_sampler] {
 	background: #C57995;
-	-webkit-box-flex: 0;
-	-webkit-flex: 0 0 1em;
-	    -ms-flex: 0 0 1em;
-	        flex: 0 0 1em;
+	padding: .5em;
 }
 
 [mol_chart_legender_info]:nth-of-type(2) [mol_chart_legender_info_sampler] {
@@ -251,6 +253,22 @@
 	-webkit-flex: 1 1 auto;
 	    -ms-flex: 1 1 auto;
 	        flex: 1 1 auto;
+}
+
+[mol_grapher_barer] {
+	stroke: #73C2CF;
+	stroke-width: 2.5%;
+	fill: none;
+}
+
+[mol_grapher_barer]:nth-of-type(2) {
+	stroke: #A973D0;
+}
+
+[mol_grapher_barer_piler] {}
+
+[mol_grapher_barer_piler]:hover {
+	stroke: darkblue;
 }
 
 [mol_app_chart] {

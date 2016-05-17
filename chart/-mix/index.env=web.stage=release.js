@@ -1627,77 +1627,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 var $mol;
 (function ($mol) {
-    var $mol_grapher_barer = (function (_super) {
-        __extends($mol_grapher_barer, _super);
-        function $mol_grapher_barer() {
-            _super.apply(this, arguments);
-        }
-        $mol_grapher_barer.prototype.piles = function () { return this.prop(null, function (a) { return a; }); };
-        $mol_grapher_barer.prototype.child = function () { return this.piles(); };
-        __decorate([
-            $jin2_grab
-        ], $mol_grapher_barer.prototype, "piles", null);
-        $mol_grapher_barer = __decorate([
-            $mol_replace
-        ], $mol_grapher_barer);
-        return $mol_grapher_barer;
-    }($mol.$mol_grapher));
-    $mol.$mol_grapher_barer = $mol_grapher_barer;
-})($mol || ($mol = {}));
-//# sourceMappingURL=barer.view.tree.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $mol_grapher_barer = (function (_super) {
-    __extends($mol_grapher_barer, _super);
-    function $mol_grapher_barer() {
-        _super.apply(this, arguments);
-    }
-    $mol_grapher_barer.prototype.piles = function () {
-        var _this = this;
-        return this.prop(function () {
-            return _this.pointsNorm().get().slice(0).map(function (_, i) { return _this.piler(i).get(); });
-        });
-    };
-    $mol_grapher_barer.prototype.piler = function (i) {
-        var _this = this;
-        return (new $mol.$mol_svg_line).setup(function (_) {
-            _.start = function () { return _this.prop(function () { return [_this.pointsNorm().get()[i][0], 0]; }); };
-            _.end = function () { return _this.prop(function () { return _this.pointsNorm().get()[i]; }); };
-        });
-    };
-    __decorate([
-        $jin2_grab
-    ], $mol_grapher_barer.prototype, "piler", null);
-    $mol_grapher_barer = __decorate([
-        $mol_replace
-    ], $mol_grapher_barer);
-    return $mol_grapher_barer;
-}($mol.$mol_grapher_barer));
-//# sourceMappingURL=barer.view.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $mol;
-(function ($mol) {
     var $mol_svg_circle = (function (_super) {
         __extends($mol_svg_circle, _super);
         function $mol_svg_circle() {
@@ -1798,12 +1727,26 @@ var $mol;
             var _this = this;
             return this.prop(function () { return [_this.ropes().get(), _this.knots().get()]; });
         };
+        $mol_grapher_liner.prototype.hue = function () { return this.prop(220, function (a) { return a; }); };
+        $mol_grapher_liner.prototype.colorStroke = function () { return this.prop("none", function (a) { return a; }); };
+        $mol_grapher_liner.prototype.field_style_stroke = function () { return this.colorStroke(); };
+        $mol_grapher_liner.prototype.colorFill = function () { return this.prop("none", function (a) { return a; }); };
+        $mol_grapher_liner.prototype.field_style_fill = function () { return this.colorFill(); };
         __decorate([
             $jin2_grab
         ], $mol_grapher_liner.prototype, "ropes", null);
         __decorate([
             $jin2_grab
         ], $mol_grapher_liner.prototype, "knots", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_grapher_liner.prototype, "hue", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_grapher_liner.prototype, "colorStroke", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_grapher_liner.prototype, "colorFill", null);
         $mol_grapher_liner = __decorate([
             $mol_replace
         ], $mol_grapher_liner);
@@ -1855,6 +1798,14 @@ var $mol_grapher_liner = (function (_super) {
             _.size = function () { return _this.prop(.005); };
         });
     };
+    $mol_grapher_liner.prototype.colorStroke = function () {
+        var _this = this;
+        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 66% , 66% )"); });
+    };
+    $mol_grapher_liner.prototype.colorFill = function () {
+        var _this = this;
+        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 66% , 88% )"); });
+    };
     __decorate([
         $jin2_grab
     ], $mol_grapher_liner.prototype, "roper", null);
@@ -1886,33 +1837,59 @@ var $mol;
         function $mol_plotter() {
             _super.apply(this, arguments);
         }
+        $mol_plotter.prototype.grid0 = function () {
+            var _this = this;
+            var view = new $mol.$mol_plotter_grid;
+            view.level = function () { return _this.prop("0%", function () { }); };
+            view.label = function () { return _this.prop("2000", function () { }); };
+            return view;
+        };
         $mol_plotter.prototype.grid1 = function () {
             var _this = this;
             var view = new $mol.$mol_plotter_grid;
             view.level = function () { return _this.prop("25%", function () { }); };
+            view.label = function () { return _this.prop("1500", function () { }); };
             return view;
         };
         $mol_plotter.prototype.grid2 = function () {
             var _this = this;
             var view = new $mol.$mol_plotter_grid;
             view.level = function () { return _this.prop("50%", function () { }); };
+            view.label = function () { return _this.prop("1500", function () { }); };
             return view;
         };
         $mol_plotter.prototype.grid3 = function () {
             var _this = this;
             var view = new $mol.$mol_plotter_grid;
             view.level = function () { return _this.prop("75%", function () { }); };
+            view.label = function () { return _this.prop("500", function () { }); };
+            return view;
+        };
+        $mol_plotter.prototype.grid4 = function () {
+            var _this = this;
+            var view = new $mol.$mol_plotter_grid;
+            view.level = function () { return _this.prop("100%", function () { }); };
+            view.label = function () { return _this.prop("0", function () { }); };
             return view;
         };
         $mol_plotter.prototype.grid = function () {
             var _this = this;
-            return this.prop(function () { return [_this.grid1().get(), _this.grid2().get(), _this.grid3().get()]; });
+            return this.prop(function () { return [_this.grid0().get(), _this.grid1().get(), _this.grid2().get(), _this.grid3().get(), _this.grid4().get()]; });
         };
         $mol_plotter.prototype.graphs = function () { return this.prop(null, function (a) { return a; }); };
+        $mol_plotter.prototype.svg = function () {
+            var _this = this;
+            var view = new $mol.$mol_svg;
+            view.child = function () { return _this.graphs(); };
+            return view;
+        };
         $mol_plotter.prototype.child = function () {
             var _this = this;
-            return this.prop(function () { return [_this.grid().get(), _this.graphs().get()]; });
+            return this.prop(function () { return [_this.grid().get(), _this.svg().get()]; });
         };
+        __decorate([
+            $jin2_grab
+        ], $mol_plotter.prototype, "grid0", null);
         __decorate([
             $jin2_grab
         ], $mol_plotter.prototype, "grid1", null);
@@ -1924,12 +1901,18 @@ var $mol;
         ], $mol_plotter.prototype, "grid3", null);
         __decorate([
             $jin2_grab
+        ], $mol_plotter.prototype, "grid4", null);
+        __decorate([
+            $jin2_grab
         ], $mol_plotter.prototype, "graphs", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_plotter.prototype, "svg", null);
         $mol_plotter = __decorate([
             $mol_replace
         ], $mol_plotter);
         return $mol_plotter;
-    }($mol.$mol_svg));
+    }($mol_view));
     $mol.$mol_plotter = $mol_plotter;
 })($mol || ($mol = {}));
 var $mol;
@@ -1940,24 +1923,39 @@ var $mol;
             _super.apply(this, arguments);
         }
         $mol_plotter_grid.prototype.level = function () { return this.prop("50%", function (a) { return a; }); };
-        $mol_plotter_grid.prototype.startX = function () { return this.prop("0%", function (a) { return a; }); };
-        $mol_plotter_grid.prototype.startY = function () { return this.level(); };
-        $mol_plotter_grid.prototype.endX = function () { return this.prop("100%", function (a) { return a; }); };
-        $mol_plotter_grid.prototype.endY = function () { return this.level(); };
+        $mol_plotter_grid.prototype.field_style_top = function () { return this.level(); };
+        $mol_plotter_grid.prototype.label = function () { return this.prop("1000", function (a) { return a; }); };
+        $mol_plotter_grid.prototype.labeler = function () {
+            var _this = this;
+            var view = new $mol_view;
+            view.child = function () { return _this.label(); };
+            return view;
+        };
+        $mol_plotter_grid.prototype.liner = function () {
+            var view = new $mol_view;
+            return view;
+        };
+        $mol_plotter_grid.prototype.child = function () {
+            var _this = this;
+            return this.prop(function () { return [_this.labeler().get(), _this.liner().get()]; });
+        };
         __decorate([
             $jin2_grab
         ], $mol_plotter_grid.prototype, "level", null);
         __decorate([
             $jin2_grab
-        ], $mol_plotter_grid.prototype, "startX", null);
+        ], $mol_plotter_grid.prototype, "label", null);
         __decorate([
             $jin2_grab
-        ], $mol_plotter_grid.prototype, "endX", null);
+        ], $mol_plotter_grid.prototype, "labeler", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_plotter_grid.prototype, "liner", null);
         $mol_plotter_grid = __decorate([
             $mol_replace
         ], $mol_plotter_grid);
         return $mol_plotter_grid;
-    }($mol.$mol_svg_line));
+    }($mol_view));
     $mol.$mol_plotter_grid = $mol_plotter_grid;
 })($mol || ($mol = {}));
 //# sourceMappingURL=plotter.view.tree.js.map
@@ -2028,6 +2026,35 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var $mol_state_time = (function (_super) {
+    __extends($mol_state_time, _super);
+    function $mol_state_time() {
+        _super.apply(this, arguments);
+    }
+    $mol_state_time.ticks = function (prec) {
+        return new $jin2_atom(function () {
+            setTimeout(function () { return $mol_state_time.ticks(prec).update(); }, prec);
+            return Date.now();
+        }, null);
+    };
+    __decorate([
+        $jin2_grab
+    ], $mol_state_time, "ticks", null);
+    return $mol_state_time;
+}($jin2_object));
+//# sourceMappingURL=time.env=web.js.map
+;
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var $mol;
 (function ($mol) {
     var $mol_chart = (function (_super) {
@@ -2043,17 +2070,19 @@ var $mol;
             return view;
         };
         $mol_chart.prototype.graphs = function () { return this.prop(null, function (a) { return a; }); };
+        $mol_chart.prototype.graphsColored = function () { return this.graphs(); };
         $mol_chart.prototype.plotter = function () {
             var _this = this;
             var view = new $mol.$mol_plotter;
-            view.graphs = function () { return _this.graphs(); };
+            view.graphs = function () { return _this.graphsColored(); };
             return view;
         };
         $mol_chart.prototype.legends = function () { return this.prop(null, function (a) { return a; }); };
+        $mol_chart.prototype.legendsColored = function () { return this.legends(); };
         $mol_chart.prototype.legender = function () {
             var _this = this;
             var view = new $mol_view;
-            view.child = function () { return _this.legends(); };
+            view.child = function () { return _this.legendsColored(); };
             return view;
         };
         $mol_chart.prototype.child = function () {
@@ -2136,23 +2165,104 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var $mol_state_time = (function (_super) {
-    __extends($mol_state_time, _super);
-    function $mol_state_time() {
+var $mol_chart = (function (_super) {
+    __extends($mol_chart, _super);
+    function $mol_chart() {
         _super.apply(this, arguments);
     }
-    $mol_state_time.ticks = function (prec) {
-        return new $jin2_atom(function () {
-            setTimeout(function () { return $mol_state_time.ticks(prec).update(); }, prec);
-            return Date.now();
-        }, null);
+    $mol_chart.prototype.hueBase = function () { return this.prop(function () { return Math.floor($mol_state_time.ticks(1000).get() / 10) % 360; }); };
+    $mol_chart.prototype.hue = function (index) {
+        var _this = this;
+        return this.prop(function () { return _this.hueBase().get() + 160 * index; });
+    };
+    $mol_chart.prototype.graphsColored = function () {
+        var _this = this;
+        return this.atom(function (prev) {
+            var graphs = [].concat(_this.graphs().get());
+            graphs.forEach(function (graph, index) { return graph.hue = function () { return _this.hue(index); }; });
+            return graphs;
+        });
     };
     __decorate([
         $jin2_grab
-    ], $mol_state_time, "ticks", null);
-    return $mol_state_time;
-}($jin2_object));
-//# sourceMappingURL=time.env=web.js.map
+    ], $mol_chart.prototype, "graphsColored", null);
+    $mol_chart = __decorate([
+        $mol_replace
+    ], $mol_chart);
+    return $mol_chart;
+}($mol.$mol_chart));
+//# sourceMappingURL=chart.view.js.map
+;
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var $mol;
+(function ($mol) {
+    var $mol_grapher_barer = (function (_super) {
+        __extends($mol_grapher_barer, _super);
+        function $mol_grapher_barer() {
+            _super.apply(this, arguments);
+        }
+        $mol_grapher_barer.prototype.piles = function () { return this.prop(null, function (a) { return a; }); };
+        $mol_grapher_barer.prototype.child = function () { return this.piles(); };
+        __decorate([
+            $jin2_grab
+        ], $mol_grapher_barer.prototype, "piles", null);
+        $mol_grapher_barer = __decorate([
+            $mol_replace
+        ], $mol_grapher_barer);
+        return $mol_grapher_barer;
+    }($mol.$mol_grapher));
+    $mol.$mol_grapher_barer = $mol_grapher_barer;
+})($mol || ($mol = {}));
+//# sourceMappingURL=barer.view.tree.js.map
+;
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var $mol_grapher_barer = (function (_super) {
+    __extends($mol_grapher_barer, _super);
+    function $mol_grapher_barer() {
+        _super.apply(this, arguments);
+    }
+    $mol_grapher_barer.prototype.piles = function () {
+        var _this = this;
+        return this.prop(function () {
+            return _this.pointsNorm().get().slice(0).map(function (_, i) { return _this.piler(i).get(); });
+        });
+    };
+    $mol_grapher_barer.prototype.piler = function (i) {
+        var _this = this;
+        return (new $mol.$mol_svg_line).setup(function (_) {
+            _.start = function () { return _this.prop(function () { return [_this.pointsNorm().get()[i][0], 0]; }); };
+            _.end = function () { return _this.prop(function () { return _this.pointsNorm().get()[i]; }); };
+        });
+    };
+    __decorate([
+        $jin2_grab
+    ], $mol_grapher_barer.prototype, "piler", null);
+    $mol_grapher_barer = __decorate([
+        $mol_replace
+    ], $mol_grapher_barer);
+    return $mol_grapher_barer;
+}($mol.$mol_grapher_barer));
+//# sourceMappingURL=barer.view.js.map
 ;
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -2181,7 +2291,7 @@ var $mol;
         $mol_app_chart.prototype.series1 = function () { return this.prop(null, function (a) { return a; }); };
         $mol_app_chart.prototype.graph1 = function () {
             var _this = this;
-            var view = new $mol.$mol_grapher_barer;
+            var view = new $mol.$mol_grapher_liner;
             view.series = function () { return _this.series1(); };
             return view;
         };
@@ -2192,9 +2302,23 @@ var $mol;
             view.series = function () { return _this.series2(); };
             return view;
         };
+        $mol_app_chart.prototype.series3 = function () { return this.prop(null, function (a) { return a; }); };
+        $mol_app_chart.prototype.graph2_2 = function () {
+            var _this = this;
+            var view = new $mol.$mol_grapher_liner;
+            view.series = function () { return _this.series3(); };
+            return view;
+        };
+        $mol_app_chart.prototype.series4 = function () { return this.prop(null, function (a) { return a; }); };
+        $mol_app_chart.prototype.graph2_3 = function () {
+            var _this = this;
+            var view = new $mol.$mol_grapher_liner;
+            view.series = function () { return _this.series4(); };
+            return view;
+        };
         $mol_app_chart.prototype.graphs1 = function () {
             var _this = this;
-            return this.prop(function () { return [_this.graph1().get(), _this.graph2().get()]; });
+            return this.prop(function () { return [_this.graph1().get(), _this.graph2().get(), _this.graph2_2().get(), _this.graph2_3().get()]; });
         };
         $mol_app_chart.prototype.legend1 = function () {
             var _this = this;
@@ -2220,7 +2344,6 @@ var $mol;
             view.legends = function () { return _this.legends1(); };
             return view;
         };
-        $mol_app_chart.prototype.series3 = function () { return this.prop(null, function (a) { return a; }); };
         $mol_app_chart.prototype.graph3 = function () {
             var _this = this;
             var view = new $mol.$mol_grapher_liner;
@@ -2400,6 +2523,18 @@ var $mol;
         ], $mol_app_chart.prototype, "graph2", null);
         __decorate([
             $jin2_grab
+        ], $mol_app_chart.prototype, "series3", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_app_chart.prototype, "graph2_2", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_app_chart.prototype, "series4", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_app_chart.prototype, "graph2_3", null);
+        __decorate([
+            $jin2_grab
         ], $mol_app_chart.prototype, "legend1", null);
         __decorate([
             $jin2_grab
@@ -2407,9 +2542,6 @@ var $mol;
         __decorate([
             $jin2_grab
         ], $mol_app_chart.prototype, "frame1", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_app_chart.prototype, "series3", null);
         __decorate([
             $jin2_grab
         ], $mol_app_chart.prototype, "graph3", null);
@@ -2513,8 +2645,12 @@ var $mol_app_chart = (function (_super) {
     $mol_app_chart.prototype.series1 = function () {
         var _this = this;
         return this.atom(function (prev) {
-            return Array(_this.count().get()).join('.').split('.')
-                .map(function (_, i) { return Math.sin((i - $mol_state_time.ticks(40).get() / 40) / 10) / 3 + .5; });
+            $mol_state_time.ticks(100).get();
+            if (!prev)
+                prev = Array(_this.count().get()).join('.').split('.')
+                    .map(function (_, i) { return Math.sin(i / 10) / 2 + .5; });
+            prev[Math.floor(Math.random() * prev.length)] += (Math.random() - .5) / 10;
+            return prev;
         });
     };
     $mol_app_chart.prototype.series2 = function () {
@@ -2531,6 +2667,13 @@ var $mol_app_chart = (function (_super) {
                 .map(function (_, i) { return Math.sin(i) / 3 + .5; });
         });
     };
+    $mol_app_chart.prototype.series4 = function () {
+        var _this = this;
+        return this.atom(function (prev) {
+            return Array(_this.count().get()).join('.').split('.')
+                .map(function (_, i) { return Math.sin(i) / 4 + .75; });
+        });
+    };
     __decorate([
         $jin2_grab
     ], $mol_app_chart.prototype, "count", null);
@@ -2543,6 +2686,9 @@ var $mol_app_chart = (function (_super) {
     __decorate([
         $jin2_grab
     ], $mol_app_chart.prototype, "series3", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_app_chart.prototype, "series4", null);
     $mol_app_chart = __decorate([
         $mol_replace
     ], $mol_app_chart);
