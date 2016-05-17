@@ -113,18 +113,34 @@
 					"mol/tiler/tiler.view.ts"
 				]
 			},
-			"mol/grapher/liner": {
+			"mol/chart": {
 				":priority": 0,
+				"mol/plotter": {
+					":priority": 0,
+					"mol/svg": {
+						":priority": 0,
+						"": [
+							"mol/svg/svg.view.tree"
+						]
+					},
+					"": [
+						"mol/plotter/plotter.view.css",
+						"mol/plotter/plotter.view.tree",
+						"mol/plotter/plotter.view.ts"
+					]
+				},
+				"": [
+					"mol/chart/chart.view.css",
+					"mol/chart/chart.view.tree",
+					"mol/chart/chart.view.ts"
+				]
+			},
+			"mol/grapher/liner": {
+				":priority": 1,
 				"mol/grapher": {
 					":priority": 0,
 					"mol/svg/group": {
 						":priority": 0,
-						"mol/svg": {
-							":priority": 0,
-							"": [
-								"mol/svg/svg.view.tree"
-							]
-						},
 						"": [
 							"mol/svg/group/group.view.tree"
 						]
@@ -154,24 +170,8 @@
 					"mol/grapher/liner/liner.view.ts"
 				]
 			},
-			"mol/chart": {
-				":priority": 0,
-				"mol/plotter": {
-					":priority": 0,
-					"": [
-						"mol/plotter/plotter.view.css",
-						"mol/plotter/plotter.view.tree",
-						"mol/plotter/plotter.view.ts"
-					]
-				},
-				"": [
-					"mol/chart/chart.view.css",
-					"mol/chart/chart.view.tree",
-					"mol/chart/chart.view.ts"
-				]
-			},
 			"mol/grapher/barer": {
-				":priority": 0,
+				":priority": 1,
 				"": [
 					"mol/grapher/barer/barer.view.css",
 					"mol/grapher/barer/barer.view.tree",

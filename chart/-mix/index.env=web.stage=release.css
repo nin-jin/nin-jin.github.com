@@ -131,19 +131,6 @@
 	        flex: 1 1 51%;
 }
 
-[mol_grapher_liner] {
-	stroke-width: 3;
-	fill: none;
-}
-
-[mol_grapher_liner_roper]:hover {
-	stroke: darkblue;
-}
-
-[mol_grapher_liner_knoter]:hover {
-	stroke: darkblue;
-}
-
 [mol_plotter] {
 	position: relative;
 	display: -webkit-box;
@@ -253,6 +240,19 @@
 	-webkit-flex: 1 1 auto;
 	    -ms-flex: 1 1 auto;
 	        flex: 1 1 auto;
+}
+
+[mol_grapher_liner] {
+	stroke-width: 3;
+	fill: none;
+}
+
+[mol_grapher_liner_roper]:hover {
+	stroke: darkblue;
+}
+
+[mol_grapher_liner_knoter]:hover {
+	stroke: darkblue;
 }
 
 [mol_grapher_barer] {
