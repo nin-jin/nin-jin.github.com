@@ -1389,11 +1389,10 @@ var $mol;
             return view;
         };
         $mol_chart.prototype.legends = function () { return this.prop(null, function (a) { return a; }); };
-        $mol_chart.prototype.legendsColored = function () { return this.legends(); };
         $mol_chart.prototype.legender = function () {
             var _this = this;
             var view = new $mol_view;
-            view.child = function () { return _this.legendsColored(); };
+            view.child = function () { return _this.legends(); };
             return view;
         };
         $mol_chart.prototype.child = function () {
@@ -1485,11 +1484,15 @@ var $mol_chart = (function (_super) {
     $mol_chart.prototype.hueShift = function () { return this.atom(30); };
     $mol_chart.prototype.hueBack = function (index) {
         var _this = this;
-        return this.prop(function () { return (_this.hueBase().get() + _this.hueShift().get() * index * (index % 2 * 2 - 1)) % 360; });
+        return this.prop(function () {
+            return (360 + _this.hueBase().get() + (_this.hueShift().get() * index) % 360) % 360;
+        });
     };
     $mol_chart.prototype.hueFront = function (index) {
         var _this = this;
-        return this.prop(function () { return (180 + _this.hueBase().get() + _this.hueShift().get() * index * (index % 2 * 2 - 1)) % 360; });
+        return this.prop(function () {
+            return (180 + _this.hueBase().get() + (_this.hueShift().get() * index) % 360) % 360;
+        });
     };
     $mol_chart.prototype.barsColored = function () {
         var _this = this;
@@ -1507,13 +1510,6 @@ var $mol_chart = (function (_super) {
             return graphs.reverse();
         });
     };
-    $mol_chart.prototype.legendsColored = function () {
-        var _this = this;
-        return this.atom(function (prev) {
-            var legends = [].concat(_this.legends().get() || []);
-            return legends;
-        });
-    };
     __decorate([
         $jin2_grab
     ], $mol_chart.prototype, "hueBase", null);
@@ -1526,9 +1522,6 @@ var $mol_chart = (function (_super) {
     __decorate([
         $jin2_grab
     ], $mol_chart.prototype, "linesColored", null);
-    __decorate([
-        $jin2_grab
-    ], $mol_chart.prototype, "legendsColored", null);
     $mol_chart = __decorate([
         $mol_replace
     ], $mol_chart);
@@ -2400,7 +2393,7 @@ var $mol_grapher_barer = (function (_super) {
     };
     $mol_grapher_barer.prototype.colorStroke = function () {
         var _this = this;
-        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 40% , 40% )"); });
+        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 40% , " + (40 + (Math.ceil(_this.hue().get() / 10) % 2) * 20) + "% )"); });
     };
     __decorate([
         $jin2_grab
