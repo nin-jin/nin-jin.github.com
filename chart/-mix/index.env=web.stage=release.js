@@ -1143,7 +1143,7 @@ var $mol;
         };
         $mol_plotter.prototype.grid = function () {
             var _this = this;
-            return this.prop(function () { return [_this.grid0().get(), _this.grid1().get(), _this.grid2().get(), _this.grid3().get(), _this.grid4().get()]; });
+            return this.prop(function () { return [].concat(_this.grid0().get(), _this.grid1().get(), _this.grid2().get(), _this.grid3().get(), _this.grid4().get()); });
         };
         $mol_plotter.prototype.lines = function () { return this.prop(null, function (a) { return a; }); };
         $mol_plotter.prototype.graphs = function () { return this.prop(null, function (a) { return a; }); };
@@ -1155,7 +1155,7 @@ var $mol;
         };
         $mol_plotter.prototype.child = function () {
             var _this = this;
-            return this.prop(function () { return [_this.grid().get(), _this.lines().get(), _this.svg().get()]; });
+            return this.prop(function () { return [].concat(_this.grid().get(), _this.lines().get(), _this.svg().get()); });
         };
         __decorate([
             $jin2_grab
@@ -1210,7 +1210,7 @@ var $mol;
         };
         $mol_plotter_grid.prototype.child = function () {
             var _this = this;
-            return this.prop(function () { return [_this.labeler().get(), _this.liner().get()]; });
+            return this.prop(function () { return [].concat(_this.labeler().get(), _this.liner().get()); });
         };
         __decorate([
             $jin2_grab
@@ -1249,7 +1249,7 @@ var $mol;
         };
         $mol_plotter_grid_vert.prototype.child = function () {
             var _this = this;
-            return this.prop(function () { return [_this.labeler().get()]; });
+            return this.prop(function () { return [].concat(_this.labeler().get()); });
         };
         __decorate([
             $jin2_grab
@@ -1374,8 +1374,14 @@ var $mol;
             view.child = function () { return _this.title(); };
             return view;
         };
-        $mol_chart.prototype.graphs = function () { return this.prop(null, function (a) { return a; }); };
-        $mol_chart.prototype.graphsColored = function () { return this.graphs(); };
+        $mol_chart.prototype.bars = function () { return this.prop(null, function (a) { return a; }); };
+        $mol_chart.prototype.barsColored = function () { return this.bars(); };
+        $mol_chart.prototype.lines = function () { return this.prop(null, function (a) { return a; }); };
+        $mol_chart.prototype.linesColored = function () { return this.lines(); };
+        $mol_chart.prototype.graphsColored = function () {
+            var _this = this;
+            return this.prop(function () { return [].concat(_this.barsColored().get(), _this.linesColored().get()); });
+        };
         $mol_chart.prototype.plotter = function () {
             var _this = this;
             var view = new $mol.$mol_plotter;
@@ -1392,7 +1398,7 @@ var $mol;
         };
         $mol_chart.prototype.child = function () {
             var _this = this;
-            return this.prop(function () { return [_this.titler().get(), _this.plotter().get(), _this.legender().get()]; });
+            return this.prop(function () { return [].concat(_this.titler().get(), _this.plotter().get(), _this.legender().get()); });
         };
         __decorate([
             $jin2_grab
@@ -1402,7 +1408,10 @@ var $mol;
         ], $mol_chart.prototype, "titler", null);
         __decorate([
             $jin2_grab
-        ], $mol_chart.prototype, "graphs", null);
+        ], $mol_chart.prototype, "bars", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_chart.prototype, "lines", null);
         __decorate([
             $jin2_grab
         ], $mol_chart.prototype, "plotter", null);
@@ -1436,7 +1445,7 @@ var $mol;
         };
         $mol_chart_legender_info.prototype.child = function () {
             var _this = this;
-            return this.prop(function () { return [_this.sampler().get(), _this.titler().get()]; });
+            return this.prop(function () { return [].concat(_this.sampler().get(), _this.titler().get()); });
         };
         __decorate([
             $jin2_grab
@@ -1472,17 +1481,29 @@ var $mol_chart = (function (_super) {
     function $mol_chart() {
         _super.apply(this, arguments);
     }
-    $mol_chart.prototype.hueBase = function () { return this.atom(210); };
-    $mol_chart.prototype.hueShift = function () { return this.atom(15); };
-    $mol_chart.prototype.hue = function (index) {
+    $mol_chart.prototype.hueBase = function () { return this.atom(213); };
+    $mol_chart.prototype.hueShift = function () { return this.atom(30); };
+    $mol_chart.prototype.hueBack = function (index) {
         var _this = this;
         return this.prop(function () { return (_this.hueBase().get() + _this.hueShift().get() * index * (index % 2 * 2 - 1)) % 360; });
     };
-    $mol_chart.prototype.graphsColored = function () {
+    $mol_chart.prototype.hueFront = function (index) {
+        var _this = this;
+        return this.prop(function () { return (180 + _this.hueBase().get() + _this.hueShift().get() * index * (index % 2 * 2 - 1)) % 360; });
+    };
+    $mol_chart.prototype.barsColored = function () {
         var _this = this;
         return this.atom(function (prev) {
-            var graphs = [].concat(_this.graphs().get() || []);
-            graphs.forEach(function (graph, index) { return graph.hue = function () { return _this.hue(index); }; });
+            var graphs = [].concat(_this.bars().get() || []);
+            graphs.forEach(function (graph, index) { return graph.hue = function () { return _this.hueBack(index); }; });
+            return graphs.reverse();
+        });
+    };
+    $mol_chart.prototype.linesColored = function () {
+        var _this = this;
+        return this.atom(function (prev) {
+            var graphs = [].concat(_this.lines().get() || []);
+            graphs.forEach(function (graph, index) { return graph.hue = function () { return _this.hueFront(index); }; });
             return graphs.reverse();
         });
     };
@@ -1490,7 +1511,6 @@ var $mol_chart = (function (_super) {
         var _this = this;
         return this.atom(function (prev) {
             var legends = [].concat(_this.legends().get() || []);
-            legends.forEach(function (legend, index) { return legend.hue = function () { return _this.hue(index); }; });
             return legends;
         });
     };
@@ -1502,7 +1522,10 @@ var $mol_chart = (function (_super) {
     ], $mol_chart.prototype, "hueShift", null);
     __decorate([
         $jin2_grab
-    ], $mol_chart.prototype, "graphsColored", null);
+    ], $mol_chart.prototype, "barsColored", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_chart.prototype, "linesColored", null);
     __decorate([
         $jin2_grab
     ], $mol_chart.prototype, "legendsColored", null);
@@ -1953,11 +1976,11 @@ var $mol_grapher = (function (_super) {
     };
     $mol_grapher.prototype.colorStroke = function () {
         var _this = this;
-        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 50% , " + (30 + (_this.hue().get() % 20) * 2.5) + "% )"); });
+        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 70% , 60% )"); });
     };
     $mol_grapher.prototype.colorFill = function () {
         var _this = this;
-        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 60% , 70% )"); });
+        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 70% , 80% )"); });
     };
     __decorate([
         $jin2_grab
@@ -2186,7 +2209,7 @@ var $mol;
         $mol_grapher_liner.prototype.knots = function () { return this.prop(null, function (a) { return a; }); };
         $mol_grapher_liner.prototype.child = function () {
             var _this = this;
-            return this.prop(function () { return [_this.ropes().get(), _this.knots().get()]; });
+            return this.prop(function () { return [].concat(_this.ropes().get(), _this.knots().get()); });
         };
         $mol_grapher_liner.prototype.sampler = function () {
             var _this = this;
@@ -2377,7 +2400,7 @@ var $mol_grapher_barer = (function (_super) {
     };
     $mol_grapher_barer.prototype.colorStroke = function () {
         var _this = this;
-        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 60% , " + (50 + (_this.hue().get() % 20) * 2.5) + "% )"); });
+        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 40% , 40% )"); });
     };
     __decorate([
         $jin2_grab
@@ -2430,7 +2453,7 @@ var $mol;
         };
         $mol_chart_demo.prototype.child = function () {
             var _this = this;
-            return this.prop(function () { return [_this.header().get(), _this.bodier().get()]; });
+            return this.prop(function () { return [].concat(_this.header().get(), _this.bodier().get()); });
         };
         __decorate([
             $jin2_grab
@@ -2523,7 +2546,8 @@ var $mol_chart_demo = (function (_super) {
                 "Показатель выполнения планов",
             ];
             _.title = function () { return _this.prop(function () { return titles[id % titles.length]; }); };
-            _.graphs = function () { return _this.prop(function () { return _this.graphs(id).get(); }); };
+            _.bars = function () { return _this.prop(function () { return _this.bars(id).get(); }); };
+            _.lines = function () { return _this.prop(function () { return _this.lines(id).get(); }); };
             _.legends = function () { return _this.prop(function () { return _this.legends(id).get(); }); };
         });
     };
@@ -2534,6 +2558,20 @@ var $mol_chart_demo = (function (_super) {
                 .map(function (_, graph) {
                 return _this.grapher({ chart: chart, graph: graph }).get();
             });
+        });
+    };
+    $mol_chart_demo.prototype.bars = function (chart) {
+        var _this = this;
+        return this.prop(function () {
+            var graphs = _this.graphs(chart).get();
+            return graphs.slice(graphs.length - 2);
+        });
+    };
+    $mol_chart_demo.prototype.lines = function (chart) {
+        var _this = this;
+        return this.prop(function () {
+            var graphs = _this.graphs(chart).get();
+            return graphs.slice(0, graphs.length - 2);
         });
     };
     $mol_chart_demo.prototype.grapher = function (id) {

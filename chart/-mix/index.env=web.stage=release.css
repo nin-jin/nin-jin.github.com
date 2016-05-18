@@ -261,9 +261,9 @@
 
 [mol_tiler] > * {
 	-webkit-box-flex: 1;
-	-webkit-flex: 1 1 51%;
-	    -ms-flex: 1 1 51%;
-	        flex: 1 1 51%;
+	-webkit-flex: 1 1 auto;
+	    -ms-flex: 1 1 auto;
+	        flex: 1 1 auto;
 }
 
 [mol_grapher_sampler] {
@@ -289,14 +289,14 @@
 }
 
 [mol_grapher_barer] {
-	stroke-width: 2.5%;
+	stroke-width: 5%;
 	fill: none;
 }
 
 [mol_grapher_barer_piler] {}
 
 [mol_grapher_barer_piler]:nth-last-of-type(-n+2) {
-	stroke-dasharray: 3 1;
+	/*stroke-dasharray: 3 1;*/
 }
 
 [mol_grapher_barer_piler]:hover {
