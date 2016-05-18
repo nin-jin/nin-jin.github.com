@@ -1384,7 +1384,7 @@ var $mol;
         };
         $mol_chart.prototype.plotter = function () {
             var _this = this;
-            var view = new $mol.$mol_plotter;
+            var view = new $mol.$mol_chart_plotter;
             view.graphs = function () { return _this.graphsColored(); };
             return view;
         };
@@ -1461,6 +1461,20 @@ var $mol;
         return $mol_chart_legender_info;
     }($mol_view));
     $mol.$mol_chart_legender_info = $mol_chart_legender_info;
+})($mol || ($mol = {}));
+var $mol;
+(function ($mol) {
+    var $mol_chart_plotter = (function (_super) {
+        __extends($mol_chart_plotter, _super);
+        function $mol_chart_plotter() {
+            _super.apply(this, arguments);
+        }
+        $mol_chart_plotter = __decorate([
+            $mol_replace
+        ], $mol_chart_plotter);
+        return $mol_chart_plotter;
+    }($mol.$mol_plotter));
+    $mol.$mol_chart_plotter = $mol_chart_plotter;
 })($mol || ($mol = {}));
 //# sourceMappingURL=chart.view.tree.js.map
 ;
