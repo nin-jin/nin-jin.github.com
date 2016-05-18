@@ -1,8 +1,8 @@
 [
 	{
-		"mol/app/chart": {
+		"mol/chart/demo": {
 			":priority": 0,
-			"mol/view": {
+			"mol/chart": {
 				":priority": 0,
 				"mol": {
 					":priority": 0,
@@ -12,109 +12,93 @@
 						"mol/README.md"
 					]
 				},
-				"mol/model": {
+				"mol/view": {
 					":priority": 0,
-					"jin2/atom": {
+					"mol/model": {
 						":priority": 0,
-						"jin2": {
-							"jin/dumb": {
-								":priority": 0,
-								"jin": {
+						"jin2/atom": {
+							":priority": 0,
+							"jin2": {
+								"jin/dumb": {
+									":priority": 0,
+									"jin": {
+										"": [
+											"jin/jin.jam.js",
+											"jin/demo.html",
+											"jin/README.md",
+											"jin/package.json",
+											"jin/git-init.cmd"
+										]
+									},
 									"": [
-										"jin/jin.jam.js",
-										"jin/demo.html",
-										"jin/README.md",
-										"jin/package.json",
-										"jin/git-init.cmd"
+										"jin/dumb/dumb.ts"
 									]
 								},
 								"": [
-									"jin/dumb/dumb.ts"
+									"jin2/jin2.meta.tree"
 								]
 							},
-							"": [
-								"jin2/jin2.meta.tree"
-							]
-						},
-						"jin2/object": {
-							":priority": 0,
-							"jin2/log": {
-								":priority": 2,
+							"jin2/object": {
+								":priority": 0,
+								"jin2/log": {
+									":priority": 2,
+									"": [
+										"jin2/log/log.ts"
+									]
+								},
 								"": [
-									"jin2/log/log.ts"
+									"jin2/object/object.ts"
+								]
+							},
+							"jin2/prop": {
+								":priority": 0,
+								"": [
+									"jin2/prop/prop.ts"
+								]
+							},
+							"jin2/state/stack": {
+								":priority": 1,
+								"": [
+									"jin2/state/stack/stack.ts"
 								]
 							},
 							"": [
-								"jin2/object/object.ts"
+								"jin2/atom/atom.ts"
 							]
 						},
-						"jin2/prop": {
-							":priority": 0,
-							"": [
-								"jin2/prop/prop.ts"
-							]
-						},
-						"jin2/state/stack": {
+						"jin2/grab": {
 							":priority": 1,
 							"": [
-								"jin2/state/stack/stack.ts"
+								"jin2/grab/grab.ts"
+							]
+						},
+						"mol/state/arg": {
+							":priority": 1,
+							"": [
+								"mol/state/arg/arg.env=web.ts"
+							]
+						},
+						"jin2/state/local": {
+							":priority": 2,
+							"": [
+								"jin2/state/local/local.env=web.ts"
 							]
 						},
 						"": [
-							"jin2/atom/atom.ts"
+							"mol/model/model.ts"
 						]
 					},
-					"jin2/grab": {
-						":priority": 1,
-						"": [
-							"jin2/grab/grab.ts"
-						]
-					},
-					"mol/state/arg": {
-						":priority": 1,
-						"": [
-							"mol/state/arg/arg.env=web.ts"
-						]
-					},
-					"jin2/state/local": {
+					"jin2/vary": {
 						":priority": 2,
 						"": [
-							"jin2/state/local/local.env=web.ts"
+							"jin2/vary/vary.ts"
 						]
 					},
 					"": [
-						"mol/model/model.ts"
+						"mol/view/view.css",
+						"mol/view/view.ts"
 					]
 				},
-				"jin2/vary": {
-					":priority": 2,
-					"": [
-						"jin2/vary/vary.ts"
-					]
-				},
-				"": [
-					"mol/view/view.css",
-					"mol/view/view.ts"
-				]
-			},
-			"mol/scroller": {
-				":priority": 0,
-				"": [
-					"mol/scroller/scroller.css",
-					"mol/scroller/scroller.view.tree",
-					"mol/scroller/scroller.view.ts"
-				]
-			},
-			"mol/tiler": {
-				":priority": 0,
-				"": [
-					"mol/tiler/tiler.view.css",
-					"mol/tiler/tiler.view.tree",
-					"mol/tiler/tiler.view.ts"
-				]
-			},
-			"mol/chart": {
-				":priority": 0,
 				"mol/plotter": {
 					":priority": 0,
 					"mol/svg": {
@@ -135,6 +119,22 @@
 					"mol/chart/chart.view.ts"
 				]
 			},
+			"mol/scroller": {
+				":priority": 0,
+				"": [
+					"mol/scroller/scroller.css",
+					"mol/scroller/scroller.view.tree",
+					"mol/scroller/scroller.view.ts"
+				]
+			},
+			"mol/tiler": {
+				":priority": 0,
+				"": [
+					"mol/tiler/tiler.view.css",
+					"mol/tiler/tiler.view.tree",
+					"mol/tiler/tiler.view.ts"
+				]
+			},
 			"mol/grapher/liner": {
 				":priority": 1,
 				"mol/grapher": {
@@ -146,6 +146,7 @@
 						]
 					},
 					"": [
+						"mol/grapher/grapher.view.css",
 						"mol/grapher/grapher.view.tree",
 						"mol/grapher/grapher.view.ts"
 					]
@@ -179,10 +180,10 @@
 				]
 			},
 			"": [
-				"mol/app/chart/chart.view.css",
-				"mol/app/chart/chart.view.tree",
-				"mol/app/chart/chart.view.ts",
-				"mol/app/chart/index.html"
+				"mol/chart/demo/demo.view.css",
+				"mol/chart/demo/demo.view.tree",
+				"mol/chart/demo/demo.view.ts",
+				"mol/chart/demo/index.html"
 			]
 		}
 	}
