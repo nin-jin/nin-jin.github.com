@@ -227,12 +227,7 @@
 }
 
 [mol_chart_legender_info_sampler] {
-	background: #C57995;
 	padding: .5em;
-}
-
-[mol_chart_legender_info]:nth-of-type(2) [mol_chart_legender_info_sampler] {
-	background: #7570C1;
 }
 
 [mol_chart_legender_info_titler] {

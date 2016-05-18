@@ -1724,25 +1724,25 @@ var $mol_chart = (function (_super) {
     function $mol_chart() {
         _super.apply(this, arguments);
     }
-    $mol_chart.prototype.hueBase = function () { return this.atom(12); };
-    $mol_chart.prototype.hueShift = function () { return this.atom(151); };
+    $mol_chart.prototype.hueBase = function () { return this.atom(210); };
+    $mol_chart.prototype.hueShift = function () { return this.atom(15); };
     $mol_chart.prototype.hue = function (index) {
         var _this = this;
-        return this.prop(function () { return (_this.hueBase().get() + _this.hueShift().get() * index) % 360; });
+        return this.prop(function () { return (_this.hueBase().get() + _this.hueShift().get() * index * (index % 2 * 2 - 1)) % 360; });
     };
     $mol_chart.prototype.graphsColored = function () {
         var _this = this;
         return this.atom(function (prev) {
             var graphs = [].concat(_this.graphs().get() || []);
-            graphs.forEach(function (graph, index) { return graph.hue = function () { return _this.hue(index + 1); }; });
-            return graphs;
+            graphs.forEach(function (graph, index) { return graph.hue = function () { return _this.hue(index); }; });
+            return graphs.reverse();
         });
     };
     $mol_chart.prototype.legendsColored = function () {
         var _this = this;
         return this.atom(function (prev) {
             var legends = [].concat(_this.legends().get() || []);
-            legends.forEach(function (legend, index) { return legend.hue = function () { return _this.hue(index + 1); }; });
+            legends.forEach(function (legend, index) { return legend.hue = function () { return _this.hue(index); }; });
             return legends;
         });
     };
@@ -1902,11 +1902,11 @@ var $mol_grapher = (function (_super) {
     };
     $mol_grapher.prototype.colorStroke = function () {
         var _this = this;
-        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 50% , 66% )"); });
+        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 50% , " + (30 + (_this.hue().get() % 20) * 2.5) + "% )"); });
     };
     $mol_grapher.prototype.colorFill = function () {
         var _this = this;
-        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 50% , 88% )"); });
+        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 60% , 70% )"); });
     };
     __decorate([
         $jin2_grab
@@ -2137,18 +2137,46 @@ var $mol;
             var _this = this;
             return this.prop(function () { return [_this.ropes().get(), _this.knots().get()]; });
         };
+        $mol_grapher_liner.prototype.sampler = function () {
+            var _this = this;
+            var view = new $mol.$mol_grapher_liner_sampler;
+            view.color = function () { return _this.colorStroke(); };
+            return view;
+        };
         __decorate([
             $jin2_grab
         ], $mol_grapher_liner.prototype, "ropes", null);
         __decorate([
             $jin2_grab
         ], $mol_grapher_liner.prototype, "knots", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_grapher_liner.prototype, "sampler", null);
         $mol_grapher_liner = __decorate([
             $mol_replace
         ], $mol_grapher_liner);
         return $mol_grapher_liner;
     }($mol.$mol_grapher));
     $mol.$mol_grapher_liner = $mol_grapher_liner;
+})($mol || ($mol = {}));
+var $mol;
+(function ($mol) {
+    var $mol_grapher_liner_sampler = (function (_super) {
+        __extends($mol_grapher_liner_sampler, _super);
+        function $mol_grapher_liner_sampler() {
+            _super.apply(this, arguments);
+        }
+        $mol_grapher_liner_sampler.prototype.color = function () { return this.prop("none", function (a) { return a; }); };
+        $mol_grapher_liner_sampler.prototype.field_style_backgroundColor = function () { return this.color(); };
+        __decorate([
+            $jin2_grab
+        ], $mol_grapher_liner_sampler.prototype, "color", null);
+        $mol_grapher_liner_sampler = __decorate([
+            $mol_replace
+        ], $mol_grapher_liner_sampler);
+        return $mol_grapher_liner_sampler;
+    }($mol_view));
+    $mol.$mol_grapher_liner_sampler = $mol_grapher_liner_sampler;
 })($mol || ($mol = {}));
 //# sourceMappingURL=liner.view.tree.js.map
 ;
@@ -2227,15 +2255,43 @@ var $mol;
         }
         $mol_grapher_barer.prototype.piles = function () { return this.prop(null, function (a) { return a; }); };
         $mol_grapher_barer.prototype.child = function () { return this.piles(); };
+        $mol_grapher_barer.prototype.sampler = function () {
+            var _this = this;
+            var view = new $mol.$mol_grapher_barer_sampler;
+            view.color = function () { return _this.colorStroke(); };
+            return view;
+        };
         __decorate([
             $jin2_grab
         ], $mol_grapher_barer.prototype, "piles", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_grapher_barer.prototype, "sampler", null);
         $mol_grapher_barer = __decorate([
             $mol_replace
         ], $mol_grapher_barer);
         return $mol_grapher_barer;
     }($mol.$mol_grapher));
     $mol.$mol_grapher_barer = $mol_grapher_barer;
+})($mol || ($mol = {}));
+var $mol;
+(function ($mol) {
+    var $mol_grapher_barer_sampler = (function (_super) {
+        __extends($mol_grapher_barer_sampler, _super);
+        function $mol_grapher_barer_sampler() {
+            _super.apply(this, arguments);
+        }
+        $mol_grapher_barer_sampler.prototype.color = function () { return this.prop("none", function (a) { return a; }); };
+        $mol_grapher_barer_sampler.prototype.field_style_backgroundColor = function () { return this.color(); };
+        __decorate([
+            $jin2_grab
+        ], $mol_grapher_barer_sampler.prototype, "color", null);
+        $mol_grapher_barer_sampler = __decorate([
+            $mol_replace
+        ], $mol_grapher_barer_sampler);
+        return $mol_grapher_barer_sampler;
+    }($mol_view));
+    $mol.$mol_grapher_barer_sampler = $mol_grapher_barer_sampler;
 })($mol || ($mol = {}));
 //# sourceMappingURL=barer.view.tree.js.map
 ;
@@ -2270,11 +2326,7 @@ var $mol_grapher_barer = (function (_super) {
     };
     $mol_grapher_barer.prototype.colorStroke = function () {
         var _this = this;
-        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 50% , 77% )"); });
-    };
-    $mol_grapher_barer.prototype.colorFill = function () {
-        var _this = this;
-        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 50% , 88% )"); });
+        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 60% , " + (50 + (_this.hue().get() % 20) * 2.5) + "% )"); });
     };
     __decorate([
         $jin2_grab
@@ -2378,6 +2430,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var $mol_chart_legender_info = $mol.$mol_chart_legender_info;
 var $mol_app_chart = (function (_super) {
     __extends($mol_app_chart, _super);
     function $mol_app_chart() {
@@ -2427,7 +2480,7 @@ var $mol_app_chart = (function (_super) {
     $mol_app_chart.prototype.graphs = function (chart) {
         var _this = this;
         return this.atom(function (prev) {
-            return Array(_this.countGraph().get()).join('.').split('.')
+            return Array(_this.countGraph().get() - chart).join('.').split('.')
                 .map(function (_, graph) {
                 return _this.grapher({ chart: chart, graph: graph }).get();
             });
@@ -2436,7 +2489,7 @@ var $mol_app_chart = (function (_super) {
     $mol_app_chart.prototype.grapher = function (id) {
         var _this = this;
         return this.prop(function () {
-            return (id.graph >= 2)
+            return (id.graph <= 2 - id.chart)
                 ? _this.liner(id).get()
                 : _this.barer(id).get();
         });
@@ -2456,8 +2509,7 @@ var $mol_app_chart = (function (_super) {
     $mol_app_chart.prototype.legends = function (chart) {
         var _this = this;
         return this.atom(function (prev) {
-            return Array(_this.countGraph().get()).join('.').split('.')
-                .map(function (_, graph) {
+            return _this.graphs(chart).get().map(function (_, graph) {
                 return _this.legender({ chart: chart, graph: graph }).get();
             });
         });
