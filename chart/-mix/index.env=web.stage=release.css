@@ -101,9 +101,9 @@
 
 [mol_plotter_svg] {
 	-webkit-box-flex: 1;
-	-webkit-flex: 1 1 auto;
-	    -ms-flex: 1 1 auto;
-	        flex: 1 1 auto;
+	-webkit-flex: 1 1 50vmin;
+	    -ms-flex: 1 1 50vmin;
+	        flex: 1 1 50vmin;
 	position: relative;
 }
 
