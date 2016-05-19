@@ -99,6 +99,37 @@
 						"mol/view/view.ts"
 					]
 				},
+				"mol/tabler": {
+					":priority": 0,
+					"mol/scroller": {
+						":priority": 0,
+						"": [
+							"mol/scroller/scroller.css",
+							"mol/scroller/scroller.view.tree",
+							"mol/scroller/scroller.view.ts"
+						]
+					},
+					"mol/lister": {
+						":priority": 0,
+						"": [
+							"mol/lister/lister.css",
+							"mol/lister/lister.view.tree",
+							"mol/lister/lister.view.ts"
+						]
+					},
+					"mol/floater": {
+						":priority": 0,
+						"": [
+							"mol/floater/floater.css",
+							"mol/floater/floater.view.tree",
+							"mol/floater/floater.view.ts"
+						]
+					},
+					"": [
+						"mol/tabler/tabler.css",
+						"mol/tabler/tabler.view.tree"
+					]
+				},
 				"mol/plotter": {
 					":priority": 0,
 					"mol/svg": {
@@ -117,14 +148,6 @@
 					"mol/chart/chart.view.css",
 					"mol/chart/chart.view.tree",
 					"mol/chart/chart.view.ts"
-				]
-			},
-			"mol/scroller": {
-				":priority": 0,
-				"": [
-					"mol/scroller/scroller.css",
-					"mol/scroller/scroller.view.tree",
-					"mol/scroller/scroller.view.ts"
 				]
 			},
 			"mol/tiler": {

@@ -1066,6 +1066,569 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 var $mol;
 (function ($mol) {
+    var $mol_scroller = (function (_super) {
+        __extends($mol_scroller, _super);
+        function $mol_scroller() {
+            _super.apply(this, arguments);
+        }
+        $mol_scroller.prototype.overflowTop = function () { return this.prop(false, function (a) { return a; }); };
+        $mol_scroller.prototype.attr_mol_scroller_overflowTop = function () { return this.overflowTop(); };
+        $mol_scroller.prototype.overflowBottom = function () { return this.prop(false, function (a) { return a; }); };
+        $mol_scroller.prototype.attr_mol_scroller_overflowBottom = function () { return this.overflowBottom(); };
+        $mol_scroller.prototype.overflowLeft = function () { return this.prop(false, function (a) { return a; }); };
+        $mol_scroller.prototype.attr_mol_scroller_overflowLeft = function () { return this.overflowLeft(); };
+        $mol_scroller.prototype.overflowRight = function () { return this.prop(false, function (a) { return a; }); };
+        $mol_scroller.prototype.attr_mol_scroller_overflowRight = function () { return this.overflowRight(); };
+        $mol_scroller.prototype.scrolls = function () { return this.prop(null, function (a) { return a; }); };
+        $mol_scroller.prototype.event_scroll = function () { return this.scrolls(); };
+        $mol_scroller.prototype.event_overflow = function () { return this.scrolls(); };
+        $mol_scroller.prototype.event_underflow = function () { return this.scrolls(); };
+        $mol_scroller.prototype.wheels = function () { return this.prop(null, function (a) { return a; }); };
+        $mol_scroller.prototype.event_wheel = function () { return this.wheels(); };
+        $mol_scroller.prototype.scrollTop = function () { return this.prop(0, function (a) { return a; }); };
+        $mol_scroller.prototype.field_scrollTop = function () { return this.scrollTop(); };
+        $mol_scroller.prototype.scrollLeft = function () { return this.prop(0, function (a) { return a; }); };
+        $mol_scroller.prototype.field_scrollLeft = function () { return this.scrollLeft(); };
+        __decorate([
+            $jin2_grab
+        ], $mol_scroller.prototype, "overflowTop", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_scroller.prototype, "overflowBottom", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_scroller.prototype, "overflowLeft", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_scroller.prototype, "overflowRight", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_scroller.prototype, "scrolls", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_scroller.prototype, "wheels", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_scroller.prototype, "scrollTop", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_scroller.prototype, "scrollLeft", null);
+        $mol_scroller = __decorate([
+            $mol_replace
+        ], $mol_scroller);
+        return $mol_scroller;
+    }($mol_view));
+    $mol.$mol_scroller = $mol_scroller;
+})($mol || ($mol = {}));
+//# sourceMappingURL=scroller.view.tree.js.map
+;
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var $mol_scroller = (function (_super) {
+    __extends($mol_scroller, _super);
+    function $mol_scroller() {
+        _super.apply(this, arguments);
+    }
+    $mol_scroller.prototype.scrollTop = function () {
+        var state = this.persist('scrollTop');
+        return this.prop(function () { return Number(state.get()) || 0; }, function (next) { return (state.set(next), next); });
+    };
+    $mol_scroller.prototype.scrollLeft = function () {
+        var state = this.persist('scrollLeft');
+        return this.prop(function () { return Number(state.get()) || 0; }, function (next) { return (state.set(next), next); });
+    };
+    $mol_scroller.prototype.scrollHeight = function () {
+        var _this = this;
+        return this.atom(function () { return _this.node().get().scrollHeight; });
+    };
+    $mol_scroller.prototype.scrollWidth = function () {
+        var _this = this;
+        return this.atom(function () { return _this.node().get().scrollWidth; });
+    };
+    $mol_scroller.prototype.offsetHeight = function () {
+        var _this = this;
+        return this.atom(function () { return _this.node().get().offsetHeight; });
+    };
+    $mol_scroller.prototype.offsetWidth = function () {
+        var _this = this;
+        return this.atom(function () { return _this.node().get().offsetWidth; });
+    };
+    $mol_scroller.prototype.scrolls = function () {
+        var _this = this;
+        return this.prop(null, function (event) {
+            _this.scrollTop().set(event.target.scrollTop);
+            _this.scrollLeft().set(event.target.scrollLeft);
+            _this.scrollHeight().set(event.target.scrollHeight);
+            _this.scrollWidth().set(event.target.scrollWidth);
+            _this.offsetHeight().set(event.target.offsetHeight);
+            _this.offsetWidth().set(event.target.offsetWidth);
+            event.preventDefault();
+        });
+    };
+    $mol_scroller.prototype.wheels = function () {
+        var _this = this;
+        return this.prop(null, function (event) {
+            if (event.defaultPrevented)
+                return;
+            var target = _this.node().get();
+            if ((target.scrollHeight > target.offsetHeight) || (target.scrollWidth > target.offsetWidth)) {
+                event.preventDefault();
+                target.scrollTop -= event.wheelDeltaY;
+                target.scrollLeft -= event.wheelDeltaX;
+            }
+        });
+    };
+    $mol_scroller.prototype.overflowTop = function () {
+        var _this = this;
+        return this.prop(function () { return _this.scrollTop().get() > 0; });
+    };
+    $mol_scroller.prototype.overflowLeft = function () {
+        var _this = this;
+        return this.prop(function () { return _this.scrollLeft().get() > 0; });
+    };
+    $mol_scroller.prototype.overflowBottom = function () {
+        var _this = this;
+        return this.prop(function () { return (_this.scrollHeight().get() - _this.scrollTop().get() - _this.offsetHeight().get()) > 0; });
+    };
+    $mol_scroller.prototype.overflowRight = function () {
+        var _this = this;
+        return this.prop(function () { return (_this.scrollWidth().get() - _this.scrollLeft().get() - _this.offsetWidth().get()) > 0; });
+    };
+    __decorate([
+        $jin2_grab
+    ], $mol_scroller.prototype, "scrollTop", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_scroller.prototype, "scrollLeft", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_scroller.prototype, "scrollHeight", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_scroller.prototype, "scrollWidth", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_scroller.prototype, "offsetHeight", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_scroller.prototype, "offsetWidth", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_scroller.prototype, "scrolls", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_scroller.prototype, "wheels", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_scroller.prototype, "overflowTop", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_scroller.prototype, "overflowLeft", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_scroller.prototype, "overflowBottom", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_scroller.prototype, "overflowRight", null);
+    $mol_scroller = __decorate([
+        $mol_replace
+    ], $mol_scroller);
+    return $mol_scroller;
+}($mol.$mol_scroller));
+//# sourceMappingURL=scroller.view.js.map
+;
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var $mol;
+(function ($mol) {
+    var $mol_lister = (function (_super) {
+        __extends($mol_lister, _super);
+        function $mol_lister() {
+            _super.apply(this, arguments);
+        }
+        $mol_lister.prototype.rowMinHeight = function () { return this.prop(38, function (a) { return a; }); };
+        $mol_lister.prototype.limitStart = function () { return this.prop(0, function (a) { return a; }); };
+        $mol_lister.prototype.limitEnd = function () { return this.prop(0, function (a) { return a; }); };
+        $mol_lister.prototype.itemsCount = function () { return this.prop(0, function (a) { return a; }); };
+        $mol_lister.prototype.fillerStartHeight = function () { return this.prop("0 ", function (a) { return a; }); };
+        $mol_lister.prototype.fillerStart = function () {
+            var _this = this;
+            var view = new $mol.$mol_lister_filler;
+            view.height = function () { return _this.fillerStartHeight(); };
+            return view;
+        };
+        $mol_lister.prototype.items = function () { return this.prop(null, function (a) { return a; }); };
+        $mol_lister.prototype.itemsVisible = function () { return this.items(); };
+        $mol_lister.prototype.fillerEndHeight = function () { return this.prop("0 ", function (a) { return a; }); };
+        $mol_lister.prototype.fillerEnd = function () {
+            var _this = this;
+            var view = new $mol.$mol_lister_filler;
+            view.height = function () { return _this.fillerEndHeight(); };
+            return view;
+        };
+        $mol_lister.prototype.child = function () {
+            var _this = this;
+            return this.prop(function () { return [].concat(_this.fillerStart().get(), _this.itemsVisible().get(), _this.fillerEnd().get()); });
+        };
+        __decorate([
+            $jin2_grab
+        ], $mol_lister.prototype, "rowMinHeight", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_lister.prototype, "limitStart", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_lister.prototype, "limitEnd", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_lister.prototype, "itemsCount", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_lister.prototype, "fillerStartHeight", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_lister.prototype, "fillerStart", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_lister.prototype, "items", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_lister.prototype, "fillerEndHeight", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_lister.prototype, "fillerEnd", null);
+        $mol_lister = __decorate([
+            $mol_replace
+        ], $mol_lister);
+        return $mol_lister;
+    }($mol_view));
+    $mol.$mol_lister = $mol_lister;
+})($mol || ($mol = {}));
+var $mol;
+(function ($mol) {
+    var $mol_lister_filler = (function (_super) {
+        __extends($mol_lister_filler, _super);
+        function $mol_lister_filler() {
+            _super.apply(this, arguments);
+        }
+        $mol_lister_filler.prototype.height = function () { return this.prop("0", function (a) { return a; }); };
+        $mol_lister_filler.prototype.field_style_height = function () { return this.height(); };
+        __decorate([
+            $jin2_grab
+        ], $mol_lister_filler.prototype, "height", null);
+        $mol_lister_filler = __decorate([
+            $mol_replace
+        ], $mol_lister_filler);
+        return $mol_lister_filler;
+    }($mol_view));
+    $mol.$mol_lister_filler = $mol_lister_filler;
+})($mol || ($mol = {}));
+//# sourceMappingURL=lister.view.tree.js.map
+;
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var $mol_lister = (function (_super) {
+    __extends($mol_lister, _super);
+    function $mol_lister() {
+        _super.apply(this, arguments);
+    }
+    $mol_lister.prototype.scroller = function () {
+        var _this = this;
+        return this.atom(function () {
+            var scroller = _this;
+            while (scroller && !scroller['scrollTop'])
+                scroller = scroller.objectOwner;
+            return scroller;
+        });
+    };
+    $mol_lister.prototype.limitStart = function () {
+        return this.prop(function () {
+            return 0;
+        });
+    };
+    $mol_lister.prototype.limitEnd = function () {
+        var _this = this;
+        return this.atom(function () {
+            var offset = screen.height;
+            var scroller = _this.scroller().get();
+            if (scroller)
+                offset += scroller['scrollTop']().get();
+            var limit = Math.ceil(offset / _this.rowMinHeight().get());
+            return limit;
+        });
+    };
+    $mol_lister.prototype.itemsVisible = function () {
+        var _this = this;
+        return $jin2_atom_list.prop(function () {
+            var items = _this.items().get();
+            if (!items)
+                return [];
+            return items.slice(_this.limitStart().get(), _this.limitEnd().get());
+        });
+    };
+    $mol_lister.prototype.fillerStartHeight = function () {
+        var _this = this;
+        return this.prop(function () { return _this.limitStart().get() * _this.rowMinHeight().get() + 'px'; });
+    };
+    $mol_lister.prototype.itemsCount = function () {
+        var _this = this;
+        return this.prop(function () { return _this.items().get().length; });
+    };
+    $mol_lister.prototype.fillerEndHeight = function () {
+        var _this = this;
+        return this.prop(function () { return Math.max(0, (_this.itemsCount().get() - _this.limitEnd().get()) * _this.rowMinHeight().get()) + 'px'; });
+    };
+    __decorate([
+        $jin2_grab
+    ], $mol_lister.prototype, "scroller", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_lister.prototype, "limitStart", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_lister.prototype, "limitEnd", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_lister.prototype, "itemsVisible", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_lister.prototype, "fillerStartHeight", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_lister.prototype, "itemsCount", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_lister.prototype, "fillerEndHeight", null);
+    $mol_lister = __decorate([
+        $mol_replace
+    ], $mol_lister);
+    return $mol_lister;
+}($mol.$mol_lister));
+//# sourceMappingURL=lister.view.js.map
+;
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var $mol;
+(function ($mol) {
+    var $mol_floater = (function (_super) {
+        __extends($mol_floater, _super);
+        function $mol_floater() {
+            _super.apply(this, arguments);
+        }
+        $mol_floater.prototype.transform = function () { return this.prop("none", function (a) { return a; }); };
+        $mol_floater.prototype.field_style_transform = function () { return this.transform(); };
+        $mol_floater.prototype.floatHor = function () { return this.prop(true, function (a) { return a; }); };
+        $mol_floater.prototype.floatingHor = function () { return this.floatHor(); };
+        $mol_floater.prototype.attr_mol_floater_floatingHor = function () { return this.floatingHor(); };
+        $mol_floater.prototype.floatVert = function () { return this.prop(true, function (a) { return a; }); };
+        $mol_floater.prototype.floatingVert = function () { return this.floatVert(); };
+        $mol_floater.prototype.attr_mol_floater_floatingVert = function () { return this.floatingVert(); };
+        __decorate([
+            $jin2_grab
+        ], $mol_floater.prototype, "transform", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_floater.prototype, "floatHor", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_floater.prototype, "floatVert", null);
+        $mol_floater = __decorate([
+            $mol_replace
+        ], $mol_floater);
+        return $mol_floater;
+    }($mol_view));
+    $mol.$mol_floater = $mol_floater;
+})($mol || ($mol = {}));
+//# sourceMappingURL=floater.view.tree.js.map
+;
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var $mol_floater = (function (_super) {
+    __extends($mol_floater, _super);
+    function $mol_floater() {
+        _super.apply(this, arguments);
+    }
+    $mol_floater.prototype.scroller = function () {
+        var _this = this;
+        return this.atom(function () {
+            var scroller = _this;
+            while (scroller && !scroller['scrollTop'])
+                scroller = scroller.objectOwner;
+            return scroller;
+        });
+    };
+    $mol_floater.prototype.offset = function () {
+        var _this = this;
+        return this.atom(function () {
+            var scroller = _this.scroller().get();
+            if (!scroller)
+                return [0, 0];
+            return [
+                _this.floatHor().get() ? scroller['scrollLeft']().get() : 0,
+                _this.floatVert().get() ? scroller['scrollTop']().get() : 0,
+            ];
+        });
+    };
+    $mol_floater.prototype.transform = function () {
+        var _this = this;
+        return this.prop(function () {
+            var offset = _this.offset().get();
+            return "translate( " + offset[0] + "px , " + offset[1] + "px )";
+        });
+    };
+    $mol_floater.prototype.floatingHor = function () {
+        var _this = this;
+        return this.prop(function () {
+            return _this.offset().get()[0] > 0;
+        });
+    };
+    $mol_floater.prototype.floatingVert = function () {
+        var _this = this;
+        return this.prop(function () {
+            return _this.offset().get()[1] > 0;
+        });
+    };
+    __decorate([
+        $jin2_grab
+    ], $mol_floater.prototype, "scroller", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_floater.prototype, "offset", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_floater.prototype, "transform", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_floater.prototype, "floatingHor", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_floater.prototype, "floatingVert", null);
+    $mol_floater = __decorate([
+        $mol_replace
+    ], $mol_floater);
+    return $mol_floater;
+}($mol.$mol_floater));
+//# sourceMappingURL=floater.view.js.map
+;
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var $mol;
+(function ($mol) {
+    var $mol_tabler = (function (_super) {
+        __extends($mol_tabler, _super);
+        function $mol_tabler() {
+            _super.apply(this, arguments);
+        }
+        $mol_tabler.prototype.rows = function () { return this.prop(null, function (a) { return a; }); };
+        $mol_tabler.prototype.rowsVisible = function () { return this.rows(); };
+        $mol_tabler.prototype.rowsCount = function () { return this.prop(null, function (a) { return a; }); };
+        $mol_tabler.prototype.lister = function () {
+            var _this = this;
+            var view = new $mol.$mol_lister;
+            view.itemsVisible = function () { return _this.rowsVisible(); };
+            view.itemsCount = function () { return _this.rowsCount(); };
+            return view;
+        };
+        $mol_tabler.prototype.child = function () { return this.lister(); };
+        __decorate([
+            $jin2_grab
+        ], $mol_tabler.prototype, "rows", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_tabler.prototype, "rowsCount", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_tabler.prototype, "lister", null);
+        $mol_tabler = __decorate([
+            $mol_replace
+        ], $mol_tabler);
+        return $mol_tabler;
+    }($mol.$mol_scroller));
+    $mol.$mol_tabler = $mol_tabler;
+})($mol || ($mol = {}));
+var $mol;
+(function ($mol) {
+    var $mol_tabler_header = (function (_super) {
+        __extends($mol_tabler_header, _super);
+        function $mol_tabler_header() {
+            _super.apply(this, arguments);
+        }
+        $mol_tabler_header = __decorate([
+            $mol_replace
+        ], $mol_tabler_header);
+        return $mol_tabler_header;
+    }($mol.$mol_floater));
+    $mol.$mol_tabler_header = $mol_tabler_header;
+})($mol || ($mol = {}));
+//# sourceMappingURL=tabler.view.tree.js.map
+;
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var $mol;
+(function ($mol) {
     var $mol_svg = (function (_super) {
         __extends($mol_svg, _super);
         function $mol_svg() {
@@ -1391,8 +1954,8 @@ var $mol;
         $mol_chart.prototype.legends = function () { return this.prop(null, function (a) { return a; }); };
         $mol_chart.prototype.legender = function () {
             var _this = this;
-            var view = new $mol_view;
-            view.child = function () { return _this.legends(); };
+            var view = new $mol.$mol_chart_legender;
+            view.rows = function () { return _this.legends(); };
             return view;
         };
         $mol_chart.prototype.child = function () {
@@ -1429,11 +1992,26 @@ var $mol;
 })($mol || ($mol = {}));
 var $mol;
 (function ($mol) {
+    var $mol_chart_legender = (function (_super) {
+        __extends($mol_chart_legender, _super);
+        function $mol_chart_legender() {
+            _super.apply(this, arguments);
+        }
+        $mol_chart_legender = __decorate([
+            $mol_replace
+        ], $mol_chart_legender);
+        return $mol_chart_legender;
+    }($mol.$mol_tabler));
+    $mol.$mol_chart_legender = $mol_chart_legender;
+})($mol || ($mol = {}));
+var $mol;
+(function ($mol) {
     var $mol_chart_legender_info = (function (_super) {
         __extends($mol_chart_legender_info, _super);
         function $mol_chart_legender_info() {
             _super.apply(this, arguments);
         }
+        $mol_chart_legender_info.prototype.series = function () { return this.prop(null, function (a) { return a; }); };
         $mol_chart_legender_info.prototype.sampler = function () { return this.prop(null, function (a) { return a; }); };
         $mol_chart_legender_info.prototype.title = function () { return this.prop("", function (a) { return a; }); };
         $mol_chart_legender_info.prototype.titler = function () {
@@ -1442,10 +2020,14 @@ var $mol;
             view.child = function () { return _this.title(); };
             return view;
         };
+        $mol_chart_legender_info.prototype.values = function () { return this.prop(null, function (a) { return a; }); };
         $mol_chart_legender_info.prototype.child = function () {
             var _this = this;
-            return this.prop(function () { return [].concat(_this.sampler().get(), _this.titler().get()); });
+            return this.prop(function () { return [].concat(_this.sampler().get(), _this.titler().get(), _this.values().get()); });
         };
+        __decorate([
+            $jin2_grab
+        ], $mol_chart_legender_info.prototype, "series", null);
         __decorate([
             $jin2_grab
         ], $mol_chart_legender_info.prototype, "sampler", null);
@@ -1455,6 +2037,9 @@ var $mol;
         __decorate([
             $jin2_grab
         ], $mol_chart_legender_info.prototype, "titler", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_chart_legender_info.prototype, "values", null);
         $mol_chart_legender_info = __decorate([
             $mol_replace
         ], $mol_chart_legender_info);
@@ -1541,200 +2126,37 @@ var $mol_chart = (function (_super) {
     ], $mol_chart);
     return $mol_chart;
 }($mol.$mol_chart));
-//# sourceMappingURL=chart.view.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $mol;
-(function ($mol) {
-    var $mol_scroller = (function (_super) {
-        __extends($mol_scroller, _super);
-        function $mol_scroller() {
-            _super.apply(this, arguments);
-        }
-        $mol_scroller.prototype.overflowTop = function () { return this.prop(false, function (a) { return a; }); };
-        $mol_scroller.prototype.attr_mol_scroller_overflowTop = function () { return this.overflowTop(); };
-        $mol_scroller.prototype.overflowBottom = function () { return this.prop(false, function (a) { return a; }); };
-        $mol_scroller.prototype.attr_mol_scroller_overflowBottom = function () { return this.overflowBottom(); };
-        $mol_scroller.prototype.overflowLeft = function () { return this.prop(false, function (a) { return a; }); };
-        $mol_scroller.prototype.attr_mol_scroller_overflowLeft = function () { return this.overflowLeft(); };
-        $mol_scroller.prototype.overflowRight = function () { return this.prop(false, function (a) { return a; }); };
-        $mol_scroller.prototype.attr_mol_scroller_overflowRight = function () { return this.overflowRight(); };
-        $mol_scroller.prototype.scrolls = function () { return this.prop(null, function (a) { return a; }); };
-        $mol_scroller.prototype.event_scroll = function () { return this.scrolls(); };
-        $mol_scroller.prototype.event_overflow = function () { return this.scrolls(); };
-        $mol_scroller.prototype.event_underflow = function () { return this.scrolls(); };
-        $mol_scroller.prototype.wheels = function () { return this.prop(null, function (a) { return a; }); };
-        $mol_scroller.prototype.event_wheel = function () { return this.wheels(); };
-        $mol_scroller.prototype.scrollTop = function () { return this.prop(0, function (a) { return a; }); };
-        $mol_scroller.prototype.field_scrollTop = function () { return this.scrollTop(); };
-        $mol_scroller.prototype.scrollLeft = function () { return this.prop(0, function (a) { return a; }); };
-        $mol_scroller.prototype.field_scrollLeft = function () { return this.scrollLeft(); };
-        __decorate([
-            $jin2_grab
-        ], $mol_scroller.prototype, "overflowTop", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_scroller.prototype, "overflowBottom", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_scroller.prototype, "overflowLeft", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_scroller.prototype, "overflowRight", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_scroller.prototype, "scrolls", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_scroller.prototype, "wheels", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_scroller.prototype, "scrollTop", null);
-        __decorate([
-            $jin2_grab
-        ], $mol_scroller.prototype, "scrollLeft", null);
-        $mol_scroller = __decorate([
-            $mol_replace
-        ], $mol_scroller);
-        return $mol_scroller;
-    }($mol_view));
-    $mol.$mol_scroller = $mol_scroller;
-})($mol || ($mol = {}));
-//# sourceMappingURL=scroller.view.tree.js.map
-;
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $mol_scroller = (function (_super) {
-    __extends($mol_scroller, _super);
-    function $mol_scroller() {
+var $mol_chart_legender_info = (function (_super) {
+    __extends($mol_chart_legender_info, _super);
+    function $mol_chart_legender_info() {
         _super.apply(this, arguments);
     }
-    $mol_scroller.prototype.scrollTop = function () {
-        var state = this.persist('scrollTop');
-        return this.prop(function () { return Number(state.get()) || 0; }, function (next) { return (state.set(next), next); });
-    };
-    $mol_scroller.prototype.scrollLeft = function () {
-        var state = this.persist('scrollLeft');
-        return this.prop(function () { return Number(state.get()) || 0; }, function (next) { return (state.set(next), next); });
-    };
-    $mol_scroller.prototype.scrollHeight = function () {
+    $mol_chart_legender_info.prototype.series = function () { return this.prop({ title: '', samples: [] }); };
+    $mol_chart_legender_info.prototype.values = function () {
         var _this = this;
-        return this.atom(function () { return _this.node().get().scrollHeight; });
-    };
-    $mol_scroller.prototype.scrollWidth = function () {
-        var _this = this;
-        return this.atom(function () { return _this.node().get().scrollWidth; });
-    };
-    $mol_scroller.prototype.offsetHeight = function () {
-        var _this = this;
-        return this.atom(function () { return _this.node().get().offsetHeight; });
-    };
-    $mol_scroller.prototype.offsetWidth = function () {
-        var _this = this;
-        return this.atom(function () { return _this.node().get().offsetWidth; });
-    };
-    $mol_scroller.prototype.scrolls = function () {
-        var _this = this;
-        return this.prop(null, function (event) {
-            _this.scrollTop().set(event.target.scrollTop);
-            _this.scrollLeft().set(event.target.scrollLeft);
-            _this.scrollHeight().set(event.target.scrollHeight);
-            _this.scrollWidth().set(event.target.scrollWidth);
-            _this.offsetHeight().set(event.target.offsetHeight);
-            _this.offsetWidth().set(event.target.offsetWidth);
-            event.preventDefault();
+        return this.prop(function () {
+            return _this.series().get().samples.map(function (_, index) { return _this.valuer(index).get(); });
         });
     };
-    $mol_scroller.prototype.wheels = function () {
+    $mol_chart_legender_info.prototype.title = function () {
         var _this = this;
-        return this.prop(null, function (event) {
-            if (event.defaultPrevented)
-                return;
-            var target = _this.node().get();
-            if ((target.scrollHeight > target.offsetHeight) || (target.scrollWidth > target.offsetWidth)) {
-                event.preventDefault();
-                target.scrollTop -= event.wheelDeltaY;
-                target.scrollLeft -= event.wheelDeltaX;
-            }
+        return this.prop(function () { return _this.series().get().title; });
+    };
+    $mol_chart_legender_info.prototype.valuer = function (id) {
+        var _this = this;
+        return (new $mol_view).setup(function (_) {
+            _.child = function () { return _this.prop(function () { return Math.round(_this.series().get().samples[id] * 2000); }); };
         });
     };
-    $mol_scroller.prototype.overflowTop = function () {
-        var _this = this;
-        return this.prop(function () { return _this.scrollTop().get() > 0; });
-    };
-    $mol_scroller.prototype.overflowLeft = function () {
-        var _this = this;
-        return this.prop(function () { return _this.scrollLeft().get() > 0; });
-    };
-    $mol_scroller.prototype.overflowBottom = function () {
-        var _this = this;
-        return this.prop(function () { return (_this.scrollHeight().get() - _this.scrollTop().get() - _this.offsetHeight().get()) > 0; });
-    };
-    $mol_scroller.prototype.overflowRight = function () {
-        var _this = this;
-        return this.prop(function () { return (_this.scrollWidth().get() - _this.scrollLeft().get() - _this.offsetWidth().get()) > 0; });
-    };
     __decorate([
         $jin2_grab
-    ], $mol_scroller.prototype, "scrollTop", null);
-    __decorate([
-        $jin2_grab
-    ], $mol_scroller.prototype, "scrollLeft", null);
-    __decorate([
-        $jin2_grab
-    ], $mol_scroller.prototype, "scrollHeight", null);
-    __decorate([
-        $jin2_grab
-    ], $mol_scroller.prototype, "scrollWidth", null);
-    __decorate([
-        $jin2_grab
-    ], $mol_scroller.prototype, "offsetHeight", null);
-    __decorate([
-        $jin2_grab
-    ], $mol_scroller.prototype, "offsetWidth", null);
-    __decorate([
-        $jin2_grab
-    ], $mol_scroller.prototype, "scrolls", null);
-    __decorate([
-        $jin2_grab
-    ], $mol_scroller.prototype, "wheels", null);
-    __decorate([
-        $jin2_grab
-    ], $mol_scroller.prototype, "overflowTop", null);
-    __decorate([
-        $jin2_grab
-    ], $mol_scroller.prototype, "overflowLeft", null);
-    __decorate([
-        $jin2_grab
-    ], $mol_scroller.prototype, "overflowBottom", null);
-    __decorate([
-        $jin2_grab
-    ], $mol_scroller.prototype, "overflowRight", null);
-    $mol_scroller = __decorate([
+    ], $mol_chart_legender_info.prototype, "valuer", null);
+    $mol_chart_legender_info = __decorate([
         $mol_replace
-    ], $mol_scroller);
-    return $mol_scroller;
-}($mol.$mol_scroller));
-//# sourceMappingURL=scroller.view.js.map
+    ], $mol_chart_legender_info);
+    return $mol_chart_legender_info;
+}($mol.$mol_chart_legender_info));
+//# sourceMappingURL=chart.view.js.map
 ;
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
@@ -2248,16 +2670,44 @@ var $mol;
             _super.apply(this, arguments);
         }
         $mol_grapher_liner_sampler.prototype.color = function () { return this.prop("none", function (a) { return a; }); };
-        $mol_grapher_liner_sampler.prototype.field_style_backgroundColor = function () { return this.color(); };
+        $mol_grapher_liner_sampler.prototype.icon = function () {
+            var _this = this;
+            var view = new $mol.$mol_grapher_liner_sampler_icon;
+            view.color = function () { return _this.color(); };
+            return view;
+        };
+        $mol_grapher_liner_sampler.prototype.child = function () { return this.icon(); };
         __decorate([
             $jin2_grab
         ], $mol_grapher_liner_sampler.prototype, "color", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_grapher_liner_sampler.prototype, "icon", null);
         $mol_grapher_liner_sampler = __decorate([
             $mol_replace
         ], $mol_grapher_liner_sampler);
         return $mol_grapher_liner_sampler;
     }($mol.$mol_grapher_sampler));
     $mol.$mol_grapher_liner_sampler = $mol_grapher_liner_sampler;
+})($mol || ($mol = {}));
+var $mol;
+(function ($mol) {
+    var $mol_grapher_liner_sampler_icon = (function (_super) {
+        __extends($mol_grapher_liner_sampler_icon, _super);
+        function $mol_grapher_liner_sampler_icon() {
+            _super.apply(this, arguments);
+        }
+        $mol_grapher_liner_sampler_icon.prototype.color = function () { return this.prop("none", function (a) { return a; }); };
+        $mol_grapher_liner_sampler_icon.prototype.field_style_backgroundColor = function () { return this.color(); };
+        __decorate([
+            $jin2_grab
+        ], $mol_grapher_liner_sampler_icon.prototype, "color", null);
+        $mol_grapher_liner_sampler_icon = __decorate([
+            $mol_replace
+        ], $mol_grapher_liner_sampler_icon);
+        return $mol_grapher_liner_sampler_icon;
+    }($mol_view));
+    $mol.$mol_grapher_liner_sampler_icon = $mol_grapher_liner_sampler_icon;
 })($mol || ($mol = {}));
 //# sourceMappingURL=liner.view.tree.js.map
 ;
@@ -2363,16 +2813,44 @@ var $mol;
             _super.apply(this, arguments);
         }
         $mol_grapher_barer_sampler.prototype.color = function () { return this.prop("none", function (a) { return a; }); };
-        $mol_grapher_barer_sampler.prototype.field_style_backgroundColor = function () { return this.color(); };
+        $mol_grapher_barer_sampler.prototype.icon = function () {
+            var _this = this;
+            var view = new $mol.$mol_grapher_barer_sampler_icon;
+            view.color = function () { return _this.color(); };
+            return view;
+        };
+        $mol_grapher_barer_sampler.prototype.child = function () { return this.icon(); };
         __decorate([
             $jin2_grab
         ], $mol_grapher_barer_sampler.prototype, "color", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_grapher_barer_sampler.prototype, "icon", null);
         $mol_grapher_barer_sampler = __decorate([
             $mol_replace
         ], $mol_grapher_barer_sampler);
         return $mol_grapher_barer_sampler;
     }($mol.$mol_grapher_sampler));
     $mol.$mol_grapher_barer_sampler = $mol_grapher_barer_sampler;
+})($mol || ($mol = {}));
+var $mol;
+(function ($mol) {
+    var $mol_grapher_barer_sampler_icon = (function (_super) {
+        __extends($mol_grapher_barer_sampler_icon, _super);
+        function $mol_grapher_barer_sampler_icon() {
+            _super.apply(this, arguments);
+        }
+        $mol_grapher_barer_sampler_icon.prototype.color = function () { return this.prop("none", function (a) { return a; }); };
+        $mol_grapher_barer_sampler_icon.prototype.field_style_backgroundColor = function () { return this.color(); };
+        __decorate([
+            $jin2_grab
+        ], $mol_grapher_barer_sampler_icon.prototype, "color", null);
+        $mol_grapher_barer_sampler_icon = __decorate([
+            $mol_replace
+        ], $mol_grapher_barer_sampler_icon);
+        return $mol_grapher_barer_sampler_icon;
+    }($mol_view));
+    $mol.$mol_grapher_barer_sampler_icon = $mol_grapher_barer_sampler_icon;
 })($mol || ($mol = {}));
 //# sourceMappingURL=barer.view.tree.js.map
 ;
@@ -2498,6 +2976,78 @@ var $mol;
     }($mol.$mol_chart));
     $mol.$mol_chart_demo_charter = $mol_chart_demo_charter;
 })($mol || ($mol = {}));
+var $mol;
+(function ($mol) {
+    var $mol_chart_demo_legender_header = (function (_super) {
+        __extends($mol_chart_demo_legender_header, _super);
+        function $mol_chart_demo_legender_header() {
+            _super.apply(this, arguments);
+        }
+        $mol_chart_demo_legender_header.prototype.sample = function () {
+            var _this = this;
+            var view = new $mol_view;
+            view.child = function () { return _this.prop("Факт", function () { }); };
+            return view;
+        };
+        $mol_chart_demo_legender_header.prototype.title = function () {
+            var _this = this;
+            var view = new $mol_view;
+            view.child = function () { return _this.prop("Показатель", function () { }); };
+            return view;
+        };
+        $mol_chart_demo_legender_header.prototype.value1 = function () {
+            var _this = this;
+            var view = new $mol_view;
+            view.child = function () { return _this.prop("2013", function () { }); };
+            return view;
+        };
+        $mol_chart_demo_legender_header.prototype.value2 = function () {
+            var _this = this;
+            var view = new $mol_view;
+            view.child = function () { return _this.prop("2014", function () { }); };
+            return view;
+        };
+        $mol_chart_demo_legender_header.prototype.value3 = function () {
+            var _this = this;
+            var view = new $mol_view;
+            view.child = function () { return _this.prop("2015", function () { }); };
+            return view;
+        };
+        $mol_chart_demo_legender_header.prototype.value4 = function () {
+            var _this = this;
+            var view = new $mol_view;
+            view.child = function () { return _this.prop("2016", function () { }); };
+            return view;
+        };
+        $mol_chart_demo_legender_header.prototype.child = function () {
+            var _this = this;
+            return this.prop(function () { return [].concat(_this.sample().get(), _this.title().get(), _this.value1().get(), _this.value2().get(), _this.value3().get(), _this.value4().get()); });
+        };
+        __decorate([
+            $jin2_grab
+        ], $mol_chart_demo_legender_header.prototype, "sample", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_chart_demo_legender_header.prototype, "title", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_chart_demo_legender_header.prototype, "value1", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_chart_demo_legender_header.prototype, "value2", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_chart_demo_legender_header.prototype, "value3", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_chart_demo_legender_header.prototype, "value4", null);
+        $mol_chart_demo_legender_header = __decorate([
+            $mol_replace
+        ], $mol_chart_demo_legender_header);
+        return $mol_chart_demo_legender_header;
+    }($mol_view));
+    $mol.$mol_chart_demo_legender_header = $mol_chart_demo_legender_header;
+})($mol || ($mol = {}));
 //# sourceMappingURL=demo.view.tree.js.map
 ;
 var __extends = (this && this.__extends) || function (d, b) {
@@ -2516,7 +3066,7 @@ var $mol_chart_demo = (function (_super) {
     function $mol_chart_demo() {
         _super.apply(this, arguments);
     }
-    $mol_chart_demo.prototype.countSample = function () { return this.atom(12); };
+    $mol_chart_demo.prototype.countSample = function () { return this.atom(4); };
     $mol_chart_demo.prototype.countChart = function () { return this.atom(5); };
     $mol_chart_demo.prototype.countGraph = function () { return this.atom(5); };
     $mol_chart_demo.prototype.series = function (series) {
@@ -2604,16 +3154,18 @@ var $mol_chart_demo = (function (_super) {
     $mol_chart_demo.prototype.legends = function (chart) {
         var _this = this;
         return this.atom(function (prev) {
-            return _this.graphs(chart).get().map(function (_, graph) {
+            return [].concat(_this.legendHeader(chart).get()).concat(_this.graphs(chart).get().map(function (_, graph) {
                 return _this.legender({ chart: chart, graph: graph }).get();
-            });
+            }));
         });
     };
+    $mol_chart_demo.prototype.legendHeader = function (chart) { return new $mol.$mol_chart_demo_legender_header; };
     $mol_chart_demo.prototype.legender = function (id) {
         var _this = this;
         return (new $mol.$mol_chart_legender_info).setup(function (_) {
             _.title = function () { return _this.prop(_this.series(id.graph).get().title); };
             _.sampler = function () { return _this.prop(function () { return _this.grapher(id).get().sampler().get(); }); };
+            _.series = function () { return _this.series(id.graph); };
         });
     };
     $mol_chart_demo.prototype.clicks = function () {
@@ -2655,6 +3207,9 @@ var $mol_chart_demo = (function (_super) {
     __decorate([
         $jin2_grab
     ], $mol_chart_demo.prototype, "legends", null);
+    __decorate([
+        $jin2_grab
+    ], $mol_chart_demo.prototype, "legendHeader", null);
     __decorate([
         $jin2_grab
     ], $mol_chart_demo.prototype, "legender", null);
