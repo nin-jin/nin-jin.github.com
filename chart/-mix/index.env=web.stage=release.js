@@ -2998,22 +2998,28 @@ var $mol;
         $mol_chart_demo_legender_header.prototype.value1 = function () {
             var _this = this;
             var view = new $mol_view;
-            view.child = function () { return _this.prop("2013", function () { }); };
+            view.child = function () { return _this.prop("2012", function () { }); };
             return view;
         };
         $mol_chart_demo_legender_header.prototype.value2 = function () {
             var _this = this;
             var view = new $mol_view;
-            view.child = function () { return _this.prop("2014", function () { }); };
+            view.child = function () { return _this.prop("2013", function () { }); };
             return view;
         };
         $mol_chart_demo_legender_header.prototype.value3 = function () {
             var _this = this;
             var view = new $mol_view;
-            view.child = function () { return _this.prop("2015", function () { }); };
+            view.child = function () { return _this.prop("2014", function () { }); };
             return view;
         };
         $mol_chart_demo_legender_header.prototype.value4 = function () {
+            var _this = this;
+            var view = new $mol_view;
+            view.child = function () { return _this.prop("2015", function () { }); };
+            return view;
+        };
+        $mol_chart_demo_legender_header.prototype.value5 = function () {
             var _this = this;
             var view = new $mol_view;
             view.child = function () { return _this.prop("2016", function () { }); };
@@ -3021,7 +3027,7 @@ var $mol;
         };
         $mol_chart_demo_legender_header.prototype.child = function () {
             var _this = this;
-            return this.prop(function () { return [].concat(_this.sample().get(), _this.title().get(), _this.value1().get(), _this.value2().get(), _this.value3().get(), _this.value4().get()); });
+            return this.prop(function () { return [].concat(_this.sample().get(), _this.title().get(), _this.value1().get(), _this.value2().get(), _this.value3().get(), _this.value4().get(), _this.value5().get()); });
         };
         __decorate([
             $jin2_grab
@@ -3041,6 +3047,9 @@ var $mol;
         __decorate([
             $jin2_grab
         ], $mol_chart_demo_legender_header.prototype, "value4", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_chart_demo_legender_header.prototype, "value5", null);
         $mol_chart_demo_legender_header = __decorate([
             $mol_replace
         ], $mol_chart_demo_legender_header);
@@ -3066,7 +3075,7 @@ var $mol_chart_demo = (function (_super) {
     function $mol_chart_demo() {
         _super.apply(this, arguments);
     }
-    $mol_chart_demo.prototype.countSample = function () { return this.atom(4); };
+    $mol_chart_demo.prototype.countSample = function () { return this.atom(5); };
     $mol_chart_demo.prototype.countChart = function () { return this.atom(5); };
     $mol_chart_demo.prototype.countGraph = function () { return this.atom(5); };
     $mol_chart_demo.prototype.series = function (series) {
