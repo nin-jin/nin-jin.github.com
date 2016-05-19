@@ -1883,7 +1883,7 @@ var $mol_plotter = (function (_super) {
                 return _this.graphs().get()[0].points().get()[id][0] * 100 + '%';
             }); };
             _.label = function () { return _this.prop(function () {
-                return Math.floor(_this.graphs().get()[0].points().get()[id][0] * 100) + '';
+                return ['2012', '2013', '2014', '2015', '2016'][id];
             }); };
         });
     };
