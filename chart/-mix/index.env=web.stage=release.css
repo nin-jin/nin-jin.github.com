@@ -313,6 +313,8 @@
 [mol_chart_legender] {
 	width: auto;
 	outline: none;
+	font-size: 14px;
+	font-size: .9rem;
 }
 
 [mol_chart_legender_lister] {}
@@ -323,7 +325,7 @@
 
 [mol_chart_legender_info] > * {
 	display: table-cell;
-	padding: .5em;
+	padding: 1.5vmin;
 	vertical-align: middle;
 }
 
@@ -456,11 +458,18 @@
 
 [mol_chart_demo_legender_header] > * {
 	display: table-cell;
-	padding: .5em;
+	padding: 1.5vmin;
 	vertical-align: middle;
 	opacity: .5;
-	font-size: .9em;
+	text-align: right;
+}
+
+[mol_chart_demo_legender_header_sample] {
 	text-align: center;
+}
+
+[mol_chart_demo_legender_header_title] {
+	text-align: left;
 }
 
 /*# sourceMappingURL=index.env=web.stage=release.css.map */

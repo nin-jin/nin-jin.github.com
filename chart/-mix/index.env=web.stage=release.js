@@ -2080,7 +2080,7 @@ var $mol_chart = (function (_super) {
         _super.apply(this, arguments);
     }
     $mol_chart.prototype.hueBase = function () { return this.atom(213); };
-    $mol_chart.prototype.hueShift = function () { return this.atom(30); };
+    $mol_chart.prototype.hueShift = function () { return this.atom(35); };
     $mol_chart.prototype.hueBack = function (index) {
         var _this = this;
         return this.prop(function () {
@@ -2405,11 +2405,11 @@ var $mol_grapher = (function (_super) {
     };
     $mol_grapher.prototype.colorStroke = function () {
         var _this = this;
-        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 70% , 60% )"); });
+        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 70% , 50% )"); });
     };
     $mol_grapher.prototype.colorFill = function () {
         var _this = this;
-        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 70% , 80% )"); });
+        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 70% , 70% )"); });
     };
     __decorate([
         $jin2_grab
@@ -2885,7 +2885,7 @@ var $mol_grapher_barer = (function (_super) {
     };
     $mol_grapher_barer.prototype.colorStroke = function () {
         var _this = this;
-        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 40% , " + (40 + (Math.ceil(_this.hue().get() / 10) % 2) * 20) + "% )"); });
+        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 40% , " + (40 + (Math.ceil(_this.hue().get() / 10) % 2) * 30) + "% )"); });
     };
     __decorate([
         $jin2_grab
