@@ -1709,7 +1709,10 @@ var $mol;
             return this.prop(function () { return [].concat(_this.grid0().get(), _this.grid1().get(), _this.grid2().get(), _this.grid3().get(), _this.grid4().get()); });
         };
         $mol_plotter.prototype.lines = function () { return this.prop(null, function (a) { return a; }); };
-        $mol_plotter.prototype.measure = function () { return this.prop(null, function (a) { return a; }); };
+        $mol_plotter.prototype.measure = function () {
+            var view = new $mol.$mol_plotter_measure;
+            return view;
+        };
         $mol_plotter.prototype.graphs = function () { return this.prop(null, function (a) { return a; }); };
         $mol_plotter.prototype.svg = function () {
             var _this = this;
@@ -1833,6 +1836,24 @@ var $mol;
         return $mol_plotter_grid_vert;
     }($mol_view));
     $mol.$mol_plotter_grid_vert = $mol_plotter_grid_vert;
+})($mol || ($mol = {}));
+var $mol;
+(function ($mol) {
+    var $mol_plotter_measure = (function (_super) {
+        __extends($mol_plotter_measure, _super);
+        function $mol_plotter_measure() {
+            _super.apply(this, arguments);
+        }
+        $mol_plotter_measure.prototype.child = function () { return this.prop("куб. м", function (a) { return a; }); };
+        __decorate([
+            $jin2_grab
+        ], $mol_plotter_measure.prototype, "child", null);
+        $mol_plotter_measure = __decorate([
+            $mol_replace
+        ], $mol_plotter_measure);
+        return $mol_plotter_measure;
+    }($mol_view));
+    $mol.$mol_plotter_measure = $mol_plotter_measure;
 })($mol || ($mol = {}));
 //# sourceMappingURL=plotter.view.tree.js.map
 ;

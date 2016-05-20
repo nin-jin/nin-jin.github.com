@@ -266,6 +266,15 @@
 	        flex: 1 1 auto;
 }
 
+[mol_plotter_measure] {
+	opacity: .5;
+	-webkit-transform: translate( 0 , -2.5em );
+	        transform: translate( 0 , -2.5em );
+	width: 4em;
+	margin-left: -4.5em;
+	text-align: right;
+}
+
 [mol_chart] {
 	display: -webkit-box;
 	display: -webkit-flex;
