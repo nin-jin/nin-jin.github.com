@@ -1709,6 +1709,7 @@ var $mol;
             return this.prop(function () { return [].concat(_this.grid0().get(), _this.grid1().get(), _this.grid2().get(), _this.grid3().get(), _this.grid4().get()); });
         };
         $mol_plotter.prototype.lines = function () { return this.prop(null, function (a) { return a; }); };
+        $mol_plotter.prototype.measure = function () { return this.prop(null, function (a) { return a; }); };
         $mol_plotter.prototype.graphs = function () { return this.prop(null, function (a) { return a; }); };
         $mol_plotter.prototype.svg = function () {
             var _this = this;
@@ -1718,7 +1719,7 @@ var $mol;
         };
         $mol_plotter.prototype.child = function () {
             var _this = this;
-            return this.prop(function () { return [].concat(_this.grid().get(), _this.lines().get(), _this.svg().get()); });
+            return this.prop(function () { return [].concat(_this.grid().get(), _this.lines().get(), _this.measure().get(), _this.svg().get()); });
         };
         __decorate([
             $jin2_grab
@@ -1738,6 +1739,9 @@ var $mol;
         __decorate([
             $jin2_grab
         ], $mol_plotter.prototype, "lines", null);
+        __decorate([
+            $jin2_grab
+        ], $mol_plotter.prototype, "measure", null);
         __decorate([
             $jin2_grab
         ], $mol_plotter.prototype, "graphs", null);
@@ -2405,7 +2409,7 @@ var $mol_grapher = (function (_super) {
     };
     $mol_grapher.prototype.colorStroke = function () {
         var _this = this;
-        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 70% , 50% )"); });
+        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 80% , 60% )"); });
     };
     $mol_grapher.prototype.colorFill = function () {
         var _this = this;
