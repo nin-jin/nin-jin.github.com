@@ -2885,7 +2885,7 @@ var $mol_grapher_barer = (function (_super) {
     };
     $mol_grapher_barer.prototype.colorStroke = function () {
         var _this = this;
-        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 40% , " + (40 + (Math.ceil(_this.hue().get() / 10) % 2) * 30) + "% )"); });
+        return this.prop(function () { return ("hsl( " + _this.hue().get() + " , 40% , " + (50 + (Math.ceil(_this.hue().get() / 10) % 2) * 30) + "% )"); });
     };
     __decorate([
         $jin2_grab
