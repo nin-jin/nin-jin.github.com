@@ -1341,10 +1341,7 @@ var $;
             };
         };
         $mol_viewer.prototype.field = function () {
-            var _this = this;
-            return {
-                'style.minHeight': function () { return _this.heightMinimal() + 'px'; }
-            };
+            return {};
         };
         $mol_viewer.prototype.event = function () { return {}; };
         $mol_viewer.prototype.focused = function () {
