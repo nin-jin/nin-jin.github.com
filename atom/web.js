@@ -18,25 +18,21 @@ var $;
         if (path.indexOf(filter) === -1)
             return;
         var time = new Date().toLocaleTimeString();
-        console.log.apply(console, [time, path].concat(values));
+        console.log(time, path, values);
     }
     $.$mol_log = $mol_log;
     var $mol_log;
     (function ($mol_log) {
         var _filter;
-        function filter() {
-            var diff = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                diff[_i - 0] = arguments[_i];
-            }
-            if (diff[0] !== void 0) {
-                if (diff[0] == null) {
+        function filter(next) {
+            if (next !== void 0) {
+                if (next == null) {
                     sessionStorage.removeItem('$mol_log.filter()');
                 }
                 else {
-                    sessionStorage.setItem('$mol_log.filter()', diff[0]);
+                    sessionStorage.setItem('$mol_log.filter()', next);
                 }
-                _filter = diff[0];
+                _filter = next;
             }
             if (_filter !== void 0)
                 return _filter;
@@ -105,16 +101,12 @@ var $;
             script(this);
             return this;
         };
-        $mol_object.prototype.destroyed = function () {
-            var diff = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                diff[_i - 0] = arguments[_i];
-            }
-            if (diff[0] === void 0)
+        $mol_object.prototype.destroyed = function (next) {
+            if (next === void 0)
                 return this['destroyed()'];
-            this['destroyed()'] = diff[0];
-            this.log(['.destroyed()', diff[0]]);
-            return diff[0];
+            this['destroyed()'] = next;
+            this.log(['.destroyed()', next]);
+            return next;
         };
         $mol_object.prototype.log = function (values) {
             if ($.$mol_log.filter() == null)
@@ -227,14 +219,10 @@ var $;
             this.run = run;
             $mol_defer.add(this);
         }
-        $mol_defer.prototype.destroyed = function () {
-            var diff = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                diff[_i - 0] = arguments[_i];
-            }
-            if (diff[0])
+        $mol_defer.prototype.destroyed = function (next) {
+            if (next)
                 $mol_defer.drop(this);
-            return _super.prototype.destroyed.apply(this, diff);
+            return _super.prototype.destroyed.call(this, next);
         };
         $mol_defer.schedule = function () {
             var _this = this;
@@ -414,12 +402,8 @@ var $;
             this.autoFresh = true;
             this['value()'] = void 0;
         }
-        $mol_atom.prototype.destroyed = function () {
-            var diff = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                diff[_i - 0] = arguments[_i];
-            }
-            if (diff[0]) {
+        $mol_atom.prototype.destroyed = function (next) {
+            if (next) {
                 this.unlink();
                 var host = this.host || this;
                 var value = host[this.field];
@@ -448,26 +432,25 @@ var $;
             return this.host ? this.host.objectPath() + '.' + this.field : this.field;
         };
         $mol_atom.prototype.get = function () {
-            if ($mol_atom.stack.indexOf(this) !== -1) {
-                throw new Error('Recursive dependency! ' + this.objectPath());
-            }
-            var slave = $mol_atom.stack[$mol_atom.stack.length - 1];
+            var slave = $mol_atom.stack[0];
             if (slave)
                 this.lead(slave);
             if (slave)
                 slave.obey(this);
             this.actualize();
             var value = (this.host || this)[this.field];
-            if (value instanceof Error)
-                throw value;
+            if (value instanceof Error) {
+                if (typeof Proxy !== 'function')
+                    throw value;
+            }
             return value;
         };
         $mol_atom.prototype.actualize = function () {
             var _this = this;
             if (this.status === $mol_atom_status.actual)
                 return;
-            var index = $mol_atom.stack.length;
-            $mol_atom.stack.push(this);
+            var slave = $mol_atom.stack[0];
+            $mol_atom.stack[0] = this;
             if (this.status === $mol_atom_status.checking) {
                 this.masters.forEach(function (master) {
                     if (_this.status !== $mol_atom_status.checking)
@@ -485,35 +468,46 @@ var $;
                     oldMasters.forEach(function (master) {
                         master.dislead(_this);
                     });
-                var host = this.host || this;
+                var next = this.pull();
+                if (next !== void 0)
+                    this.push(next);
+            }
+            $mol_atom.stack[0] = slave;
+        };
+        $mol_atom.prototype.pull = function () {
+            var host = this.host || this;
+            try {
                 if (this.key !== void 0) {
-                    var next = this.handler.call(host, this.key);
+                    return this.handler.call(host, this.key);
                 }
                 else {
-                    var next = this.handler.call(host);
+                    return this.handler.call(host);
                 }
-                if (next === void 0)
-                    next = host[this.field];
-                this.push(next);
             }
-            $mol_atom.stack.length = index;
+            catch (error) {
+                if (!error['$mol_atom_catched']) {
+                    if (error instanceof $mol_atom_wait) {
+                    }
+                    else {
+                        console.error(error.stack || error);
+                    }
+                    error['$mol_atom_catched'] = true;
+                }
+                return error;
+            }
         };
-        $mol_atom.prototype.set = function () {
-            var diff = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                diff[_i - 0] = arguments[_i];
-            }
+        $mol_atom.prototype.set = function (next, prev) {
             var host = this.host || this;
+            var next2;
             if (this.key !== void 0) {
-                var next = (_a = this.handler).call.apply(_a, [host, this.key].concat(diff));
+                next2 = this.handler.call(host, this.key, next, prev);
             }
             else {
-                var next = (_b = this.handler).call.apply(_b, [host].concat(diff));
+                next2 = this.handler.call(host, next, prev);
             }
-            if (next === void 0)
+            if (next2 === void 0)
                 return host[this.field];
-            return this.push(next);
-            var _a, _b;
+            return this.push(next2);
         };
         $mol_atom.prototype.push = function (next) {
             var host = this.host || this;
@@ -538,15 +532,16 @@ var $;
                     next['objectField'](this.field);
                     next['objectOwner'](host);
                 }
+                if ((typeof Proxy === 'function') && (next instanceof Error)) {
+                    next = new Proxy(next, {
+                        get: function (target) {
+                            throw target.valueOf();
+                        }
+                    });
+                }
                 host[this.field] = next;
                 this.log(['push', next, prev]);
-                if (next instanceof Error) {
-                    if (this.slaves)
-                        this.slaves.forEach(function (slave) { return slave.push(next); });
-                }
-                else {
-                    this.obsoleteSlaves();
-                }
+                this.obsoleteSlaves();
             }
             this.status = $mol_atom_status.actual;
             return next;
@@ -614,22 +609,6 @@ var $;
             this.masters.forEach(function (master) { return master.dislead(_this); });
             this.masters = null;
         };
-        $mol_atom.prototype.value = function () {
-            var diff = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                diff[_i - 0] = arguments[_i];
-            }
-            if (diff[0] === void 0) {
-                if (diff.length > 1)
-                    return this.push(diff[1]);
-                if (diff.length > 0)
-                    return this.obsolete();
-                return this.get();
-            }
-            else {
-                return this.set.apply(this, diff);
-            }
-        };
         $mol_atom.actualize = function (atom) {
             $mol_atom.updating.push(atom);
             $mol_atom.schedule();
@@ -660,7 +639,7 @@ var $;
             while (this.updating.length) {
                 var atom = this.updating.shift();
                 if (!atom.destroyed())
-                    atom.actualize();
+                    atom.get();
             }
             while (this.reaping.size) {
                 this.reaping.forEach(function (atom) {
@@ -671,23 +650,13 @@ var $;
             }
             this.scheduled = false;
         };
-        $mol_atom.stack = [];
+        $mol_atom.stack = [null];
         $mol_atom.updating = [];
         $mol_atom.reaping = new $.$mol_set();
         $mol_atom.scheduled = false;
         return $mol_atom;
     }($.$mol_object));
     $.$mol_atom = $mol_atom;
-    function $mol_atom_restore(error) {
-        if ($mol_atom.stack.length) {
-            var atom = $mol_atom.stack.pop();
-            if (error instanceof Error) {
-                error = atom.push(error);
-            }
-        }
-        $mol_atom.stack.splice(0, $mol_atom.stack.length);
-    }
-    $.$mol_atom_restore = $mol_atom_restore;
     $.$mol_state_stack.set('$mol_atom.stack', $mol_atom.stack);
     var $mol_atom_wait = (function (_super) {
         __extends($mol_atom_wait, _super);
@@ -696,6 +665,10 @@ var $;
             _super.call(this, message);
             this.message = message;
             this.name = '$mol_atom_wait';
+            var error = new Error(message);
+            error.name = this.name;
+            error['__proto__'] = $mol_atom_wait.prototype;
+            return error;
         }
         return $mol_atom_wait;
     }(Error));
@@ -711,18 +684,4 @@ var $;
     $.$mol_atom_task = $mol_atom_task;
 })($ || ($ = {}));
 //atom.js.map
-;
-var $;
-(function ($) {
-    window.addEventListener('error', function (event) {
-        var error = event.error;
-        var stack = $.$mol_atom.stack;
-        if (error instanceof $.$mol_atom_wait) {
-            event.preventDefault();
-            console.debug('', error);
-        }
-        $.$mol_atom_restore(error);
-    });
-})($ || ($ = {}));
-//atom.web.js.map
 //# sourceMappingURL=web.js.map
