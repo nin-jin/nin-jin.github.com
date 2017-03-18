@@ -54,20 +54,17 @@ namespace $.$mol {
 			return this.question_full( id ).link
 		}
 		
-		@ $mol_mem_key()
 		question_short( index : number ) {
 			let page_size = this.data_page_size()
 			let page = Math.floor( index / page_size )
 			return this.questions_data( page ).items[ index % page_size ]
 		}
 		
-		@ $mol_mem()
 		questions_count() {
 			let uri = `//api.stackexchange.com/2.2/questions?site=stackoverflow&filter=total`
 			return $mol_http_resource_json.item<{ total : number }>( uri ).json().total
 		}
 		
-		@ $mol_mem_key()
 		questions_data( page : number ) {
 			const uri = `//api.stackexchange.com/2.2/questions?order=desc&sort=creation&site=stackoverflow&pagesize=${ this.data_page_size() }&page=${ page + 1 }`
 			type Item = {
@@ -85,7 +82,6 @@ namespace $.$mol {
 			return 100
 		}
 		
-		@ $mol_mem_key()
 		question_full( id : number ) {
 			const uri = `//api.stackexchange.com/2.2/questions/${ id }?site=stackoverflow&filter=!9YdnSJ*_T`
 			type Item = {

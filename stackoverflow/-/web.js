@@ -2397,6 +2397,67 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+var $;
+(function ($) {
+    var $mol_status = (function (_super) {
+        __extends($mol_status, _super);
+        function $mol_status() {
+            return _super.apply(this, arguments) || this;
+        }
+        $mol_status.prototype.status = function () {
+            return null;
+        };
+        $mol_status.prototype.message = function () {
+            return "";
+        };
+        $mol_status.prototype.sub = function () {
+            return [].concat(this.message());
+        };
+        return $mol_status;
+    }($.$mol_view));
+    $.$mol_status = $mol_status;
+})($ || ($ = {}));
+//status.view.tree.js.map
+;
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+var $;
+(function ($) {
+    var $mol;
+    (function ($mol) {
+        var $mol_status = (function (_super) {
+            __extends($mol_status, _super);
+            function $mol_status() {
+                return _super.apply(this, arguments) || this;
+            }
+            $mol_status.prototype.message = function () {
+                try {
+                    var status_1 = this.status();
+                    if (status_1)
+                        status_1.valueOf();
+                    return null;
+                }
+                catch (error) {
+                    if (error instanceof $.$mol_atom_wait)
+                        throw error;
+                    return error.message;
+                }
+            };
+            return $mol_status;
+        }($.$mol_status));
+        $mol.$mol_status = $mol_status;
+    })($mol = $.$mol || ($.$mol = {}));
+})($ || ($ = {}));
+//status.view.js.map
+;
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var __assign = (this && this.__assign) || Object.assign || function(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
@@ -5556,6 +5617,12 @@ var $;
         $my_stackoverflow.prototype.menu_rows = function () {
             return [];
         };
+        $my_stackoverflow.prototype.Status = function () {
+            var _this = this;
+            return new $.$mol_status().setup(function (obj) {
+                obj.status = function () { return _this.menu_rows(); };
+            });
+        };
         $my_stackoverflow.prototype.Menu_links = function () {
             var _this = this;
             return new $.$mol_list().setup(function (obj) {
@@ -5567,7 +5634,7 @@ var $;
             return new $.$mol_page().setup(function (obj) {
                 obj.title = function () { return _this.title_default(); };
                 obj.minimal_width = function () { return 400; };
-                obj.body = function () { return [].concat(_this.Menu_links()); };
+                obj.body = function () { return [].concat(_this.Status(), _this.Menu_links()); };
             });
         };
         $my_stackoverflow.prototype.question_title = function (id) {
@@ -5673,6 +5740,9 @@ var $;
     ], $my_stackoverflow.prototype, "Placeholder", null);
     __decorate([
         $.$mol_mem()
+    ], $my_stackoverflow.prototype, "Status", null);
+    __decorate([
+        $.$mol_mem()
     ], $my_stackoverflow.prototype, "Menu_links", null);
     __decorate([
         $.$mol_mem()
@@ -5718,12 +5788,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var $;
 (function ($) {
@@ -5798,18 +5862,6 @@ var $;
             };
             return $my_stackoverflow;
         }($.$my_stackoverflow));
-        __decorate([
-            $.$mol_mem_key()
-        ], $my_stackoverflow.prototype, "question_short", null);
-        __decorate([
-            $.$mol_mem()
-        ], $my_stackoverflow.prototype, "questions_count", null);
-        __decorate([
-            $.$mol_mem_key()
-        ], $my_stackoverflow.prototype, "questions_data", null);
-        __decorate([
-            $.$mol_mem_key()
-        ], $my_stackoverflow.prototype, "question_full", null);
         $mol.$my_stackoverflow = $my_stackoverflow;
     })($mol = $.$mol || ($.$mol = {}));
 })($ || ($ = {}));
