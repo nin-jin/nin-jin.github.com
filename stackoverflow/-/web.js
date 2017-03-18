@@ -5578,6 +5578,9 @@ var $;
         return $mol_http_resource_json;
     }($.$mol_http_resource));
     __decorate([
+        $.$mol_mem()
+    ], $mol_http_resource_json.prototype, "json", null);
+    __decorate([
         $.$mol_mem_key()
     ], $mol_http_resource_json, "item", null);
     $.$mol_http_resource_json = $mol_http_resource_json;
