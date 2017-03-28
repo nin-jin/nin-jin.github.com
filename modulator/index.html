@@ -1,0 +1,1126 @@
+<title>Оптимизатор цен</title>
+
+<meta charset="utf-8" />
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/highcharts-more.js"></script>
+<script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+
+<script id="sap-ui-bootstrap"
+    type="text/javascript"
+    src="https://sapui5.hana.ondemand.com/1.42.6/resources/sap-ui-core.js"
+    data-sap-ui-theme="sap_belize"
+    data-sap-ui-libs="sap.m,sap.viz,sap.ui.unified"></script>
+
+	<script type="text/javascript">
+		sap.ui.getCore().attachInit(function () {
+			
+			var goods =
+[
+  {
+  	"GROUP": "Числа",
+    "NAME": 107181,
+    "ORIG_PRICE": "6,39",
+    "PURCH_PRICE": "6,24",
+    "K": "-1,566227004",
+    "B": "113,1250425",
+    "MIN_PRICE": "6,24",
+    "MAX_PRICE": "7,96",
+    "OPT_PRICE": "7,95985480468"
+  },
+{
+    "GROUP": "Числа",
+    "NAME": 890,
+    "ORIG_PRICE": "9,9",
+    "PURCH_PRICE": "7,1",
+    "K": "-2,276376393",
+    "B": "289,1615161",
+    "MIN_PRICE": "7,1",
+    "MAX_PRICE": "10,95",
+    "OPT_PRICE": "10,9499732375"
+  },
+  {
+    "GROUP": "Числа",
+    "NAME": 936,
+    "ORIG_PRICE": "10,88",
+    "PURCH_PRICE": "8,48",
+    "K": "-6,170677071",
+    "B": "148,2569098",
+    "MIN_PRICE": "8,48",
+    "MAX_PRICE": "14,17",
+    "OPT_PRICE": "8,48005149429"
+  },
+  {
+    "GROUP": "Числа",
+    "NAME": 101053,
+    "ORIG_PRICE": "12,1",
+    "PURCH_PRICE": "8,7",
+    "K": "-3,265205244",
+    "B": "72,66157318",
+    "MIN_PRICE": "8,7",
+    "MAX_PRICE": "14,95",
+    "OPT_PRICE": "8,70009760892"
+  },
+  {
+    "NAME": 110363,
+    "ORIG_PRICE": "12,28",
+    "PURCH_PRICE": "8,86",
+    "K": "-0,829090916",
+    "B": "17,15253827",
+    "MIN_PRICE": "8,86",
+    "MAX_PRICE": "15,99",
+    "OPT_PRICE": "8,86039102466"
+  },
+  {
+    "NAME": 113558,
+    "ORIG_PRICE": "13,8",
+    "PURCH_PRICE": "9,6",
+    "K": "-0,447911237",
+    "B": "15,98430015",
+    "MIN_PRICE": "9,6",
+    "MAX_PRICE": "17,94",
+    "OPT_PRICE": "9,60265771918"
+  },
+  {
+    "NAME": 310786,
+    "ORIG_PRICE": "14,1",
+    "PURCH_PRICE": "10,45",
+    "K": "-0,03639838",
+    "B": "5,977705992",
+    "MIN_PRICE": "10,45",
+    "MAX_PRICE": "16,92",
+    "OPT_PRICE": "16,9183075677"
+  },
+  {
+    "NAME": 111330,
+    "ORIG_PRICE": "14,97",
+    "PURCH_PRICE": "11,2",
+    "K": "-1,735503561",
+    "B": "52,47978686",
+    "MIN_PRICE": "11,2",
+    "MAX_PRICE": "18,0",
+    "OPT_PRICE": "11,2002833023"
+  },
+  {
+    "NAME": 310774,
+    "ORIG_PRICE": "15,16",
+    "PURCH_PRICE": "11,28",
+    "K": "-1,506986028",
+    "B": "30,67631404",
+    "MIN_PRICE": "11,28",
+    "MAX_PRICE": "18,24",
+    "OPT_PRICE": "11,2801828521"
+  },
+  {
+    "NAME": 113954,
+    "ORIG_PRICE": "14,8",
+    "PURCH_PRICE": "11,63",
+    "K": "-11,86241535",
+    "B": "551,4097045",
+    "MIN_PRICE": "11,63",
+    "MAX_PRICE": "17,76",
+    "OPT_PRICE": "12,8172458292"
+  },
+  {
+    "NAME": 154,
+    "ORIG_PRICE": "14,98",
+    "PURCH_PRICE": "11,66",
+    "K": "-0,268433571",
+    "B": "49,62130479",
+    "MIN_PRICE": "11,66",
+    "MAX_PRICE": "18,0",
+    "OPT_PRICE": "17,9997915555"
+  },
+  {
+    "NAME": 206486,
+    "ORIG_PRICE": "14,87",
+    "PURCH_PRICE": "11,69",
+    "K": "-2,490349439",
+    "B": "93,26165787",
+    "MIN_PRICE": "11,69",
+    "MAX_PRICE": "17,88",
+    "OPT_PRICE": "11,6904144833"
+  },
+  {
+    "NAME": 300978,
+    "ORIG_PRICE": "13,5",
+    "PURCH_PRICE": "11,71",
+    "K": "-0,33036229",
+    "B": "50,58174804",
+    "MIN_PRICE": "11,71",
+    "MAX_PRICE": "17,55",
+    "OPT_PRICE": "17,549776052"
+  },
+  {
+    "NAME": 206495,
+    "ORIG_PRICE": "15,21",
+    "PURCH_PRICE": "12,08",
+    "K": "-3,295602988",
+    "B": "104,9138079",
+    "MIN_PRICE": "12,08",
+    "MAX_PRICE": "18,36",
+    "OPT_PRICE": "12,0801508345"
+  },
+  {
+    "NAME": 209436,
+    "ORIG_PRICE": "16,28",
+    "PURCH_PRICE": "12,85",
+    "K": "-1,489085688",
+    "B": "74,52530306",
+    "MIN_PRICE": "12,85",
+    "MAX_PRICE": "19,56",
+    "OPT_PRICE": "15,213088138"
+  },
+  {
+    "NAME": 206487,
+    "ORIG_PRICE": "16,55",
+    "PURCH_PRICE": "13,09",
+    "K": "-0,843272266",
+    "B": "65,05109637",
+    "MIN_PRICE": "13,09",
+    "MAX_PRICE": "19,92",
+    "OPT_PRICE": "19,9194904978"
+  },
+  {
+    "NAME": 1002,
+    "ORIG_PRICE": "15,9",
+    "PURCH_PRICE": "13,71",
+    "K": "-9,067177522",
+    "B": "244,1995402",
+    "MIN_PRICE": "13,71",
+    "MAX_PRICE": "17,06",
+    "OPT_PRICE": "13,7100248272"
+  },
+  {
+    "NAME": 916,
+    "ORIG_PRICE": "18,66",
+    "PURCH_PRICE": "14,7",
+    "K": "-5,614293024",
+    "B": "260,1000339",
+    "MIN_PRICE": "14,7",
+    "MAX_PRICE": "22,44",
+    "OPT_PRICE": "14,7021618003"
+  },
+  {
+    "NAME": 110362,
+    "ORIG_PRICE": "21,1",
+    "PURCH_PRICE": "15,17",
+    "K": "-0,275535305",
+    "B": "15,63234444",
+    "MIN_PRICE": "15,17",
+    "MAX_PRICE": "25,32",
+    "OPT_PRICE": "19,7167108371"
+  },
+  {
+    "NAME": 203147,
+    "ORIG_PRICE": "19,49",
+    "PURCH_PRICE": "15,69",
+    "K": "-0,91184614",
+    "B": "69,32521725",
+    "MIN_PRICE": "15,69",
+    "MAX_PRICE": "23,4",
+    "OPT_PRICE": "23,3993030358"
+  },
+  {
+    "NAME": 112199,
+    "ORIG_PRICE": "21,5",
+    "PURCH_PRICE": "16,06",
+    "K": "-0,622001833",
+    "B": "21,79660073",
+    "MIN_PRICE": "16,06",
+    "MAX_PRICE": "25,8",
+    "OPT_PRICE": "16,0608181678"
+  },
+  {
+    "NAME": 311042,
+    "ORIG_PRICE": "20,9",
+    "PURCH_PRICE": "16,08",
+    "K": "-0,673378515",
+    "B": "32,43340315",
+    "MIN_PRICE": "16,08",
+    "MAX_PRICE": "25,08",
+    "OPT_PRICE": "16,1167048876"
+  },
+  {
+    "NAME": 205731,
+    "ORIG_PRICE": "21,3",
+    "PURCH_PRICE": "16,13",
+    "K": "-2,027050065",
+    "B": "84,70254399",
+    "MIN_PRICE": "16,13",
+    "MAX_PRICE": "25,56",
+    "OPT_PRICE": "16,1305044666"
+  },
+  {
+    "NAME": 160,
+    "ORIG_PRICE": "20,05",
+    "PURCH_PRICE": "16,2",
+    "K": "-0,267172996",
+    "B": "39,43843038",
+    "MIN_PRICE": "16,2",
+    "MAX_PRICE": "24,12",
+    "OPT_PRICE": "24,1196701392"
+  },
+  {
+    "NAME": 109416,
+    "ORIG_PRICE": "19,4",
+    "PURCH_PRICE": "16,3",
+    "K": "-0,813905166",
+    "B": "69,55055479",
+    "MIN_PRICE": "16,3",
+    "MAX_PRICE": "22,71",
+    "OPT_PRICE": "22,7096109638"
+  },
+  {
+    "NAME": 206485,
+    "ORIG_PRICE": "20,64",
+    "PURCH_PRICE": "16,31",
+    "K": "-0,654252156",
+    "B": "43,48217419",
+    "MIN_PRICE": "16,31",
+    "MAX_PRICE": "24,84",
+    "OPT_PRICE": "24,8157859039"
+  },
+  {
+    "NAME": 110366,
+    "ORIG_PRICE": "22,8",
+    "PURCH_PRICE": "16,37",
+    "K": "-0,469310082",
+    "B": "22,30934883",
+    "MIN_PRICE": "16,37",
+    "MAX_PRICE": "27,36",
+    "OPT_PRICE": "16,3873330683"
+  },
+  {
+    "NAME": 311043,
+    "ORIG_PRICE": "21,9",
+    "PURCH_PRICE": "16,87",
+    "K": "-2,009840738",
+    "B": "59,81382518",
+    "MIN_PRICE": "16,87",
+    "MAX_PRICE": "26,28",
+    "OPT_PRICE": "16,8701620042"
+  },
+  {
+    "NAME": 208130,
+    "ORIG_PRICE": "20,57",
+    "PURCH_PRICE": "16,91",
+    "K": "-2,370965661",
+    "B": "231,5143348",
+    "MIN_PRICE": "16,91",
+    "MAX_PRICE": "24,72",
+    "OPT_PRICE": "24,7199061152"
+  },
+  {
+    "NAME": 208887,
+    "ORIG_PRICE": "20,77",
+    "PURCH_PRICE": "17,02",
+    "K": "-2,512923428",
+    "B": "162,8082072",
+    "MIN_PRICE": "17,02",
+    "MAX_PRICE": "24,96",
+    "OPT_PRICE": "24,6747386604"
+  },
+  {
+    "NAME": 113206,
+    "ORIG_PRICE": "22,1",
+    "PURCH_PRICE": "17,4",
+    "K": "-1,634336196",
+    "B": "60,83588682",
+    "MIN_PRICE": "17,4",
+    "MAX_PRICE": "26,52",
+    "OPT_PRICE": "17,4003218947"
+  },
+  {
+    "NAME": 106671,
+    "ORIG_PRICE": "21,66",
+    "PURCH_PRICE": "17,48",
+    "K": "-0,846814587",
+    "B": "34,32058742",
+    "MIN_PRICE": "17,48",
+    "MAX_PRICE": "29,05",
+    "OPT_PRICE": "17,4808735826"
+  },
+  {
+    "NAME": 208265,
+    "ORIG_PRICE": "22,88",
+    "PURCH_PRICE": "17,77",
+    "K": "-1,304626173",
+    "B": "50,77734728",
+    "MIN_PRICE": "17,77",
+    "MAX_PRICE": "27,48",
+    "OPT_PRICE": "17,7704583249"
+  },
+  {
+    "NAME": 205906,
+    "ORIG_PRICE": "23,78",
+    "PURCH_PRICE": "18,0",
+    "K": "-1,527630553",
+    "B": "62,93519701",
+    "MIN_PRICE": "18,0",
+    "MAX_PRICE": "30,95",
+    "OPT_PRICE": "18,0004818538"
+  },
+  {
+    "NAME": 206482,
+    "ORIG_PRICE": "22,82",
+    "PURCH_PRICE": "18,06",
+    "K": "-3,935967075",
+    "B": "208,6110813",
+    "MIN_PRICE": "18,06",
+    "MAX_PRICE": "29,95",
+    "OPT_PRICE": "19,2942270826"
+  },
+  {
+    "NAME": 1039,
+    "ORIG_PRICE": "20,89",
+    "PURCH_PRICE": "18,21",
+    "K": "-4,376384475",
+    "B": "202,1116248",
+    "MIN_PRICE": "18,21",
+    "MAX_PRICE": "25,08",
+    "OPT_PRICE": "18,2103629439"
+  },
+  {
+    "NAME": 106670,
+    "ORIG_PRICE": "22,67",
+    "PURCH_PRICE": "18,31",
+    "K": "-0,42554008",
+    "B": "21,75621831",
+    "MIN_PRICE": "18,31",
+    "MAX_PRICE": "29,05",
+    "OPT_PRICE": "18,4969324383"
+  },
+  {
+    "NAME": 703,
+    "ORIG_PRICE": "20,09",
+    "PURCH_PRICE": "18,33",
+    "K": "-12,93564137",
+    "B": "325,2303595",
+    "MIN_PRICE": "18,33",
+    "MAX_PRICE": "22,4",
+    "OPT_PRICE": "18,3300060442"
+  },
+  {
+    "NAME": 101332,
+    "ORIG_PRICE": "25,5",
+    "PURCH_PRICE": "18,36",
+    "K": "-0,168311469",
+    "B": "14,0233165",
+    "MIN_PRICE": "18,36",
+    "MAX_PRICE": "33,0",
+    "OPT_PRICE": "32,983953397"
+  },
+  {
+    "NAME": 208458,
+    "ORIG_PRICE": "23,49",
+    "PURCH_PRICE": "18,5",
+    "K": "-0,257614831",
+    "B": "50,74492623",
+    "MIN_PRICE": "18,5",
+    "MAX_PRICE": "28,2",
+    "OPT_PRICE": "28,1997728307"
+  },
+  {
+    "NAME": 300990,
+    "ORIG_PRICE": "27,2",
+    "PURCH_PRICE": "18,73",
+    "K": "-0,394532823",
+    "B": "35,53034275",
+    "MIN_PRICE": "18,73",
+    "MAX_PRICE": "32,64",
+    "OPT_PRICE": "32,6383645484"
+  },
+  {
+    "NAME": 102527,
+    "ORIG_PRICE": "22,9",
+    "PURCH_PRICE": "18,88",
+    "K": "-0,665571423",
+    "B": "22,42310123",
+    "MIN_PRICE": "18,88",
+    "MAX_PRICE": "25,07",
+    "OPT_PRICE": "18,8805757359"
+  },
+  {
+    "NAME": 208266,
+    "ORIG_PRICE": "24,79",
+    "PURCH_PRICE": "19,25",
+    "K": "-1,291256469",
+    "B": "51,45405354",
+    "MIN_PRICE": "19,25",
+    "MAX_PRICE": "29,76",
+    "OPT_PRICE": "19,2504403279"
+  },
+  {
+    "NAME": 202748,
+    "ORIG_PRICE": "24,66",
+    "PURCH_PRICE": "19,47",
+    "K": "-0,787678246",
+    "B": "167,1009228",
+    "MIN_PRICE": "19,47",
+    "MAX_PRICE": "29,64",
+    "OPT_PRICE": "29,6399358699"
+  },
+  {
+    "NAME": 304497,
+    "ORIG_PRICE": "28,98",
+    "PURCH_PRICE": "20,0",
+    "K": "-0,90126806",
+    "B": "47,87860653",
+    "MIN_PRICE": "20,0",
+    "MAX_PRICE": "34,8",
+    "OPT_PRICE": "20,3101344223"
+  },
+  {
+    "NAME": 304574,
+    "ORIG_PRICE": "26,97",
+    "PURCH_PRICE": "20,01",
+    "K": "-0,847471722",
+    "B": "36,69021453",
+    "MIN_PRICE": "20,01",
+    "MAX_PRICE": "34,81",
+    "OPT_PRICE": "20,0108964803"
+  },
+  {
+    "NAME": 104921,
+    "ORIG_PRICE": "26,86",
+    "PURCH_PRICE": "20,05",
+    "K": "-0,511984424",
+    "B": "22,98055533",
+    "MIN_PRICE": "20,05",
+    "MAX_PRICE": "32,28",
+    "OPT_PRICE": "20,0518633196"
+  },
+  {
+    "NAME": 310891,
+    "ORIG_PRICE": "27,1",
+    "PURCH_PRICE": "20,1",
+    "K": "-0,48174726",
+    "B": "39,54940913",
+    "MIN_PRICE": "20,1",
+    "MAX_PRICE": "32,52",
+    "OPT_PRICE": "32,5169191315"
+  },
+  {
+    "NAME": 310902,
+    "ORIG_PRICE": "27,4",
+    "PURCH_PRICE": "20,31",
+    "K": "-1,18624816",
+    "B": "62,38948615",
+    "MIN_PRICE": "20,31",
+    "MAX_PRICE": "32,88",
+    "OPT_PRICE": "20,3453430918"
+  }
+]
+
+			goods.forEach( function( good , index ) {
+				good.NAME = String( good.NAME )
+				good.ORIG_PRICE = Math.round( Number( good.ORIG_PRICE.replace( /,/g , '.' ) ) )
+				good.PURCH_PRICE = Number( good.PURCH_PRICE.replace( /,/g , '.' ) )
+				good.K = Number( good.K.replace( /,/g , '.' ) )
+				good.B = Number( good.B.replace( /,/g , '.' ) )
+				good.MIN_PRICE = Math.round( Number( good.MIN_PRICE.replace( /,/g , '.' ) ) )
+				good.MAX_PRICE = Math.round( Number( good.MAX_PRICE.replace( /,/g , '.' ) ) )
+				good.OPT_PRICE = Math.round( Number( good.OPT_PRICE.replace( /,/g , '.' ) ) )
+				good.CUR_PRICE = good.ORIG_PRICE
+				good.MATERIAL = 'MAT_' + index
+			} )
+
+			var prices = []
+			goods.forEach( function( good ) {
+				for( var i = 1 ; i < 11 ; ++i ) {
+					prices.push( {
+						MATERIAL : good.MATERIAL ,
+						STRATEGY : i ,
+						OPT_PRICE : Math.round( good.MIN_PRICE + ( good.OPT_PRICE - good.MIN_PRICE ) * ( i - 1 ) / 2 )
+					} )
+				}
+			} )
+			
+			var strategies = []
+			prices.forEach( function( item ) {
+				var price = strategies[ item.STRATEGY ] = strategies[ item.STRATEGY ] || {}
+				price[ item.MATERIAL ] = item.OPT_PRICE
+			} )
+
+			var app = new sap.m.App("myApp", {
+				initialPage: "page1"
+			});
+			
+			var uploader = new sap.ui.unified.FileUploader({
+				placeholder : 'Загрузить товары...'
+			})
+			
+			var strategy = new sap.m.SelectList({
+				items : [
+					{ key : 'ORIG_PRICE', text : 'Исходные цены' },
+					{ key : 'MIN_PRICE', text : 'Минимальные цены' },
+					{ key : 'MAX_PRICE', text : 'Максимальные цены' },
+//					{ key : 'OPT_PRICE', text : 'Оптимум' },
+				].concat( Object.keys( strategies ).map( function( key ) {
+					return {
+						key : key ,
+						text : 'Оптимум цен ' + key ,
+					}
+				}) ),
+				selectedKey : 'ORIG_PRICE' ,
+				selectionChange : function( event ) {
+					var strat = strategy.getSelectedKey()
+					goods.forEach( function( good ) {
+						good.CUR_PRICE = good[ strat ] || strategies[ strat ][ good.MATERIAL ]
+					} )
+					goodsModel.setData({ goods : goods })
+					refresh()
+				}
+			})
+
+			var goodsModel = new sap.ui.model.json.JSONModel({
+				goods : goods
+			})
+			
+			function groupShift( group , offset ) {
+				goods
+					.filter( function( good ){
+						return good.GROUP == group
+					})
+					.forEach( function( good ) {
+						good.CUR_PRICE = Math.round( Math.max( good.MIN_PRICE , Math.min( good.MAX_PRICE , good.ORIG_PRICE * ( 1 + offset ) ) ) )
+					} )
+				goodsModel.setProperty( '/goods' , goods )
+			}
+			
+			var goodList = new sap.m.List({
+				items : {
+					path : '/goods' ,
+					sorter: new sap.ui.model.Sorter( "GROUP", false, true ),
+					groupHeaderFactory: function(group) {
+						var header = new sap.m.InputListItem({
+							label: group.key || 'Другие товары',
+							content : [
+								new sap.m.Input({
+									placeholder : 'Наценка (%)',
+									submit : function( e ){
+										strategy.setSelectedKey( null )
+										groupShift( group.key , e.getParameter( 'value' ) / 100 || 0 )
+										refresh()
+									}
+								}),
+							]
+						})
+						header.addStyleClass('list-header')
+						return header
+					},
+					template : new sap.m.InputListItem({
+						label : "{NAME}",
+						content : new sap.m.HBox({ items:[
+							new sap.m.Text({
+								text : "{MATERIAL}",
+							}),
+							new sap.m.Slider({
+								width: '10rem',
+								showAdvancedTooltip : true,
+								showHandleTooltip : false,
+								inputsAsTooltips : true,
+								min : '{MIN_PRICE}',
+								max : '{MAX_PRICE}',
+								value : "{CUR_PRICE}",
+								change : function( e ){
+									strategy.setSelectedKey( null )
+									refresh()
+								}
+							}),
+							new sap.m.Text({
+								text : "{CUR_PRICE}",
+								width : '2.5rem',
+								textAlign: sap.ui.core.TextAlign.Right,
+							}),
+						] })
+					})
+				}
+			})
+
+			var strategyPanel = new sap.m.Panel({
+				headerToolbar : new sap.m.Toolbar({
+					content: [
+						new sap.m.Title({
+							text: "Сценарии",
+						}),
+					]
+				}),
+				height: '100%',
+				layoutData: new sap.m.FlexItemData({
+					growFactor : 0
+				} ),
+				content : [new sap.m.ScrollContainer({ content: [ strategy ] })]
+			})
+			
+			var goodListPanel = new sap.m.Panel({
+				headerToolbar : new sap.m.Toolbar({
+					content: [
+						new sap.m.Title({
+							text: "Товары",
+						}),
+						uploader,
+						new sap.m.ToolbarSpacer,
+						new sap.m.Text({
+							id : 'price-header',
+							text: "Стоимость (руб/шт)",
+						}),
+					]
+				}),
+				height: '100%',
+				layoutData: new sap.m.FlexItemData({
+					growFactor : 1
+				} ),
+				content : [new sap.m.ScrollContainer({ content: [ goodList ] })]
+			})
+
+			goodListPanel.setModel( goodsModel )
+
+			var chart = new sap.viz.ui5.controls.VizFrame({
+				height: '350px',
+				width: '100%',
+				vizType : 'scatter',
+				vizProperties : { title : { visible : false } },
+				dataset : new sap.viz.ui5.data.FlattenedDataset({
+					dimensions : [
+						{
+							name : "TYPE", 
+							value : "{TYPE}"
+						}
+					],
+					measures : [
+						{
+							name : "Прирост товарооборота (%)",
+							value : "{DEMAND}"
+						},
+						{
+							name : "Прирост прибыли (%)",
+							value : "{PROFIT}" 
+						}
+					],
+					data : {
+						path : "/analytics"
+					} 
+				}),
+				feeds : [
+					{
+						uid: 'valueAxis2',
+						type: 'Measure',
+						values: ['Прирост товарооборота (%)']
+					},
+					{
+						uid: 'valueAxis',
+						type: 'Measure',
+						values: ['Прирост прибыли (%)']
+					},
+					{
+						uid: 'color',
+						type: 'Dimension',
+						values: ['TYPE']
+					},
+				],
+			})
+
+			var analytics = new sap.ui.model.json.JSONModel({})
+			
+			function calculate( name , type ) {
+				var res = {
+					NAME : name,
+					DEMAND : 0,
+					REVENUE : 0,
+					PROFIT : 0,
+					TYPE : type,
+				}
+				goods.forEach( function( good ){
+					var price = good[ name ] || strategies[ name ][ good.MATERIAL ]
+					var count = price * good.K + good.B
+					res.DEMAND += count
+					res.REVENUE += count * price
+					res.PROFIT += res.REVENUE - count * good.PURCH_PRICE
+				} )
+				return res
+			}
+			
+			function refresh() {
+				
+				var stat = {}
+				goods.forEach( good => {
+					var key = ( Math.trunc( ( good.CUR_PRICE / good.ORIG_PRICE - 1 ) * 20 ) * 5 ).toString()
+					stat[ key ] = ( stat[ key ] || 0 ) + 1
+				} )
+				
+				var min = Number.POSITIVE_INFINITY
+				var max = Number.NEGATIVE_INFINITY
+				
+				for( var key in stat ) {
+					if( key < min ) min = Number( key )
+					if( key > max ) max = Number( key )
+				}
+				
+				var statM = []
+				for( var i = min ; i <= max ; i += 5 ) {
+					statM.push({
+						DELTA : i ,
+						COUNT : stat[ i ]
+					})
+				}
+				
+				var analOrig = calculate( 'ORIG_PRICE' , goods )
+				var anals = Object.keys( strategies ).map( function( key ){
+					return calculate( key , 'Оптимумы цен' )
+				} ).concat( [
+					calculate( 'ORIG_PRICE' , 'Оригинальные цены' ) ,
+					calculate( 'CUR_PRICE' , 'Текущие цены' ) ,
+				] )
+				anals.forEach( function( anal ) {
+					anal.DEMAND = Math.round( ( anal.DEMAND / analOrig.DEMAND - 1 ) * 100 )
+					anal.PROFIT = Math.round( ( anal.PROFIT / analOrig.PROFIT - 1 ) * 100 )
+					anal.REVENUE = Math.round( ( anal.REVENUE / analOrig.REVENUE - 1 ) * 100 )
+				} )
+				
+				analytics.setData({
+					analytics : anals ,
+					stat : statM
+				})
+				
+				refreshGauge()
+				
+			}
+			
+			refresh()
+			
+			function refreshGauge() {
+				if( !gaugeProfit ) return setTimeout( refreshGauge , 10 )
+				var anal = analytics.getData().analytics
+				gaugeRevenue.series[0].points[0].update( anal[ anal.length - 1 ].REVENUE )
+				gaugeProfit.series[0].points[0].update( anal[ anal.length - 1 ].PROFIT )
+				gaugeDemand.series[0].points[0].update( anal[ anal.length - 1 ].DEMAND )
+			}
+			
+			chart.setModel( analytics )
+			
+			var chartStat = new sap.viz.ui5.controls.VizFrame({
+				height: '300px',
+				width: '100%',
+				vizProperties : { title : { visible : false } , legend : { visible : false } },
+				dataset : new sap.viz.ui5.data.FlattenedDataset({
+					dimensions : [
+						{
+							name : "Изменение цены (%)", 
+							value : "{DELTA}"
+						},
+					],
+					measures : [
+						{
+							name : "Число товаров (шт)",
+							value : "{COUNT}" 
+						}
+					],
+					data : {
+						path : "/stat"
+					} 
+				}),
+				feeds : [
+					{
+						uid: 'categoryAxis',
+						type:'Dimension',
+						values: ['Изменение цены (%)']
+					},
+					{
+						uid: 'valueAxis',
+						type: 'Measure',
+						values: ['Число товаров (шт)']
+					},
+				],
+			})
+
+			chartStat.setModel( analytics )
+			
+			var analPanel = new sap.m.Panel({
+				headerToolbar : new sap.m.Toolbar({
+					content: [
+						new sap.m.Title({
+							text: "Прогноз",
+						}),
+						new sap.m.ToolbarSpacer,
+						new sap.m.Label({
+							text : 'Шаг оптимизации: ' ,
+							labelFor : 'step',
+						}) ,
+						new sap.m.Input({
+							id : 'step' ,
+							type : 'Number' ,
+							width : '5rem' ,
+							value : 1,
+							liveChange : function( e ) {
+								console.log( 'new step' , e.getParameter('value') )
+							}
+						}) ,
+						new sap.m.Label({
+							text : '%' ,
+							labelFor : 'step',
+						}) ,
+					]
+				}),
+				height: '100%',
+				layoutData: new sap.m.FlexItemData({
+					growFactor : 1
+				} ),
+				content : [new sap.m.ScrollContainer({ content: [ new sap.m.VBox({
+					items : [
+						chart,
+						new sap.m.HBox({
+							items : [
+								new sap.m.VBox({
+									layoutData: new sap.m.FlexItemData({
+										growFactor : 1
+									} ),
+									items: [
+										new sap.m.HBox({
+											id : 'gaugeDemand',
+										}),
+										new sap.m.Text({
+											text : 'Прирост товарооборота (%)'
+										})
+									]
+								}),
+								new sap.m.VBox({
+									layoutData: new sap.m.FlexItemData({
+										growFactor : 1
+									} ),
+									items: [
+										new sap.m.HBox({
+											id : 'gaugeProfit',
+										}),
+										new sap.m.Text({
+											text : 'Прирост прибыли (%)'
+										})
+									]
+								}),
+								new sap.m.VBox({
+									layoutData: new sap.m.FlexItemData({
+										growFactor : 1
+									} ),
+									items: [
+										new sap.m.HBox({
+											id : 'gaugeRevenue',
+										}),
+										new sap.m.Text({
+											text : 'Прирост дохода (%)'
+										})
+									]
+								}),
+							]
+						}),
+						chartStat,
+					]
+				}) ]})]
+			})
+
+			var page1 = new sap.m.Page("page1", {
+				title : "Оптимизатор цен",
+				showHeader : false,
+				content : new sap.m.HBox({
+					height:'100%',
+					items : [
+						goodListPanel,
+						strategyPanel,
+						analPanel,
+					]
+				})
+			});
+
+			app.addPage(page1)
+
+			app.placeAt("content");
+
+
+			
+			var gaugeOptions = {
+			
+			    chart: {
+			        type: 'solidgauge',
+					height: 110,
+					width: 200,
+			    },
+			
+			    title: null,
+			
+			    pane: {
+			        center: ['50%', '80%'],
+			        size: '160%',
+			        startAngle: -90,
+			        endAngle: 90,
+			        background: {
+			            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+			            innerRadius: '60%',
+			            outerRadius: '100%',
+			            shape: 'arc'
+			        }
+			    },
+			
+			    tooltip: {
+			        enabled: false
+			    },
+			
+			    // the value axis
+			    yAxis: {
+			        stops: [
+			            [0.1, '#DF5353'],
+			            [0.5, '#DDDF0D'],
+			            [0.9, '#55BF3B']
+			        ],
+			        lineWidth: 0,
+			        minorTickInterval: null,
+			        tickAmount: 2,
+			        title: {
+			            y: -70
+			        },
+			        labels: {
+			            y: 16
+			        }
+			    },
+			
+			    plotOptions: {
+			        solidgauge: {
+			            dataLabels: {
+			                y: 5,
+			                borderWidth: 0,
+							verticalAlign : 'bottom', 
+			                useHTML: true
+			            }
+			        }
+			    },
+				
+				credits: {
+					enabled: false
+				},
+
+				series: [{
+					data: [0],
+					dataLabels: {
+						format: '<div style="text-align:center"><span style="font-size:1.25rem;color:black">{y}</span><br/>'
+					},
+				}]
+
+			};
+
+
+			var gaugeRevenue
+			var gaugeProfit
+			var gaugeDemand
+			setTimeout( function(){
+
+				gaugeDemand = Highcharts.chart('gaugeDemand', Highcharts.merge(gaugeOptions, {
+					yAxis: {
+						min: -30,
+						max: 30,
+						title: {
+							text: 'Прирост товарооборота (%)'
+						}
+					},
+
+				}));
+
+				gaugeProfit = Highcharts.chart('gaugeProfit', Highcharts.merge(gaugeOptions, {
+				    yAxis: {
+				        min: -30,
+				        max: 30,
+				        title: {
+				            text: 'Прирост прибыли (%)'
+				        }
+				    },
+				
+				}));
+
+				gaugeRevenue = Highcharts.chart('gaugeRevenue', Highcharts.merge(gaugeOptions, {
+					yAxis: {
+						min: -30,
+						max: 30,
+						title: {
+							text: 'Прирост дохода (%)'
+						}
+					},
+
+				}));
+
+			},1000)
+
+
+		});
+	</script>
+
+	<style>
+		.highcharts-container {
+			margin: auto;
+		}
+		.highcharts-background {
+			display: none;
+		}
+		.sapMILILabel {
+			flex: 1 1 auto;
+			max-width: 100%;
+		}
+		.sapMILIDiv {
+			flex: none;
+			line-height: 3rem;
+		}
+		.sapMPanel {
+			outline: 1px solid #eee;
+		}
+		.sapMPanelContent {
+			padding: 0;
+			background: white;
+		}
+		.sapMText {
+			line-height: inherit;
+		}
+		.sapMInputBase {
+			background: white;
+		}
+		.sapVizFrame {
+			padding: 2rem .5rem;
+			box-sizing: border-box;
+			margin-bottom: 1px;
+		}
+		.highcharts-axis-title {
+			display: none;
+		}
+		#gaugeDemand + * ,
+		#gaugeProfit + * ,
+		#gaugeRevenue + * {
+			font-weight: bold;
+			margin: auto;
+		}
+		.list-header {
+			background: #eee !important;
+		}
+		.sapMBtn {
+			margin: 0 5px;
+		}
+		.sapUiFup > form {
+			margin: -3px 10px;
+		}
+		.sapUiFup button {
+			display: none;
+		}
+		#__hbox1 {
+			padding-right: 125px;
+		}
+		#__hbox1 + * {
+			padding-right: 180px;
+		}
+		#price-header {
+			padding: 0 25px;
+		}
+		.sapMInputBase {
+			background: none;
+		} 
+		.sapMInputBaseInner {
+			background: white !important;
+		}
+	</style>
+
+	<body class="sapUiBody" id="content">
+	</body>
