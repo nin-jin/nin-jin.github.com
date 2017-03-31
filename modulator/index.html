@@ -225,7 +225,7 @@
 			goodListPanel.setModel( goodsModel )
 
 			var chart = new sap.viz.ui5.controls.VizFrame({
-				height: '400px',
+				height: '420px',
 				width: '100%',
 				vizType : 'scatter',
 				vizProperties : { title : { visible : false } },
@@ -317,6 +317,8 @@
 				var anals = Object.keys( strategies ).map( function( key ){
 					return calculate( key , 'Оптимальные сценарии' )
 				} ).concat( [
+					calculate( 'MIN_PRICE' , 'Минимальные цены' ) ,
+					calculate( 'MAX_PRICE' , 'Максимальные цены' ) ,
 					calculate( 'ORIG_PRICE' , 'Базовый сценарий' ) ,
 					calculate( 'CUR_PRICE' , 'Текущие цены' ) ,
 				] )
@@ -348,7 +350,7 @@
 			chart.setModel( analytics )
 			
 			var chartStat = new sap.viz.ui5.controls.VizFrame({
-				height: '300px',
+				height: '320px',
 				width: '100%',
 				vizProperties : { title : { visible : false } , legend : { visible : false } },
 				dataset : new sap.viz.ui5.data.FlattenedDataset({
@@ -413,7 +415,7 @@
 				}),
 				height: '100%',
 				layoutData: new sap.m.FlexItemData({
-					growFactor : 1
+					growFactor : 2
 				} ),
 				content : [new sap.m.ScrollContainer({ content: [ new sap.m.VBox({
 					items : [
@@ -602,10 +604,6 @@
 	</script>
 
 	<style>
-		.sapUiBody {
-			font-size: 14px;
-			font-weight: bolder;
-		}
 		.highcharts-container {
 			margin: auto;
 		}
@@ -644,9 +642,17 @@
 			background: none;
 			outline: 1px solid #bbb;
 			margin-bottom: 1px;
+			font-size: inherit;
+		}
+		text {
+			font-weight: normal !important;
 		}
 		.sapMSelectListItemBaseSelected {
-			background: white !important;
+			background: rgb(92, 186, 230) !important;
+			color: white;
+		}
+		.sapMTBShrinkItem {
+			min-width: 24px;
 		}
 		.sapMSelectList {
 			background: none;
@@ -668,7 +674,6 @@
 		#gaugeDemand + * ,
 		#gaugeProfit + * ,
 		#gaugeRevenue + * {
-			font-weight: bold;
 			margin: auto;
 		}
 		.list-header {
@@ -690,13 +695,17 @@
 			padding-right: 180px;
 		}
 		#material-header {
-			color: #b3b3b3;
+			color: #ddd;
 			text-shadow: none;
 		}
-		#product-header ,
+		#product-header {
+			padding: 0 10px;
+			color: #eee;
+			text-shadow: none;
+		}
 		#price-header {
 			padding: 0 10px;
-			color: #b3b3b3;
+			color: #ddd;
 			text-shadow: none;
 		}
 		#open-catalog > * {
@@ -726,6 +735,12 @@
 		}
 		.sapMSliderInner, .sapMSliderProgress {
 			height: 2px;
+		}
+		.sapMText {
+			font-size: inherit;
+		}
+		.sapVizFrame {
+			padding: 50px 5px;
 		}
 	</style>
 
