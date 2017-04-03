@@ -16,7 +16,10 @@
 		sap.ui.getCore().attachInit(function () {
 			
 			var xhr = new XMLHttpRequest
+//			xhr.open( 'get' , 'https://xs01a23caf89e.hana.ondemand.com/com/saprun/modulator/service/goods.xsodata/Goods/' , false , 'sapforum' , 'Password1' )
 			xhr.open( 'get' , 'https://price-optimizer.cfapps.us10.hana.ondemand.com/' , false )
+//			xhr.withCredentials = true
+			xhr.setRequestHeader( 'Accept' , 'application/json' )
 			xhr.send()
 			var goods = JSON.parse( xhr.responseText ).products.map( function( product ) {
 				var good = {}
@@ -188,6 +191,40 @@
 				content : [new sap.m.ScrollContainer({ content: [ strategy ] })]
 			})
 			
+			catalog = new sap.ui.table.TreeTable({
+				selectionMode : "MultiToggle" ,
+				enableSelectAll : false ,
+				rows : {
+					path : '/catalog' ,
+					parameters : {
+						arrayNames : [ 'categories' ]
+					}
+				} ,
+				columns : [
+					{
+						'label' : 'Товары',
+						template : new sap.m.Text({
+							text : '{name}'
+						})
+					}
+				]
+			})
+			
+			var catalogModel = new sap.ui.model.json.JSONModel({
+				catalog : { 'categories' : [
+					{
+						'name' : 'xxx' ,
+						'categories' : [
+							{
+								name : 'yyy'
+							}
+						] ,
+					}
+				] }
+			})
+			
+			catalog.setModel( catalogModel )
+			
 			var goodListPanel = new sap.m.Panel({
 				id : 'goods' ,
 				headerToolbar : new sap.m.Toolbar({
@@ -207,21 +244,7 @@
 							press : function( event ) {
 								var dialog = new sap.m.Dialog({
 									title: 'Каталог товаров',
-									content: [ new sap.ui.table.TreeTable({
-										selectionMode : "MultiToggle" ,
-										enableSelectAll : false ,
-										rows : {
-											path : '/catalog' ,
-											parameters : {
-												arrayNames : [ 'categories' ]
-											}
-										} ,
-										columns : [
-											{
-												'label' : 'Товары'
-											}
-										]
-									})],
+									content: [ catalog ],
 									beginButton: new sap.m.Button({
 										text: 'Закрыть',
 										press: function () {
@@ -241,7 +264,8 @@
 				}),
 				height: '100%',
 				layoutData: new sap.m.FlexItemData({
-					growFactor : 1
+					growFactor : 1 ,
+					shrinkFactor : 0 ,
 				} ),
 				content : [new sap.m.ScrollContainer({ content: [ goodList ] })]
 			})
@@ -253,6 +277,7 @@
 				width: '100%',
 				vizType : 'scatter',
 				vizProperties : { title : { visible : false } },
+				legendVisible : false ,
 				dataset : new sap.viz.ui5.data.FlattenedDataset({
 					dimensions : [
 						{
@@ -444,6 +469,16 @@
 				} ),
 				content : [new sap.m.ScrollContainer({ content: [ new sap.m.VBox({
 					items : [
+						new sap.m.HBox({
+							id : 'legend' ,
+							items : [
+								new sap.m.Text({ text : 'Оптимальные сценарии' }) ,
+								new sap.m.Text({ text : 'Минимальные цены' }) ,
+								new sap.m.Text({ text : 'Максимальные цены' }) ,
+								new sap.m.Text({ text : 'Базовый сценарий' }) ,
+								new sap.m.Text({ text : 'Текущие цены' }) ,
+							]
+						}),
 						chart,
 						new sap.m.HBox({
 							items : [
@@ -645,8 +680,11 @@
 		}
 		.sapMILIDiv {
 			flex: 1 1 auto;
-			line-height: 3rem;
 			text-align: left;
+			line-height: 1.5;
+		}
+		.sapMILIDiv > div {
+			align-items: center;
 		}
 		.sapMPanel {
 			outline: 1px solid #999;
@@ -716,10 +754,10 @@
 			display: none;
 		}
 		#__hbox1 {
-			padding-right: 125px;
+			padding-right: 10px;
 		}
 		#__hbox1 + * {
-			padding-right: 180px;
+			padding-right: 10px;
 		}
 		#material-header {
 			color: #ddd;
@@ -768,6 +806,40 @@
 		}
 		.sapVizFrame {
 			padding: 50px 5px;
+		}
+		
+		#legend {
+			position: relative;
+			top: 2em;
+			flex-wrap: wrap;
+			font-size: .85em;
+		}
+		#legend > div {
+			white-space: nowrap;
+			margin: 0 20px;
+			flex: 0 1 auto;
+		}
+		#legend > div:before {
+			display: inline-block;
+			padding: 4px;
+			border-radius: 8px;
+			content : '';
+			margin-right: .25em;
+		}
+		#legend > div:nth-child(1):before {
+			background: #5cbae6;
+		}
+		#legend > div:nth-child(2):before {
+			background: #b6d957;
+		}
+		#legend > div:nth-child(3):before {
+			background: #fac364;
+		}
+		#legend > div:nth-child(4):before {
+			background: #8cd3ff;
+		}
+		#legend > div:nth-child(5):before {
+			background: #d998cb;
 		}
 	</style>
 
