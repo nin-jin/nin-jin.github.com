@@ -23,32 +23,12 @@
 				for( var key in product ) good[ key.toUpperCase() ] = product[ key ]
 				good.MATERIAL = good.ID
 				good.CUR_PRICE = good.ORIG_PRICE
+				good.CUR_PRICE_STR = good.CUR_PRICE.toFixed(1)
+				good.MIN_PRICE = ( good.MIN_PRICE )
+				good.MAX_PRICE = ( good.MAX_PRICE )
 				return good
 			} )
-
-
-			var xhr = new XMLHttpRequest
-			xhr.open( 'get' , 'https://price-optimizer.cfapps.us10.hana.ondemand.com/optimize/10' , false )
-			xhr.send()
-			var respStrategies = JSON.parse( xhr.responseText )
-
-			var prices = []
-			respStrategies.result.forEach( function( strategy , index ) {
-				strategy.goods.forEach( function( good ){
-					prices.push( {
-						MATERIAL : good.id ,
-						STRATEGY : index ,
-						OPT_PRICE : Math.round( good.price ) ,
-					} )
-				} )
-			} )
 			
-			var strategies = []
-			prices.forEach( function( item ) {
-				var price = strategies[ item.STRATEGY ] = strategies[ item.STRATEGY ] || {}
-				price[ item.MATERIAL ] = item.OPT_PRICE
-			} )
-
 			var app = new sap.m.App("myApp", {
 				initialPage: "page1"
 			});
@@ -57,28 +37,71 @@
 				placeholder : 'Загрузить товары...'
 			})
 			
-			var strategy = new sap.m.SelectList({
-				items : [
+			strategies = []
+			function updateStep() {
+				var count = Math.ceil( 100 / stepInput.getValue() ) + 1
+				
+				var xhr = new XMLHttpRequest
+				xhr.open( 'get' , 'https://price-optimizer.cfapps.us10.hana.ondemand.com/optimize/' + count , false )
+				xhr.send()
+				var respStrategies = JSON.parse( xhr.responseText )
+
+				var prices = []
+				respStrategies.result.forEach( function( strategy , index ) {
+					strategy.goods.forEach( function( good ){
+						prices.push( {
+							MATERIAL : good.id ,
+							STRATEGY : index ,
+							OPT_PRICE : ( good.price ) ,
+						} )
+					} )
+				} )
+
+				strategies = []
+				prices.forEach( function( item ) {
+					var price = strategies[ item.STRATEGY ] = strategies[ item.STRATEGY ] || {}
+					price[ item.MATERIAL ] = item.OPT_PRICE
+				} )
+				
+				strategyModel.setProperty( '/strategies' , [
 					{ key : 'ORIG_PRICE', text : 'Базовый сценарий' },
 					{ key : 'MIN_PRICE', text : 'Минимальные цены' },
 					{ key : 'MAX_PRICE', text : 'Максимальные цены' },
-//					{ key : 'OPT_PRICE', text : 'Оптимум' },
 				].concat( Object.keys( strategies ).map( function( key ) {
 					return {
 						key : key ,
 						text : 'Сценарий ' + ( key - -1 ) ,
 					}
-				}) ),
+				}) ) )
+				
+				refresh()
+			}
+			
+			var strategy = new sap.m.SelectList({
+				items : {
+					'path' : '/strategies' ,
+					template : new sap.ui.core.Item({
+						key : '{key}' ,
+						text : '{text}' ,
+					}) ,
+				} ,
 				selectedKey : 'ORIG_PRICE' ,
 				selectionChange : function( event ) {
 					var strat = strategy.getSelectedKey()
 					goods.forEach( function( good ) {
-						good.CUR_PRICE = good[ strat ] || strategies[ strat ][ good.MATERIAL ] || good.CUR_PRICE  
+						good.CUR_PRICE = good[ strat ] || strategies[ strat ][ good.MATERIAL ] || good.CUR_PRICE
+						good.CUR_PRICE_STR = good.CUR_PRICE.toFixed(1)
 					} )
 					goodsModel.setData({ goods : goods })
 					refresh()
 				}
 			})
+
+			strategyModel = new sap.ui.model.json.JSONModel({
+				strategies : []
+			})
+			
+			strategy.setModel( strategyModel )
 
 			var goodsModel = new sap.ui.model.json.JSONModel({
 				goods : goods
@@ -90,7 +113,8 @@
 						return good.GROUP == group
 					})
 					.forEach( function( good ) {
-						good.CUR_PRICE = Math.round( Math.max( good.MIN_PRICE , Math.min( good.MAX_PRICE , good.ORIG_PRICE * ( 1 + offset ) ) ) )
+						good.CUR_PRICE = ( Math.max( good.MIN_PRICE , Math.min( good.MAX_PRICE , good.ORIG_PRICE * ( 1 + offset ) ) ) )
+						good.CUR_PRICE_STR = good.CUR_PRICE.toFixed(1)
 					} )
 				goodsModel.setProperty( '/goods' , goods )
 			}
@@ -139,8 +163,8 @@
 								}
 							}),
 							new sap.m.Text({
-								text : "{CUR_PRICE}",
-								width : '2.5rem',
+								text : "{CUR_PRICE_STR}",
+								width : '3rem',
 								textAlign: sap.ui.core.TextAlign.Right,
 							}),
 						] })
@@ -269,7 +293,7 @@
 				],
 			})
 
-			var analytics = new sap.ui.model.json.JSONModel({})
+			analytics = new sap.ui.model.json.JSONModel({})
 			
 			function calculate( name , type ) {
 				var res = {
@@ -323,9 +347,9 @@
 					calculate( 'CUR_PRICE' , 'Текущие цены' ) ,
 				] )
 				anals.forEach( function( anal ) {
-					anal.DEMAND = Math.round( ( anal.DEMAND / analOrig.DEMAND - 1 ) * 100 )
-					anal.PROFIT = Math.round( ( anal.PROFIT / analOrig.PROFIT - 1 ) * 100 )
-					anal.REVENUE = Math.round( ( anal.REVENUE / analOrig.REVENUE - 1 ) * 100 )
+					anal.DEMAND = Math.round( ( anal.DEMAND / analOrig.DEMAND - 1 ) * 1000 ) / 10
+					anal.PROFIT = Math.round( ( anal.PROFIT / analOrig.PROFIT - 1 ) * 1000 ) / 10
+					anal.REVENUE = Math.round( ( anal.REVENUE / analOrig.REVENUE - 1 ) * 1000 ) / 10
 				} )
 				
 				analytics.setData({
@@ -386,6 +410,7 @@
 
 			chartStat.setModel( analytics )
 			
+			stepInput = null
 			var analPanel = new sap.m.Panel({
 				id : 'analytics' ,
 				headerToolbar : new sap.m.Toolbar({
@@ -398,13 +423,13 @@
 							text : 'Шаг оптимизации: ' ,
 							labelFor : 'step',
 						}) ,
-						new sap.m.Input({
+						stepInput = new sap.m.Input({
 							id : 'step' ,
 							type : 'Number' ,
 							width : '5rem' ,
-							value : 1,
-							liveChange : function( e ) {
-								console.log( 'new step' , e.getParameter('value') )
+							value : 10,
+							submit : function( e ) {
+								updateStep()
 							}
 						}) ,
 						new sap.m.Label({
@@ -599,8 +624,10 @@
 
 			},1000)
 
+			updateStep()
 
 		});
+		
 	</script>
 
 	<style>
