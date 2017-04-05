@@ -13,6 +13,7 @@
     data-sap-ui-libs="sap.m,sap.viz,sap.ui.unified,sap.ui.table"></script>
 
 	<script type="text/javascript">
+		stepInput = null
 		sap.ui.getCore().attachInit(function () {
 			
 			var xhr = new XMLHttpRequest
@@ -29,6 +30,8 @@
 				good.CUR_PRICE_STR = good.CUR_PRICE.toFixed(1)
 				good.MIN_PRICE = Number( good.MINPRICE )
 				good.MAX_PRICE = Number( good.MAXPRICE )
+				good.INC_PRICE = Math.min( good.ORIG_PRICE * 1.1 , good.MAX_PRICE )
+				good.DEC_PRICE = Math.max( good.ORIG_PRICE * 0.9 , good.MIN_PRICE )
 				return good
 			} )
 			
@@ -42,7 +45,7 @@
 			
 			strategies = []
 			function updateStep() {
-				var count = Math.ceil( 100 / stepInput.getValue() ) + 1
+				var count = Math.max( 2 , Math.ceil( stepInput.getValue() ) )
 				
 				var xhr = new XMLHttpRequest
 				xhr.open( 'get' , 'https://price-optimizer.cfapps.us10.hana.ondemand.com/optimize/' + count , false )
@@ -68,8 +71,8 @@
 				
 				strategyModel.setProperty( '/strategies' , [
 					{ key : 'ORIG_PRICE', text : 'Базовый сценарий' },
-					{ key : 'MIN_PRICE', text : 'Минимальные цены' },
-					{ key : 'MAX_PRICE', text : 'Максимальные цены' },
+					{ key : 'DEC_PRICE', text : 'Уменьшение цен на 10%' },
+					{ key : 'INC_PRICE', text : 'Увеличение цен на 10%' },
 				].concat( Object.keys( strategies ).map( function( key ) {
 					return {
 						key : key ,
@@ -182,6 +185,19 @@
 						new sap.m.Title({
 							text: "Сценарии",
 						}),
+						stepInput = new sap.m.Input({
+							id : 'step' ,
+							type : 'Number' ,
+							width : '5rem' ,
+							value : 10,
+							submit : function( e ) {
+								updateStep()
+							}
+						}) ,
+						new sap.m.Label({
+							text : 'шт.' ,
+							labelFor : 'step',
+						}) ,
 					]
 				}),
 				height: '100%',
@@ -355,7 +371,7 @@
 				}
 				
 				var statM = []
-				for( var i = min ; i <= max ; i += 5 ) {
+				for( var i = min ; i <= max ; i += 1 ) {
 					statM.push({
 						DELTA : i ,
 						COUNT : stat[ i ]
@@ -435,7 +451,6 @@
 
 			chartStat.setModel( analytics )
 			
-			stepInput = null
 			var analPanel = new sap.m.Panel({
 				id : 'analytics' ,
 				headerToolbar : new sap.m.Toolbar({
@@ -443,24 +458,6 @@
 						new sap.m.Title({
 							text: "Оптимизатор цен",
 						}),
-						new sap.m.ToolbarSpacer,
-						new sap.m.Label({
-							text : 'Шаг оптимизации: ' ,
-							labelFor : 'step',
-						}) ,
-						stepInput = new sap.m.Input({
-							id : 'step' ,
-							type : 'Number' ,
-							width : '5rem' ,
-							value : 10,
-							submit : function( e ) {
-								updateStep()
-							}
-						}) ,
-						new sap.m.Label({
-							text : '%' ,
-							labelFor : 'step',
-						}) ,
 					]
 				}),
 				height: '100%',
@@ -626,8 +623,8 @@
 
 				gaugeDemand = Highcharts.chart('gaugeDemand', Highcharts.merge(gaugeOptions, {
 					yAxis: {
-						min: -30,
-						max: 30,
+						min: -50,
+						max: 50,
 						title: {
 							text: 'Прирост товарооборота в шт. (%)'
 						}
@@ -637,8 +634,8 @@
 
 				gaugeProfit = Highcharts.chart('gaugeProfit', Highcharts.merge(gaugeOptions, {
 				    yAxis: {
-				        min: -30,
-				        max: 30,
+				        min: -50,
+				        max: 50,
 				        title: {
 				            text: 'Прирост прибыли (%)'
 				        }
@@ -648,8 +645,8 @@
 
 				gaugeRevenue = Highcharts.chart('gaugeRevenue', Highcharts.merge(gaugeOptions, {
 					yAxis: {
-						min: -30,
-						max: 30,
+						min: -50,
+						max: 50,
 						title: {
 							text: 'Прирост выручки (%)'
 						}
@@ -812,7 +809,6 @@
 			position: relative;
 			top: 2em;
 			flex-wrap: wrap;
-			font-size: .85em;
 		}
 		#legend > div {
 			white-space: nowrap;
