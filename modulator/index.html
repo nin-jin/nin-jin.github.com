@@ -16,19 +16,19 @@
 		sap.ui.getCore().attachInit(function () {
 			
 			var xhr = new XMLHttpRequest
-//			xhr.open( 'get' , 'https://xs01a23caf89e.hana.ondemand.com/com/saprun/modulator/service/goods.xsodata/Goods/' , false , 'sapforum' , 'Password1' )
-			xhr.open( 'get' , 'https://price-optimizer.cfapps.us10.hana.ondemand.com/' , false )
-//			xhr.withCredentials = true
-			xhr.setRequestHeader( 'Accept' , 'application/json' )
+			xhr.open( 'get' , 'https://xs01a23caf89e.hana.ondemand.com/com/saprun/modulator/public.xsodata/Goods?$format=json' , false , 'sapforum' , 'Password1' )
 			xhr.send()
-			var goods = JSON.parse( xhr.responseText ).products.map( function( product ) {
+			var goods = JSON.parse( xhr.responseText ).d.results.map( function( product ) {
 				var good = {}
 				for( var key in product ) good[ key.toUpperCase() ] = product[ key ]
-				good.MATERIAL = good.ID
+				good.K = Number( good.K )
+				good.B = Number( good.B )
+				good.ORIG_PRICE = Number( good.OLDPRICE )
+				good.PURCH_PRICE = Number( good.PURCHASEPRICE )
 				good.CUR_PRICE = good.ORIG_PRICE
 				good.CUR_PRICE_STR = good.CUR_PRICE.toFixed(1)
-				good.MIN_PRICE = ( good.MIN_PRICE )
-				good.MAX_PRICE = ( good.MAX_PRICE )
+				good.MIN_PRICE = Number( good.MINPRICE )
+				good.MAX_PRICE = Number( good.MAXPRICE )
 				return good
 			} )
 			
@@ -53,7 +53,7 @@
 				respStrategies.result.forEach( function( strategy , index ) {
 					strategy.goods.forEach( function( good ){
 						prices.push( {
-							MATERIAL : good.id ,
+							ID : good.id ,
 							STRATEGY : index ,
 							OPT_PRICE : ( good.price ) ,
 						} )
@@ -63,7 +63,7 @@
 				strategies = []
 				prices.forEach( function( item ) {
 					var price = strategies[ item.STRATEGY ] = strategies[ item.STRATEGY ] || {}
-					price[ item.MATERIAL ] = item.OPT_PRICE
+					price[ item.ID ] = item.OPT_PRICE
 				} )
 				
 				strategyModel.setProperty( '/strategies' , [
@@ -92,7 +92,7 @@
 				selectionChange : function( event ) {
 					var strat = strategy.getSelectedKey()
 					goods.forEach( function( good ) {
-						good.CUR_PRICE = good[ strat ] || strategies[ strat ][ good.MATERIAL ] || good.CUR_PRICE
+						good.CUR_PRICE = good[ strat ] || strategies[ strat ][ good.ID ] || good.CUR_PRICE
 						good.CUR_PRICE_STR = good.CUR_PRICE.toFixed(1)
 					} )
 					goodsModel.setData({ goods : goods })
@@ -258,7 +258,7 @@
 						}) ,
 						new sap.m.Text({
 							id : 'price-header',
-							text: "Стоимость (руб/шт)",
+							text: "Цена, руб.",
 						}),
 					]
 				}),
@@ -329,7 +329,7 @@
 					TYPE : type,
 				}
 				goods.forEach( function( good ){
-					var price = good[ name ] || strategies[ name ][ good.MATERIAL ]
+					var price = good[ name ] || strategies[ name ][ good.ID ]
 					var count = price * good.K + good.B
 					res.DEMAND += count
 					res.REVENUE += count * price
@@ -342,7 +342,7 @@
 				
 				var stat = {}
 				goods.forEach( good => {
-					var key = ( Math.trunc( ( good.CUR_PRICE / good.ORIG_PRICE - 1 ) * 20 ) * 5 ).toString()
+					var key = ( Math.trunc( ( good.CUR_PRICE / good.ORIG_PRICE - 1 ) * 100 ) * 1 ).toString()
 					stat[ key ] = ( stat[ key ] || 0 ) + 1
 				} )
 				
@@ -366,8 +366,8 @@
 				var anals = Object.keys( strategies ).map( function( key ){
 					return calculate( key , 'Оптимальные сценарии' )
 				} ).concat( [
-					calculate( 'MIN_PRICE' , 'Минимальные цены' ) ,
-					calculate( 'MAX_PRICE' , 'Максимальные цены' ) ,
+//					calculate( 'MIN_PRICE' , 'Минимальные цены' ) ,
+//					calculate( 'MAX_PRICE' , 'Максимальные цены' ) ,
 					calculate( 'ORIG_PRICE' , 'Базовый сценарий' ) ,
 					calculate( 'CUR_PRICE' , 'Текущие цены' ) ,
 				] )
@@ -441,7 +441,7 @@
 				headerToolbar : new sap.m.Toolbar({
 					content: [
 						new sap.m.Title({
-							text: "Оптимизатор цен товаров	",
+							text: "Оптимизатор цен",
 						}),
 						new sap.m.ToolbarSpacer,
 						new sap.m.Label({
@@ -473,8 +473,8 @@
 							id : 'legend' ,
 							items : [
 								new sap.m.Text({ text : 'Оптимальные сценарии' }) ,
-								new sap.m.Text({ text : 'Минимальные цены' }) ,
-								new sap.m.Text({ text : 'Максимальные цены' }) ,
+//								new sap.m.Text({ text : 'Минимальные цены' }) ,
+//								new sap.m.Text({ text : 'Максимальные цены' }) ,
 								new sap.m.Text({ text : 'Базовый сценарий' }) ,
 								new sap.m.Text({ text : 'Текущие цены' }) ,
 							]
