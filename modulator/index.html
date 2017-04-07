@@ -8,14 +8,89 @@
 
 <script id="sap-ui-bootstrap"
     type="text/javascript"
-    src="https://sapui5.hana.ondemand.com/1.42.6/resources/sap-ui-core.js"
+    src="https://sapui5.hana.ondemand.com/1.44.11/resources/sap-ui-core.js"
     data-sap-ui-theme="sap_belize"
     data-sap-ui-libs="sap.m,sap.viz,sap.ui.unified,sap.ui.table"></script>
 
 	<script type="text/javascript">
+		catalogData = fetch( '//xs01a23caf89e.hana.ondemand.com/com/saprun/modulator/public.xsodata/Categories?$format=json' )
+		.then( function( res ) { return res.json() } )
+		.then( function( json ) {
+			var root = { sub : {} , nodes : [] }
+			var all = []
+
+			json.d.results.forEach( function( record ) {
+				var squad = root.sub[ record.SQUAD_ID ]
+				if( !squad ) {
+					squad = root.sub[ record.SQUAD_ID ] = {
+						ref : record.SQUAD_ID ,
+						text : record.SQUAD_NAME ,
+						sub : {} ,
+						nodes : [] ,
+					}
+					root.nodes.push( squad )
+					all.push( squad )
+				}
+				
+				var cohort = squad.sub[ record.COHORT_ID ]
+				if( !cohort ) {
+					cohort = squad.sub[ record.COHORT_ID ] = {
+						ref : record.COHORT_ID ,
+						text : record.COHORT_NAME ,
+						sub : {} ,
+						nodes : [] ,
+					}
+					squad.nodes.push( cohort )
+					all.push( cohort )
+				}
+				
+				var party = cohort.sub[ record.PARTY_ID ]
+				if( !party ) {
+					party = cohort.sub[ record.PARTY_ID ] = {
+						ref : record.PARTY_ID ,
+						text : record.PARTY_NAME ,
+						sub : {} ,
+						nodes : [] ,
+					}
+					cohort.nodes.push( party )
+					all.push( party )
+				}
+				
+				var group = party.sub[ record.GROUP_ID ]
+				if( !group ) {
+					group = party.sub[ record.GROUP_ID ] = {
+						ref : record.GROUP_ID ,
+						text : record.GROUP_NAME ,
+						sub : {} ,
+						nodes : [] ,
+					}
+					party.nodes.push( group )
+					all.push( group )
+				}
+				
+				var material = group.sub[ record.MATERIAL_ID ]
+				if( !material ) {
+					material = group.sub[ record.MATERIAL_ID ] = {
+						ref : record.MATERIAL_ID ,
+						text : record.MATERIAL_NAME ,
+						sub : {} ,
+						nodes : [] ,
+					}
+					group.nodes.push( material )
+					all.push( material )
+				}
+			} )
+			
+			all.forEach( function( record ) {
+				delete record.sub
+			} )
+			
+			catalogModel.setProperty( '/catalog' , root.nodes  )
+		} )
+		
 		stepInput = null
 		sap.ui.getCore().attachInit(function () {
-			
+
 			var xhr = new XMLHttpRequest
 			xhr.open( 'get' , 'https://xs01a23caf89e.hana.ondemand.com/com/saprun/modulator/public.xsodata/Goods?$format=json' , false , 'sapforum' , 'Password1' )
 			xhr.send()
@@ -207,36 +282,27 @@
 				content : [new sap.m.ScrollContainer({ content: [ strategy ] })]
 			})
 			
-			catalog = new sap.ui.table.TreeTable({
-				selectionMode : "MultiToggle" ,
-				enableSelectAll : false ,
-				rows : {
+			catalog = new sap.m.Tree({
+				mode : 'MultiSelect' ,
+				items : {
 					path : '/catalog' ,
-					parameters : {
-						arrayNames : [ 'categories' ]
-					}
+					template : new sap.m.StandardTreeItem({ title : '{text}'})
+//					parameters : {
+//						arrayNames : [ 'nodes' ]
+//					}
 				} ,
-				columns : [
-					{
-						'label' : 'Товары',
-						template : new sap.m.Text({
-							text : '{name}'
-						})
-					}
-				]
+//				columns : [
+//					{
+//						'label' : 'Товары',
+//						template : new sap.m.Text({
+//							text : '{NAME}'
+//						})
+//					} ,
+//				]
 			})
 			
-			var catalogModel = new sap.ui.model.json.JSONModel({
-				catalog : { 'categories' : [
-					{
-						'name' : 'xxx' ,
-						'categories' : [
-							{
-								name : 'yyy'
-							}
-						] ,
-					}
-				] }
+			catalogModel = new sap.ui.model.json.JSONModel({
+				catalog : { 'nodes' : [] }
 			})
 			
 			catalog.setModel( catalogModel )
@@ -253,7 +319,6 @@
 							id : 'product-header',
 							text: "Наименование",
 						}),
-						new sap.m.ToolbarSpacer,
 						new sap.m.Button({
 							id : 'open-catalog' ,
 							text : 'Каталог товаров' ,
@@ -270,6 +335,22 @@
 								});
 
 								dialog.open()
+							} ,
+						}) ,
+						new sap.m.ToolbarSpacer,
+						new sap.m.Button({
+							id : 'export' ,
+							text : 'Опубликовать ценники' ,
+							press : function( event ) {
+								var csv = 'id;material;cur_price\r\n'
+								goods.forEach( function( product ) {
+									csv += [ product.ID , product.MATERIAL , product.CUR_PRICE ].join( ';' ) + '\r\n'
+								} )
+								
+								var link = document.createElement( 'a' )
+								link.href = "data:application/download;charset=utf-8;base64," + btoa( csv )
+								link.download = 'export.csv'
+								link.click()
 							} ,
 						}) ,
 						new sap.m.Text({
@@ -379,14 +460,14 @@
 				}
 				
 				var analOrig = calculate( 'ORIG_PRICE' , goods )
+				
 				var anals = Object.keys( strategies ).map( function( key ){
 					return calculate( key , 'Оптимальные сценарии' )
-				} ).concat( [
-//					calculate( 'MIN_PRICE' , 'Минимальные цены' ) ,
-//					calculate( 'MAX_PRICE' , 'Максимальные цены' ) ,
+				} ).concat([
+					calculate( 'CUR_PRICE' , 'Новый сценарий' ) ,
 					calculate( 'ORIG_PRICE' , 'Базовый сценарий' ) ,
-					calculate( 'CUR_PRICE' , 'Текущие цены' ) ,
-				] )
+				])
+				
 				anals.forEach( function( anal ) {
 					anal.DEMAND = Math.round( ( anal.DEMAND / analOrig.DEMAND - 1 ) * 1000 ) / 10
 					anal.PROFIT = Math.round( ( anal.PROFIT / analOrig.PROFIT - 1 ) * 1000 ) / 10
@@ -407,9 +488,9 @@
 			function refreshGauge() {
 				if( !gaugeProfit ) return setTimeout( refreshGauge , 10 )
 				var anal = analytics.getData().analytics
-				gaugeRevenue.series[0].points[0].update( anal[ anal.length - 1 ].REVENUE )
-				gaugeProfit.series[0].points[0].update( anal[ anal.length - 1 ].PROFIT )
-				gaugeDemand.series[0].points[0].update( anal[ anal.length - 1 ].DEMAND )
+				gaugeRevenue.series[0].points[0].update( anal[ anal.length - 2 ].REVENUE )
+				gaugeProfit.series[0].points[0].update( anal[ anal.length - 2 ].PROFIT )
+				gaugeDemand.series[0].points[0].update( anal[ anal.length - 2 ].DEMAND )
 			}
 			
 			chart.setModel( analytics )
@@ -473,7 +554,7 @@
 //								new sap.m.Text({ text : 'Минимальные цены' }) ,
 //								new sap.m.Text({ text : 'Максимальные цены' }) ,
 								new sap.m.Text({ text : 'Базовый сценарий' }) ,
-								new sap.m.Text({ text : 'Текущие цены' }) ,
+								new sap.m.Text({ text : 'Новый сценарий' }) ,
 							]
 						}),
 						chart,
@@ -770,6 +851,7 @@
 			color: #ddd;
 			text-shadow: none;
 		}
+		#export > * ,
 		#open-catalog > * {
 			color: black;
 			background: #e2e2e2;
