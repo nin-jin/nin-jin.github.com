@@ -111,7 +111,7 @@
 				good.ORIG_PRICE = Number( good.OLDPRICE )
 				good.PURCH_PRICE = Number( good.PURCHASEPRICE )
 				good.CUR_PRICE = good.ORIG_PRICE
-				good.CUR_PRICE_STR = good.CUR_PRICE.toFixed(1)
+				good.CUR_PRICE_STR = good.CUR_PRICE.toFixed(1).replace( '.' , ',' )
 				good.MIN_PRICE = Number( good.MINPRICE )
 				good.MAX_PRICE = Number( good.MAXPRICE )
 				good.INC_PRICE = Math.min( good.ORIG_PRICE * 1.05 , good.MAX_PRICE )
@@ -180,7 +180,7 @@
 					var strat = strategy.getSelectedKey()
 					goods.forEach( function( good ) {
 						good.CUR_PRICE = good[ strat ] || strategies[ strat ][ good.MATERIAL ] || good.CUR_PRICE
-						good.CUR_PRICE_STR = good.CUR_PRICE.toFixed(1)
+						good.CUR_PRICE_STR = good.CUR_PRICE.toFixed(1).replace( '.' , ',' )
 					} )
 					goodsModel.setData({ goods : goods })
 					refresh()
@@ -204,7 +204,7 @@
 					})
 					.forEach( function( good ) {
 						good.CUR_PRICE = ( Math.max( good.MIN_PRICE , Math.min( good.MAX_PRICE , good.ORIG_PRICE * ( 1 + offset ) ) ) )
-						good.CUR_PRICE_STR = good.CUR_PRICE.toFixed(1)
+						good.CUR_PRICE_STR = good.CUR_PRICE.toFixed(1).replace( '.' , ',' )
 					} )
 				goodsModel.setProperty( '/goods' , goods )
 			}
@@ -529,13 +529,13 @@
 							id : 'export' ,
 							text : 'Опубликовать ценники' ,
 							press : function( event ) {
-								var csv = 'id;material;cur_price\r\n'
+								var csv = 'material_id;material_name;cur_price\r\n'
 								goods.forEach( function( product ) {
-									csv += [ product.MATERIAL , product.CUR_PRICE ].join( ';' ) + '\r\n'
+									csv += [ product.MATERIAL , product.NAME , product.CUR_PRICE_STR ].join( ';' ) + '\r\n'
 								} )
 
 								var link = document.createElement( 'a' )
-								link.href = "data:application/download;charset=utf-8;base64," + btoa( csv )
+								link.href = URL.createObjectURL( new Blob( [ '\uFEFF' , csv ] , { type: 'application/download;charset=utf-8' } ) )
 								link.download = 'export.csv'
 								link.click()
 							} ,
