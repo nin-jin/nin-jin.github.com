@@ -22,7 +22,7 @@
 			var selected = []
 
 			json.d.results.forEach( function( record ) {
-				var squad = root.sub[ record.SQUAD_ID ]
+				var squad = record.SQUAD_ID ? root.sub[ record.SQUAD_ID ] : root
 				if( !squad ) {
 					squad = root.sub[ record.SQUAD_ID ] = {
 						ref : record.SQUAD_ID ,
@@ -34,7 +34,7 @@
 					all.push( squad )
 				}
 				
-				var cohort = squad.sub[ record.COHORT_ID ]
+				var cohort = record.COHORT_ID ? squad.sub[ record.COHORT_ID ] : squad
 				if( !cohort ) {
 					cohort = squad.sub[ record.COHORT_ID ] = {
 						ref : record.COHORT_ID ,
@@ -46,7 +46,7 @@
 					all.push( cohort )
 				}
 				
-				var party = cohort.sub[ record.PARTY_ID ]
+				var party = record.PARTY_ID ? cohort.sub[ record.PARTY_ID ] : cohort
 				if( !party ) {
 					party = cohort.sub[ record.PARTY_ID ] = {
 						ref : record.PARTY_ID ,
@@ -58,7 +58,7 @@
 					all.push( party )
 				}
 				
-				var group = party.sub[ record.GROUP_ID ]
+				var group = record.GROUP_ID ? party.sub[ record.GROUP_ID ] : party
 				if( !group ) {
 					group = party.sub[ record.GROUP_ID ] = {
 						ref : record.GROUP_ID ,
