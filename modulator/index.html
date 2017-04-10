@@ -336,21 +336,6 @@
 							} ,
 						}) ,
 						new sap.m.ToolbarSpacer,
-						new sap.m.Button({
-							id : 'export' ,
-							text : 'Опубликовать ценники' ,
-							press : function( event ) {
-								var csv = 'id;material;cur_price\r\n'
-								goods.forEach( function( product ) {
-									csv += [ product.MATERIAL , product.CUR_PRICE ].join( ';' ) + '\r\n'
-								} )
-								
-								var link = document.createElement( 'a' )
-								link.href = "data:application/download;charset=utf-8;base64," + btoa( csv )
-								link.download = 'export.csv'
-								link.click()
-							} ,
-						}) ,
 						new sap.m.Text({
 							id : 'price-header',
 							text: "Цена, руб.",
@@ -539,6 +524,22 @@
 						new sap.m.Title({
 							text: "Оптимизатор цен",
 						}),
+						new sap.m.ToolbarSpacer,
+						new sap.m.Button({
+							id : 'export' ,
+							text : 'Опубликовать ценники' ,
+							press : function( event ) {
+								var csv = 'id;material;cur_price\r\n'
+								goods.forEach( function( product ) {
+									csv += [ product.MATERIAL , product.CUR_PRICE ].join( ';' ) + '\r\n'
+								} )
+
+								var link = document.createElement( 'a' )
+								link.href = "data:application/download;charset=utf-8;base64," + btoa( csv )
+								link.download = 'export.csv'
+								link.click()
+							} ,
+						}) ,
 					]
 				}),
 				height: '100%',
@@ -850,6 +851,9 @@
 			padding: 0 10px;
 			color: #ddd;
 			text-shadow: none;
+		}
+		#export {
+			margin: 0 16px;
 		}
 		#export > * ,
 		#open-catalog > * {
