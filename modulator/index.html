@@ -18,6 +18,8 @@
 		.then( function( json ) {
 			var root = { sub : {} , nodes : [] }
 			var all = []
+			var goods_ids = goods.map( function( good ){ return good.MATERIAL } )
+			var selected = []
 
 			json.d.results.forEach( function( record ) {
 				var squad = root.sub[ record.SQUAD_ID ]
@@ -71,30 +73,37 @@
 				var material = group.sub[ record.MATERIAL_ID ]
 				if( !material ) {
 					material = group.sub[ record.MATERIAL_ID ] = {
-						ref : record.MATERIAL_ID ,
+						id : record.MATERIAL_ID ,
 						text : record.MATERIAL_NAME ,
 						sub : {} ,
 						nodes : [] ,
 					}
 					group.nodes.push( material )
 					all.push( material )
+					if( goods_ids.indexOf( Number( material.id ) ) >= 0 ) {
+						selected.push( '/catalog/' + root.nodes.indexOf( squad ) + '/nodes/' + squad.nodes.indexOf( cohort ) + '/nodes/' + cohort.nodes.indexOf( party ) + '/nodes/' + party.nodes.indexOf( group ) + '/nodes/' + group.nodes.indexOf( material ) )
+					}
 				}
 			} )
 			
 			all.forEach( function( record ) {
 				delete record.sub
 			} )
+
+			catalog.setSelectedContextPaths( selected )
 			
 			catalogModel.setProperty( '/catalog' , root.nodes  )
+
 		} )
 		
 		stepInput = null
+		goods = null
 		sap.ui.getCore().attachInit(function () {
 
 			var xhr = new XMLHttpRequest
 			xhr.open( 'get' , 'https://xs01a23caf89e.hana.ondemand.com/com/saprun/modulator/public.xsodata/Goods?$format=json' , false , 'sapforum' , 'Password1' )
 			xhr.send()
-			var goods = JSON.parse( xhr.responseText ).d.results.map( function( product ) {
+			goods = JSON.parse( xhr.responseText ).d.results.map( function( product ) {
 				var good = {}
 				for( var key in product ) good[ key.toUpperCase() ] = product[ key ]
 				good.K = Number( good.K )
@@ -105,8 +114,8 @@
 				good.CUR_PRICE_STR = good.CUR_PRICE.toFixed(1)
 				good.MIN_PRICE = Number( good.MINPRICE )
 				good.MAX_PRICE = Number( good.MAXPRICE )
-				good.INC_PRICE = Math.min( good.ORIG_PRICE * 1.1 , good.MAX_PRICE )
-				good.DEC_PRICE = Math.max( good.ORIG_PRICE * 0.9 , good.MIN_PRICE )
+				good.INC_PRICE = Math.min( good.ORIG_PRICE * 1.05 , good.MAX_PRICE )
+				good.DEC_PRICE = Math.max( good.ORIG_PRICE * 0.95 , good.MIN_PRICE )
 				return good
 			} )
 			
@@ -120,10 +129,10 @@
 			
 			strategies = []
 			function updateStep() {
-				var count = Math.max( 2 , Math.ceil( stepInput.getValue() ) )
+				var step = Math.max( 0.1 , Math.ceil( stepInput.getValue() ) )
 				
 				var xhr = new XMLHttpRequest
-				xhr.open( 'get' , 'https://price-optimizer.cfapps.us10.hana.ondemand.com/optimize/' + count , false )
+				xhr.open( 'get' , 'https://price-optimizer.cfapps.us10.hana.ondemand.com/optimize/step/' + step , false )
 				xhr.send()
 				var respStrategies = JSON.parse( xhr.responseText )
 
@@ -131,7 +140,7 @@
 				respStrategies.result.forEach( function( strategy , index ) {
 					strategy.goods.forEach( function( good ){
 						prices.push( {
-							ID : good.id ,
+							MATERIAL : good.material_id ,
 							STRATEGY : index ,
 							OPT_PRICE : ( good.price ) ,
 						} )
@@ -141,13 +150,13 @@
 				strategies = []
 				prices.forEach( function( item ) {
 					var price = strategies[ item.STRATEGY ] = strategies[ item.STRATEGY ] || {}
-					price[ item.ID ] = item.OPT_PRICE
+					price[ item.MATERIAL ] = item.OPT_PRICE
 				} )
 				
 				strategyModel.setProperty( '/strategies' , [
 					{ key : 'ORIG_PRICE', text : 'Базовый сценарий' },
-					{ key : 'DEC_PRICE', text : 'Уменьшение цен на 10%' },
-					{ key : 'INC_PRICE', text : 'Увеличение цен на 10%' },
+					{ key : 'DEC_PRICE', text : 'Уменьшение цен на 5%' },
+					{ key : 'INC_PRICE', text : 'Увеличение цен на 5%' },
 				].concat( Object.keys( strategies ).map( function( key ) {
 					return {
 						key : key ,
@@ -170,7 +179,7 @@
 				selectionChange : function( event ) {
 					var strat = strategy.getSelectedKey()
 					goods.forEach( function( good ) {
-						good.CUR_PRICE = good[ strat ] || strategies[ strat ][ good.ID ] || good.CUR_PRICE
+						good.CUR_PRICE = good[ strat ] || strategies[ strat ][ good.MATERIAL ] || good.CUR_PRICE
 						good.CUR_PRICE_STR = good.CUR_PRICE.toFixed(1)
 					} )
 					goodsModel.setData({ goods : goods })
@@ -258,19 +267,19 @@
 				headerToolbar : new sap.m.Toolbar({
 					content: [
 						new sap.m.Title({
-							text: "Сценарии",
+							text: "Сценарии с шагом в ",
 						}),
 						stepInput = new sap.m.Input({
 							id : 'step' ,
 							type : 'Number' ,
 							width : '5rem' ,
-							value : 10,
+							value : 1,
 							submit : function( e ) {
 								updateStep()
 							}
 						}) ,
 						new sap.m.Label({
-							text : 'шт.' ,
+							text : '%' ,
 							labelFor : 'step',
 						}) ,
 					]
@@ -286,19 +295,8 @@
 				mode : 'MultiSelect' ,
 				items : {
 					path : '/catalog' ,
-					template : new sap.m.StandardTreeItem({ title : '{text}'})
-//					parameters : {
-//						arrayNames : [ 'nodes' ]
-//					}
+					template : new sap.m.StandardTreeItem({ title : '{text}' })
 				} ,
-//				columns : [
-//					{
-//						'label' : 'Товары',
-//						template : new sap.m.Text({
-//							text : '{NAME}'
-//						})
-//					} ,
-//				]
 			})
 			
 			catalogModel = new sap.ui.model.json.JSONModel({
@@ -344,7 +342,7 @@
 							press : function( event ) {
 								var csv = 'id;material;cur_price\r\n'
 								goods.forEach( function( product ) {
-									csv += [ product.ID , product.MATERIAL , product.CUR_PRICE ].join( ';' ) + '\r\n'
+									csv += [ product.MATERIAL , product.CUR_PRICE ].join( ';' ) + '\r\n'
 								} )
 								
 								var link = document.createElement( 'a' )
@@ -426,7 +424,7 @@
 					TYPE : type,
 				}
 				goods.forEach( function( good ){
-					var price = good[ name ] || strategies[ name ][ good.ID ]
+					var price = good[ name ] || strategies[ name ][ good.MATERIAL ]
 					var count = price * good.K + good.B
 					res.DEMAND += count
 					res.REVENUE += count * price
@@ -464,6 +462,8 @@
 				var anals = Object.keys( strategies ).map( function( key ){
 					return calculate( key , 'Оптимальные сценарии' )
 				} ).concat([
+					calculate( 'DEC_PRICE' , 'Уменьшение цен на 5%' ) ,
+					calculate( 'INC_PRICE' , 'Увеличение цен на 5%' ) ,
 					calculate( 'CUR_PRICE' , 'Новый сценарий' ) ,
 					calculate( 'ORIG_PRICE' , 'Базовый сценарий' ) ,
 				])
@@ -551,8 +551,8 @@
 							id : 'legend' ,
 							items : [
 								new sap.m.Text({ text : 'Оптимальные сценарии' }) ,
-//								new sap.m.Text({ text : 'Минимальные цены' }) ,
-//								new sap.m.Text({ text : 'Максимальные цены' }) ,
+//								new sap.m.Text({ text : 'Уменьшение цен на 5%' }) ,
+//								new sap.m.Text({ text : 'Увеличение цен на 5%' }) ,
 								new sap.m.Text({ text : 'Базовый сценарий' }) ,
 								new sap.m.Text({ text : 'Новый сценарий' }) ,
 							]
@@ -876,6 +876,20 @@
 			top: -0.45rem;
 			height: 0.75rem;
 			width: 0.75rem;
+			margin-left: 0;
+		}
+		.sapMSliderInner {
+			position: relative;
+			z-index: 0;
+		}
+		.sapMSliderInner:after {
+			content: '';
+			background: inherit;
+			height: inherit;
+			width: 0.75rem;
+			left: 100%;
+			position: absolute;
+			z-index: -1;
 		}
 		.sapMSliderInner, .sapMSliderProgress {
 			height: 2px;
@@ -899,13 +913,16 @@
 		}
 		#legend > div:before {
 			display: inline-block;
-			padding: 4px;
+			padding: 5px;
 			border-radius: 8px;
 			content : '';
-			margin-right: .25em;
+			margin-right: .5em;
+			vertical-align: middle;
 		}
-		#legend > div:nth-child(1):before {
-			background: #5cbae6;
+		#legend > div:nth-child(1):before ,
+		[fill="#5cbae6"] {
+			background: darkblue;
+			fill: darkblue;
 		}
 		#legend > div:nth-child(2):before {
 			background: #b6d957;
@@ -913,11 +930,18 @@
 		#legend > div:nth-child(3):before {
 			background: #fac364;
 		}
-		#legend > div:nth-child(4):before {
-			background: #8cd3ff;
+		#legend > div:nth-child(2):before ,
+		[fill="#d998cb"] {
+			background: green;
+			fill: green;
 		}
-		#legend > div:nth-child(5):before {
-			background: #d998cb;
+		#legend > div:nth-child(3):before ,
+		[fill="#8cd3ff"] {
+			background: red;
+			box-shadow: 0 0 0 3px red;
+			fill: red;
+			stroke: red;
+			stroke-width: 4px;
 		}
 	</style>
 
