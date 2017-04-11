@@ -111,7 +111,7 @@
 				good.ORIG_PRICE = Number( good.OLDPRICE )
 				good.PURCH_PRICE = Number( good.PURCHASEPRICE )
 				good.CUR_PRICE = good.ORIG_PRICE
-				good.CUR_PRICE_STR = good.CUR_PRICE.toFixed(1).replace( '.' , ',' )
+				good.CUR_PRICE_STR = good.CUR_PRICE.toFixed(1)
 				good.MIN_PRICE = Number( good.MINPRICE )
 				good.MAX_PRICE = Number( good.MAXPRICE )
 				good.INC_PRICE = Math.min( good.ORIG_PRICE * 1.05 , good.MAX_PRICE )
@@ -180,7 +180,7 @@
 					var strat = strategy.getSelectedKey()
 					goods.forEach( function( good ) {
 						good.CUR_PRICE = good[ strat ] || strategies[ strat ][ good.MATERIAL ] || good.CUR_PRICE
-						good.CUR_PRICE_STR = good.CUR_PRICE.toFixed(1).replace( '.' , ',' )
+						good.CUR_PRICE_STR = good.CUR_PRICE.toFixed(1)
 					} )
 					goodsModel.setData({ goods : goods })
 					refresh()
@@ -204,7 +204,7 @@
 					})
 					.forEach( function( good ) {
 						good.CUR_PRICE = ( Math.max( good.MIN_PRICE , Math.min( good.MAX_PRICE , good.ORIG_PRICE * ( 1 + offset ) ) ) )
-						good.CUR_PRICE_STR = good.CUR_PRICE.toFixed(1).replace( '.' , ',' )
+						good.CUR_PRICE_STR = good.CUR_PRICE.toFixed(1)
 					} )
 				goodsModel.setProperty( '/goods' , goods )
 			}
@@ -529,7 +529,7 @@
 							id : 'export' ,
 							text : 'Опубликовать ценники' ,
 							press : function( event ) {
-								var csv = 'material_id;material_name;cur_price\r\n'
+								var csv = '' // 'material_id;material_name;cur_price\r\n'
 								goods.forEach( function( product ) {
 									csv += [ product.MATERIAL , product.NAME , product.CUR_PRICE_STR ].join( ';' ) + '\r\n'
 								} )
