@@ -193,9 +193,15 @@
 			
 			strategy.setModel( strategyModel )
 
-			var goodsModel = new sap.ui.model.json.JSONModel({
+			goodsModel = new sap.ui.model.json.JSONModel({
 				goods : goods
 			})
+			
+			goodsModel.attachEvent( 'propertyChange' , function(e) {
+				if( e.getParameter( 'path' ) === 'CUR_PRICE' ) {
+					goodsModel.setProperty( e.getParameter( 'context' ).sPath + '/CUR_PRICE_STR' , e.getParameter( 'value' ).toFixed(1) )
+				}
+			} )
 			
 			function groupShift( group , offset ) {
 				goods
