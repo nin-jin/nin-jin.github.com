@@ -1,9 +1,9 @@
 <?xml-stylesheet type="text/xsl" href="harp.xsl"?>
-<response>
+<harp>
 	<api id="api=1">
 		<user>user=jin</user>
 		<article>article=12345</article>
 		<article>article=54321</article>
 		<scheme>scheme=api</scheme>
 	</api>
-</response>
+</harp>

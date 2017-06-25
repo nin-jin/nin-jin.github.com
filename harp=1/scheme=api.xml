@@ -1,8 +1,8 @@
 <?xml-stylesheet type="text/xsl" href="harp.xsl"?>
-<response>
+<harp>
 	<scheme id="scheme=api">
 		<user>scheme=user</user>
 		<article>scheme=article</article>
 		<scheme>scheme=scheme</scheme>
 	</scheme>
-</response>
+</harp>

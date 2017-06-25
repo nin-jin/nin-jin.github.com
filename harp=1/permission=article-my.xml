@@ -1,5 +1,5 @@
 <?xml-stylesheet type="text/xsl" href="harp.xsl"?>
-<response>
+<harp>
 	<permission id="permission=article-my">
 		<name>true</name>
 		<content>true</content>
@@ -7,4 +7,4 @@
 		<permission>false</permission>
 		<scheme>false</scheme>
 	</permission>
-</response>
+</harp>

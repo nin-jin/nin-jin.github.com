@@ -1,5 +1,5 @@
 <?xml-stylesheet type="text/xsl" href="harp.xsl"?>
-<response>
+<harp>
 	<article id="article=54321">
 		<name>Hello, Second World!</name>
 		<content>This is a <b>"simple"</b> post.</content>
@@ -7,4 +7,4 @@
 		<permission>permission=article-my</permission>
 		<scheme>scheme=article</scheme>
 	</article>
-</response>
+</harp>

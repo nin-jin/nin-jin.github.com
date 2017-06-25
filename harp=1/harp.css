@@ -4,36 +4,23 @@ a {
 }
 
 [harp_response] {
-	background: lightsteelblue;
 	font: 10pt/1.5 monospace;
-	display: flex;
-	flex-wrap: wrap;
 	align-items: flex-start;
 }
 
 [harp_resource] {
 	margin: 1vmin;
-	background: snow;
-	border: 1px solid steelblue;
 	display: flex;
 	flex-direction: column;
 	overflow: auto;
 }
 
-[harp_resource]:target {
-	border-color: navy;
-	background: white;
-}
-
 [harp_resource_uri] {
-	background: steelblue;
-	color: snow;
-	padding: 0 1vmin;
+	font-weight: bold;
 	font-family: sans-serif;
 }
 
 [harp_resource_type] {
-	padding: 0 1vmin;
 	opacity: .75;
 }
 
@@ -50,6 +37,8 @@ a {
 }
 
 [harp_field_value] {
+	border: none;
+	background: none;
 }
 
 [harp_field_value][href] {
