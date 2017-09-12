@@ -4406,6 +4406,77 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 var $;
 (function ($) {
+    var $mol_state_session = (function (_super) {
+        __extends($mol_state_session, _super);
+        function $mol_state_session() {
+            return _super !== null && _super.apply(this, arguments) || this;
+        }
+        $mol_state_session.native = function () {
+            if (this['native()'])
+                return this['native()'];
+            check: try {
+                var native = $.$mol_dom_context.sessionStorage;
+                if (!native)
+                    break check;
+                native.setItem('', '');
+                native.removeItem('');
+                return this['native()'] = native;
+            }
+            catch (error) {
+                console.warn(error);
+            }
+            return this['native()'] = {
+                getItem: function (key) {
+                    return this[':' + key];
+                },
+                setItem: function (key, value) {
+                    this[':' + key] = value;
+                },
+                removeItem: function (key) {
+                    this[':' + key] = void 0;
+                }
+            };
+        };
+        $mol_state_session.value = function (key, next) {
+            if (next === void 0)
+                return JSON.parse(this.native().getItem(key) || 'null');
+            if (next === null)
+                this.native().removeItem(key);
+            else
+                this.native().setItem(key, JSON.stringify(next));
+            return next;
+        };
+        $mol_state_session.prototype.prefix = function () { return ''; };
+        $mol_state_session.prototype.value = function (key, next) {
+            return $mol_state_session.value(this.prefix() + '.' + key, next);
+        };
+        __decorate([
+            $.$mol_mem_key()
+        ], $mol_state_session, "value", null);
+        return $mol_state_session;
+    }($.$mol_object));
+    $.$mol_state_session = $mol_state_session;
+})($ || ($ = {}));
+//session.js.map
+;
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var $;
+(function ($) {
     var $saprun_prognoz = (function (_super) {
         __extends($saprun_prognoz, _super);
         function $saprun_prognoz() {
@@ -4543,7 +4614,7 @@ var $;
                 return $.$mol_state_arg.value('report');
             };
             $saprun_prognoz.prototype.entered = function (next) {
-                return $.$mol_state_local.value('entered', next) || false;
+                return $.$mol_state_session.value('entered', next) || false;
             };
             $saprun_prognoz.prototype.pages = function () {
                 if (!this.entered())
@@ -4577,77 +4648,6 @@ var $;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
 //prognoz.view.js.map
-;
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var $;
-(function ($) {
-    var $mol_state_session = (function (_super) {
-        __extends($mol_state_session, _super);
-        function $mol_state_session() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        $mol_state_session.native = function () {
-            if (this['native()'])
-                return this['native()'];
-            check: try {
-                var native = $.$mol_dom_context.sessionStorage;
-                if (!native)
-                    break check;
-                native.setItem('', '');
-                native.removeItem('');
-                return this['native()'] = native;
-            }
-            catch (error) {
-                console.warn(error);
-            }
-            return this['native()'] = {
-                getItem: function (key) {
-                    return this[':' + key];
-                },
-                setItem: function (key, value) {
-                    this[':' + key] = value;
-                },
-                removeItem: function (key) {
-                    this[':' + key] = void 0;
-                }
-            };
-        };
-        $mol_state_session.value = function (key, next) {
-            if (next === void 0)
-                return JSON.parse(this.native().getItem(key) || 'null');
-            if (next === null)
-                this.native().removeItem(key);
-            else
-                this.native().setItem(key, JSON.stringify(next));
-            return next;
-        };
-        $mol_state_session.prototype.prefix = function () { return ''; };
-        $mol_state_session.prototype.value = function (key, next) {
-            return $mol_state_session.value(this.prefix() + '.' + key, next);
-        };
-        __decorate([
-            $.$mol_mem_key()
-        ], $mol_state_session, "value", null);
-        return $mol_state_session;
-    }($.$mol_object));
-    $.$mol_state_session = $mol_state_session;
-})($ || ($ = {}));
-//session.js.map
 ;
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
