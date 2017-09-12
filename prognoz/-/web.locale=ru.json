@@ -1,0 +1,8 @@
+{
+	"$saprun_enter_login_title": "Логин",
+	"$saprun_enter_password_title": "Пароль",
+	"$saprun_enter_submit_title": "Войти",
+	"$saprun_enter_reset_title": "Восстановить пароль",
+	"$mol_select_no_options_message": "Нет вариантов",
+	"$mol_select_hint": "Поиск.."
+}

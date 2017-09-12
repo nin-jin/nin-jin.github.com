@@ -1,0 +1,20 @@
+{
+"type": "FeatureCollection",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { ".COORD": -1, "CODE": "ALL", "KEY": 0, "NAME": "Все виды", "ORD": 0, "PARENT_KEY": -1 }, "geometry": null },
+{ "type": "Feature", "properties": { ".COORD": 13, "CODE": "00", "KEY": 1, "NAME": "Вид транспорта не указан", "ORD": 13, "PARENT_KEY": 0 }, "geometry": null },
+{ "type": "Feature", "properties": { ".COORD": 1, "CODE": "10", "KEY": 10, "NAME": "Морской\/ речной транспорт", "ORD": 1, "PARENT_KEY": 0 }, "geometry": null },
+{ "type": "Feature", "properties": { ".COORD": 2, "CODE": "20", "KEY": 20, "NAME": "Железнодорожный транспорт", "ORD": 2, "PARENT_KEY": 0 }, "geometry": null },
+{ "type": "Feature", "properties": { ".COORD": 3, "CODE": "30", "KEY": 30, "NAME": "Автодорожный транспорт", "ORD": 3, "PARENT_KEY": 0 }, "geometry": null },
+{ "type": "Feature", "properties": { ".COORD": 4, "CODE": "31", "KEY": 31, "NAME": "Состав транспортных средств (тягач с полуприцепом или прицепом)", "ORD": 4, "PARENT_KEY": 0 }, "geometry": null },
+{ "type": "Feature", "properties": { ".COORD": 5, "CODE": "32", "KEY": 32, "NAME": "Состав транспортных средств (тягач с прицепом (-ами) и полуприцепом (-ами))", "ORD": 5, "PARENT_KEY": 0 }, "geometry": null },
+{ "type": "Feature", "properties": { ".COORD": 6, "CODE": "40", "KEY": 40, "NAME": "Воздушный транспорт", "ORD": 6, "PARENT_KEY": 0 }, "geometry": null },
+{ "type": "Feature", "properties": { ".COORD": 7, "CODE": "50", "KEY": 50, "NAME": "Почтовое отправление", "ORD": 7, "PARENT_KEY": 0 }, "geometry": null },
+{ "type": "Feature", "properties": { ".COORD": 8, "CODE": "71", "KEY": 71, "NAME": "Трубопроводный транспорт", "ORD": 8, "PARENT_KEY": 0 }, "geometry": null },
+{ "type": "Feature", "properties": { ".COORD": 9, "CODE": "72", "KEY": 72, "NAME": "Линии электропередачи", "ORD": 9, "PARENT_KEY": 0 }, "geometry": null },
+{ "type": "Feature", "properties": { ".COORD": 10, "CODE": "80", "KEY": 80, "NAME": "Внутренний водный транспорт", "ORD": 10, "PARENT_KEY": 0 }, "geometry": null },
+{ "type": "Feature", "properties": { ".COORD": 11, "CODE": "90", "KEY": 90, "NAME": "Транспортное средство, перемещающееся в качестве товара своим ходом", "ORD": 11, "PARENT_KEY": 0 }, "geometry": null },
+{ "type": "Feature", "properties": { ".COORD": 12, "CODE": "99", "KEY": 99, "NAME": "Прочие", "ORD": 12, "PARENT_KEY": 0 }, "geometry": null }
+]
+}
