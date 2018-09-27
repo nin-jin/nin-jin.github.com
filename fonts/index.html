@@ -429,10 +429,10 @@ const fragment = document.createDocumentFragment()
 const samples = fonts.map( function( font ) {
     const sample = document.createElement( 'div' )
     sample.style.fontFamily = font + ', Times New Roman, monospace'
-    sample.textContent = font + ' '
+    sample.textContent = ' ' + font
     const subsample = document.createElement( 'span' )
     subsample.textContent = 'Жыр'
-    sample.appendChild( subsample )
+    sample.insertBefore( subsample , sample.firstChild )
     fragment.appendChild( sample )
     return sample
 } )
@@ -440,7 +440,7 @@ const samples = fonts.map( function( font ) {
 document.body.appendChild( fragment )
 
 samples.forEach( function( sample ) {
-    var fall = ( sample.childNodes[1].offsetWidth === samples[0].childNodes[1].offsetWidth ) && ( sample.childNodes[1].offsetHeight === samples[0].childNodes[1].offsetHeight )
+    var fall = ( sample.childNodes[0].offsetWidth === samples[0].childNodes[0].offsetWidth ) && ( sample.childNodes[0].offsetHeight === samples[0].childNodes[0].offsetHeight )
     sample.style.background = fall ? '#fee' : '#efe'
 } )
 
