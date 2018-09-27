@@ -1,0 +1,444 @@
+<!doctype html>
+<style>
+    html , body {
+        margin: 0;
+        padding: 0;
+        line-height: 1.2em;
+        font-size: 14px;
+    }
+    div {
+        margin: 0 .25em;
+        display: inline-block;
+    }
+    span {
+        display: inline-block;
+    }
+</style>
+<body>
+<script defer>
+const fonts = `
+Serif
+Adobe Jenson
+Albertus
+Aldus
+Alexandria
+Algerian
+American Typewriter
+Antiqua
+Arno
+Aster
+Aurora
+News 706
+Baskerville
+Bell
+Belwe Roman
+Bembo
+Berkeley Old Style
+Bernhard Modern
+Bodoni
+Bauer Bodoni
+Bookman
+Bulmer
+Caledonia
+Californian FB
+Calisto MT
+Cambria
+Capitals
+Cartier
+Caslon
+Wyld
+Caslon Antique
+Fifteenth Century
+Catull
+Centaur
+Century Old Style
+Century Schoolbook
+New Century Schoolbook
+Century Schoolbook Infant
+Charis SIL
+Charter
+Cheltenham
+Clearface
+Cochin
+Colonna
+Computer Modern
+Concrete Roman
+Constantia
+Cooper Black
+Copperplate Gothic
+Corona
+News 705
+DejaVu Serif
+Didot
+Droid Serif
+Elephant
+Emerson
+Excelsior
+News 702
+Fairfield
+FF Scala
+Footlight
+FreeSerif
+Friz Quadrata
+Garamond
+Gentium
+Georgia
+Gloucester
+Goudy Old Style
+Goudy
+Granjon
+High Tower Text
+Hoefler Text
+IBM Plex Serif
+Imprint
+Ionic No. 5
+News 701
+ITC Benguiat
+Janson
+Jokerman
+Joanna
+Korinna
+Lexicon
+Liberation Serif
+Linux Libertine
+Literaturnaya
+Lucida Bright
+Melior
+Memphis
+Miller
+Minion
+Modern
+Mona Lisa
+Mrs Eaves
+MS Serif
+New York
+Nimbus Roman
+NPS Rawlinson Roadway
+OCR A Extended
+Onyx
+Palatino
+Book Antiqua
+Perpetua
+Plantin
+Playbill
+Primer
+Renault
+Requiem
+Rotis Serif
+Sabon
+Sistina
+Souvenir
+STIX
+Sylfaen
+Times New Roman
+Times
+Torino
+Trajan
+Trinité
+Trump Mediaeval
+Utopia
+Vera Serif
+Wide Latin
+Windsor
+XITS
+Slab serif
+Alexandria
+American Typewriter
+Archer
+Athens
+Candida
+Cholla Slab
+City
+Clarendon
+Concrete Roman
+Courier
+Egyptienne
+Guardian Egyptian
+Ionic No. 5
+Lexia
+Memphis
+Nilland
+Roboto Slab
+Rockwell
+Schadow
+Serifa
+Skeleton Antique
+Sreda
+Swift
+Tower
+Sans-serif
+Agency FB
+Akzidenz-Grotesk
+Andalé Sans
+Antique Olive
+Arial
+Arial Unicode MS
+Avant Garde Gothic
+Avenir
+Bank Gothic
+Bauhaus
+Bell Centennial
+Bell Gothic
+Benguiat Gothic
+Berlin Sans
+Brandon Grotesque
+Calibri
+Casey
+Century Gothic
+Charcoal
+Chicago
+Clearview
+Comic Sans
+Compacta
+Corbel
+DejaVu Sans
+DIN
+Dotum
+Droid Sans
+Dyslexie
+Ecofont
+Eras
+Esseltub
+Espy Sans
+Eurocrat
+Eurostile
+Square 721
+FF Dax
+FF Meta
+FF Scala Sans
+Fira Sans
+Folio
+Franklin Gothic
+FreeSans
+Frutiger
+Futura
+Geneva
+Gill Sans
+Gill Sans Schoolbook
+Gotham
+Haettenschweiler
+Handel Gothic
+Harabara Mais
+Hei
+Helvetica
+Helvetica Neue
+Swiss 721
+Highway Gothic
+Hobo
+IBM Plex Sans
+Impact
+Industria
+Interstate
+Johnston
+New Johnston
+Kabel
+Klavika
+Lato
+Liberation Sans
+Linux Biolinum
+Lucida Sans
+Lucida Grande
+Lucida Sans Unicode
+Lydian
+Meiryo
+Meta
+Microgramma
+Modern
+Motorway
+MS Sans Serif
+Myriad
+Neutraface
+Neuzeit S
+News Gothic
+Nimbus Sans L
+Nordstern
+Open Sans
+Optima
+Overpass
+Parisine
+Product Sans
+Proxima Nova
+PT Sans
+Rail Alphabet
+Roboto
+Rotis Sans
+San Francisco
+Segoe UI
+Skia
+Source Sans Pro
+Sweden Sans
+Syntax
+System
+Tahoma
+Template Gothic
+Thesis Sans
+Tiresias
+Trade Gothic
+Transport
+Trebuchet MS
+Twentieth Century
+Ubuntu
+Unica
+Univers
+Zurich
+Vera Sans
+Verdana
+Semi-serif
+Nyala
+Rotis Semi Serif
+Easyreading
+Monospace
+3x3
+Andalé Mono
+Arial Monospaced
+Bitstream Vera
+Consolas
+Courier
+Courier New
+DejaVu Sans Mono
+Droid Sans Mono
+Everson Mono
+Fixed
+Fixedsys
+Fixedsys Excelsior
+HyperFont
+IBM Plex Mono
+Inconsolata
+Letter Gothic
+Liberation Mono
+Lucida Console
+Lucida Sans Typewriter
+Lucida Typewriter
+Menlo
+MICR
+Monaco
+Monospace
+MS Gothic
+MS Mincho
+Nimbus Mono L
+OCR-A
+OCR-B
+PragmataPro
+Prestige Elite
+ProFont
+Proggy programming fonts
+SimHei
+SimSun
+Source Code Pro
+Terminal
+Trixie
+Ubuntu Mono
+Vera Sans Mono
+Script
+Brush scripts
+Balloon
+Brush Script
+Choc
+Dom Casual
+Mistral
+Papyrus
+Segoe Script
+Utopia
+Calligraphic
+American Scribe
+AMS Euler
+Apple Chancery
+Forte
+French Script
+ITC Zapf Chancery
+Kuenstler Script
+Monotype Corsiva
+Old English Text MT
+Zapfino
+Handwriting
+Andy
+Ashley Script
+Cézanne
+Chalkboard
+Comic Sans MS
+Dom Casual
+Harabara Hand
+Kristen
+Lucida Handwriting
+Other script
+Coronet
+Curlz
+Gravura
+Script
+Wiesbaden Swing
+Blackletter
+Bastard
+Breitkopf Fraktur
+Cloister Black
+Fette Fraktur
+Fletcher
+Fraktur
+Lucida Blackletter
+Old English Text
+Schwabacher
+Non-Latin
+Aharoni
+Aisha
+Aparajita
+Arek
+Arial
+Avory
+Calibri
+Chandas
+Clone
+Corsair
+Eskorte
+Gadugi
+Grecs du roi
+Hanacaraka
+Japanese Gothic
+Jomolhari
+Kiran
+Kochi
+Koren
+Kruti Dev
+Malgun Gothic
+Meiryo
+Microsoft JhengHei
+Microsoft YaHei
+Minchō
+Ming
+Mona
+MS Gothic
+Nassim
+Nastaliq Navees
+Neacademia
+Perpetua Greek
+Porson
+Segoe UI Symbol
+Shruti
+Skolar
+Skolar Sans
+SimSun
+Sylfaen
+Sutturah
+Tahoma
+Tengwar
+Tibetan Machine Uni
+Wilson Greek
+`.trim().split( /\n/g )
+
+const fragment = document.createDocumentFragment()
+const samples = fonts.map( font => {
+    const sample = document.createElement( 'div' )
+    sample.style.fontFamily = font
+    sample.textContent = font + ' '
+    const subsample = document.createElement( 'span' )
+    subsample.textContent = 'Жыр'
+    sample.appendChild( subsample )
+    fragment.appendChild( sample )
+    return sample
+} )
+document.body.appendChild( fragment )
+for( const sample of samples ) {
+    const fall = ( sample.children[0].offsetWidth === samples[0].children[0].offsetWidth ) && ( sample.children[0].offsetHeight === samples[0].children[0].offsetHeight )
+    sample.style.background = fall ? '#fee' : '#efe'
+}
+
+</script>
+</body>
