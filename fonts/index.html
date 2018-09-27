@@ -4,7 +4,7 @@
         margin: 0;
         padding: 0;
         line-height: 1.2em;
-        font-size: 14px;
+        font-size: 32px;
     }
     div {
         margin: 0 .25em;
@@ -427,7 +427,7 @@ var fonts = [
 const fragment = document.createDocumentFragment()
 const samples = fonts.map( function( font ) {
     const sample = document.createElement( 'div' )
-    sample.style.fontFamily = font + ',serif'
+    sample.style.fontFamily = font + ', Times New Roman, monospace'
     sample.textContent = font + ' '
     const subsample = document.createElement( 'span' )
     subsample.textContent = 'Жыр'
@@ -445,3 +445,10 @@ samples.forEach( function( sample ) {
 
 </script>
 </body>
+
+<!--
+    Everywere:
+        serif: Times New Roman
+        sans-serif: Arial
+        monospace: 
+-->
