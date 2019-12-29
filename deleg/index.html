@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head>
+  <title>Event delegation benchmark</title>
+  <style>
+    body {
+      max-width: 600px;
+      margin: 40px auto;
+    }
+    div {
+      margin: 20px;
+    }
+    #testArea button {
+      display: block;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+<h1>Event delegation benchmark</h1>
+<div>
+  <label for="numberOfElementsInput">Number of elements</label> <input type="number" id="numberOfElementsInput" value="10000">
+</div>
+<div>
+  <label for="useDelegationCheckbox">Use event delegation</label> <input type="checkbox" id="useDelegationCheckbox" checked="checked">
+</div>
+<div>
+  <label for="numRunsInput">Median of how many runs?</label> <input type="number" id="numRunsInput" value="5">
+</div>
+<div>
+  <button type="button" id="goButton">Run test</button>
+</div>
+<pre id="results"></pre>
+<div id="testArea"></div>
+<script>
+  (function () {
+    'use strict'
+
+    var $ = document.querySelector.bind(document)
+    var $$ = document.querySelectorAll.bind(document)
+
+    function onClickButton(e) {
+      var now = performance.now()
+      var duration = now - e.timeStamp
+      $('#results').textContent += 'Took ' + duration + 'ms to receive click\n'
+    }
+
+
+    function median(values) {
+      values = values.sort(function (a, b) {
+        return a - b
+      })
+      var half = Math.floor(values.length / 2)
+      return values.length % 2 ? values[half] : (values[half - 1] + values[half]) / 2.0
+    }
+
+    function runTests(callback) {
+      $('#goButton').disabled = true
+      var numberOfElements = parseInt($('#numberOfElementsInput').value, 10)
+      var useDelegation = $('#useDelegationCheckbox').checked
+      var numRuns = parseInt($('#numRunsInput').value, 10)
+      var testArea = $('#testArea')
+
+      function runTest(callback) {
+        clearEventListeners()
+        clearTestArea()
+
+        requestAnimationFrame(()=>{
+
+        performance.mark('start_render')
+
+        var frag = document.createDocumentFragment()
+
+        if (useDelegation) {
+
+          for (var i = 0; i < numberOfElements; i++) {
+            var button = document.createElement('button')
+            button.dataset.index = i
+            button.innerText = 'Button #' + (i + 1)
+            frag.appendChild( button )
+          }
+          testArea.appendChild( frag )
+
+          testArea.addEventListener('click', onClickButton)
+
+        } else {
+          
+          for (var i = 0; i < numberOfElements; i++) {
+            var button = document.createElement('button')
+            button.innerText = 'Button #' + (i + 1)
+            button.onclick = onClickButton
+            frag.appendChild( button )
+          }
+          testArea.appendChild( frag )
+
+        }
+
+          setTimeout(function () {
+            performance.mark('end_render')
+            performance.measure('render', 'start_render', 'end_render')
+
+            var duration = performance.getEntriesByName('render').slice(-1)[0].duration
+            callback(duration)
+          })
+        })
+      }
+
+      var count = -1
+      var durations = []
+
+      function runNext() {
+        if (++count === numRuns) {
+          // done
+          $('#results').textContent += 'numElements: ' + numberOfElements + ', useDelegation: ' + useDelegation + ', time to set up listener(s): ' + median(durations) + ' ms\n'
+          $('#goButton').disabled = false
+        } else {
+          runTest(function (duration) {
+            durations.push(duration)
+            runNext()
+          })
+        }
+      }
+
+      runNext()
+    }
+
+    function clearEventListeners() {
+      var buttons = $$('#testArea button')
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].removeEventListener('click', onClickButton)
+      }
+      $('#testArea').removeEventListener('click', onClickButton)
+    }
+    
+    function clearTestArea() {
+      $('#testArea').innerHTML = ''
+    }
+
+    $('#goButton').addEventListener('click', runTests)
+
+
+  })()
+</script>
+</body>
+</html>
