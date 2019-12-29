@@ -88,7 +88,7 @@
           for (var i = 0; i < numberOfElements; i++) {
             var button = document.createElement('button')
             button.innerText = 'Button #' + (i + 1)
-            button.onclick = onClickButton
+            button.onclick = ()=> onClickButton(i)
             frag.appendChild( button )
           }
           testArea.appendChild( frag )
