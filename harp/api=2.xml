@@ -1,10 +1,10 @@
 <?xml-stylesheet href="harp.css"?>
-<harp>
+<harp xmlns:xlink="http://www.w3.org/1999/xlink">
 	<api id="api=1">
-		<user>user=jin</user>
+		<user xlink:type="simple" xlink:href="user=jin">user=jin</user>
 		<article>article=12345</article>
 		<article>article=54321</article>
 		<scheme>scheme=api</scheme>
 	</api>
 </harp>
-<?xml-stylesheet type="text/xsl" href="harp.xsl"?>
+<!-- <?xml-stylesheet type="text/xsl" href="harp.xsl"?> -->
