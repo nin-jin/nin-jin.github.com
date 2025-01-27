@@ -1,5 +1,5 @@
 <script>
-  html = `<!doctype html><script>for(;;){}</script>`
+  html = `<!doctype html><script>for(;;){}</${''}script>`
   const url = `data:text/html,${encodeURIComponent(html)}`
   const frame = document.createElement('iframe')
   frame.sandbox='allow-scripts'
